@@ -76,7 +76,9 @@
 		Email logs:<BR>
 		<table class='table ng-table-responsive ng-table'>
 			<tr ng-table ng-repeat="itm in report.emailLogs">
-				<td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}</td>
+				<td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
+				&nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}'>link</a>
+				</td>
 				<td>{{itm.tstamp_sent}}</td>
 				<td>
 					<span class='textIconBlock-green' ng-if="itm.tstamp_opened">OPENED</span>

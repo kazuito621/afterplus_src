@@ -42,6 +42,12 @@ var ReportCtrl = app.controller('ReportCtrl',
 	// When a new report is loaded, bind it to this scope
 	s.$on('onLoadReport', function(evt, rpt){
 		s.report=rpt;
+		// set email links
+		if(rpt.emailLogs){
+			_.each(rpt.emailLogs, function(e){
+				if(e.hashLink) e.link=cfg.hostAndPort() + '/#/estimate/' + e.hashLink;
+			});
+		}	
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
 	})
 

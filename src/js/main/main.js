@@ -11,7 +11,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	s.alertBox;
 	s.authData={};
 	s.localStore={};
-	storage.bind(s, 'authData', {defaultValue:{token:false}});
+	storage.bind(s, 'authData', {defaultValue:{token:'',userID:0,email:''}});
 	storage.bind(s, 'localStore', {defaultValue:{token:false}});
 
 
@@ -35,7 +35,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 					});
 				return deferred.promise;
 			}
-		,signOut:function(){ s.authData={}; s.initData={}; $location.url('/signin') }
+		,signOut:function(){ 
+			_.each(s.authData, function(val,key){
+				s.authData[key]=null;
+			});
+			_.each(s.initData, function(val,key){
+				s.initDat[key]=null;
+			});
+			$location.url('/signin') 
+		}
 		,userRoles:{
 					public: 	1, // 001
 					customer:   2, // 010

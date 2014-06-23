@@ -37,7 +37,9 @@
 		{{report.contactPhone}}<BR>
 		<strong>Address:&nbsp;</strong>
 			{{report.street}}, {{report.city}},{{report.state}} {{report.zip}}<BR>
+			<!--
 		Link to Estimate: <input type=text size=40 value='{{report.reportLink}}'> 
+			-->
 		</div>
 		
 		<div class="pullright">
@@ -64,23 +66,27 @@
 				>Send</button>
 		  <!--<button class="navButton width280 roundedCorners" ng:cloak ng-show="report.reportID>0 && data.mode=='trees'" ng-click="emailReport()">View Customer Version</button>-->
 		 </div>
+		 <!-- dont show for now... need a new method now that we have a different access per user
 		 <div class="inline" ng:cloak ng-show="report.reportID>0 && data.mode=='trees'">
 		 	<a href='{{report.reportLink}}' target=_new>View Customer Version</a>
 		 </div>
+		 -->
 		 <div class="clearfloat"></div>
      </div>
      <div class = "clearfloat"></div>
 
 	<!-- Email logs -->
-	 <div ng-if="report.emailLogs">
+	 <div ng-if="report.emailLogs && data.mode=='trees'">
 		Email logs:<BR>
 		<table class='table ng-table-responsive ng-table'>
 			<tr ng-table ng-repeat="itm in report.emailLogs">
-				<td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}</td>
+				<td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
+				&nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}'>link</a>
+				</td>
 				<td>{{itm.tstamp_sent}}</td>
 				<td>
-					<span class='textIconBlock-red' ng-if="itm.result!=1">SEND FAILED</span>
 					<span class='textIconBlock-green' ng-if="itm.tstamp_opened">OPENED</span>
+					<span class='textIconBlock-red' ng-if="itm.result!=1 && !itm.tstamp_opened">SEND FAILED</span>
 				</td>
 			</tr>
 		</table>

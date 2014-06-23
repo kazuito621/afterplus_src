@@ -43,17 +43,25 @@ var ReportCtrl = app.controller('ReportCtrl',
 	s.$on('onLoadReport', function(evt, rpt){
 		s.report=rpt;
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
-	})
+	});
+
+    // returns true if row with passed id is the current highlighted row
+
+    s.isRowHighLighted = function (id) {
+        return id === s.highLightedRowId;
+    };
 
 	// After an item in the report has been edited via x-editable
 	// sometimes the adjusted DOM throws the scroll out of position,
 	// One way to fix is record scroll and go back there...
-	s.onShowEditItem = function(){
+	s.onShowEditItem = function(id){
 		s.tempScrollPos=$(window).scrollTop();
-	}
+        s.highLightedRowId = id;
+	};
+
 	s.onHideEditItem = function(){
 		$(window).scrollTop(s.tempScrollPos);
-	}
+	};
 	// another way later..if the above doesnt work that well, is this way:
 		/*
 			add this to template in place of other onhide/onshow

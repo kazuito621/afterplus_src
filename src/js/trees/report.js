@@ -139,9 +139,10 @@ var ReportCtrl = app.controller('ReportCtrl',
 			});
 	}
 	
-	s.addMiscService = function(desc,price){
-		RS.addMiscService(desc,price);
+	s.addMiscService = function(desc,qty,price){
+		RS.addMiscService(desc,qty,price);
 		s.service.desc = "";
+		s.service.quantity = 1;
 		s.service.price = "";
 	}
 

@@ -261,19 +261,26 @@ section.mainContent.mode_estimate{
 
 /* main outer container of estimate ... while in customer view */
 .table_estimate.mode_estimate {
-	width:70%;
-	margin-left:10px;
+	width:100%;
+	margin-left:0px;
+	margin-right:0px;
+	padding-left:1.5em;
+	padding-right:1.5em;
 	float:left;
 	}
 
 /*map container while in customer view*/
 #treeMap_estimate.mode_estimate {
-	position:fixed;
+	/* position:fixed; */
 	right:10px;
-	width:30%;
-	height:400px;
-	padding-left:30px;
+	width:100%;
+	/* height:400px; */
+	/* padding-left:30px; */
 	}
+#treeMap_estimate.mode_trees{
+
+	display:none;
+}
 .popover {
 	width:450px;
 	}

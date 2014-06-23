@@ -11,13 +11,13 @@
 	<div class='table-responsive'>
 		<table class='table table-striped'>
 		<thead>
-			<tr><th></th><th>Name</th><th>Address</th><th>Contact Info</th></tr>
+			<tr><th></th><th>ID</th><th>Name</th><th>Address</th><th>Contact Info</th></tr>
 		<thead>
-		<tr ng-repeat="c in initData.sites">
-			<tr ng-repeat="c in initData.sites" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false">
+		<tr ng-repeat="c in initData.sites" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false">
 			<td style="width:36px">
 				<a ng-click="existingSiteModalOpen(c.siteID)" ng-show="showEdit" class="fa fa-pencil _grey ng-hide"></a>
 			</td>
+			<td>{{c.siteID}}</td>
 			<td>{{c.siteName}}</td>
 			<td>{{c.street}} {{c.city}}, {{c.state}}</td>
 			<td>{{c.contact}} {{c.contactPhone}}</td>

@@ -1,13 +1,13 @@
 'use strict';
 
-var EditSiteCtrl = app.controller('EditSiteCtrl',
+var EditClientCtrl = app.controller('EditClientCtrl',
 	['$scope', '$http', '$route', '$modal',
 	function ($scope, $http, $route, $modal) {
 	var s=window.scs=$scope
-		,myStateID='site-edit'
-		s.siteID;
-		s.site;
-		s.site_cachebuster='?ts='+moment().unix();
+		,myStateID='client-edit'
+		s.clientID;
+		s.client;
+		s.client_cachebuster='?ts='+moment().unix();
 
 	s.init = function() {
 		return

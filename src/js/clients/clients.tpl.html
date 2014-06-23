@@ -1,43 +1,30 @@
 <div class='container' ng-controller="ClientsCtrl">
 
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		<h3 class='panel-title'>Add New Client</h3>
+	<button type="button"
+	ng:cloak
+	data-placement="center"
+	ng-click="newClientModalOpen()"
+	class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+	data-animation="am-fade-and-scale" >New Client</button>
+
+	<div class='table-responsive'>
+		<table class='table table-striped'>
+			<thead>
+				<tr><th></th><th></th><th></th<th>ID</th><th>Name</th><th>Address</th><th>Contact Info</th></tr>
+			<thead>
+			<tr ng-repeat="c in initData.clients" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false" ng-class="{active : isSelected(c.clientID)}">
+				<td style="width:36px">
+					<a ng-click="queueOrDequeueItemForDelete(c.clientID)" ng-show="showEdit" class="fa fa-times _grey ng-hide" class="btn btn-lg btn-danger" title="test" data-content="test" data-template="/views/elements/delete.tpl.html" data-animation="am-flip-x" bs-popover> Delete</a>
+				</td>
+				<td style="width:36px">
+					<a ng-click="existingClientModalOpen(c.clientID)" ng-show="showEdit" class="fa fa-pencil _grey ng-hide"></a>
+				</td>
+				<td>{{c.clientID}}</td>
+				<td>{{c.clientName}}</td>
+				<td>{{c.street}} {{c.city}}, {{c.state}}</td>
+				<td>{{c.contact}} {{c.contactPhone}}</td>
+			</tr>
+		</table>
 	</div>
-	<div class='panel-body'>
-	<form name="newClientForm" class="form-inline" ng-submit="saveNewClient()">
-
-		<select class='styled-select' ng-model="newClient.clientTypeID" >
-			  <option value="">Client Type</option>
-			  <option ng-repeat="ct in initData.clientTypes" value="{{ct.clientTypeID}}">{{ct.name}}</option>
-		</select>
-		<BR>
-		<input type="text" placeholder="Client Name" ng-model="newClient.clientName" required size="40"><br>
-		<input type="text" placeholder="Address" ng-model="newClient.street" size="40"><br>
-		<input type="text" placeholder="City" ng-model="newClient.city" size="40"><br>
-		<input type="text" placeholder="State" ng-model="newClient.state" size="40"><br>
-		<input type="text" placeholder="Zip" ng-model="newClient.zip" size="40"><br>
-		<input type="text" placeholder="Contact" ng-model="newClient.contact" size="40"><br>
-		<input type="text" placeholder="Phone" ng-model="newClient.contactPhone" size="40"><br>
-		<input type="text" placeholder="Email Address" ng-model="newClient.contactEmail" size="40"><br>
-		<button  type="submit" value="Save" class='btn btn-primary topSpace10'>SAVE</button>
-	</form>
-	</div>
-</div>
-
-<div class='table-responsive'>
-	<table class='table table-striped'>
-	<thead>
-		<tr><th>ID</th><th>Name</th><th>Address</th><th>Contact Info</th></tr>
-	<thead>
-	<tr ng-repeat="c in initData.clients">
-		<td>{{c.clientID}}</td>
-		<td>{{c.clientName}}</td>
-		<td>{{c.street}} {{c.city}}, {{c.state}}</td>
-		<td>{{c.contact}} {{c.contactPhone}}</td>
-	</tr>
-	</table>
-</div>
-
 
 </div>

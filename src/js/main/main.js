@@ -220,8 +220,13 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		}
 
 		// set default values
-		opt=opt||{}; opt.type=opt.type||'info'; opt.duration=opt.time||5; opt.pri=opt.pri||0;
+		opt=opt||{}; opt.type=opt.type||'info'; opt.pri=opt.pri||0;
 		opt.pri_len=opt.pri_len||4;
+		if (opt.time == 'false') {
+			opt.duration = false;
+		} else {
+			opt.duration=opt.time||5;
+		}
 		if(opt.type=='d'){opt.type='danger'}; if(opt.type=='ok'){opt.type='success'};
 
 		if(s.currentAlertPri && s.currentAlertPri > opt.pri) return;     
@@ -238,6 +243,9 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		s.alertBox=$alert(alertCfg);
 	};
 
+	s.hideAlert = function() {
+		s.alertBox.hide();
+	}
 
 	s.safeApply = function(fn) {
 	  var phase = this.$root.$$phase;

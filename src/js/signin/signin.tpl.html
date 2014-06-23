@@ -1,0 +1,27 @@
+<div class='container signin' style='width:500px; margin:50px auto;'>
+
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		<h3 class='panel-title'>Sign In</h3>
+	</div>
+	<div class='panel-body' ng-if="auth.isSignedIn()">
+		You are signed in:  {{authData.email}}<Br>
+		<a href ng-click="goTrees()">Continue</a> &nbsp;
+		<a href ng-click="auth.signOut()">Sign Out</a> 
+	</div>
+	<div class='panel-body' ng-if="!auth.isSignedIn()">
+		<form ng-submit="signIn();">
+		<input type="text" placeholder="email" ng-model="login.email" required><br>
+		<input type="password" placeholder="password" ng-model="login.pswd" required><BR><BR>
+		<button  type="submit" value="Login" class='btn btn-primary topSpace10' ng-click="signIn()"
+			ng-disabled='login.btnDisabled'	>Sign In</button>
+		<BR><BR>
+		<a href ng-click="forgotPassword()">I forgot my password</a>
+		</form>
+	</div>
+</div>
+
+
+
+</div>

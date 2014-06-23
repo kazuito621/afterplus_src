@@ -1,0 +1,26 @@
+<div class='container' ng-controller="SitesCtrl">
+	<button type="button"
+		ng:cloak
+		data-placement="center"
+		ng-click="newSiteModalOpen()"
+		class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+		data-animation="am-fade-and-scale" >New Property</button>
+	<div class="pullright" style="padding:3px">
+		<a ng-show="showEdit" href="#/tree-edit/110778" class="fa fa-pencil _med _grey ng-hide"></a>
+	</div>
+	<div class='table-responsive'>
+		<table class='table table-striped'>
+		<thead>
+			<tr><th></th><th>Name</th><th>Address</th><th>Contact Info</th></tr>
+		<thead>
+		<tr ng-repeat="c in initData.sites">
+			<tr ng-repeat="c in initData.sites" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false">
+			<td style="width:36px">
+				<a ng-click="existingSiteModalOpen(c.siteID)" ng-show="showEdit" class="fa fa-pencil _grey ng-hide"></a>
+			</td>
+			<td>{{c.siteName}}</td>
+			<td>{{c.street}} {{c.city}}, {{c.state}}</td>
+			<td>{{c.contact}} {{c.contactPhone}}</td>
+		</table>
+	</div>
+</div>

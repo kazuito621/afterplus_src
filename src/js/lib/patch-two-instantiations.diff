@@ -1,0 +1,23 @@
+diff --git a/public/lib/angular-ui-router/src/viewDirective.js b/public/lib/angular-ui-router/src/viewDirective.js
+index efc8930..5e0a9ed 100644
+--- a/public/lib/angular-ui-router/src/viewDirective.js
++++ b/public/lib/angular-ui-router/src/viewDirective.js
+@@ -1,6 +1,6 @@
+
+-$ViewDirective.$inject = ['$state', '$compile', '$controller', '$injector', '$anchorScroll'];
+-function $ViewDirective(   $state,   $compile,   $controller,   $injector,   $anchorScroll) {
++$ViewDirective.$inject = ['$state', '$compile', '$controller', '$injector', '$anchorScroll', '$document'];
++function $ViewDirective($state, $compile, $controller, $injector, $anchorScroll, $document) {
+   var $animator = $injector.has('$animator') ? $injector.get('$animator') : false;
+   var viewIsUpdating = false;
+
+@@ -15,7 +15,8 @@ function $ViewDirective(   $state,   $compile,   $controller,   $injector,   $an
+             name = attr[directive.name] || attr.name || '',
+             onloadExp = attr.onload || '',
+             animate = $animator && $animator(scope, attr),
+-            initialView = transclude(scope);
++            initialView = angular.element($document[0].createComment(' ui-view-anchor '));
++
+
+         // Returns a set of DOM manipulation functions based on whether animation
+         // should be performed

@@ -1,0 +1,22 @@
+
+SETTING UP DEVELOPMENT ENVIRONMENT
+----------------------------------
+
+Install NodeJS
+http://nodejs.org/download/
+
+
+git clone git://codeplane.com:vyew/arborplus.git
+cd arborplus
+sudo npm -g install grunt-cli karma bower
+npm install
+bower install
+grunt build
+grunt server
+
+Goto browser: http://localhost:9000
+
+
+
+xx
+test 2

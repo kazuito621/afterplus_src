@@ -1,0 +1,622 @@
+
+
+
+/*
+//////////////////////////////////////
+---- GLOBAL COMPONENT STYLING --------
+//////////////////////////////////////
+*/
+
+*, *:before, *:after {
+  -webkit-box-sizing: border-box; 
+  -moz-box-sizing: border-box; 
+  box-sizing: border-box;
+}
+
+body{
+	/*background-color:#CCC;*/
+	background-color:#fff;
+	margin-left:0;
+	margin-top:0;
+	margin-right:0;
+	font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;	
+}
+
+main{
+		/*not sure why this was here, but it was causing everything not to wrap*/
+	/*white-space: nowrap;	*/
+}
+
+header{
+	background-image:url(http://aplustree.com/home/wp-content/uploads/2011/06/A-Plus-Tree-Service-Red-Black_sm.png);
+	background-size:150px auto;
+	background-repeat:no-repeat;
+	background-position:left;
+	background-color:#EDEDED;
+	background-position-x:10px;
+	width:100%;
+	height:60px;
+	padding-top:5px;
+	display:block;
+}
+	.header-nav {
+		color:#aaa;
+		float:right;
+		margin:10px 15px 0;
+		}
+		.header-nav a {
+			font-size:1.1em;
+			}
+
+
+nav{
+	margin-top:10px;
+	margin-left:212px;
+	min-width:743px;
+}
+
+
+.modalBox {
+	padding:2em;
+	background-color: #f6f4e5;
+	border: 8px solid #ada98a;
+	box-shadow: 1px 1px 5px #333;
+	}
+	.modalBox h2 {
+		font-size:18pt;
+	}
+
+.treeEditBox{
+	font-size:15pt;
+	padding:20px;
+	background:#fff;
+	width: 845px;
+	margin:10px auto;
+	font-size:12pt;
+	/*margin-top: 49px;*/
+	/*margin-left: 210px;*/
+	/*z-index: 1;*/
+	/*position: absolute;*/
+}
+
+.siteEditBox{
+	font-size:15pt;
+	padding:20px;
+	background:#fff;
+	width: 845px;
+	margin:10px auto;
+	font-size:12pt;
+	/*margin-top: 49px;*/
+	/*margin-left: 210px;*/
+	/*z-index: 1;*/
+	/*position: absolute;*/
+}
+
+.treeEditBox .tableHist {
+	background-color:#eee;
+	}
+
+.ng-table {
+    border: 1px solid #000;
+}
+
+/*
+/////////////////////////////////////
+---- TREE PAGE STYLING --------
+/////////////////////////////////////
+*/
+
+section.nav_listings{
+	display:inline-block;
+	width:210px;
+	text-align:left;
+	padding:10px 4px;
+	font-size:10px;
+	overflow:hidden;
+}
+
+section.nav_listings_header{
+	text-align:left;
+	font-size:10px;
+	padding-left:5px;
+	padding-bottom:5px;
+	padding-top:0;
+	margin-bottom:10px;
+}
+
+.listings{
+	overflow-y:scroll;
+	width:100%;
+	height:400px;
+	float:left;
+	margin:0;
+}
+
+section.listingHeader{
+	background-color:#666;
+	width:192px;
+	height:3px;
+}
+
+section.listing_items{
+	font-size:12px;
+	padding-top:0;
+	padding-bottom:2px;
+	padding-left:0px;
+	vertical-align:top;
+	background-color:#ddd;
+	overflow:auto;
+}
+
+.item_thumb {
+	width:40px;
+	height:auto;
+	}
+.div_estimate .item_thumb {
+	width:50px;
+	height:auto;
+	}
+
+
+.ib{ display:inline-block }
+.listingRow label {
+	width:100%;
+	font-weight:normal;
+	}
+.listingRow {
+	padding:2px;
+	border-top:1px solid #ddd;
+	}
+.listingRow h1 {
+	font-size:10pt;
+	display:inline;
+	margin:0; padding:0;
+	}
+.listingRow:hover {
+	background-color:#ddd;
+	}
+.recYear, .textIconBlock-red, .textIconBlock-grey, .textIconBlock-green {
+	padding: 1px 3px;
+	color:#fff;
+	}
+.recYear.thisYear, .textIconBlock-red {
+	background-color:#f33;
+	}
+.recYear.nextYear, .textIconBlock-grey{
+	background-color:#bbb;
+	}
+.textIconBlock-green{
+	background-color:#429b01;
+	}
+
+section.mainContent{
+	display:inline-block;
+	margin-top:10px;
+	margin-left:15px;
+	min-width:600px;
+	width:55%;
+	vertical-align:top;
+}
+
+section.filters{
+	display:inline-block;
+	width: 236px;
+	margin-top: 10px;
+	vertical-align: top;
+	background-color:#EEE;
+	height:680px;
+	margin-left: 5px;
+	overflow:hidden;
+}
+
+section.filterHeader{
+	background-color:#C2C2C2;
+	margin-left:5px;
+	padding-left:5px;
+}
+
+.filterBlock{
+	height:100px;
+	overflow:auto;	
+}
+
+.filterItems{
+	font-size:10px;
+	padding-left: 5px;
+}
+
+.table_estimate{
+	background-color: #ffffff;
+	/*display:inline-block;*/
+	/*margin-top:-50px;*/
+	margin-left:212px;
+	min-width:743px;
+	width:743px;
+
+}
+
+#treeMap { 
+	width:100%;
+	height: 600px; 	
+	}
+
+#treeMap2 {
+	width:100%;
+	height:400px;
+	}
+
+#treeDetails {
+	width:100%;
+	height:600px;
+	}
+
+
+/* Change the layout for estimate mode */
+section.mainContent.mode_estimate{
+	position:fixed;
+	height:400px;
+	left:760px;
+	top:160px;
+	}
+
+/* main outer container of estimate ... while in customer view */
+.table_estimate.mode_estimate {
+	width:70%;
+	margin-left:10px;
+	float:left;
+	}
+
+/*map container while in customer view*/
+#treeMap_estimate.mode_estimate {
+	position:fixed;
+	right:10px;
+	width:30%;
+	height:400px;
+	padding-left:30px;
+	}
+.popover {
+	width:450px;
+	}
+
+
+.mapWindowContainer{
+	width:350px;
+	height:320px;
+	}
+.mwcImg{
+	max-width:100%;
+	height:auto;
+	}
+.mwcImgCt{
+	float:left;
+	width:50%;
+	height:100%;
+	}
+.mwcBody{
+	float:left;
+	width:50%;
+	margin:auto 0;
+	padding-left:5px;
+	}
+
+
+
+.multiList{
+	border: 1px solid grey;
+    height: 150px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 180px;
+ }
+ .wrapper .selection{
+   width:160px;
+   border:1px solid #ccc
+ }
+	
+
+
+/*
+/////////////////////////////////////
+---- TEXT AND H123 STYLES ---
+/////////////////////////////////////
+*/
+
+h1{
+	font-size:16px;	
+}
+
+h3{
+	font-size:12px;	
+}
+
+.centerText{
+	text-align: center;
+}
+
+.textSize20{
+	font-size:20px;
+}
+
+/*
+/////////////////////////////////////
+---- DIV & CONTENT POSITIONING STYLES ---
+/////////////////////////////////////
+*/
+.pullleft {
+	float: left;
+}
+
+.pullright {
+	float: right;
+}
+
+.clearfloat {
+	clear: both;	
+}
+
+.inline{
+	display: inline;
+}
+
+.inlineBlock{
+	display: inline-block;
+}
+
+.centerContent{
+	margin: 0 auto;
+	text-align: center;
+}
+
+.centerContentVerticle{
+	top: 100%;
+	bottom: 100%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+/*
+////////////////////////////////////////////
+---- SPECIFIED SPACING AND WIDTH STYLES ---
+///////////////////////////////////////////
+*/
+
+.space5{
+	padding-left:5px;
+}
+
+.leftSpace20{
+	padding-left:20px;
+}
+
+.leftSpace10{
+	padding-left:10px;
+}
+
+.rightSpace20{
+	padding-right:20px;
+}
+
+.leftSpace50{
+	padding-left:50px;
+}
+
+.rightSpace10{
+	padding-right:10px;
+}
+
+.rightMargin10{
+	margin-right: 10px;
+}
+
+.topMargin0 {
+    margin-top: 0px;
+}
+
+.topMargin5 {
+    margin-top: 5px;
+}
+
+.topMargin10 {
+    margin-top: 10px;
+}
+
+.bottomMargin0 {
+    margin-bottom: 0px;
+}
+
+.bottomMargin5 {
+    margin-bottom: 5px;
+}
+
+.bottomMargin10 {
+    margin-bottom: 10px;
+}
+
+.width50pct{
+	width: 50%;
+}
+
+.width100pct{
+	width:100%;
+}
+
+.width125{
+	width:125px;	
+}
+
+.width180{
+	width:180px;	
+}
+
+.width280{
+	width:280px;	
+}
+
+.width90{
+	width:90px;	
+}
+
+.bottomSpace5{
+	padding-bottom:5px;
+}
+
+.bottomSpace10{
+	padding-bottom:10px;
+}
+
+.topSpace5{
+	padding-top:5px;
+}
+
+.topSpace10{
+	padding-top:10px;
+}
+
+.topSpace15{
+	padding-top:15px;
+}
+
+.width192{
+	width: 192px;
+}
+
+.width180{
+	width: 180px;
+}
+
+.height100pct{
+	height: 100%;
+}
+
+.height50pct{
+	height: 50%;
+}
+
+.height100{
+	height: 100px;
+}
+
+/*
+////////////////////////////////////////////
+---- COLORS ---
+///////////////////////////////////////////
+*/
+
+.lightGrey{
+	background-color: #EEE;
+}
+
+.greenText{
+color:#339900;
+}
+
+
+/* cool looking select dropdowns */
+
+.styled-select {
+	display: inline-block;
+	width: 243px;
+	height: 34px;
+	overflow: hidden;
+	background: url(../img/down_arrow_select.jpg) no-repeat right #ddd;
+	border: 1px solid #ccc;
+	}
+.styled-select select {
+	background: transparent;
+	width: 270px;
+	padding: 5px;
+	font-size: 16px;
+	line-height: 1;
+	border: 0;
+	border-radius: 0;
+	height: 34px;
+	-webkit-appearance: none;
+	}
+.styled_input{
+	width: 170px;
+	margin-left:5px;
+	margin-right:5px;
+}
+
+.navButton {
+	height: 30px;
+	background: transparent;
+	overflow: hidden;
+	border: 0;
+	border-radius: 0;
+	padding: 5px 10px;
+	padding: 10;
+	cursor:pointer; 
+	background-color:#cc3333;
+	font-family: Arial, sans-serif; 
+	color:#fff;
+	text-align: center;
+	font-size:1em;
+	letter-spacing:.1em;
+	font-variant:small-caps;
+}
+
+.roundedCorners {
+     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
+.footer {
+	padding:20px;
+	color:#556;
+	}
+
+/** Status alerts that appear at top of the screen **/
+.alert-container{
+	position:fixed;
+	z-index:1050;
+	top:6px;
+	left:0; right:0;
+	text-align:center;
+	display:block;
+	}
+.alert-inner{
+	margin:0 auto;
+	left:auto; right:auto;
+	display:inline-block;
+	padding:6px 10px;
+	/*position*/
+	text-align:left;
+	}
+.alert .close {
+	margin-left: 8px;
+	}
+
+
+
+
+/*** REPORTS   *****/
+
+.report_main {
+	margin-top:1em;
+	}
+
+.ReportCtrl {
+	padding:1em;
+	}
+
+.reportName {
+	font-size: 165%;
+	}
+
+
+._red {color:#f33;}
+._orange{ color:#ff8c26; }
+.fa._grey, .fa._gray {
+	color:#777;
+	}
+.fa._size5{ font-size:1.5em;}
+.fa._size6{ font-size: 1.62em;}
+.fa._size7{ font-size: 1.71em;}
+.fa._med, .fa._size8{ font-size:1.82em; }
+.fa._size9{ font-size:1.9em; }
+.fa._size10{font-size:2em;}
+

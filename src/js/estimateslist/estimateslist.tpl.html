@@ -1,0 +1,39 @@
+<div class='container' ng-controller="EstimatesListCtrl">
+
+<!-- TODO ... make this show estimates instead --->
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		<h3 class='panel-title'>Add New Site</h3>
+	</div>
+	<div class='panel-body'>
+	<form name="newClient" class="form-inline" ng-submit="saveNewClient()">
+
+		<select name='clientType' ui-select2 ng-model="newClient.clientTypeID" 
+					ui-event="{ change : 'pickPetition(select2)' }" ng-change="getSignatures(select2)">
+			  <option value="">Client Type</option>
+			  <option ng-repeat="ct in initData.clientTypes" value="{{ct.clientTypeID}}">{{ct.name}}</option>
+		</select>
+		<BR>
+		<input type="text" placeholder="Client Name" ng-model="newClient.name" required>
+		<input  type="submit"  value="Save" class='btn btn-primary'>
+	</form>
+	</div>
+</div>
+
+<div class='table-responsive'>
+	<table class='table table-striped'>
+	<thead>
+		<tr><th>ID</th><th>Name</th><th>Address</th><th>Contact Info</th></tr>
+	<thead>
+	<tr ng-repeat="c in list">
+		<td>{{c.siteID}}</td>
+		<td>{{c.siteName}}</td>
+		<td>{{c.street}} {{c.city}}, {{c.state}}</td>
+		<td>{{c.contact}} {{c.contactPhone}}</td>
+	</tr>
+	</table>
+</div>
+
+
+</div>

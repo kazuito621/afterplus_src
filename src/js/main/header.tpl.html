@@ -1,0 +1,8 @@
+<div class='header-nav'>
+	<div ng-if="auth.isSignedIn()">
+		<a href='#/trees'>Trees</a> |  <a href='#/sites'>Properties</a> | <a href='#/clients'>Clients</a> | 
+		<span ng-if="auth.isSignedIn()">	
+			<b>{{auth.getLoginName()}}</b> <a href ng-click="auth.signOut()">Sign Out</a>
+		</span>
+	</div>
+</div>

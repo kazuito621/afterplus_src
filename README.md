@@ -20,7 +20,11 @@ After cloning this repository onto your local machine:
  - npm install
  - bower install
  - grunt build
- - grunt server
+ - grunt serve
 
 Goto browser: http://localhost:9000
+
+use my test account for now: 
+   user: timhon@gmail.com
+   pass: asdf
 

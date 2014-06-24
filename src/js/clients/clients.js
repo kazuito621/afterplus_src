@@ -1,8 +1,8 @@
 'use strict';
 
 var ClientsCtrl = app.controller('ClientsCtrl', 
-['$scope', 'Restangular', '$timeout', '$route', '$modal', '$popover', 
-function ($scope, Restangular, $timeout, $route, $modal, $popover) {
+['$scope', 'Restangular', '$timeout', '$route', '$modal',
+function ($scope, Restangular, $timeout, $route, $modal) {
 	var s = window.cts = $scope
 		,myStateID='clients'
 		,Rest=Restangular

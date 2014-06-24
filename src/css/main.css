@@ -635,3 +635,7 @@ color:#339900;
 .highlighted-row {
     background-color: #eee;
 }
+
+.pointer {
+	cursor:pointer; 
+}

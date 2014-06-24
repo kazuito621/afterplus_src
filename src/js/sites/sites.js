@@ -1,7 +1,7 @@
 'use strict';
 
 var SitesCtrl = app.controller('SitesCtrl', 
-['$scope', 'Restangular', '$route', '$modal', 
+['$scope', 'Restangular', '$route', '$modal',
 function ($scope, Restangular, $route, $modal) {
 	var s=window.scs=$scope
 		,myStateID='sites'

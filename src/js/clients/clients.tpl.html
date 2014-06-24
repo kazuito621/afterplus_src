@@ -11,14 +11,21 @@
 		<h1>Clients</h1>
 		<table class='table table-striped'>
 			<thead>
-				<tr><th></th><th></th><th></th<th>ID</th><th>Name</th><th>Address</th><th>Contact Info</th></tr>
+				<tr>
+					<th ng-if="auth.is('admin')"></th>
+					<th></th>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Contact Info</th>
+				</tr>
 			<thead>
 			<tr ng-repeat="c in initData.clients" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false" ng-class="{active : isSelected(c.clientID)}">
-				<td style="width:36px">
-					<a ng-click="queueOrDequeueItemForDelete(c.clientID)" ng-show="showEdit" class="fa fa-times ng-hide _red _size5" data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover></a>
+				<td ng-if="auth.is('admin')" style="width:36px">
+					<a ng-click="queueOrDequeueItemForDelete(c.clientID)" ng-show="showEdit" class="pointer fa fa-times ng-hide _red _size5" data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover></a>
 				</td>
 				<td style="width:36px">
-					<a ng-click="existingClientModalOpen(c.clientID)" ng-show="showEdit" class="fa fa-pencil _grey ng-hide"></a>
+					<a ng-click="existingClientModalOpen(c.clientID)" ng-show="showEdit" class="pointer fa fa-pencil _grey ng-hide"></a>
 				</td>
 				<td>{{c.clientID}}</td>
 				<td>{{c.clientName}}</td>

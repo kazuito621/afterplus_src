@@ -423,25 +423,33 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(!gMap) return initMap().then(function(){ showMappedTrees(treeSet); })
 		if(s.data.mode=='estimate' && s.report && s.report.items) treeSet=s.report.items;
 		clearMarkers();
-		var set2=[],ratingD;
+		var set2=[],ratingD,o;
 		if(!infowindow) infowindow = new google.maps.InfoWindow();
 		_.each(treeSet, function(itm){
 			if(itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
 			if(s.data.mode=='trees'){
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
-				itm.info = '<div class="mapWindowContainer">'
+				o= '<div class="mapWindowContainer">'
 				+'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
 				+'<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgMed)
 				+'<div class="mwcBody">{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName, 
-							itm.treeID, $filter('dbhID2Name')(itm.dbhID,s))
-				+'<div class="firstHeading">Rating:{0}</div>'.format(ratingD)
-				+'<div class="firstHeading"><i class="fa fa-warning _red _size9"></i>Damage: {0}</div>'.format(itm.caDamage)
-				+'<div class="firstHeading"><i class="fa fa-bolt _red _size9"></i>PowerLine: {0}</div>'.format(itm.powerline)
-				+'<div class="firstHeading"><i class="fa fa-building _red _size9"></i>Building: {0}</div>'.format(itm.building)
-				+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-				+'<a href="#/tree-edit/'+itm.treeID+'">Edit Tree</a><BR></div>'
-				+'</div>';
+							itm.treeID, $filter('dbhID2Name')(itm.dbhID,s));
+				if(itm.ratingID) o+= '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID,ratingD);
+				o+='<div>';
+				if(itm.caDamage=='yes') o+='<i class="fa fa-warning _red _size7" title="Hardscape damage"></i> ';
+				if(itm.caDamage=='potential') o+='<i class="fa fa-warning _grey _size7" title="Hardscape damage"></i> ';
+				if(itm.powerline=='yes') o+='<i class="fa fa-bolt _red _size7" title="Powerline nearby"></i> ';
+				if(itm.building=='yes') o+='<i class="fa fa-building _red _size7" title="Building nearby"></i> ';
+			// todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
+			// then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
+			// similar to the items in the tree results list. ... ie
+			// <span class='textIconBlock-red'>2014</span>
+			// .... or ...textIconBlock-grey
+			//	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
+				o+='</div><a href="#/tree-edit/'+itm.treeID+'">Edit Tree</a><BR></div>';
+				itm.info=o;
+
 			}else{
 				itm.info = '<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
 				+'treeID: '+itm.treeID

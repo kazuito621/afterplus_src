@@ -108,8 +108,22 @@ var TreesCtrl = app.controller('TreesCtrl',
 		},1);
 	};	
 
+    var highlightResultRow = function (treeID) {
+        if (s.activeResultRow) {
+            $('#tree-result-item-row-' + s.activeResultRow).toggleClass('highlighted-row');
+        }
 
+        s.activeResultRow = treeID;
 
+        var newActiveRow = $('#tree-result-item-row-' + s.activeResultRow);
+        var listContainer = $('.trees-result-list');
+
+        newActiveRow.toggleClass('highlighted-row');
+
+        listContainer.animate({
+            scrollTop: newActiveRow.offset().top - listContainer.offset().top
+        }, 2000);
+    };
 
 	// ----------------------------------------------------------- EVENTS BASED ON DROPDOWNS
 
@@ -325,6 +339,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 					id: a,
 					info: arr[a].info,
 					siteID: arr[a].siteID,
+                    treeID: arr[a].treeID
 					//html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
 				});
 
@@ -354,6 +369,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 					gMap.setTilt(0);
 					//Add event listener for TREE markers
 					google.maps.event.addListener(marker, 'click', function() {
+                        highlightResultRow(this.treeID);
 						infowindow.setContent(this.info); 
 						infowindow.open(gMap,this);
 					});

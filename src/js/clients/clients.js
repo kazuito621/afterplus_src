@@ -94,9 +94,7 @@ function ($scope, Restangular, $timeout, $route, $modal, $popover) {
 	}
 
 	s.deleteItems = function (itemID) {
-		Restangular.one('client', itemID).remove().then(function() {
-		  console.log("deleteItems")
-		});
+		Restangular.one('client', itemID).remove().then(function() {});
 	}
 
 	s.unselectAllItems = function () {

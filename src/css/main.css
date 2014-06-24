@@ -632,3 +632,6 @@ color:#339900;
 	background-color: orange;
 }
 
+.highlighted-row {
+    background-color: #eee;
+}

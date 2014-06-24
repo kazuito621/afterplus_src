@@ -49,7 +49,7 @@ function ($scope, Restangular, $route, $modal) {
 	pre_init();
 
 	// Pre-fetch an external template populated with a custom scope
-	var siteEditModal = $modal({scope: $scope, template: '/js/sites/edit.tpl.html', show: false});
+	var siteEditModal = $modal({scope: $scope, template: 'js/sites/edit.tpl.html', show: false});
 
 	s.newSiteModalOpen = function (siteID) {
 		s.site={};

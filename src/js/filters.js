@@ -52,6 +52,8 @@ angular.module('arborPlusFilters', [])
                 var obj=_.findObj(scope.initData.filters.treatments, 'treatmentTypeID', ID);
                 if(obj) return obj.treatmentType;
             }
+			// -9 = new item.. or just created... not yet assigned
+			if(ID==-9) return '(new treatment)';
             return "TreatmentTypeID:"+ID;;
         }
     })

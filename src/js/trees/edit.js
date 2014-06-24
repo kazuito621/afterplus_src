@@ -13,7 +13,8 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 		s.tree_cachebuster='?ts='+moment().unix();
 		s.yearOptions=function(){ 
 			var y=[]; for( var i=2012;i<2012+6;i++ ){ y.push(''+i); }
-			return y; }();
+			return y; 
+		}();
 
 	var init = function(treeID, mode) {
 		// todo -- editmode should be controlled by user privilege
@@ -38,7 +39,6 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 
 
 //todo - watch tree history obj, and only send on save, if it has changed?
-//todo - add deleting and adding of tree history items
 
 	s.updateTreeName = function(){
 		s.tree.commonName=_.findObj(s.initData.filters.species, 'speciesID', s.tree.speciesID).commonName
@@ -53,21 +53,35 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 		$location.path('/trees');
 	}
 
+	// Normally i would just go by hashkey, but for some reason during testing, the hashkey was changing!
+	// so we'll go by treehistoryid for previously existing items... and hashkey for new items which dont 
+	// have a tree historyid yet
+	s.removeTreeRec = function(treeHistoryID, hashKey){
+		if(treeHistoryID){
+			var idx=_.findObj(s.tree.history, 'treeHistoryID', treeHistoryID, true);
+		}else{
+			var idx=_.findObj(s.tree.history, '$$hashKey', hashKey, true);
+		}
+		if (idx!==false){ 
+			if(!s.tree.deletedHistoryIDs) s.tree.deletedHistoryIDs=[];
+			s.tree.deletedHistoryIDs.push(s.tree.history[idx].treeHistoryID);
+			s.tree.history.splice(idx,1);
+		}
+	 }
+	 
+	 s.addTreeRec = function(){
+		var itm={treatmentStatusCode:'rec', treatmentTypeCode:'new', treatmentTypeID:-9, 
+					treeHistoryID:0, year:moment().format('YYYY')};
+		s.tree.history.splice(0,0,itm);
+	 }
+
+
+
 	var pre_init = function() {
 		if($route.current.params.stateID==myStateID) init();
 	}
 	s.$on('$locationChangeSuccess', pre_init);
 	pre_init();
-
-
- s.removeTreeRec = function(array,index){
-	array.splice(index,1)
-	// TODO.. add array[index].delete=1;...  instead of removing
- }
- 
- s.addTreeRec = function(array){
-	 array.push("newItem")
- }
 
 }]);
 

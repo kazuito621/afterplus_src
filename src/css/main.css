@@ -638,3 +638,7 @@ color:#339900;
 .highlighted-row {
     background-color: #fb5;
 }
+
+.changed-row {
+    background-color: #EAEAEA;
+}

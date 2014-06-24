@@ -1,0 +1,17 @@
+<div class='popover-container'>
+	<div class="alert alert-warning alert-dismissable" tabindex="-1" role="dialog">
+		Are you sure you want to delete this item?
+		<div ng-if="mode!='site'">
+			<form class="form-inline" ng-submit="deleteItems()">
+				<div class='panel-body'>
+					<button type="button" class="btn" ng-click="deleteItems(c.clientID);$hide()">CONFIRM</button>
+					<button type="button" class="btn btn-default " ng-click="queueOrDequeueItemForDelete(c.clientID);$hide()">CANCEL</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-if="mode=='site'">
+			
+		</div>
+	</div>
+</div>

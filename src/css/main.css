@@ -627,3 +627,8 @@ color:#339900;
 .fa._size9{ font-size:1.9em; }
 .fa._size10{font-size:2em;}
 
+/** used for delete clients/sites **/
+.active {
+	background-color: orange;
+}
+

@@ -6,7 +6,7 @@ function ($scope, Restangular, $route, $modal) {
 	var s=window.scs=$scope
 		,myStateID='sites'
 		,Rest=Restangular
-		,mode='edit'
+		,mode=''
 	s.newSite={clientID:''};
 
 
@@ -19,8 +19,12 @@ function ($scope, Restangular, $route, $modal) {
 
 	s.saveNewSite = function() {
 		var obj=s.newSite;
-		if(!obj.clientID) return s.setAlert('Choose a client for the new property',{type:'d'});
 		var that=this;
+		if(!obj.clientID) {
+			return s.setAlert('Choose a client for the new property',{type:'d'});
+		} else {
+			clientEditModal.hide();
+		}
 		Rest.all('site').post(obj).then( function(data) {
 			if(data && data.siteID) {
 				s.newSite={clientID:s.newSite.clientID}
@@ -33,6 +37,7 @@ function ($scope, Restangular, $route, $modal) {
 		var obj=s.site;
 		var that=this;
 		obj.post().then(function(){
+			clientEditModal.hide();
 			s.refreshInitData();
 		});
 	}
@@ -52,6 +57,7 @@ function ($scope, Restangular, $route, $modal) {
 	}
 
 	s.existingSiteModalOpen = function (siteID) {
+		s.site={};
 		Restangular.one('site', siteID).get()
 			.then(function(data){
 				s.site=data

@@ -6,7 +6,7 @@
 				<h4 class="modal-title" ng-bind="title"></h4>
 			</div>
 <div ng-if="mode!='edit'">
-			<form name="newSiteForm" class="form-inline" ng-submit="saveNewSite()">
+			<form class="form-inline" ng-submit="saveNewSite()">
 				<div class='panel panel-default bottomMargin0'>
 					<div class='panel-heading'>
 						<h3 class='panel-title'>New Property</h3>
@@ -36,7 +36,7 @@
 			</form>
 </div>
 <div ng-if="mode=='edit'">
-			<form name="newSiteForm" class="form-inline" ng-submit="saveExistingSite()">
+			<form class="form-inline" ng-submit="saveExistingSite()">
 				<div class='panel panel-default bottomMargin0'>
 					<div class='panel-heading'>
 						<h3 class='panel-title'>Edit Property</h3>
@@ -61,7 +61,7 @@
 				</div>
 				<div class="modal-footer topMargin0">
 					<input type="submit" value="UPDATE" class='btn btn-primary' ng-click="$hide()">
-					<button type="button" class="btn btn-default " ng-click="$hide()">CLOSE</button>
+					<button type="button" class="btn btn-default" ng-click="$hide()">CLOSE</button>
 				</div>
 			</form>
 </div>

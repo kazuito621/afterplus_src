@@ -1,0 +1,67 @@
+<div class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" ng-show="title">
+				<button type="button" class="close" ng-click="$hide()">&times;</button>
+				<h4 class="modal-title" ng-bind="title"></h4>
+			</div>
+
+			<div ng-if="mode!='edit'">
+				<form class="form-inline" ng-submit="saveNewClient()">
+					<div class='panel panel-default bottomMargin0'>
+						<div class='panel-heading'>
+							<h3 class='panel-title'>New Property</h3>
+						</div>
+						<div class='panel-body'>
+							<select class='styled-select' ng-model="newClient.clientTypeID" >
+								<option value="">Client Type</option>
+								<option ng-repeat="ct in initData.clientTypes" value="{{ct.clientTypeID}}">{{ct.name}}</option>
+							</select><br>
+							<input type="text" placeholder="Client Name" ng-model="newClient.clientName" required size="40" auto-focus><br>
+							<input type="text" placeholder="Address" ng-model="newClient.street" size="40"><br>
+							<input type="text" placeholder="City" ng-model="newClient.city" size="40"><br>
+							<input type="text" placeholder="State" ng-model="newClient.state" size="40"><br>
+							<input type="text" placeholder="Zip" ng-model="newClient.zip" size="40"><br>
+							<input type="text" placeholder="Contact" ng-model="newClient.contact" size="40"><br>
+							<input type="text" placeholder="Phone" ng-model="newClient.contactPhone" size="40"><br>
+							<input type="text" placeholder="Email Address" ng-model="newClient.contactEmail" size="40"><br>
+						</div>
+					</div>
+					<div class="modal-footer topMargin0">
+						<input type="submit" value="SAVE" class='btn btn-primary'>
+						<button type="button" class="btn btn-default " ng-click="$hide()">CLOSE</button>
+					</div>
+				</form>
+			</div>
+
+			<div ng-if="mode=='edit'">
+				<form class="form-inline" ng-submit="saveExistingClient()">
+					<div class='panel panel-default bottomMargin0'>
+						<div class='panel-heading'>
+							<h3 class='panel-title'>Edit Property</h3>
+						</div>
+						<div class='panel-body'>
+							<select class='styled-select' ng-model="client.clientTypeID" >
+								<option value="">Client Type</option>
+								<option ng-repeat="ct in initData.clientTypes" ng-selected="{{ct.clientTypeID}}" value="{{ct.clientTypeID}}">{{ct.name}}</option>
+							</select> (choose a client type for this client)<br>
+							<input type="text" placeholder="Client Name" ng-model="client.clientName" required size="40" auto-focus><br>
+							<input type="text" placeholder="Address" ng-model="client.street" size="40"><br>
+							<input type="text" placeholder="City" ng-model="client.city" size="40"><br>
+							<input type="text" placeholder="State" ng-model="client.state" size="40"><br>
+							<input type="text" placeholder="Zip" ng-model="client.zip" size="40"><br>
+							<input type="text" placeholder="Contact" ng-model="client.contact" size="40"><br>
+							<input type="text" placeholder="Phone" ng-model="client.contactPhone" size="40"><br>
+							<input type="text" placeholder="Email Address" ng-model="client.contactEmail" size="40"><br>
+						</div>
+					</div>
+					<div class="modal-footer topMargin0">
+						<input type="submit" value="UPDATE" class='btn btn-primary'>
+						<button type="button" class="btn btn-default " ng-click="$hide()">CLOSE</button>
+					</div>
+				</form>
+			</div>
+
+		</div>
+	</div>
+</div>

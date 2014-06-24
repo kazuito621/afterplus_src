@@ -66,6 +66,7 @@ angular.module('arborPlusFilters', [])
 
 	.filter('speciesID2Name', function() {
         return function(ID, opt, scope) {
+			if(!ID) return '';
 			var s = _.extract(scope.initData, 'filters.species');
 			if(s){
                 var obj=_.findObj(s, 'speciesID', ID);

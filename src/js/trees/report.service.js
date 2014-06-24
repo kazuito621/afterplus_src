@@ -99,8 +99,8 @@ app.service('ReportService',
 		return m;
 	}
 	
-	this.addMiscService = function(desc,price){
-		var miscService = {desc:desc, price:price};
+	this.addMiscService = function(desc,qty,price){
+		var miscService = {desc:desc,quantity:qty, price:price};
 		this.report.services.push(miscService);
 	}
 
@@ -207,7 +207,7 @@ app.service('ReportService',
 
 		_.each(this.report.services, function(itm){
 			if( itm.price ){
-				p=Number(itm.price);
+				p=Number(itm.price*itm.quantity);
 				services_total+=p;
 			}
 		})

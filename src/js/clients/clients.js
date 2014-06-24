@@ -89,14 +89,12 @@ function ($scope, Restangular, $timeout, $route, $modal, $popover) {
 			s.alertShown = 0;
 		} else if (s.alertShown == 0) {
 			s.alertShown = 1;
-			var alertMarkup = '<button type="button" ng-controller="ClientsCtrl" ng-click="deleteItems()" class="btn btn-default ">APPLY CHANGES</button>';
+			var alertMarkup = '<button type="button" ng-controller="ClientsCtrl" ng-click="deleteItems(c.clientID)" class="btn btn-default ">APPLY CHANGES</button>';
 		}
 	}
 
-	s.showTooltip = function() {
-	};
-
 	s.deleteItems = function (itemID) {
+		Restangular.one('client', itemID).remove().then(function() {});
 	}
 
 	s.unselectAllItems = function () {
@@ -105,7 +103,6 @@ function ($scope, Restangular, $timeout, $route, $modal, $popover) {
 
 	s.queueOrDequeueItemForDelete = function(itemID) {
 		if (!s.isSelected(itemID)) {
-			console.log(itemID)
 			s.items[itemID] = '1';
 		} else {
 			delete s.items[itemID];

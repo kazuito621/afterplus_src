@@ -9,6 +9,7 @@ function ($scope, Restangular, $route, $modal) {
 		,mode=''
 		,type='client'
 		s.newClient={};
+		s.items = {};
 
 	var init = function() {
 		return; // use this method only if you need to get more data than what initData provides...
@@ -76,20 +77,6 @@ function ($scope, Restangular, $route, $modal) {
 		clientEditModal.show();
 	}
 
-	s.alertShown = 0;
-	s.items = {};
-
-	s.toggleAlert = function() {
-		s.type = 'client';
-		if (Object.keys(s.items).length > 0) {
-			// s.alertBox.hide();
-			s.setAlert(false);
-			s.alertShown = 0;
-		} else if (s.alertShown == 0) {
-			s.alertShown = 1;
-		}
-	}
-
 	s.deleteItems = function (itemID) {
 		Restangular.one('client', itemID).remove().then(function() {
 			s.refreshInitData();
@@ -103,7 +90,7 @@ function ($scope, Restangular, $route, $modal) {
 		} else {
 			delete s.items[itemID];
 		}
-		s.toggleAlert();
+		s.type = 'client';
 	}
 
 	s.isSelected = function(itemID) {

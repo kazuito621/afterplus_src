@@ -9,8 +9,9 @@ function ($scope, Restangular, $route, $modal) {
 		,mode=''
 		,type='site'
 	s.newSite={clientID:''};
+	s.items = {};
 
-	s.init = function() {
+	var init = function() {
 		return	// using initData list for now... may need this later if we want more data
 	}
 
@@ -38,7 +39,7 @@ function ($scope, Restangular, $route, $modal) {
 	}
 	
 	var pre_init = function() {
-		if($route.current.params.stateID==myStateID) s.init();
+		if($route.current.params.stateID==myStateID) init();
 	}
 	s.$on('$locationChangeSuccess', pre_init);
 	pre_init();
@@ -62,23 +63,10 @@ function ($scope, Restangular, $route, $modal) {
 		siteEditModal.show();
 	}
 
-	s.alertShown = 0;
-	s.items = {};
-
-	s.toggleAlert = function() {
-		s.type = 'site';
-		if (Object.keys(s.items).length > 0) {
-			// s.alertBox.hide();
-			s.setAlert(false);
-			s.alertShown = 0;
-		} else if (s.alertShown == 0) {
-			s.alertShown = 1;
-		}
-	}
-
 	s.deleteItems = function (itemID) {
 		console.log("itemID",itemID)
-		Restangular.one('site', itemID).remove().then(function() {
+		Restangular.one('site', itemID).remove().then(function(data) {
+			console.log(data);
 			s.refreshInitData();
 		});
 		s.refreshInitData();
@@ -90,7 +78,7 @@ function ($scope, Restangular, $route, $modal) {
 		} else {
 			delete s.items[itemID];
 		}
-		s.toggleAlert();
+		s.type = 'site';
 	}
 
 	s.isSelected = function(itemID) {

@@ -66,5 +66,44 @@ function ($scope, Restangular, $route, $modal) {
 		siteEditModal.show();
 	}
 
+	s.alertShown = 0;
+	s.items = {};
+
+	s.toggleAlert = function() {
+		if (Object.keys(s.items).length > 0) {
+			// s.alertBox.hide();
+			s.setAlert(false);
+			s.alertShown = 0;
+		} else if (s.alertShown == 0) {
+			s.alertShown = 1;
+			var alertMarkup = '<button type="button" ng-controller="ClientsCtrl" ng-click="deleteItems(c.clientID)" class="btn btn-default ">APPLY CHANGES</button>';
+		}
+	}
+
+	s.deleteItems = function (itemID) {
+		Restangular.one('client', itemID).remove().then(function() {});
+		s.refreshInitData();
+	}
+
+	s.unselectAllItems = function () {
+		s.toggleAlert();
+	}
+
+	s.queueOrDequeueItemForDelete = function(itemID) {
+		if (!s.isSelected(itemID)) {
+			s.items[itemID] = '1';
+		} else {
+			delete s.items[itemID];
+		}
+		s.toggleAlert();
+	}
+
+	s.isSelected = function(itemId) {
+		if (s.items[itemId] == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }]);

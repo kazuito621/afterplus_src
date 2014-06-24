@@ -19,6 +19,7 @@ function ($scope, Restangular, $timeout, $route, $modal) {
 	//s.Rclient.push() .. to push new data...
 
 	s.saveNewClient = function() {
+		console.log(s.newClient);
 		var obj=s.newClient;
 		var that=this;
 		if(!obj.clientTypeID) {
@@ -26,11 +27,9 @@ function ($scope, Restangular, $timeout, $route, $modal) {
 		} else {
 			clientEditModal.hide();
 		}
+		s.newClient={clientTypeID:s.newClient.clientTypeID};
 		Rest.all('client').post(s.newClient).then( function(data) {
-			if(data && data.clientID) {
-				s.newClient={clientTypeID:s.newClient.clientTypeID};
-				s.refreshInitData();
-			}
+			s.refreshInitData();
 		})
 	}
 
@@ -95,6 +94,7 @@ function ($scope, Restangular, $timeout, $route, $modal) {
 
 	s.deleteItems = function (itemID) {
 		Restangular.one('client', itemID).remove().then(function() {});
+		s.refreshInitData();
 	}
 
 	s.unselectAllItems = function () {

@@ -522,10 +522,18 @@ var TreesCtrl = app.controller('TreesCtrl',
 				});
 			}
 		}
-	}
+	};
 
-	
-	
+    var animateMarker = function (marker, animationType) {
+        marker.setAnimation(google.maps.Animation[animationType]);
+    };
+
+    var findMarker = function (id) {
+        return _.find(markers_singleSite, function (marker) {
+            return marker.treeID === id;
+        })
+    };
+
 	//Define function for listing popOver.
 	s.PopoverDemoCtrl = function ($scope) {
 		/*
@@ -533,6 +541,22 @@ var TreesCtrl = app.controller('TreesCtrl',
 		var currentItem = s.trees[$scope.$index];
 		s.listingPopoverContent = "<br>"+currentItem.treeID+"<br><img src='img/tmpTreeImage.jpg' width='132px' height='132px'/>";
 		*/
+
+        $scope.animationCompleted = false;
+
+        $scope.onMouseOver = function (tree) {
+            var marker = findMarker(tree.treeID);
+            if (!$scope.animationCompleted) {
+                animateMarker(marker, 'DROP');
+            }
+            $scope.animationCompleted = true;
+            $scope.showEdit = true;
+        };
+
+        $scope.onMouseLeave = function () {
+            $scope.showEdit = false;
+            $scope.animationCompleted = false;
+        };
   	};
 	
 	

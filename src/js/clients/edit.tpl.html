@@ -1,6 +1,7 @@
 <div class="modal" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
+
 			<div class="modal-header" ng-show="title">
 				<button type="button" class="close" ng-click="$hide()">&times;</button>
 				<h4 class="modal-title" ng-bind="title"></h4>
@@ -16,7 +17,7 @@
 							<select class='styled-select' ng-model="newClient.clientTypeID" >
 								<option value="">Client Type</option>
 								<option ng-repeat="ct in initData.clientTypes" value="{{ct.clientTypeID}}">{{ct.name}}</option>
-							</select><br>
+							</select> (choose a client type for this property)<br>
 							<input type="text" placeholder="Client Name" ng-model="newClient.clientName" required size="40" auto-focus><br>
 							<input type="text" placeholder="Address" ng-model="newClient.street" size="40"><br>
 							<input type="text" placeholder="City" ng-model="newClient.city" size="40"><br>

@@ -7,39 +7,34 @@ function ($scope, Restangular, $route, $modal) {
 		,myStateID='sites'
 		,Rest=Restangular
 		,mode=''
+		,type='site'
 	s.newSite={clientID:''};
-
 
 	s.init = function() {
 		return	// using initData list for now... may need this later if we want more data
-		Rest.all('site').getList().then(function(data){
-			s.list = data;
-		});
 	}
 
 	s.saveNewSite = function() {
-		var obj=s.newSite;
-		var that=this;
-		if(!obj.clientID) {
+		if(!s.newSite.clientID) {
 			return s.setAlert('Choose a client for the new property',{type:'d'});
 		} else {
-			clientEditModal.hide();
+			Rest.all('site').post(s.newSite).then( function(data) {
+				console.log(s.newSite);
+				console.log("Post new site response:");
+				console.dir(data);
+			})
+			siteEditModal.hide();
+			s.refreshInitData();
 		}
-		Rest.all('site').post(obj).then( function(data) {
-			if(data && data.siteID) {
-				s.newSite={clientID:s.newSite.clientID}
-				s.refreshInitData();
-			}
-		})
 	}
 
 	s.saveExistingSite = function() {
 		var obj=s.site;
 		var that=this;
 		obj.post().then(function(){
-			clientEditModal.hide();
 			s.refreshInitData();
 		});
+		siteEditModal.hide();
 	}
 	
 	var pre_init = function() {
@@ -53,6 +48,7 @@ function ($scope, Restangular, $route, $modal) {
 
 	s.newSiteModalOpen = function (siteID) {
 		s.site={};
+		s.mode='new';
 		siteEditModal.show();
 	}
 
@@ -70,23 +66,22 @@ function ($scope, Restangular, $route, $modal) {
 	s.items = {};
 
 	s.toggleAlert = function() {
+		s.type = 'site';
 		if (Object.keys(s.items).length > 0) {
 			// s.alertBox.hide();
 			s.setAlert(false);
 			s.alertShown = 0;
 		} else if (s.alertShown == 0) {
 			s.alertShown = 1;
-			var alertMarkup = '<button type="button" ng-controller="ClientsCtrl" ng-click="deleteItems(c.clientID)" class="btn btn-default ">APPLY CHANGES</button>';
 		}
 	}
 
 	s.deleteItems = function (itemID) {
-		Restangular.one('client', itemID).remove().then(function() {});
+		console.log("itemID",itemID)
+		Restangular.one('site', itemID).remove().then(function() {
+			s.refreshInitData();
+		});
 		s.refreshInitData();
-	}
-
-	s.unselectAllItems = function () {
-		s.toggleAlert();
 	}
 
 	s.queueOrDequeueItemForDelete = function(itemID) {
@@ -98,8 +93,8 @@ function ($scope, Restangular, $route, $modal) {
 		s.toggleAlert();
 	}
 
-	s.isSelected = function(itemId) {
-		if (s.items[itemId] == 1) {
+	s.isSelected = function(itemID) {
+		if (s.items[itemID] == 1) {
 			return true;
 		} else {
 			return false;

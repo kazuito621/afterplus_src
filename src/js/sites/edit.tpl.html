@@ -1,70 +1,72 @@
 <div class="modal" tabindex="-1" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
+
 			<div class="modal-header" ng-show="title">
 				<button type="button" class="close" ng-click="$hide()">&times;</button>
 				<h4 class="modal-title" ng-bind="title"></h4>
 			</div>
-<div ng-if="mode!='edit'">
-			<form class="form-inline" ng-submit="saveNewSite()">
-				<div class='panel panel-default bottomMargin0'>
-					<div class='panel-heading'>
-						<h3 class='panel-title'>New Property</h3>
+
+			<div ng-if="mode!='edit'">
+				<form class="form-inline" ng-submit="saveNewSite()">
+					<div class='panel panel-default bottomMargin0'>
+						<div class='panel-heading'>
+							<h3 class='panel-title'>New Property</h3>
+						</div>
+						<div class='panel-body'>
+							<select class='styled-select' ng-model="newSite.clientID">
+								<option value="">Client</option>
+								<option ng-repeat="client in initData.clients" value="{{client.clientID}}">{{client.clientName}}</option>
+							</select> (choose a client this property belongs to)<BR>
+							<input type="text" placeholder="Name" ng-model="newSite.siteName" required size="40" auto-focus><br>
+							<input type="text" placeholder="Address" ng-model="newSite.street" size="40"><br>
+							<input type="text" placeholder="City" ng-model="newSite.city" size="40"><br>
+							<input type="text" placeholder="State" ng-model="newSite.state" size="40"><br>
+							<input type="text" placeholder="Zip" ng-model="newSite.zip" size="40"><br>
+							<input type="text" placeholder="Contact Name" ng-model="newSite.contact" size="40"><br>
+							<input type="text" placeholder="Phone" ng-model="newSite.contactPhone" size="40"><br>
+							<input type="text" placeholder="Email" ng-model="newSite.contactEmail" size="40"><br>
+							<input type="text" placeholder="Regional Manager" ng-model="newSite.regionalMgr" size="40"><br>
+							<input type="text" placeholder="Regional Email" ng-model="newSite.regionalEmail" size="40"><br>
+						</div>
 					</div>
-					<div class='panel-body'>
-						<select id="select_client" class='styled-select' ng-disabled="clients.length === 0"
-							ng-model="site.clientID"
-							<option value="">Client</option>
-							<option ng-repeat="client in initData.clients" value="{{client.clientID}}">{{client.clientName}}</option>
-						</select> (choose a client this property belongs to)<BR>
-						<input type="text" placeholder="Name" ng-model="newSite.siteName" required size="40" auto-focus><br>
-						<input type="text" placeholder="Address" ng-model="newSite.street" size="40"><br>
-						<input type="text" placeholder="City" ng-model="newSite.city" size="40"><br>
-						<input type="text" placeholder="State" ng-model="newSite.state" size="40"><br>
-						<input type="text" placeholder="Zip" ng-model="newSite.zip" size="40"><br>
-						<input type="text" placeholder="Contact Name" ng-model="newSite.contact" size="40"><br>
-						<input type="text" placeholder="Phone" ng-model="newSite.contactPhone" size="40"><br>
-						<input type="text" placeholder="Email" ng-model="newSite.contactEmail" size="40"><br>
-						<input type="text" placeholder="Regional Manager" ng-model="newSite.regionalMgr" size="40"><br>
-						<input type="text" placeholder="Regional Email" ng-model="newSite.regionalEmail" size="40"><br>
+					<div class="modal-footer topMargin0">
+						<input type="submit" value="SAVE" class='btn btn-primary'>
+						<button type="button" class="btn btn-default " ng-click="$hide()">CLOSE</button>
 					</div>
-				</div>
-				<div class="modal-footer topMargin0">
-					<input type="submit" value="SAVE" class='btn btn-primary'>
-					<button type="button" class="btn btn-default " ng-click="$hide()">CLOSE</button>
-				</div>
-			</form>
-</div>
-<div ng-if="mode=='edit'">
-			<form class="form-inline" ng-submit="saveExistingSite()">
-				<div class='panel panel-default bottomMargin0'>
-					<div class='panel-heading'>
-						<h3 class='panel-title'>Edit Property</h3>
+				</form>
+			</div>
+
+			<div ng-if="mode=='edit'">
+				<form class="form-inline" ng-submit="saveExistingSite()">
+					<div class='panel panel-default bottomMargin0'>
+						<div class='panel-heading'>
+							<h3 class='panel-title'>Edit Property</h3>
+						</div>
+						<div class='panel-body'>
+							<select class='styled-select' ng-model="site.clientID"
+								<option value="">Client</option>
+								<option ng-repeat="client in initData.clients" ng-selected="{{client.clientID}}" value="{{client.clientID}}">{{client.clientName}}</option>
+							</select> (choose a client this property belongs to)<BR>
+							<input type="text" placeholder="Name" ng-model="site.siteName" required size="40" auto-focus><br>
+							<input type="text" placeholder="Address" ng-model="site.street" size="40"><br>
+							<input type="text" placeholder="City" ng-model="site.city" size="40"><br>
+							<input type="text" placeholder="State" ng-model="site.state" size="40"><br>
+							<input type="text" placeholder="Zip" ng-model="site.zip" size="40"><br>
+							<input type="text" placeholder="Contact Name" ng-model="site.contact" size="40"><br>
+							<input type="text" placeholder="Phone" ng-model="site.contactPhone" size="40"><br>
+							<input type="text" placeholder="Email" ng-model="site.contactEmail" size="40"><br>
+							<input type="text" placeholder="Regional Manager" ng-model="site.regionalMgr" size="40"><br>
+							<input type="text" placeholder="Regional Email" ng-model="site.regionalEmail" size="40"><br>
+						</div>
 					</div>
-					<div class='panel-body'>
-						<select id="select_client" class='styled-select' ng-disabled="clients.length === 0"
-							ng-model="site.clientID"
-							<option value="">Client</option>
-							<option ng-repeat="client in initData.clients" value="{{client.clientID}}">{{client.clientName}}</option>
-						</select> (choose a client this property belongs to)<BR>
-						<input type="text" placeholder="Name" ng-model="site.siteName" required size="40" auto-focus><br>
-						<input type="text" placeholder="Address" ng-model="site.street" size="40"><br>
-						<input type="text" placeholder="City" ng-model="site.city" size="40"><br>
-						<input type="text" placeholder="State" ng-model="site.state" size="40"><br>
-						<input type="text" placeholder="Zip" ng-model="site.zip" size="40"><br>
-						<input type="text" placeholder="Contact Name" ng-model="site.contact" size="40"><br>
-						<input type="text" placeholder="Phone" ng-model="site.contactPhone" size="40"><br>
-						<input type="text" placeholder="Email" ng-model="site.contactEmail" size="40"><br>
-						<input type="text" placeholder="Regional Manager" ng-model="site.regionalMgr" size="40"><br>
-						<input type="text" placeholder="Regional Email" ng-model="site.regionalEmail" size="40"><br>
+					<div class="modal-footer topMargin0">
+						<input type="submit" value="UPDATE" class='btn btn-primary' ng-click="$hide()">
+						<button type="button" class="btn btn-default" ng-click="$hide()">CLOSE</button>
 					</div>
-				</div>
-				<div class="modal-footer topMargin0">
-					<input type="submit" value="UPDATE" class='btn btn-primary' ng-click="$hide()">
-					<button type="button" class="btn btn-default" ng-click="$hide()">CLOSE</button>
-				</div>
-			</form>
-</div>
+				</form>
+			</div>
+
 		</div>
 	</div>
 </div>

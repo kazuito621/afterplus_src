@@ -273,8 +273,11 @@ var TreesCtrl = app.controller('TreesCtrl',
 			var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122),mapTypeId:'hybrid'};
 			var map_id=(s.data.mode=='trees') ? 'treeMap' : 'treeMap2';
 			gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
-			dbg('map')
-			dbg(gMap)
+			google.maps.event.addListener(gMap, 'click', function() {
+			dbg(s,'click')
+       			if(infowindow && infowindow.setMap) infowindow.setMap(null);
+	    	});
+
 			deferred.resolve();
 		}});
 		return deferred.promise;

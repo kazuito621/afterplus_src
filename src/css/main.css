@@ -634,6 +634,7 @@ color:#339900;
 	background-color: orange;
 }
 
+/*highlighting for tree results row - orange*/
 .highlighted-row {
-    background-color: #eee;
+    background-color: #fb5;
 }

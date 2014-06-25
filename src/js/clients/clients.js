@@ -1,45 +1,43 @@
 'use strict';
 
 var ClientsCtrl = app.controller('ClientsCtrl', 
-['$scope', 'Restangular', '$timeout', '$route', '$modal',
-function ($scope, Restangular, $timeout, $route, $modal) {
+['$scope', 'Restangular', '$route', '$modal',
+function ($scope, Restangular, $route, $modal) {
 	var s = window.cts = $scope
 		,myStateID='clients'
 		,Rest=Restangular
 		,mode=''
+		,type='client'
 		s.newClient={};
+		s.items = {};
 
 	var init = function() {
 		return; // use this method only if you need to get more data than what initData provides...
-		s.Rclient = Rest.all('client').getList({fields:'*'}).then(function(data){
-			s.clientList=data;
-			});
 	}
 
 	//s.Rclient.push() .. to push new data...
 
 	s.saveNewClient = function() {
-		console.log(s.newClient);
-		var obj=s.newClient;
-		var that=this;
-		if(!obj.clientTypeID) {
+		if(!s.newClient.clientTypeID) {
 			return s.setAlert('Choose a client type for the new client',{type:'d'});
 		} else {
-			clientEditModal.hide();
+			Rest.all('client').post(s.newClient).then( function(data) {
+				console.log(s.newClient);
+				console.log("Post new client response:");
+				console.dir(data);
+			})
 		}
-		s.newClient={clientTypeID:s.newClient.clientTypeID};
-		Rest.all('client').post(s.newClient).then( function(data) {
-			s.refreshInitData();
-		})
+		clientEditModal.hide();
+		s.refreshInitData();
 	}
 
 	s.saveExistingClient = function() {
 		var obj=s.client;
 		var that=this;
 		obj.post().then(function(){
-			clientEditModal.hide();
 			s.refreshInitData();
 		});
+		clientEditModal.hide();
 	}
 
 	var pre_init = function() {
@@ -65,6 +63,7 @@ function ($scope, Restangular, $timeout, $route, $modal) {
 
 	s.newClientModalOpen = function (clientID) {
 		s.client={};
+		s.mode='new';
 		clientEditModal.show();
 	}
 
@@ -78,27 +77,11 @@ function ($scope, Restangular, $timeout, $route, $modal) {
 		clientEditModal.show();
 	}
 
-	s.alertShown = 0;
-	s.items = {};
-
-	s.toggleAlert = function() {
-		if (Object.keys(s.items).length > 0) {
-			// s.alertBox.hide();
-			s.setAlert(false);
-			s.alertShown = 0;
-		} else if (s.alertShown == 0) {
-			s.alertShown = 1;
-			var alertMarkup = '<button type="button" ng-controller="ClientsCtrl" ng-click="deleteItems(c.clientID)" class="btn btn-default ">APPLY CHANGES</button>';
-		}
-	}
-
 	s.deleteItems = function (itemID) {
-		Restangular.one('client', itemID).remove().then(function() {});
+		Restangular.one('client', itemID).remove().then(function() {
+			s.refreshInitData();
+		});
 		s.refreshInitData();
-	}
-
-	s.unselectAllItems = function () {
-		s.toggleAlert();
 	}
 
 	s.queueOrDequeueItemForDelete = function(itemID) {
@@ -107,11 +90,11 @@ function ($scope, Restangular, $timeout, $route, $modal) {
 		} else {
 			delete s.items[itemID];
 		}
-		s.toggleAlert();
+		s.type = 'client';
 	}
 
-	s.isSelected = function(itemId) {
-		if (s.items[itemId] == 1) {
+	s.isSelected = function(itemID) {
+		if (s.items[itemID] == 1) {
 			return true;
 		} else {
 			return false;

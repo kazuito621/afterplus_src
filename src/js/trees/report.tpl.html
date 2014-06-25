@@ -49,6 +49,10 @@
 		<div class="pullright"><strong>Created:&nbsp;</strong>{{report.tstamp_updated}}</div>
 		</div>
 	</div>
+
+	<div id="treeMap_estimate" class="mode_{{data.mode}}" ng-if="data.mode=='estimate'">
+		<div id="treeMap2" class="mode_{{data.mode}}"></div>
+	</div>
 	<div class = "clearfloat"></div>
      <div class="topSpace5 space5 inlineBlock pullleft">
 		 <div class="inline pullleft rightSpace20">
@@ -102,7 +106,9 @@
 	        <td ng-if="data.mode=='estimate'"><h1>Rating</h1></td>
 	       <td  ng-if="data.mode=='estimate'"><h1>Bid ($)</h1></td>
 		</tr>
+
 	    <tr ng-table ng-repeat="item in report.items" ng-if="report.items.length>0"
+            ng-class="{ 'highlighted-row': isRowHighLighted(item.$$hashKey) }"
 				ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.$$hashKey}}">
                 <td data-title="listing_image">
 
@@ -138,12 +144,16 @@
                 <td data-title="listing_treatment" ng-if="data.mode=='trees'">
 					<a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments" 
 						editable-select="item.treatmentTypeCode"
-						onshow="onShowEditItem()"
+						onshow="onShowEditItem(item.$$hashKey)"
 						onhide="onHideEditItem()">
 							{{item.treatmentTypeCode|treatmentTypeCode2Name:this}}
 					</a>
                 </td>
-                <td ng-if="data.mode=='trees'" data-title="listing_price">&#36;<a href editable-text='item.price'>{{item.price|formatPrice}}</a></td>
+                <td ng-if="data.mode=='trees'" data-title="listing_price">&#36;
+                    <a href editable-text='item.price' onshow="onShowEditItem(item.$$hashKey)">
+                        {{item.price|formatPrice}}
+                    </a>
+                </td>
                 <td ng-if="data.mode=='trees'" data-title="listing_options" width='55px;'>
             		<a ng-show="hover" href='#/tree-edit/{{item.treeID}}' class='fa fa-pencil _grey _med'></a> &nbsp;
                     <a ng-show="hover" href ng-click="removeItem(item.$$hashKey,'items')" class='fa fa-times _red _med' ></a>
@@ -164,17 +174,19 @@
    	</table>
    	
    <table class="table ng-table-responsive ng-scope ng-table" ng-if="data.mode=='trees' || report.services.length>0 ">
-   <tr><td colspan=3><h1>Misc. Services</h1></td></tr>
+   <tr><td colspan="4"><h1>Misc. Services</h1></td></tr>
 
 	<tr>
-	<td>Description</td>
-	<td>Price</td>
+	<th>Description</th>
+	<th>Quantity</th>
+	<th>Price</th>
 	<td> &nbsp; &nbsp; </td>
 	</tr>
 
    <tr ng-repeat="item in report.services" 
 		ng-mouseover="hover=true" ng-mouseleave="hover=false">
 	   <td data-title="service_desc"><a href editable-text='item.desc'>{{item.desc}}</a></td>
+		<td data-title="service_quantity"><a href editable-text='item.quantity'>{{item.quantity}}</a></td>
 		<td data-title="service_price"><a href editable-text='item.price'>{{item.price}}</a></td>
 		<td ng-if="data.mode=='trees'" width='50px;'>
 			<a ng-show="hover" href ng-click="removeItem(item.$$hashKey,'services')" class='fa fa-times _red _med' ></a>
@@ -186,21 +198,28 @@
 	<textarea ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'></textarea>
 	</td>
 	<td>
-		$<input type="text" ng-model="service.price" class="rightMargin10" placeholder="0.00" style='width:80px;height:2em;'></input>
+		<span>
+		x<input type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
+		</span>
+	</td>
+	<td style="padding-left:0px;padding-right:0px">
+		<span>
+		$<input type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
+		</span>
 	</td>
 	<td>
-   		<button class="navButton width90 roundedCorners" ng-click="addMiscService(service.desc,service.price)">ADD</button>
+   		<button class="navButton width90 roundedCorners" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
    </td>
    </tr>
 
 	<!-- // Subtotals // -->
 	<tr ng-if="report.total.services">
-		<td align=right>Misc Services Subtotal:</td>
-		<td>&#36;{{report.total.services|formatPrice}}</td><td></td>
+		<td align=right colspan="3">Misc Services Subtotal:</td>
+		<td>&#36;{{report.total.services|formatPrice}}</td>
 	</tr>
 	<tr ng-if="report.total.services">
-		<td align=right>Tree Services Subtotal:</td>
-		<td>&#36;{{report.total.items|formatPrice}}</td><td></td>
+		<td align=right colspan="3">Tree Services Subtotal:</td>
+		<td>&#36;{{report.total.items|formatPrice}}</td>
 	</tr>
    </table>
 
@@ -227,10 +246,6 @@
 
 
 
-
-<div id="treeMap_estimate" class="mode_{{data.mode}}">
-	<div id="treeMap2" class="mode_{{data.mode}}"></div>
-</div>
 
 
 

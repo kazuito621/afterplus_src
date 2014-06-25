@@ -40,7 +40,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 				s.authData[key]=null;
 			});
 			_.each(s.initData, function(val,key){
-				s.initDat[key]=null;
+				s.initData[key]=null;
 			});
 			$location.url('/signin') 
 		}

@@ -45,10 +45,9 @@
      	<div class="clearfloat"></div>
     </div>
     <div class="clearfloat"></div>
-    <div class="listings">
-     	<div class ="listing_items" ng-repeat="tree in trees" ng-controller="PopoverDemoCtrl">
-			<div ng-if="tree.hide != true" class='listingRow'
-				ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false">
+    <div class="listings trees-result-list">
+     	<div class ="listing_items" ng-repeat="tree in trees" id="tree-result-item-row-{{tree.treeID}}">
+			<div ng-if="tree.hide != true" class='listingRow' ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave()">
         		<!--<div class="listingHeader"></div>-->
 				<label>
 					<div class='pullright' style='padding:3px'>

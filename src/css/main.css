@@ -189,6 +189,8 @@ section.listing_items{
 	background-color:#429b01;
 	}
 
+	
+
 section.mainContent{
 	display:inline-block;
 	margin-top:10px;
@@ -632,8 +634,9 @@ color:#339900;
 	background-color: orange;
 }
 
+/*highlighting for tree results row - orange*/
 .highlighted-row {
-    background-color: #eee;
+    background-color: #fb5;
 }
 
 .pointer {

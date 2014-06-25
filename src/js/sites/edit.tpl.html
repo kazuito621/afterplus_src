@@ -13,7 +13,7 @@
 					</div>
 					<div class='panel-body'>
 						<select id="select_client" class='styled-select' ng-disabled="clients.length === 0"
-							ng-model="site.clientID"
+							ng-model="newSite.clientID"
 							<option value="">Client</option>
 							<option ng-repeat="client in initData.clients" value="{{client.clientID}}">{{client.clientName}}</option>
 						</select> (choose a client this property belongs to)<BR>

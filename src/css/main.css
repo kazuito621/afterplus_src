@@ -71,6 +71,7 @@ nav{
 	padding:20px;
 	background:#fff;
 	width: 845px;
+    max-width: 100%;
 	margin:10px auto;
 	font-size:12pt;
 	/*margin-top: 49px;*/

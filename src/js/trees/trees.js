@@ -763,10 +763,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// customer facing estimate view
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
-				s.auth.signInCustToken(custToken).then( function(userData){
-					// allow navigation to continue, now that user has logged in
-					deferredUserNav.resolve($route.current.params.param1);
-				});
+				if(!s.auth.isSignedIn()){
+					s.auth.signInCustToken(custToken).then( function(userData){
+						// allow navigation to continue, now that user has logged in
+						deferredUserNav.resolve($route.current.params.param1);
+					});
+				}
 			}
 
 			s.data.showMap = (st=='trees');

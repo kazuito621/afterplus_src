@@ -108,7 +108,7 @@
 		</tr>
 
 	    <tr ng-table ng-repeat="item in report.items" ng-if="report.items.length>0"
-            ng-class="{ 'highlighted-row': isRowHighLighted(item.$$hashKey) }"
+            ng-class="rowHighlightClass(item)"
 				ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.$$hashKey}}">
                 <td data-title="listing_image">
 
@@ -126,7 +126,7 @@
                 <td data-title="listing_ID">{{item.localTreeID}}</td>
                 <td data-title="listing_species">
 					{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
-					<span style='font-size:75%; color:#ccc;'>[{{item.treeID}}]</span>
+					<span style='font-size:75%; color:#999;'>[{{item.treeID}}]</span>
 					<div ng-if="item.notes">{{item.notes}}</div>
 				</td>
                 <td ng-if="data.mode=='estimate'">

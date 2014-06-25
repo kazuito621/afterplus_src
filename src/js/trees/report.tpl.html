@@ -99,7 +99,6 @@
 	       <td></td>
 	       <td><h1>Number</h1></td>
 	       <td><h1>Name</h1></td>
-	       <td><h1>Size</h1></td>
 	       <td><h1>Treatment</h1></td>
 	       <td ng-if="data.mode=='trees'"><h1>Price</h1></td>
 	       <td ng-if="data.mode=='trees'"></td>
@@ -127,7 +126,11 @@
                 <td data-title="listing_species">
 					{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
 					<span style='font-size:75%; color:#999;'>[{{item.treeID}}]</span>
-					<div ng-if="item.notes">{{item.notes}}</div>
+                    <br>
+                    <span data-title="listing_dbh" ng-if="data.mode=='trees'">
+                        {{item.dbhID | dbhID2Name:this }}
+                    </span>
+                    <div ng-if="item.notes">{{item.notes}}</div>
 				</td>
                 <td ng-if="data.mode=='estimate'">
                     {{item.dbhID | dbhID2Name:this }}
@@ -137,9 +140,6 @@
                 </td>
                 <td ng-if="data.mode=='estimate'" data-title="listing_rating">
                   {{item.ratingID | treeRatingGetter:this}}
-                </td>
-                <td data-title="listing_dbh" ng-if="data.mode=='trees'">
-                    {{item.dbhID | dbhID2Name:this }}
                 </td>
                 <td data-title="listing_treatment" ng-if="data.mode=='trees'">
 					<a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments" 

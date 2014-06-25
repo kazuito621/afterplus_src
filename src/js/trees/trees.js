@@ -273,8 +273,11 @@ var TreesCtrl = app.controller('TreesCtrl',
 			var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122),mapTypeId:'hybrid'};
 			var map_id=(s.data.mode=='trees') ? 'treeMap' : 'treeMap2';
 			gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
-			dbg('map')
-			dbg(gMap)
+			google.maps.event.addListener(gMap, 'click', function() {
+			dbg(s,'click')
+       			if(infowindow && infowindow.setMap) infowindow.setMap(null);
+	    	});
+
 			deferred.resolve();
 		}});
 		return deferred.promise;
@@ -542,30 +545,22 @@ var TreesCtrl = app.controller('TreesCtrl',
         })
     };
 
-	//Define function for listing popOver.
-	s.PopoverDemoCtrl = function ($scope) {
-		/*
-		//How can I find the currently selected Item here? Index is giving me the last item only
-		var currentItem = s.trees[$scope.$index];
-		s.listingPopoverContent = "<br>"+currentItem.treeID+"<br><img src='img/tmpTreeImage.jpg' width='132px' height='132px'/>";
-		*/
 
-        $scope.animationCompleted = false;
-
-        $scope.onMouseOver = function (tree) {
-            var marker = findMarker(tree.treeID);
-            if (!$scope.animationCompleted) {
-                animateMarker(marker, 'DROP');
-            }
-            $scope.animationCompleted = true;
-            $scope.showEdit = true;
-        };
-
-        $scope.onMouseLeave = function () {
-            $scope.showEdit = false;
-            $scope.animationCompleted = false;
-        };
-  	};
+	// Handles animation of google map tree pins...
+	// When user rolls over a tree result, the pin drops
+   	var animationCompleted = false;
+	s.onTreeResultMouseOver = function (tree) {
+		var marker = findMarker(tree.treeID);
+		if (!animationCompleted) {
+			animateMarker(marker, 'DROP');
+		}
+		animationCompleted = true;
+		s.showEdit = true;
+	};
+	s.onTreeResultMouseLeave = function () {
+		s.showEdit = false;
+		animationCompleted = false;
+	};
 	
 	
 
@@ -768,10 +763,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// customer facing estimate view
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
-				s.auth.signInCustToken(custToken).then( function(userData){
-					// allow navigation to continue, now that user has logged in
-					deferredUserNav.resolve($route.current.params.param1);
-				});
+				if(!s.auth.isSignedIn()){
+					s.auth.signInCustToken(custToken).then( function(userData){
+						// allow navigation to continue, now that user has logged in
+						deferredUserNav.resolve($route.current.params.param1);
+					});
+				}
 			}
 
 			s.data.showMap = (st=='trees');

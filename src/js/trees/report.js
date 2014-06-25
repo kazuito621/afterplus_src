@@ -17,6 +17,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.service.desc;
 		s.service.price;
 		s.emailRpt = {};
+        var changedItems = [];
 
 	var init = function(){
 		RS.loadRecent();	
@@ -53,8 +54,16 @@ var ReportCtrl = app.controller('ReportCtrl',
 
     // returns true if row with passed id is the current highlighted row
 
-    s.isRowHighLighted = function (id) {
-        return id === s.highLightedRowId;
+    s.rowHighlightClass = function (item) {
+        if (item.$$hashKey === s.highLightedRowId) {
+            return 'highlighted-row';
+        }
+
+        if (changedItems.indexOf(item.$$hashKey) !== -1) {
+            return 'changed-row';
+        }
+
+        return '';
     };
 
 	// After an item in the report has been edited via x-editable
@@ -63,6 +72,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 	s.onShowEditItem = function(id){
 		s.tempScrollPos=$(window).scrollTop();
         s.highLightedRowId = id;
+        changedItems.push(id);
 	};
 
 	s.onHideEditItem = function(){

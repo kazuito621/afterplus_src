@@ -17,6 +17,8 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.service.desc;
 		s.service.price;
 		s.emailRpt = {};
+		s.estimateTreatmentCodes = [];
+		s.treatmentDescriptions = [];
 
 	var init = function(){
 		RS.loadRecent();	
@@ -49,7 +51,13 @@ var ReportCtrl = app.controller('ReportCtrl',
 			});
 		}	
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
-	})
+	});
+
+	// After the counts for the treatments have been added, add in the service descriptions 
+	s.$on('treatmentCountsProcessed', function(evt, treatments){
+		var that = $scope;
+		RS.setTreatmentDescriptions(treatments,that);
+	});
 
 	// After an item in the report has been edited via x-editable
 	// sometimes the adjusted DOM throws the scroll out of position,
@@ -159,13 +167,12 @@ var ReportCtrl = app.controller('ReportCtrl',
 				return (item.$$hashKey !== hashKey)
 		});		
 	}
-
+	
 	var pre_init = function() {
 		if($route.current.params.stateID==myStateID) init();
 	}
 	s.$on('$locationChangeSuccess', pre_init);
 	pre_init();
 
-	
+}]);
 
-}]);	

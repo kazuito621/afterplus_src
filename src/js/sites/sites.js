@@ -1,8 +1,8 @@
 'use strict';
 
 var SitesCtrl = app.controller('SitesCtrl', 
-['$scope', 'Restangular', '$route', '$modal',
-function ($scope, Restangular, $route, $modal) {
+['$scope', 'Restangular', '$route', '$modal', '$location',
+function ($scope, Restangular, $route, $modal, $location) {
 	var s=window.scs=$scope
 		,myStateID='sites'
 		,Rest=Restangular
@@ -13,6 +13,13 @@ function ($scope, Restangular, $route, $modal) {
 
 	var init = function() {
 		return	// using initData list for now... may need this later if we want more data
+	}
+
+	s. select = function(siteID){
+		return;
+		//todo - make this work... there is a bug here
+		s.selected.siteID=siteID;
+		$location.url('/trees');
 	}
 
 	s.saveNewSite = function() {

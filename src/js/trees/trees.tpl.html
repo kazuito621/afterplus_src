@@ -47,11 +47,11 @@
     <div class="clearfloat"></div>
     <div class="listings trees-result-list">
      	<div class ="listing_items" ng-repeat="tree in trees" id="tree-result-item-row-{{tree.treeID}}">
-			<div ng-if="tree.hide != true" class='listingRow' ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave()">
+			<div ng-if="tree.hide != true" class='listingRow' ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
         		<!--<div class="listingHeader"></div>-->
 				<label>
 					<div class='pullright' style='padding:3px'>
-						<a ng-show="showEdit"  href='#/tree-edit/{{tree.treeID}}' class='fa fa-pencil _med _grey'></a>
+						<a ng-show="tree.showEdit"  href='#/tree-edit/{{tree.treeID}}' class='fa fa-pencil _med _grey'></a>
 					</div>
         			<div class="pullleft space5">
 						<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID"> 

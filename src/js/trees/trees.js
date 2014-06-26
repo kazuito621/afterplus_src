@@ -118,11 +118,17 @@ var TreesCtrl = app.controller('TreesCtrl',
         var newActiveRow = $('#tree-result-item-row-' + s.activeResultRow);
         var listContainer = $('.trees-result-list');
 
+        var scrollTo = function (value) {
+            listContainer.animate({
+                scrollTop: value
+            }, 2000);
+        };
+
         newActiveRow.toggleClass('highlighted-row');
 
-        listContainer.animate({
-            scrollTop: newActiveRow.offset().top - listContainer.offset().top
-        }, 2000);
+        var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+
+        scrollTo(scrollValue);
     };
 
 	// ----------------------------------------------------------- EVENTS BASED ON DROPDOWNS

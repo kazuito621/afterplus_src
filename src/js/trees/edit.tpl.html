@@ -7,11 +7,11 @@
     <div class="width50pct pullleft leftSpace20">
         <div class="pullleft">
             <h2>
-                <a href ng-if="auth.is('admin')" editable-select='tree.speciesID' onaftersave="updateTreeName()"
+                <a href ng-if="auth.is('staff')" editable-select='tree.speciesID' onaftersave="updateTreeName()"
                    e-ng-options='obj.speciesID as obj.bothNames for obj in initData.filters.species'>
                     {{ tree.commonName || '(not specified)' }}
                 </a>
-                <span ng-if="auth.is('customer')" 
+                <span ng-if="!auth.is('staff')" 
                    e-ng-options='obj.speciesID as obj.bothNames for obj in initData.filters.species'>
                     {{ tree.commonName || '(not specified)' }}
                 </span>
@@ -22,10 +22,10 @@
         <div class="clearfloat"></div>
         <div class="pullleft">Diameter:</div>
         <div ng-if="tree.mode=='edit'" class="pullright">
-            <a href ng-if="auth.is('admin')" e-ng-options="obj.dbhID as obj.diameter for obj in initData.filters.dbh" editable-select="tree.dbhID">
+            <a href ng-if="auth.is('staff')" e-ng-options="obj.dbhID as obj.diameter for obj in initData.filters.dbh" editable-select="tree.dbhID">
                 {{ tree.dbhID | dbhID2Name:this  || "(not specified)"}}
             </a>
-            <span ng-if="auth.is('customer')" e-ng-options="obj.dbhID as obj.diameter for obj in initData.filters.dbh">
+            <span ng-if="!auth.is('staff')" e-ng-options="obj.dbhID as obj.diameter for obj in initData.filters.dbh">
                 {{ tree.dbhID | dbhID2Name:this  || "(not specified)"}}
             </span>
         </div>
@@ -34,10 +34,10 @@
 
         <div class="pullleft">Rating:</div>
         <div ng-if="tree.mode=='edit'" class="pullright centerText">
-            <a href ng-if="auth.is('admin')" e-ng-options="obj.ratingID as obj.ratingID + ' - ' + obj.rating_desc for obj in initData.filters.ratings" editable-select="tree.ratingID">
+            <a href ng-if="auth.is('staff')" e-ng-options="obj.ratingID as obj.ratingID + ' - ' + obj.rating_desc for obj in initData.filters.ratings" editable-select="tree.ratingID">
                 {{tree.ratingID}} - {{ tree.ratingID | ratingID2Name:this  || "(not specified)"}}
             </a>
-            <span ng-if="auth.is('customer')" e-ng-options="obj.ratingID as obj.ratingID + ' - ' + obj.rating_desc for obj in initData.filters.ratings">
+            <span ng-if="!auth.is('staff')" e-ng-options="obj.ratingID as obj.ratingID + ' - ' + obj.rating_desc for obj in initData.filters.ratings">
                 {{tree.ratingID}} - {{ tree.ratingID | ratingID2Name:this  || "(not specified)"}}
             </span>
         </div>
@@ -46,24 +46,24 @@
 
         <div class="pullleft">Near powerline?</div>
         <div ng-if="tree.mode=='edit'" class="pullright centerText">
-            <a href ng-if="auth.is('admin')" e-ng-options="obj for obj in ynOptions"  editable-radiolist="tree.powerline">{{tree.powerline || "(not specified)"}}</a>
-            <span ng-if="auth.is('customer')" e-ng-options="obj for obj in ynOptions">{{tree.powerline || "(not specified)"}}</span>
+            <a href ng-if="auth.is('staff')" e-ng-options="obj for obj in ynOptions"  editable-radiolist="tree.powerline">{{tree.powerline || "(not specified)"}}</a>
+            <span ng-if="!auth.is('staff')" e-ng-options="obj for obj in ynOptions">{{tree.powerline || "(not specified)"}}</span>
         </div>
         <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.powerline}}</div>
         <div class="clearfloat"></div>
 
         <div class="pullleft">Near building?</div>
         <div ng-if="tree.mode=='edit'" class="pullright centerText">
-            <a href ng-if="auth.is('admin')" e-ng-options="obj for obj in ynOptions"  editable-radiolist="tree.building">{{tree.building || "(not specified)"}}</a>
-            <span ng-if="auth.is('customer')" e-ng-options="obj for obj in ynOptions">{{tree.building || "(not specified)"}}</a>
+            <a href ng-if="auth.is('staff')" e-ng-options="obj for obj in ynOptions"  editable-radiolist="tree.building">{{tree.building || "(not specified)"}}</a>
+            <span ng-if="!auth.is('staff')" e-ng-options="obj for obj in ynOptions">{{tree.building || "(not specified)"}}</a>
         </div>
         <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.building}}</div>
         <div class="clearfloat"></div>
 
         <div class="pullleft">Hardscape damage?</div>
         <div ng-if="tree.mode=='edit'" class="pullright centerText">
-            <a href ng-if="auth.is('admin')" e-ng-options="obj for obj in ynpOptions"  editable-radiolist="tree.caDamage">{{tree.caDamage || "(not specified)"}}</a>
-            <span ng-if="auth.is('customer')" e-ng-options="obj for obj in ynpOptions">{{tree.caDamage || "(not specified)"}}</a>
+            <a href ng-if="auth.is('staff')" e-ng-options="obj for obj in ynpOptions"  editable-radiolist="tree.caDamage">{{tree.caDamage || "(not specified)"}}</a>
+            <span ng-if="!auth.is('staff')" e-ng-options="obj for obj in ynpOptions">{{tree.caDamage || "(not specified)"}}</a>
         </div>
         <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.caDamage}}</div>
         <div class="clearfloat"></div>
@@ -78,7 +78,7 @@
         <table class='table table-striped'>
         <thead>
             <tr><th colspan=3>Recommendations/History</th>
-            <td ng-if="auth.is('admin')" align='right'>
+            <td ng-if="auth.is('staff')" align='right'>
                 <a href ng-click="addTreeRec()" class="fa fa-plus-square _size8"></a>
             </td></tr>
         <thead>

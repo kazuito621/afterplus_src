@@ -15,9 +15,9 @@
 					<th ng-if="auth.is('admin')"></th>
 					<th></th>
 					<th>ID</th>
+					<th>Tree Count</th>
 					<th>Name</th>
-					<th>Address</th>
-					<th>Contact Info</th>
+					<th>City</th>
 				</tr>
 			<thead>
 			<tr ng-repeat="s in initData.sites" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false" ng-class="{active : isSelected(s.siteID)}">
@@ -28,9 +28,9 @@
 					<a ng-click="existingSiteModalOpen(s.siteID)" ng-show="showEdit" class="pointer fa fa-pencil _grey ng-hide"></a>
 				</td>
 				<td>{{s.siteID}}</td>
-				<td>{{s.siteName}}</td>
-				<td>{{s.street}} {{s.city}}, {{s.state}}</td>
-				<td>{{s.contact}} {{s.contactPhone}}</td>
+				<td>{{s.treeCount}}</td>
+				<td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
+				<td>{{s.city}}, {{s.state}}</td>
 			</tr>
 		</table>
 	</div>

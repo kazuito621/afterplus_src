@@ -16,7 +16,7 @@ var ReportCtrl = app.controller(
 //            s.service.desc;
 //            s.service.price;
             s.emailRpt = {};
-            s.groupedReport = {};
+            s.groupedItems = [];
             var changedItems = [];
 
             var init = function () {
@@ -26,7 +26,57 @@ var ReportCtrl = app.controller(
                 }
             };
 
-            var groupReportItems = function () {};
+            var groupReportItems = function () {
+                console.log('about to group report items', s.report.items);
+                var items = angular.copy(s.report.items);
+                var res = [];
+                var keys = [];
+
+                var getTreatment = function (item) {
+                    return {
+                        treatmentTypeCode: item.treatmentTypeCode,
+                        price: item.price
+                    };
+                };
+
+                angular.forEach(items, function (item) {
+                    var index = keys.indexOf(item.treeID);
+                    if (index !== -1) { // another action for this tree
+                        res[index].treatments.push(getTreatment(item));
+                    } else {
+                        var i = angular.copy(item);
+                        keys.push(i.treeID);
+                        i.treatments = [];
+                        i.treatments.push(getTreatment(item));
+                        res.push(i);
+                    }
+                });
+
+                console.log('after grouping', res);
+                console.log('report items initial after grouping', s.report.items);
+                return res;
+            };
+
+            var ungroupReportItems = function () {
+                console.log('about to ungroup report items', s.groupedItems);
+                var items = angular.copy(s.groupedItems);
+                var res = [];
+
+                var setTreatment = function (item, treatment) {
+                    item.treatmentTypeCode = treatment.treatmentTypeCode;
+                    item.price = treatment.price;
+
+                    return item;
+                };
+
+                angular.forEach(items, function (item) {
+                    angular.forEach(item.treatments, function (treatment) {
+                        res.push(setTreatment(item, treatment));
+                    });
+                });
+
+                return res;
+            };
 
             // let's watch the recentReportList property, and update on scope if it changes
             s.$on('onLoadRecent', function (evt, list) {
@@ -56,6 +106,7 @@ var ReportCtrl = app.controller(
                     });
                 }
                 //s.report.grandTotal = RS.getGrandTotal(s.report.items);
+                s.groupedItems = groupReportItems();
             });
 
             // returns true if row with passed id is the current highlighted row
@@ -186,12 +237,18 @@ var ReportCtrl = app.controller(
 
             // remove item from array of items
             s.removeItem = function (hashKey, type) {
+                console.log('remove item', hashKey, type);
                 if (type === null) {
                     type = 'items';
                 }
                 s.report[type] = s.report[type].filter(function (item) {
+                    console.log('filtering report', item.$$hashKey, hashKey, item);
                     return (item.$$hashKey !== hashKey);
                 });
+
+                if (type === 'items') {
+                    s.groupedItems = groupReportItems();
+                }
             };
 
             var pre_init = function () {

@@ -548,24 +548,23 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 	// Handles animation of google map tree pins...
 	// When user rolls over a tree result, the pin drops
-   	var animationCompleted = false;
+    var hoveredItem = {
+        animationCompleted: false
+    };
+
 	s.onTreeResultMouseOver = function (tree) {
 		var marker = findMarker(tree.treeID);
-		if (!animationCompleted) {
+		if (!hoveredItem.animationCompleted) {
 			animateMarker(marker, 'DROP');
 		}
-		animationCompleted = true;
-		s.showEdit = true;
+		hoveredItem.animationCompleted = true;
+		tree.showEdit = true;
 	};
-	s.onTreeResultMouseLeave = function () {
-		s.showEdit = false;
-		animationCompleted = false;
+
+	s.onTreeResultMouseLeave = function (tree) {
+		tree.showEdit = null;
+		hoveredItem.animationCompleted = false;
 	};
-	
-	
-
-
-
 
 	// ------------------------------------------------------ ESTIMATE RELATED STUFF
 

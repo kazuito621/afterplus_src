@@ -536,7 +536,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 	};
 
     var animateMarker = function (marker, animationType) {
-        marker.setAnimation(google.maps.Animation[animationType]);
+        var animation = google.maps.Animation[animationType];
+
+        if (animationType === null) {
+            animation = null;
+        }
+
+        if (marker) {
+            marker.setAnimation(animation);
+        }
     };
 
     var findMarker = function (id) {
@@ -555,13 +563,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 	s.onTreeResultMouseOver = function (tree) {
 		var marker = findMarker(tree.treeID);
 		if (!hoveredItem.animationCompleted) {
-			animateMarker(marker, 'DROP');
+			animateMarker(marker, 'BOUNCE');
 		}
 		hoveredItem.animationCompleted = true;
 		tree.showEdit = true;
 	};
 
 	s.onTreeResultMouseLeave = function (tree) {
+        var marker = findMarker(tree.treeID);
+        animateMarker(marker, null);
 		tree.showEdit = null;
 		hoveredItem.animationCompleted = false;
 	};

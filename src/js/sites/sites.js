@@ -20,9 +20,6 @@ function ($scope, Restangular, $route, $modal) {
 			return s.setAlert('Choose a client for the new property',{type:'d'});
 		} else {
 			Rest.all('site').post(s.newSite).then( function(data) {
-				console.log(s.newSite);
-				console.log("Post new site response:");
-				console.dir(data);
 			})
 			siteEditModal.hide();
 			s.refreshInitData();
@@ -66,7 +63,6 @@ function ($scope, Restangular, $route, $modal) {
 	s.deleteItems = function (itemID) {
 		console.log("itemID",itemID)
 		Restangular.one('site', itemID).remove().then(function(data) {
-			console.log(data);
 			s.refreshInitData();
 		});
 		s.refreshInitData();

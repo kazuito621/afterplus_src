@@ -94,10 +94,10 @@
      
      
    	<div class ="bottomSpace10"></div>
-   	<table class="table ng-table-responsive ng-scope ng-table">
-		<tr>
-	       <td></td>
-	       <td><h1>Number</h1></td>
+   	<table class="table ng-table-responsive ng-scope ng-table mode_{{data.mode}}">
+		<tr id="estimate_table_heading">
+	       <td><h1>Tree</h1></td>
+	       <td><h1>ID</h1></td>
 	       <td><h1>Name</h1></td>
 	       <td><h1>Size</h1></td>
 	       <td><h1>Treatment</h1></td>
@@ -126,8 +126,8 @@
                 <td data-title="listing_ID">{{item.localTreeID}}</td>
                 <td data-title="listing_species">
 					{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
-					<span style='font-size:75%; color:#999;'>[{{item.treeID}}]</span>
-					<div ng-if="item.notes">{{item.notes}}</div>
+					<span style='font-size:75%; color:#ccc;'>[{{item.treeID}}]</span>
+					<div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
 				</td>
                 <td ng-if="data.mode=='estimate'">
                     {{item.dbhID | dbhID2Name:this }}
@@ -166,11 +166,14 @@
 				<td colspan=4></td><td>Subtotal:</td>
 				<td>&#36;{{report.total.items|formatPrice}}</td>
 				<td>&nbsp;</td>
-			</tr>
+			</tr> 
 			<tr ng-if="report.total.items && data.mode=='estimate'">
+				<td colspan=7></td>
+				<!-- Commenting out for now as per mocks.
 				<td colspan=5></td><td>Subtotal:</td>
 				<td>&#36;{{report.total.items|formatPrice}}</td>
-			</tr>
+				-->
+			</tr> 
    	</table>
    	
    <table class="table ng-table-responsive ng-scope ng-table" ng-if="data.mode=='trees' || report.services.length>0 ">
@@ -236,6 +239,11 @@
  	<div class="" ng-if="data.mode=='estimate'">
  		<h2>Notes</h2>
         <pre>{{report.notes}}</pre>
+
+	<h2>Definition of Treatments:</h2>
+	<div ng-repeat=" desc in treatmentDescriptions "> 
+		<p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
+	</div>
    	</div>
      
 	  <div class ="bottomSpace10"></div>

@@ -115,6 +115,39 @@ app.service('ReportService',
 		});	
 	}
 
+	// Get the treatment descriptions using the API
+	// Filter out the description IDs to only include what is needed.
+	// This mmight be able to simplified if API supports query by codes
+	//  and/or look for a way to combine the filtering.
+        this.setTreatmentDescriptions = function(treatmentTypes, that){
+		var codelist = that.estimateTreatmentCodes; // List of codes to query descriptions.
+                var allTreatments = {};
+                var temp = {};
+		
+                // Build hash table with treatmentcode:id with count>0
+                that.treatmentTypes.map(function (v, i, a) { 
+			if(v.count>0){ 
+				allTreatments[v.code] = v.treatmentTypeID;
+			} 
+		});
+
+                // Get a list of unique treatment codes that are actually on the estimate report.items
+                if (that.report && that.report.items.length){
+                        trees = that.report.items;
+                        for (x in trees){
+                                if (!temp[trees[x].treatmentTypeCode]){
+                                        temp[trees[x].treatmentTypeCode] = allTreatments[trees[x].treatmentTypeCode];
+					codelist.push(allTreatments[trees[x].treatmentTypeCode]);
+                                }
+                        }
+                }
+
+                // Finally make rest call to get descriptions
+		Rest.one('service_desc','treatmenttype').get({id:codelist.toString()}).then(function(descriptions){
+			that.treatmentDescriptions = descriptions;
+		});
+        }
+
 
 	// if treatment codes exist, then use them,
 	// else, use what is recommended for the tree 

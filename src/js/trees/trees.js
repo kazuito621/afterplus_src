@@ -38,15 +38,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.selectedValues = [];
 		s.thisYear=moment().format('YYYY');
 
-		// tree icon colors
-		//			green     drk blue  red    lt blue    orange    purpl     yellow,   futia      brown     dk grn    dk red
 		s.colors={
 			speciesCount:[]		// stores count of species ie. speciesCount[133]=5, speciesCount[431]=1  (speciesID 133 = 5 total)
 			,assignment:[]		// stores which colorID index (for bg and fg) is assigned to which speciesID..
 								// ie. assignment[0]=133 (the first color index for bg[0]/fg[0] is assigned to speciesID 133)
 			,nextColorID:0		
-			,bg:['78ee31', '2044df', 'ce2712', 'db7e00',  'ce2712', '6d2dd5', 'f5f02c',   'ed79fb', 'a8621c', '487123', '751307']
-			,fg:['000000', 'ffffff', 'ffffff', 'ffffff',  'ffffff', 'ffffff', '000000',   '000000', 'ffffff', 'ffffff', 'ffffff']
+			// tree icon colors
+			//    green     drk blue   red   orange   dkgry     purpl     yellow,  futia   brown   dk grn  dkred    lt.futia  lt.blue  dk.teal lt.teal  lt.orng med.grey   medred  med.grn  med.purp
+			,bg:['78ee31','2044df','ce2712','db7e00','646464','6d2dd5','f5f02c','ed79fb','a8621c','487123','751307','dc85ee','9baeec','298d8c','8bf8f7','fdc476','a5a5a5','e27966','6aab09','ad8cd6']
+			,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
 			};
 
 	// INIT is not called until

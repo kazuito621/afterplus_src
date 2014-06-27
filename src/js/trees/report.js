@@ -19,6 +19,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.emailRpt = {};
 		s.estimateTreatmentCodes = [];
 		s.treatmentDescriptions = [];
+        var changedItems = [];
 
 	var init = function(){
 		RS.loadRecent();	
@@ -59,15 +60,31 @@ var ReportCtrl = app.controller('ReportCtrl',
 		RS.setTreatmentDescriptions(treatments,that);
 	});
 
+    // returns true if row with passed id is the current highlighted row
+    s.rowHighlightClass = function (item) {
+        if (item.$$hashKey === s.highLightedRowId) {
+            return 'highlighted-row';
+        }
+
+        if (changedItems.indexOf(item.$$hashKey) !== -1) {
+            return 'changed-row';
+        }
+
+        return '';
+    };
+
 	// After an item in the report has been edited via x-editable
 	// sometimes the adjusted DOM throws the scroll out of position,
 	// One way to fix is record scroll and go back there...
-	s.onShowEditItem = function(){
+	s.onShowEditItem = function(id){
 		s.tempScrollPos=$(window).scrollTop();
-	}
+        s.highLightedRowId = id;
+        changedItems.push(id);
+	};
+
 	s.onHideEditItem = function(){
 		$(window).scrollTop(s.tempScrollPos);
-	}
+	};
 	// another way later..if the above doesnt work that well, is this way:
 		/*
 			add this to template in place of other onhide/onshow

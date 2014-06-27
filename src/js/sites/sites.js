@@ -1,32 +1,39 @@
 'use strict';
 
 var SitesCtrl = app.controller('SitesCtrl', 
-['$scope', 'Restangular', '$route', '$modal', 
-function ($scope, Restangular, $route, $modal) {
+['$scope', 'Restangular', '$route', '$modal', '$location',
+function ($scope, Restangular, $route, $modal, $location) {
 	var s=window.scs=$scope
 		,myStateID='sites'
 		,Rest=Restangular
-		,mode='edit'
+		,mode=''
+		,type='site'
 	s.newSite={clientID:''};
+	s.items = {};
 
-
-	s.init = function() {
+	var init = function() {
 		return	// using initData list for now... may need this later if we want more data
-		Rest.all('site').getList().then(function(data){
-			s.list = data;
-		});
+	}
+
+	s. select = function(siteID){
+		return;
+		//todo - make this work... there is a bug here
+		s.selected.siteID=siteID;
+		$location.url('/trees');
 	}
 
 	s.saveNewSite = function() {
-		var obj=s.newSite;
-		if(!obj.clientID) return s.setAlert('Choose a client for the new property',{type:'d'});
-		var that=this;
-		Rest.all('site').post(obj).then( function(data) {
-			if(data && data.siteID) {
-				s.newSite={clientID:s.newSite.clientID}
-				s.refreshInitData();
-			}
-		})
+		if(!s.newSite.clientID) {
+			return s.setAlert('Choose a client for the new property',{type:'d'});
+		} else {
+			Rest.all('site').post(s.newSite).then( function(data) {
+				console.log(s.newSite);
+				console.log("Post new site response:");
+				console.dir(data);
+			})
+			siteEditModal.hide();
+			s.refreshInitData();
+		}
 	}
 
 	s.saveExistingSite = function() {
@@ -35,10 +42,11 @@ function ($scope, Restangular, $route, $modal) {
 		obj.post().then(function(){
 			s.refreshInitData();
 		});
+		siteEditModal.hide();
 	}
 	
 	var pre_init = function() {
-		if($route.current.params.stateID==myStateID) s.init();
+		if($route.current.params.stateID==myStateID) init();
 	}
 	s.$on('$locationChangeSuccess', pre_init);
 	pre_init();
@@ -48,10 +56,12 @@ function ($scope, Restangular, $route, $modal) {
 
 	s.newSiteModalOpen = function (siteID) {
 		s.site={};
+		s.mode='new';
 		siteEditModal.show();
 	}
 
 	s.existingSiteModalOpen = function (siteID) {
+		s.site={};
 		Restangular.one('site', siteID).get()
 			.then(function(data){
 				s.site=data
@@ -60,5 +70,30 @@ function ($scope, Restangular, $route, $modal) {
 		siteEditModal.show();
 	}
 
+	s.deleteItems = function (itemID) {
+		console.log("itemID",itemID)
+		Restangular.one('site', itemID).remove().then(function(data) {
+			console.log(data);
+			s.refreshInitData();
+		});
+		s.refreshInitData();
+	}
+
+	s.queueOrDequeueItemForDelete = function(itemID) {
+		if (!s.isSelected(itemID)) {
+			s.items[itemID] = '1';
+		} else {
+			delete s.items[itemID];
+		}
+		s.type = 'site';
+	}
+
+	s.isSelected = function(itemID) {
+		if (s.items[itemID] == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }]);

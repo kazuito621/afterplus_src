@@ -106,7 +106,9 @@
 	        <td ng-if="data.mode=='estimate'"><h1>Rating</h1></td>
 	       <td  ng-if="data.mode=='estimate'"><h1>Bid ($)</h1></td>
 		</tr>
+
 	    <tr ng-table ng-repeat="item in report.items" ng-if="report.items.length>0"
+            ng-class="rowHighlightClass(item)"
 				ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.$$hashKey}}">
                 <td data-title="listing_image">
 
@@ -115,7 +117,7 @@
 					<img ng-src='{{item.imgSm}}{{tree_cachebuster}}' class='item_thumb'
 						data-placement="right"
 						data-trigger="hover"
-						data-content="<img style='width:250px; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
+						data-content="<img style='width:320px; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
 						data-html="true"
 						bs-popover
 						style="border:3px solid #{{colors.bg[item.colorID]}} !important"
@@ -142,12 +144,16 @@
                 <td data-title="listing_treatment" ng-if="data.mode=='trees'">
 					<a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments" 
 						editable-select="item.treatmentTypeCode"
-						onshow="onShowEditItem()"
+						onshow="onShowEditItem(item.$$hashKey)"
 						onhide="onHideEditItem()">
 							{{item.treatmentTypeCode|treatmentTypeCode2Name:this}}
 					</a>
                 </td>
-                <td ng-if="data.mode=='trees'" data-title="listing_price">&#36;<a href editable-text='item.price'>{{item.price|formatPrice}}</a></td>
+                <td ng-if="data.mode=='trees'" data-title="listing_price">&#36;
+                    <a href editable-text='item.price' onshow="onShowEditItem(item.$$hashKey)">
+                        {{item.price|formatPrice}}
+                    </a>
+                </td>
                 <td ng-if="data.mode=='trees'" data-title="listing_options" width='55px;'>
             		<a ng-show="hover" href='#/tree-edit/{{item.treeID}}' class='fa fa-pencil _grey _med'></a> &nbsp;
                     <a ng-show="hover" href ng-click="removeItem(item.$$hashKey,'items')" class='fa fa-times _red _med' ></a>

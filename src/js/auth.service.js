@@ -49,8 +49,12 @@ app.service('Auth',
 	}
 
 	this.signIn = function(email, pswd){
+	dbg('signin called')
+		var deferred = $q.defer();
 		Rest.one('signin').get({e:email, p:pswd})
 			.then( onDataBackFromSignIn );
+		deferred.resolve(true);
+		return deferred.promise;
 	}
 
 	this.signOut = function(){ 

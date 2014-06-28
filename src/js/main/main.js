@@ -92,7 +92,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 				});
 	}
 	s.refreshInitData=function(){ getInitData(); }
-	if(s.auth.isSignedIn()) getInitData();
+	if(Auth.isSignedIn()) getInitData();
 	else s.$on('onSignin', angular.bind(this, getInitData))
 
 
@@ -102,7 +102,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		var authReq = $route.current && 
 				$route.current.$$route && 
 				$route.current.$$route.auth;
-		if (authReq && !s.auth.isSignedIn() && $route.current.params.stateID!='estimate') {
+		if (authReq && !Auth.isSignedIn() && $route.current.params.stateID!='estimate') {
 			//note: estimate handles its own signin
 			var currentUrl = $location.url();
 			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));

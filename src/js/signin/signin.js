@@ -24,7 +24,7 @@ dbg('ctr signing')
 		s.login.btnDisabled=true;
 		if(!s.login.email || !s.login.pswd) return;
 		s.localStore.lastEmailUsed=s.login.email;
-		Auth.signIn(login.email, login.pswd)
+		Auth.signIn(s.login.email, s.login.pswd)
 			.then(function(result){
 				s.login.btnDisabled=false;
 				dbg('sign in ok - signin.js')

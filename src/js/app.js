@@ -2,7 +2,7 @@
 
 
 var app = angular.module('arborPlusApp', 
-	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5', 'Auth',
+	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5', 
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model']);
 
 app.config(['$routeProvider', '$locationProvider', '$timeout',

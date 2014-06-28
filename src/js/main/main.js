@@ -1,8 +1,8 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular', 'Auth',
-function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular, Auth) {
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular', 
+function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular) {
 	var s = window.mcs = $scope;
 	s.routeParams={};
 	s.appData={};

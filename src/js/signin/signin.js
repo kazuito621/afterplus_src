@@ -1,8 +1,8 @@
 'use strict';
 
 var SigninCtrl = app.controller('SigninCtrl', 
-['$scope', 'Restangular', '$timeout', '$route','md5', '$location', 'Auth',
-function ($scope, Restangular, $timeout, $route, md5, $location, Auth) {
+['$scope', 'Restangular', '$timeout', '$route','md5', '$location', 
+function ($scope, Restangular, $timeout, $route, md5, $location) {
 
 dbg('ctr signing')
 	var s = window.scs = $scope

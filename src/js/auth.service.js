@@ -4,15 +4,16 @@
 	and Report Controller can build a UI based on the data
 **/
 app.service('Auth', 
-	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', '$rootScope', 'storage',
-	function(Rest, $location, $timeout, $rootScope, md5, $q, $rootScope, storage) {
+	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', '$rootScope', 
+	function(Rest, $location, $timeout, $rootScope, md5, $q, $rootScope) {
 
+dbg('auth service top')
 	// private properties
 	var defaultUserData={userID:0, email:'', token:'', role:'guest'};
 
 	// public properties
 	this.authData={};
-	storage.bind(this, 'authData', {defaultValue:defaultUserData});
+	//storage.bind(this, 'authData', {defaultValue:defaultUserData});
 	this.userRoles={
 					public: 	1, 
 					customer:   2,
@@ -28,14 +29,13 @@ app.service('Auth',
 
 	this.isSignedIn = function(){ return (this.data().userID>0); };
 
-	var onDataBackFromSignIn = function(d){
-	dbg('on data back')
+	var onDataBackFromSignIn = function(deferred, d){
 		if(d && d.userID > 0){
 			th.setAuth(d);
 			this.sendEvt('onSignin');
 			return deferred.resolve(d);
 		}else{
-			var msg=d.msg || 'Login failed';
+			var msg=(d && d.msg) ? d.msg : 'Login failed';
 			return deferred.reject(msg);
 		}
 	}
@@ -44,15 +44,15 @@ app.service('Auth',
 		var deferred=$q.defer();
 		if(!custToken){ deferred.reject('Invalid token'); return deferred.promise; }
 		Rest.one('signincusttoken').get({custToken:custToken})
-			.then(onDataBackFromSignIn);
+			.then(angular.bind(this, onDataBackFromSignIn, deferred));
 		return deferred.promise;
 	}
 
 	this.signIn = function(email, pswd){
-	dbg('signin called')
 		var deferred = $q.defer();
+	dbg(deferred,'signin called')
 		Rest.one('signin').get({e:email, p:pswd})
-			.then( onDataBackFromSignIn );
+			.then( angular.bind(this, onDataBackFromSignIn, deferred) );
 		deferred.resolve(true);
 		return deferred.promise;
 	}

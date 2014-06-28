@@ -8,8 +8,25 @@ var app = angular.module('arborPlusApp',
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
         $routeProvider
-				.when('/signin', {templateUrl:'js/signin/signin.tpl.html', controller:'SigninCtrl'})
-               	.when('/:stateID/:param1?', {auth:true, controller: MainCtrl})
+				.when('/signin'
+					,{templateUrl:'js/signin/signin.tpl.html'
+					,controller:'SigninCtrl'
+					}					)
+               	.when('/:stateID/:param1?'
+					,{auth:true
+					,controller: MainCtrl
+					,resolve:{
+							app: function($q){
+								// todo - anything in any of the pre-init's should go here...
+								// then when the resolve() is called, that particular state will fire
+								var deferred = $q.defer();
+								$timeout(function(){
+									deferred.resolve();
+									},5000);
+								return deferred.promise;
+							}
+						}
+					})
                 .otherwise({redirectTo: '/signin'});
 	}]);
 

@@ -435,7 +435,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		var set2=[],ratingD,o;
 		if(!infowindow) infowindow = new google.maps.InfoWindow();
 		_.each(treeSet, function(itm){
-			if(itm.hide) return;
+			if(!itm || itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
 			if(s.data.mode=='trees'){
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';

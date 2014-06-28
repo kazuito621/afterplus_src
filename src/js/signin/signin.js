@@ -1,8 +1,8 @@
 'use strict';
 
 var SigninCtrl = app.controller('SigninCtrl', 
-['$scope', 'Restangular', '$timeout', '$route','md5', '$location', 
-function ($scope, Restangular, $timeout, $route, md5, $location) {
+['$scope', 'Restangular', '$timeout', '$route','md5', '$location', 'Auth',
+function ($scope, Restangular, $timeout, $route, md5, $location, Auth) {
 
 dbg('ctr signing')
 	var s = window.scs = $scope
@@ -11,8 +11,8 @@ dbg('ctr signing')
 		s.login={};
 		if(s.localStore.lastEmailUsed) s.login.email=s.localStore.lastEmailUsed;
 
-	
 	var q=$location.search()
+
 	if(q.redirect && q.redirect.match(/estimate/)){
 		// todo.. this is not right
 		Auth.data({sessionID:'111'});
@@ -27,12 +27,11 @@ dbg('ctr signing')
 		Auth.signIn(s.login.email, s.login.pswd)
 			.then(function(result){
 				s.login.btnDisabled=false;
-				dbg('sign in ok - signin.js')
 				if(q.redirect) $location.url(q.redirect);
 				else s.goTrees();
-			}, function err(err){
+			}, function err(err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
+									//that could possibly throw errors
 				s.login.btnDisabled=false;
-				dbg('err - sign in in singin.js')
 			})
 	}
 

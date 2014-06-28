@@ -31,7 +31,7 @@ dbg('auth service top')
 
 	var onDataBackFromSignIn = function(deferred, d){
 		if(d && d.userID > 0){
-			th.setAuth(d);
+			this.data(d);
 			this.sendEvt('onSignin');
 			return deferred.resolve(d);
 		}else{
@@ -40,6 +40,7 @@ dbg('auth service top')
 		}
 	}
 
+	// Returns a promise with either a resolve or a reject
 	this.signInCustToken = function(custToken){
 		var deferred=$q.defer();
 		if(!custToken){ deferred.reject('Invalid token'); return deferred.promise; }
@@ -48,12 +49,12 @@ dbg('auth service top')
 		return deferred.promise;
 	}
 
+	// Returns a promise with either a resolve or a reject
 	this.signIn = function(email, pswd){
 		var deferred = $q.defer();
 	dbg(deferred,'signin called')
 		Rest.one('signin').get({e:email, p:pswd})
 			.then( angular.bind(this, onDataBackFromSignIn, deferred) );
-		deferred.resolve(true);
 		return deferred.promise;
 	}
 

@@ -3,6 +3,7 @@
 var MainCtrl = app.controller('MainCtrl', 
 ['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular', 
 function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular) {
+var Auth={isSignedIn:function(){}, signIn:function(){},data:function(){return{}}};
 	var s = window.mcs = $scope;
 	s.routeParams={};
 	s.appData={};

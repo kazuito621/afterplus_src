@@ -5,8 +5,8 @@ var app = angular.module('arborPlusApp',
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5', 
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model']);
 
-app.config(['$routeProvider', '$locationProvider', '$timeout',
-	function ($routeProvider, $locationProvider, $timeout) {
+app.config(['$routeProvider', '$locationProvider', 
+	function ($routeProvider, $locationProvider) {
         $routeProvider
 				.when('/signin'
 					,{templateUrl:'js/signin/signin.tpl.html'
@@ -17,6 +17,7 @@ app.config(['$routeProvider', '$locationProvider', '$timeout',
 					,controller: MainCtrl
 					,resolve:{
 							app: function($q){
+							return;
 								// if user not signed in
 /*
 								if(st=='estimate'){

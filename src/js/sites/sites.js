@@ -11,6 +11,9 @@ function ($scope, Restangular, $route, $modal, $location) {
 	s.newSite={clientID:''};
 	s.items = {};
 
+
+dbg('sites ctrl');
+
 	var init = function() {
 		return	// using initData list for now... may need this later if we want more data
 	}

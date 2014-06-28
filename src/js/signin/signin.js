@@ -1,9 +1,10 @@
 'use strict';
 
 var SigninCtrl = app.controller('SigninCtrl', 
-['$scope', 'Restangular', '$timeout', '$route','md5', '$location',
-function ($scope, Restangular, $timeout, $route, md5, $location) {
+['$scope', 'Restangular', '$timeout', '$route','md5', '$location', 'Auth',
+function ($scope, Restangular, $timeout, $route, md5, $location, Auth) {
 
+dbg('ctr signing')
 	var s = window.scs = $scope
 		,Rest=Restangular
 		,url
@@ -13,7 +14,8 @@ function ($scope, Restangular, $timeout, $route, md5, $location) {
 	
 	var q=$location.search()
 	if(q.redirect && q.redirect.match(/estimate/)){
-		s.auth.setAuth({sessionID:'111'});
+		// todo.. this is not right
+		Auth.data({sessionID:'111'});
 		$location.url(q.redirect);
 		return;
 	}
@@ -22,16 +24,16 @@ function ($scope, Restangular, $timeout, $route, md5, $location) {
 		s.login.btnDisabled=true;
 		if(!s.login.email || !s.login.pswd) return;
 		s.localStore.lastEmailUsed=s.login.email;
-		Restangular.one('signin').get({e:s.login.email, p:s.login.pswd})
-			.then( function(d){
+		Auth.signIn(login.email, login.pswd)
+			.then(function(result){
 				s.login.btnDisabled=false;
-				if(d && d.userID > 0){
-					s.auth.setAuth(d);
-					s.sendEvt('onSignin');
-					if(q.redirect) $location.url(q.redirect);
-					else s.goTrees();
-				}
-			});
+				dbg('sign in ok - signin.js')
+				if(q.redirect) $location.url(q.redirect);
+				else s.goTrees();
+			}, function err(err){
+				s.login.btnDisabled=false;
+				dbg('err - sign in in singin.js')
+			})
 	}
 
 	s.forgotPassword = function(){

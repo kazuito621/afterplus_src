@@ -4,8 +4,8 @@
 	and Report Controller can build a UI based on the data
 **/
 app.service('Auth', 
-	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', '$rootScope',
-	function(Rest, $location, $timeout, $rootScope, md5, $q, $rootScope) {
+	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', '$rootScope', 'storage',
+	function(Rest, $location, $timeout, $rootScope, md5, $q, $rootScope, storage) {
 
 	// private properties
 	var defaultUserData={userID:0, email:'', token:'', role:'guest'};

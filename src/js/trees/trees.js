@@ -8,6 +8,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 
 	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q) {
 
+	dbg('trees ctrl')
+
 	// local and scoped vars
 	var s = window.tcs = $scope
 		,myStateID='trees'

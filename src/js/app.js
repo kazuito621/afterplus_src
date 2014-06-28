@@ -2,7 +2,7 @@
 
 
 var app = angular.module('arborPlusApp', 
-	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
+	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5', 'Auth',
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model']);
 
 app.config(['$routeProvider', '$locationProvider',
@@ -17,12 +17,28 @@ app.config(['$routeProvider', '$locationProvider',
 					,controller: MainCtrl
 					,resolve:{
 							app: function($q){
+								// if user not signed in
+/*
+								if(st=='estimate'){
+									var custToken=$route.current.params.param1;
+									if(!s.auth.isSignedIn()){
+										s.auth.signInCustToken(custToken).then( function(userData){
+											// allow navigation to continue, now that user has logged in
+											deferredUserNav.resolve($route.current.params.param1);
+										});
+									}
+								}
+
+								// else user IS signed in
+
+*/
+
 								// todo - anything in any of the pre-init's should go here...
 								// then when the resolve() is called, that particular state will fire
 								var deferred = $q.defer();
 								$timeout(function(){
 									deferred.resolve();
-									},5000);
+									},1000);
 								return deferred.promise;
 							}
 						}

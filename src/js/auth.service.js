@@ -7,6 +7,7 @@ app.service('Auth',
 	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', '$rootScope', 
 	function(Rest, $location, $timeout, $rootScope, md5, $q, $rootScope) {
 
+	window.Auth=this;
 dbg('auth service top')
 	// private properties
 	var defaultUserData={userID:0, email:'', token:'', role:'guest'};

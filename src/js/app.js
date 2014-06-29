@@ -5,43 +5,90 @@ var app = angular.module('arborPlusApp',
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5', 
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model']);
 
-app.config(['$routeProvider', '$locationProvider', 
-	function ($routeProvider, $locationProvider) {
+app.config(['$routeProvider', '$locationProvider',
+	function ($routeProvider, $locationProvider ) {
+
+		var getInitData = function(deferred){
+			if(s.setAlert) s.setAlert('Loading...', {time:3, type:'ok'});
+			// Since this is an async call which may take time, we return
+			// a dummy $object which will be populated when the data comes out
+			Rest.one('init').get()
+				.then(function(data){
+				dbg('rest got - init data')
+					Auth.initData=data
+					deferred.resolve(data);
+					//s.sendEvt('onInitData', data);
+				});
+		}
+/*
+		s.$on("$routeChangeSuccess", function(current) {
+			var rp=$routeParams;
+			var authReq = $route.current && 
+					$route.current.$$route && 
+					$route.current.$$route.auth;
+			if (authReq && !Auth.isSignedIn() && $route.current.params.stateID!='estimate') {
+				//note: estimate handles its own signin
+				var currentUrl = $location.url();
+				$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
+				return;
+			} 
+
+			s.routeParams=$routeParams;
+				
+		});
+*/
         $routeProvider
 				.when('/signin'
 					,{templateUrl:'js/signin/signin.tpl.html'
 					,controller:'SigninCtrl'
-					}					)
-               	.when('/:stateID/:param1?'
-					,{auth:true
+					})
+					/*
+				.when('/estimate/:param1?'
+					,{auth:false
 					,controller: MainCtrl
 					,resolve:{
-							app: function($q){
-							return;
-								// if user not signed in
-/*
-								if(st=='estimate'){
+						app: ['$q', function($q){
+						dbg('when estimate')
+
+							}]
+					})
+					*/
+               	.when('/:stateID/:param1?'
+					,{ auth:true,
+					controller: MainCtrl
+					,resolve:{
+							app: ['$q', 'Auth', '$route', '$rootScope', function($q, Auth, $route, $rootScope){
+		//if signed in, get init data
+		//else
+
+								var deferred = $q.defer();
+								dbg(Auth.isSignedIn(), 'auth')
+								if(!Auth.isSignedIn()){  	// if user not signed in
+									// if in estimate mode, look for a token								
 									var custToken=$route.current.params.param1;
-									if(!s.auth.isSignedIn()){
-										s.auth.signInCustToken(custToken).then( function(userData){
+									var state = $route.current.params.stateID;
+									dbg(custToken, state, 'token')
+									
+									if(state=='estimate' && custToken){
+										Auth.signInCustToken(custToken).then( function(userData){
 											// allow navigation to continue, now that user has logged in
-											deferredUserNav.resolve($route.current.params.param1);
+											dbg(userData, 'then signincust token')
+											//deferredUserNav.resolve(custToken);
+
+								//			$rootScope.$broadcast('onUserNav'); 
+											deferred.resolve();
 										});
 									}
 								}
-
-								// else user IS signed in
-
-*/
-
-								// todo - anything in any of the pre-init's should go here...
-								// then when the resolve() is called, that particular state will fire
-								var deferred = $q.defer();
-								$timeout(function(){
-									deferred.resolve();
-									},1000);
+								else			// else user IS signed in
+								{
+	dbg('get init data')
+									getInitData(deferred);
+								//	$rootScope.$broadcast('onUserNav'); 
+									//deferred.resolve();
+								}
 								return deferred.promise;
-							}
+							}]
 						}
 					})
                 .otherwise({redirectTo: '/signin'});

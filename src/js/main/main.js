@@ -87,6 +87,7 @@ var Auth={isSignedIn:function(){}, signIn:function(){},data:function(){return{}}
 			Rest.one('init').get()
 				.then(function(data){
 					s.initData=data
+					Auth.gotInitData=true;
 					s.sendEvt('onInitData', data);
 				});
 	}

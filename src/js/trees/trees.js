@@ -801,14 +801,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 	var waitForInitData = function(){ deferredInitData=$q.defer(); return deferredInitData.promise; }
 	var pre_init = function() {
 		// wait for user to browse here, AND initData to arrive, THEN... fire init()
-		$q.all([waitForUser(), waitForInitData()])
+		$q.all([waitForInitData()])
 			.then(function(result){init(result[0]);})
 
+		/*
 		angular.element(document).ready(function () {
 			s.$on('$locationChangeSuccess', onUserNav);
 			onUserNav();
 		});
-
+		*/
 		s.$on('onInitData', function(e,data){
 			deferredInitData.resolve();
 		});

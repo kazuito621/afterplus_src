@@ -12,6 +12,13 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	s.localStore={};
 	storage.bind(s, 'localStore', {defaultValue:{token:false}});
 
+	// links for $scope to Auth class (so templates can use them)
+	s.auth={
+		is: angular.bind(Auth, Auth.is)
+		,isSignedIn: angular.bind(Auth, Auth.isSignedIn)
+		,getLoginName: angular.bind(Auth, Auth.getLoginName)
+		,signOut: angular.bind(Auth, Auth.signOut)
+	}
 
 	// global wrapper for broadcasting, so that each controller doesnt need $rootScope
 	// why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,

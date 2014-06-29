@@ -659,3 +659,8 @@ color:#339900;
     background-color: #EAEAEA;
 }
 
+
+.ng-hide{
+  display: block!important;
+  visibility:hidden; 
+  }

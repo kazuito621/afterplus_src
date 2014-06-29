@@ -1,103 +1,22 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular',
-function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular) {
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular', 'Auth',
+function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular, Auth) {
 	var s = window.mcs = $scope;
 	s.routeParams={};
 	s.appData={};
 	s.initData={};
 	s.whoami='MainCtrl'
 	s.alertBox;
-	s.authData={};
 	s.localStore={};
-	storage.bind(s, 'authData', {defaultValue:{token:'',userID:0,email:''}});
 	storage.bind(s, 'localStore', {defaultValue:{token:false}});
 
-
-
-	/**
-	 * Auth class/object - todo , break this into its own file
-	 */
-	s.auth=function(){return{ 
-		isSignedIn:function(){ return (s.authData && s.authData.userID>0) }
-		,signInCustToken: function(custToken){
-				var deferred=$q.defer();
-				if(!custToken){ deferred.reject('Invalid token'); return deferred.promise; }
-				Restangular.one('signincusttoken').get({custToken:custToken})
-					.then( function(d){
-						if(d && d.userID > 0){
-							s.auth.setAuth(d);
-							s.sendEvt('onSignin');
-							return deferred.resolve(d);
-						}
-						
-					});
-				return deferred.promise;
-			}
-		,signOut:function(){ 
-			_.each(s.authData, function(val,key){
-				s.authData[key]=null;
-			});
-			_.each(s.initData, function(val,key){
-				s.initData[key]=null;
-			});
-			$location.url('/signin') 
-		}
-		,userRoles:{
-					public: 	1, // 001
-					customer:   2, // 010
-					staff:		3,
-					admin:  	5,  // 100
-					superadmin: 10
-					}
-		,role2id:function(role){
-					var n=this.userRoles[role];
-					if(n) return n;
-					return 1;
-				}
-		,accessLevels:function(){
-			return {
-					public: this.userRoles.public | // 111
-							this.userRoles.user   | 
-							this.userRoles.admin,   
-					anon:   this.userRoles.public,  // 001
-					user:   this.userRoles.user |   // 110
-							this.userRoles.admin,                    
-					admin:  this.userRoles.admin    // 100
-					}
-		}
-		,setAuth:function(obj){ 
-			s.authData=obj;
-		}
-		,getUserRole:function(){
-			if(s.authData.role) return s.authData.role;
-			else return 'public';
-		}
-		,is:function(role){
-			var urID=this.role2id(this.getUserRole());
-			var rID=this.role2id(role);
-			if(urID >= rID) return true;
-			else return false;
-		}
-		,getLoginName:function(){ 
-				if( s.authData && s.authData.userID>0 ){
-					if( s.authData.email ) return "Hi, "+s.authData.email+".";
-					else return "You are logged in.";
-				}
-				return 'Not logged in';
-			}
-
-	}}();
 
 	// global wrapper for broadcasting, so that each controller doesnt need $rootScope
 	// why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,
 	// this way you dont have to keep track of where everything is in relation to everything else... 
 	s.sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); }
-
-
-
-
 
 
 	// -------------------------------------------------  Setup REST API service 
@@ -121,10 +40,8 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 			return res.data;
 		})
 		.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
-			if(s.authData.token){
-				headers=headers||{};
-				headers['X-token']=s.authData.token;
-			}
+			headers=headers||{};
+			headers['X-token']=Auth.data().token;
 			return {
 				headers:headers
 				,element:element
@@ -169,11 +86,12 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 			Rest.one('init').get()
 				.then(function(data){
 					s.initData=data
+					Auth.gotInitData=true;
 					s.sendEvt('onInitData', data);
 				});
 	}
 	s.refreshInitData=function(){ getInitData(); }
-	if(s.auth.isSignedIn()) getInitData();
+	if(Auth.isSignedIn()) getInitData();
 	else s.$on('onSignin', angular.bind(this, getInitData))
 
 
@@ -183,7 +101,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		var authReq = $route.current && 
 				$route.current.$$route && 
 				$route.current.$$route.auth;
-		if (authReq && !s.auth.isSignedIn() && $route.current.params.stateID!='estimate') {
+		if (authReq && !Auth.isSignedIn() && $route.current.params.stateID!='estimate') {
 			//note: estimate handles its own signin
 			var currentUrl = $location.url();
 			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));

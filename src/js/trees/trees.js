@@ -5,8 +5,9 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 
-	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q) {
+	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth',
+	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth) {
+
 
 	// local and scoped vars
 	var s = window.tcs = $scope
@@ -54,13 +55,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 	//	2. initData has arrived from the server
 	// this is accomplished via $q.defer (see pre_init())
 	var init = function(urlParam1){
-		if(!s.auth.isSignedIn()) return;
+		if(!Auth.isSignedIn()) return;
 		s.TFSdata=TFS.data;
 		setupInitData();
 		if(s.data.mode=='estimate'){
 			// check for requestedReportID in user data (which means its verified)
-			if( s.authData.requestedReportID ){
-				ReportService.loadReport(s.authData.requestedReportID, {getTreeDetails:1})
+			if( AuthData.data().requestedReportID ){
+				ReportService.loadReport(AuthData.data().requestedReportID, {getTreeDetails:1})
 					.then(function(data){
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
@@ -435,7 +436,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		var set2=[],ratingD,o;
 		if(!infowindow) infowindow = new google.maps.InfoWindow();
 		_.each(treeSet, function(itm){
-			if(itm.hide) return;
+			if(!itm || itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
 			if(s.data.mode=='trees'){
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
@@ -778,8 +779,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// customer facing estimate view
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
-				if(!s.auth.isSignedIn()){
-					s.auth.signInCustToken(custToken).then( function(userData){
+				if(!Auth.isSignedIn()){
+					Auth.signInCustToken(custToken).then( function(userData){
 						// allow navigation to continue, now that user has logged in
 						deferredUserNav.resolve($route.current.params.param1);
 					});

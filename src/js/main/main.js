@@ -1,8 +1,8 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular', 
-function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular) {
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular', 'Auth',
+function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular, Auth) {
 var Auth={isSignedIn:function(){}, signIn:function(){},data:function(){return{}}};
 	var s = window.mcs = $scope;
 	s.routeParams={};
@@ -41,10 +41,8 @@ var Auth={isSignedIn:function(){}, signIn:function(){},data:function(){return{}}
 			return res.data;
 		})
 		.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
-			if(Auth.data().token){
-				headers=headers||{};
-				headers['X-token']=s.authData.token;
-			}
+			headers=headers||{};
+			headers['X-token']=Auth.data().token;
 			return {
 				headers:headers
 				,element:element

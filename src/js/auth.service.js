@@ -29,6 +29,7 @@ dbg('auth service top')
 
 	this.isSignedIn = function(){ return (this.data().userID>0); };
 
+	// After a login call, handle that and resolve the promise
 	var onDataBackFromSignIn = function(deferred, d){
 		if(d && d.userID > 0){
 			this.data(d);
@@ -52,7 +53,6 @@ dbg('auth service top')
 	// Returns a promise with either a resolve or a reject
 	this.signIn = function(email, pswd){
 		var deferred = $q.defer();
-	dbg(deferred,'signin called')
 		Rest.one('signin').get({e:email, p:pswd})
 			.then( angular.bind(this, onDataBackFromSignIn, deferred) );
 		return deferred.promise;

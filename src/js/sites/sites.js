@@ -1,8 +1,8 @@
 'use strict';
 
 var SitesCtrl = app.controller('SitesCtrl', 
-['$scope', 'Restangular', '$route', '$modal', '$location',
-function ($scope, Restangular, $route, $modal, $location) {
+['$scope', 'Restangular', '$route', '$modal', '$location', 'SiteModelUpdateService',
+function ($scope, Restangular, $route, $modal, $location, SiteModelUpdateService) {
 	var s=window.scs=$scope
 		,myStateID='sites'
 		,Rest=Restangular
@@ -29,6 +29,12 @@ function ($scope, Restangular, $route, $modal, $location) {
 			Rest.all('site').post(s.newSite).then( function(data) {
 			})
 			siteEditModal.hide();
+			s.refresh();
+		}
+	}
+
+	s.refresh = function() {
+		if($route.current.params.stateID=='sites') {
 			s.refreshInitData();
 		}
 	}
@@ -37,8 +43,10 @@ function ($scope, Restangular, $route, $modal, $location) {
 		var obj=s.site;
 		var that=this;
 		obj.post().then(function(){
-			s.refreshInitData();
+			s.refresh();
 		});
+		// Update all other sites models, eg. the sites dropdown on the trees report
+		SiteModelUpdateService.updateSiteModel(obj);
 		siteEditModal.hide();
 	}
 	
@@ -53,6 +61,7 @@ function ($scope, Restangular, $route, $modal, $location) {
 
 	s.newSiteModalOpen = function (siteID) {
 		s.site={};
+		s.newSite={clientID:''};
 		s.mode='new';
 		siteEditModal.show();
 	}
@@ -68,11 +77,9 @@ function ($scope, Restangular, $route, $modal, $location) {
 	}
 
 	s.deleteItems = function (itemID) {
-		console.log("itemID",itemID)
 		Restangular.one('site', itemID).remove().then(function(data) {
-			s.refreshInitData();
+			s.refresh();
 		});
-		s.refreshInitData();
 	}
 
 	s.queueOrDequeueItemForDelete = function(itemID) {

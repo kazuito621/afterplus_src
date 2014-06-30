@@ -5,8 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 
-	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q) {
+	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'SiteModelUpdateService', 
+	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, SiteModelUpdateService) {
 
 	// local and scoped vars
 	var s = window.tcs = $scope
@@ -183,6 +183,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 	// 		1. if set to null, then show SITES on map
 	//		2. ELSE, if siteID exists, show TREES on the map
 	s.$watch('selected.siteID', function(ID, oldID) {
+		SiteModelUpdateService.setSites(s.filteredSites);
 		ReportService.setSiteID(ID);
 		if(ID && ID>0) getTreeListings();
 		// todo -- else zoom in on the selected Site...
@@ -804,5 +805,35 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 }]);	// }}} TreesCtrl
 
+
+/**
+	Service for updates to various site models.
+**/
+app.service('SiteModelUpdateService', 
+	[
+	function() {
+	
+	var site = {};
+	var sites = {};
+
+	this.init=function(){}
+
+	this.updateSiteModel=function(mysite){
+		if (!$.isEmptyObject(this.sites)){
+			this.site = mysite;
+			$.each(this.sites, function(index, curSite){
+				if (mysite.siteID == curSite.siteID) {
+					curSite.siteName = mysite.siteName;
+					return false; //break
+				}
+			});
+		}
+	}
+	this.setSites=function(sites){
+		this.sites = sites;
+	}
+	this.init();
+
+}]);
 
 

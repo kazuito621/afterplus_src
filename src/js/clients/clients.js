@@ -22,20 +22,25 @@ function ($scope, Restangular, $route, $modal) {
 			return s.setAlert('Choose a client type for the new client',{type:'d'});
 		} else {
 			Rest.all('client').post(s.newClient).then( function(data) {
-				console.log(s.newClient);
-				console.log("Post new client response:");
-				console.dir(data);
 			})
 		}
 		clientEditModal.hide();
-		s.refreshInitData();
+		s.refresh();
+	}
+
+	s.refresh = function() {
+		if($route.current.params.stateID=='clients') {
+			s.refreshInitData();
+		}
 	}
 
 	s.saveExistingClient = function() {
 		var obj=s.client;
 		var that=this;
 		obj.post().then(function(){
-			s.refreshInitData();
+			if($route.current.params.stateID=='clients') {
+				s.refresh();
+			}
 		});
 		clientEditModal.hide();
 	}
@@ -63,6 +68,7 @@ function ($scope, Restangular, $route, $modal) {
 
 	s.newClientModalOpen = function (clientID) {
 		s.client={};
+		s.newClient={};
 		s.mode='new';
 		clientEditModal.show();
 	}
@@ -79,9 +85,8 @@ function ($scope, Restangular, $route, $modal) {
 
 	s.deleteItems = function (itemID) {
 		Restangular.one('client', itemID).remove().then(function() {
-			s.refreshInitData();
+			s.refresh();
 		});
-		s.refreshInitData();
 	}
 
 	s.queueOrDequeueItemForDelete = function(itemID) {

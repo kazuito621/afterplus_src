@@ -29,7 +29,7 @@
         	<option ng-repeat="site in filteredSites" value="{{site.siteID}}">{{site.siteName}}</option>
       	</select>
     </div>
-	<span ng-if="selected.siteID>0">[<a href ng-click='reset()'>RESET</a>] &nbsp; 
+	<span>[<a href ng-click='reset()'>RESET</a>] &nbsp; 
 		<span style='color:#667;'>siteID: {{selected.siteID}}</span> 
 	</span>
 </nav>

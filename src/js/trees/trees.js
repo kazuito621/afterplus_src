@@ -831,10 +831,11 @@ app.service('SiteModelUpdateService',
 	
 	var site = {};
 	var sites = {};
+	var reportSite = {};
 
 	this.init=function(){}
 
-	this.updateSiteModel=function(mysite){
+	this.updateSiteModels=function(mysite){
 		if (!$.isEmptyObject(this.sites)){
 			this.site = mysite;
 			$.each(this.sites, function(index, curSite){
@@ -843,12 +844,21 @@ app.service('SiteModelUpdateService',
 					return false; //break
 				}
 			});
+			this.updateReportSiteModel();
 		}
 	}
 	this.setSites=function(sites){
 		this.sites = sites;
 	}
 	this.init();
+
+	this.setReportSiteModel=function(report){
+		this.reportSite = report;
+	}
+
+	this.updateReportSiteModel=function(){
+		this.reportSite.siteName = this.site.siteName;
+	}
 
 }]);
 

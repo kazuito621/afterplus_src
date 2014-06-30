@@ -46,7 +46,7 @@ function ($scope, Restangular, $route, $modal, $location, SiteModelUpdateService
 			s.refresh();
 		});
 		// Update all other sites models, eg. the sites dropdown on the trees report
-		SiteModelUpdateService.updateSiteModel(obj);
+		SiteModelUpdateService.updateSiteModels(obj);
 		siteEditModal.hide();
 	}
 	

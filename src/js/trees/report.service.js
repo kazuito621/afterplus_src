@@ -4,8 +4,8 @@
 	and Report Controller can build a UI based on the data
 **/
 app.service('ReportService', 
-	['Restangular', '$timeout', '$rootScope', 'md5', '$q',
-	function(Restangular, $timeout, $rootScope, md5, $q) {
+	['Restangular', '$timeout', '$rootScope', 'md5', '$q', 'SiteModelUpdateService', 
+	function(Restangular, $timeout, $rootScope, md5, $q, SiteModelUpdateService) {
 	// private properties
 	var Rest=Restangular
 		,nextItemID=1
@@ -113,6 +113,7 @@ app.service('ReportService',
 			_.copyProps(data, that.report, 'siteName,contact,contactEmail,contactPhone,street,city,state');
 			dbg(that.report)
 		});	
+		SiteModelUpdateService.setReportSiteModel(this.report);
 	}
 
 	// Get the treatment descriptions using the API

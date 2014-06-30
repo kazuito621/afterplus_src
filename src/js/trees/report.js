@@ -17,6 +17,8 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.service.desc;
 		s.service.price;
 		s.emailRpt = {};
+		s.estimateTreatmentCodes = [];
+		s.treatmentDescriptions = [];
         var changedItems = [];
 
 	var init = function(){
@@ -52,8 +54,13 @@ var ReportCtrl = app.controller('ReportCtrl',
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
 	});
 
-    // returns true if row with passed id is the current highlighted row
+	// After the counts for the treatments have been added, add in the service descriptions 
+	s.$on('treatmentCountsProcessed', function(evt, treatments){
+		var that = $scope;
+		RS.setTreatmentDescriptions(treatments,that);
+	});
 
+    // returns true if row with passed id is the current highlighted row
     s.rowHighlightClass = function (item) {
         if (item.$$hashKey === s.highLightedRowId) {
             return 'highlighted-row';
@@ -177,13 +184,12 @@ var ReportCtrl = app.controller('ReportCtrl',
 				return (item.$$hashKey !== hashKey)
 		});		
 	}
-
+	
 	var pre_init = function() {
 		if($route.current.params.stateID==myStateID) init();
 	}
 	s.$on('$locationChangeSuccess', pre_init);
 	pre_init();
 
-	
+}]);
 
-}]);	

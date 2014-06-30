@@ -261,6 +261,14 @@ section.mainContent.mode_estimate{
 	left:760px;
 	top:160px;
 	}
+.mode_estimate .ng-table {
+    	border: none;
+	}
+
+#estimate_table_heading{
+	background-color:rgb(177, 177, 177);
+	color:white;	
+}
 
 /* main outer container of estimate ... while in customer view */
 .table_estimate.mode_estimate {
@@ -277,6 +285,7 @@ section.mainContent.mode_estimate{
 	/* position:fixed; */
 	right:10px;
 	width:100%;
+	margin-bottom:10px;
 	/* height:400px; */
 	/* padding-left:30px; */
 	}
@@ -346,6 +355,12 @@ h3{
 .textSize20{
 	font-size:20px;
 }
+
+/* Estimate table */
+#estimate_table_notes{
+	font-size: 12px;
+	font-style: italic;
+	}
 
 /*
 /////////////////////////////////////

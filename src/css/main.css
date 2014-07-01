@@ -659,3 +659,9 @@ color:#339900;
     background-color: #EAEAEA;
 }
 
+/** this messes up the map for some reason
+.ng-hide{
+  display: block!important;
+  visibility:hidden; 
+  }
+  */

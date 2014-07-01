@@ -78,9 +78,13 @@ function ($scope, Restangular, $route, $modal) {
 	}
 
 	s.deleteItems = function (itemID) {
-		Restangular.one('client', itemID).remove().then(function() {
-			s.refreshInitData();
-		});
+		Restangular.one('client', itemID).remove()
+			.then(function() {
+				s.refreshInitData();
+			},function err(){
+				//todo ... how do we get this?
+				// todo -- ad this same functionality to delete of site
+			});
 		s.refreshInitData();
 	}
 

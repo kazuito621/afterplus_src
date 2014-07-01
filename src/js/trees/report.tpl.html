@@ -37,9 +37,6 @@
 		{{report.contactPhone}} <a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" ng-click='existingSiteModalOpen(selected.siteID)' class="pointer fa fa-pencil _grey _size5"></a><BR>
 		<strong>Address:&nbsp;</strong>
 			{{report.street}}, {{report.city}},{{report.state}} {{report.zip}}<BR>
-			<!--
-		Link to Estimate: <input type=text size=40 value='{{report.reportLink}}'> 
-			-->
 		</div>
 		
 		<div class="pullright">
@@ -64,6 +61,7 @@
 				data-template="js/trees/emailReport.tpl.html"
 				ng-click="initEmailModal()"
 				>Send</button>
+		<a href='{{report.reportLink}}' target=_new>Customer View</a> 
 		  <!--<button class="navButton width280 roundedCorners" ng:cloak ng-show="report.reportID>0 && data.mode=='trees'" ng-click="emailReport()">View Customer Version</button>-->
 		 </div>
 		 <!-- dont show for now... need a new method now that we have a different access per user

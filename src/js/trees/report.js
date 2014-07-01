@@ -73,6 +73,7 @@ var ReportCtrl = app.controller('ReportCtrl',
         return '';
     };
 
+
 	// After an item in the report has been edited via x-editable
 	// sometimes the adjusted DOM throws the scroll out of position,
 	// One way to fix is record scroll and go back there...

@@ -5,8 +5,9 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 
-	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q) {
+	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth',
+	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth) {
+
 
 	// local and scoped vars
 	var s = window.tcs = $scope
@@ -38,15 +39,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.selectedValues = [];
 		s.thisYear=moment().format('YYYY');
 
-		// tree icon colors
-		//			green     drk blue  red    lt blue    orange    purpl     yellow,   futia      brown     dk grn    dk red
 		s.colors={
 			speciesCount:[]		// stores count of species ie. speciesCount[133]=5, speciesCount[431]=1  (speciesID 133 = 5 total)
 			,assignment:[]		// stores which colorID index (for bg and fg) is assigned to which speciesID..
 								// ie. assignment[0]=133 (the first color index for bg[0]/fg[0] is assigned to speciesID 133)
 			,nextColorID:0		
-			,bg:['78ee31', '2044df', 'ce2712', 'db7e00',  'ce2712', '6d2dd5', 'f5f02c',   'ed79fb', 'a8621c', '487123', '751307']
-			,fg:['000000', 'ffffff', 'ffffff', 'ffffff',  'ffffff', 'ffffff', '000000',   '000000', 'ffffff', 'ffffff', 'ffffff']
+			// tree icon colors
+			//    green     drk blue   red   orange   dkgry     purpl     yellow,  futia   brown   dk grn  dkred    lt.futia  lt.blue  dk.teal lt.teal  lt.orng med.grey   medred  med.grn  med.purp
+			,bg:['78ee31','2044df','ce2712','db7e00','646464','6d2dd5','f5f02c','ed79fb','a8621c','487123','751307','dc85ee','9baeec','298d8c','8bf8f7','fdc476','a5a5a5','e27966','6aab09','ad8cd6']
+			,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
 			};
 
 	// INIT is not called until
@@ -54,13 +55,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 	//	2. initData has arrived from the server
 	// this is accomplished via $q.defer (see pre_init())
 	var init = function(urlParam1){
-		if(!s.auth.isSignedIn()) return;
+		if(!Auth.isSignedIn()) return;
 		s.TFSdata=TFS.data;
 		setupInitData();
 		if(s.data.mode=='estimate'){
 			// check for requestedReportID in user data (which means its verified)
-			if( s.authData.requestedReportID ){
-				ReportService.loadReport(s.authData.requestedReportID, {getTreeDetails:1})
+			if( Auth.data().requestedReportID ){
+				ReportService.loadReport(Auth.data().requestedReportID, {getTreeDetails:1})
 					.then(function(data){
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
@@ -118,11 +119,17 @@ var TreesCtrl = app.controller('TreesCtrl',
         var newActiveRow = $('#tree-result-item-row-' + s.activeResultRow);
         var listContainer = $('.trees-result-list');
 
+        var scrollTo = function (value) {
+            listContainer.animate({
+                scrollTop: value
+            }, 2000);
+        };
+
         newActiveRow.toggleClass('highlighted-row');
 
-        listContainer.animate({
-            scrollTop: newActiveRow.offset().top - listContainer.offset().top
-        }, 2000);
+        var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+
+        scrollTo(scrollValue);
     };
 
 	// ----------------------------------------------------------- EVENTS BASED ON DROPDOWNS
@@ -429,7 +436,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		var set2=[],ratingD,o;
 		if(!infowindow) infowindow = new google.maps.InfoWindow();
 		_.each(treeSet, function(itm){
-			if(itm.hide) return;
+			if(!itm || itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
 			if(s.data.mode=='trees'){
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
@@ -536,7 +543,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 	};
 
     var animateMarker = function (marker, animationType) {
-        marker.setAnimation(google.maps.Animation[animationType]);
+        var animation = google.maps.Animation[animationType];
+
+        if (animationType === null) {
+            animation = null;
+        }
+
+        if (marker) {
+            marker.setAnimation(animation);
+        }
     };
 
     var findMarker = function (id) {
@@ -555,13 +570,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 	s.onTreeResultMouseOver = function (tree) {
 		var marker = findMarker(tree.treeID);
 		if (!hoveredItem.animationCompleted) {
-			animateMarker(marker, 'DROP');
+			animateMarker(marker, 'BOUNCE');
 		}
 		hoveredItem.animationCompleted = true;
 		tree.showEdit = true;
 	};
 
 	s.onTreeResultMouseLeave = function (tree) {
+        var marker = findMarker(tree.treeID);
+        animateMarker(marker, null);
 		tree.showEdit = null;
 		hoveredItem.animationCompleted = false;
 	};
@@ -762,8 +779,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// customer facing estimate view
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
-				if(!s.auth.isSignedIn()){
-					s.auth.signInCustToken(custToken).then( function(userData){
+				//if the user is not signed in... OR if there IS a token, but a requestedReportID hasnt been translated, then go find it
+				if(!Auth.isSignedIn() || (custToken && Auth.data().requestedReportID===undefined)){		
+					Auth.signInCustToken(custToken).then( function(userData){
+						if(userData && !userData.requestedReportID) Auth.data({requestedReportID:0}, true);
 						// allow navigation to continue, now that user has logged in
 						deferredUserNav.resolve($route.current.params.param1);
 					});

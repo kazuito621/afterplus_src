@@ -155,6 +155,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 				else filterItm.count = 0;
 			});
 		});
+		// Inform listners that the treatment counts have been added
+		$rootScope.$broadcast('treatmentCountsProcessed',this.initData.filters.treatments);
 
 	}
 

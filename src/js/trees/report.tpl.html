@@ -5,250 +5,256 @@
 <!-- LOAD recent estimates list -->
 <div class="pullleft width180" ng-if="data.mode=='trees'">
     <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
-		<option value="">Recent Estimates</option>
-    	<option ng-repeat="r in recentReportList" value="{{r.reportID}}">{{r.name}} - {{r.tstamp_updated}}</option>
+        <option value="">Recent Estimates</option>
+        <option ng-repeat="r in recentReportList" value="{{r.reportID}}">{{r.name}} - {{r.tstamp_updated}}</option>
     </select>
-	<BR><BR>
-	<button ng-cloak ng:show="report.items.length>0" ng-click="newReport();">New Report</button>
+    <BR><BR>
+    <button ng-cloak ng:show="report.items.length>0" ng-click="newReport();">New Report</button>
 </div>
 
-    
-     
-      
-  
+
+
+
+
 
 
 <!--BEGIN ESTIMATE TABLE SECTION-->
 <BR>
 <div class="table_estimate report_main mode_{{data.mode}}" ng-if="report.items.length>0">
-	<div>
-		<div class="pullleft">
-		<h1 style='font-size:28pt;'>Estimate for {{report.siteName}}</h1>
-		Estimate Name: 
+<div>
+    <div class="pullleft">
+        <h1 style='font-size:28pt;'>Estimate for {{report.siteName}}</h1>
+        Estimate Name:
 			<span ng-if="data.mode=='trees'">
 				<a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
 			</span>
 			<span ng-if="data.mode!='trees'">
 				{{report.name}}
 			</span>
-			<BR>
-		Estimate ID: {{report.reportID}}<BR>
-		<strong>Contact:&nbsp;</strong>{{report.contact}}
-		{{report.contactPhone}}<BR>
-		<strong>Address:&nbsp;</strong>
-			{{report.street}}, {{report.city}},{{report.state}} {{report.zip}}<BR>
-			<!--
-		Link to Estimate: <input type=text size=40 value='{{report.reportLink}}'> 
-			-->
-		</div>
-		
-		<div class="pullright">
-				<BR><BR><BR><BR>
-		<div class="pullright topSpace10"><strong>Total Bid:&nbsp;</strong>${{report.total.grand|formatPrice}}</div>
-		<div class="clearfloat"></div>
-		<div class="pullright"><strong>Created:&nbsp;</strong>{{report.tstamp_updated}}</div>
-		</div>
-	</div>
+        <BR>
+        Estimate ID: {{report.reportID}}<BR>
+        <strong>Contact:&nbsp;</strong>{{report.contact}}
+        {{report.contactPhone}}<BR>
+        <strong>Address:&nbsp;</strong>
+        {{report.street}}, {{report.city}},{{report.state}} {{report.zip}}<BR>
+        <!--
+    Link to Estimate: <input type=text size=40 value='{{report.reportLink}}'>
+        -->
+    </div>
 
-	<div id="treeMap_estimate" class="mode_{{data.mode}}" ng-if="data.mode=='estimate'">
-		<div id="treeMap2" class="mode_{{data.mode}}"></div>
-	</div>
-	<div class = "clearfloat"></div>
-     <div class="topSpace5 space5 inlineBlock pullleft">
-		 <div class="inline pullleft rightSpace20">
-		 <button class="navButton width180 roundedCorners" ng-if="data.mode=='trees'" ng-click="saveReport()">Save</button>
-		   <button class="navButton width180 roundedCorners" ng-if="data.mode=='trees'" 
-		   		data-backdrop='static'
-				data-keyboard=true
-				bs-modal
-				data-template="js/trees/emailReport.tpl.html"
-				ng-click="initEmailModal()"
-				>Send</button>
-		  <!--<button class="navButton width280 roundedCorners" ng:cloak ng-show="report.reportID>0 && data.mode=='trees'" ng-click="emailReport()">View Customer Version</button>-->
-		 </div>
-		 <!-- dont show for now... need a new method now that we have a different access per user
-		 <div class="inline" ng:cloak ng-show="report.reportID>0 && data.mode=='trees'">
-		 	<a href='{{report.reportLink}}' target=_new>View Customer Version</a>
-		 </div>
-		 -->
-		 <div class="clearfloat"></div>
-     </div>
-     <div class = "clearfloat"></div>
+    <div class="pullright">
+        <BR><BR><BR><BR>
+        <div class="pullright topSpace10"><strong>Total Bid:&nbsp;</strong>${{report.total.grand|formatPrice}}</div>
+        <div class="clearfloat"></div>
+        <div class="pullright"><strong>Created:&nbsp;</strong>{{report.tstamp_updated}}</div>
+    </div>
+</div>
 
-	<!-- Email logs -->
-	 <div ng-if="report.emailLogs && data.mode=='trees'">
-		Email logs:<BR>
-		<table class='table ng-table-responsive ng-table'>
-			<tr ng-table ng-repeat="itm in report.emailLogs">
-				<td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
-				&nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}'>link</a>
-				</td>
-				<td>{{itm.tstamp_sent}}</td>
-				<td>
-					<span class='textIconBlock-green' ng-if="itm.tstamp_opened">OPENED</span>
-					<span class='textIconBlock-red' ng-if="itm.result!=1 && !itm.tstamp_opened">SEND FAILED</span>
-				</td>
-			</tr>
-		</table>
-	 </div>
-     
-     
-   	<div class ="bottomSpace10"></div>
-   	<table class="table ng-table-responsive ng-scope ng-table">
-		<tr>
-	       <td></td>
-	       <td><h1>Number</h1></td>
-	       <td><h1>Name</h1></td>
-	       <td><h1>Treatment</h1></td>
-	       <td ng-if="data.mode=='trees'"><h1>Price</h1></td>
-	       <td ng-if="data.mode=='trees'"></td>
-	       <td ng-if="data.mode=='estimate'"><h1>Rating</h1></td>
-	       <td ng-if="data.mode=='estimate'"><h1>Bid ($)</h1></td>
-		</tr>
+<div id="treeMap_estimate" class="mode_{{data.mode}}" ng-if="data.mode=='estimate'">
+    <div id="treeMap2" class="mode_{{data.mode}}"></div>
+</div>
+<div class = "clearfloat"></div>
+<div class="topSpace5 space5 inlineBlock pullleft">
+    <div class="inline pullleft rightSpace20">
+        <button class="navButton width180 roundedCorners" ng-if="data.mode=='trees'" ng-click="saveReport()">Save</button>
+        <button class="navButton width180 roundedCorners" ng-if="data.mode=='trees'"
+                data-backdrop='static'
+                data-keyboard=true
+                bs-modal
+                data-template="js/trees/emailReport.tpl.html"
+                ng-click="initEmailModal()"
+                >Send</button>
+        <a href='{{report.reportLink}}' target=_new>Customer View</a>
+        <!--<button class="navButton width280 roundedCorners" ng:cloak ng-show="report.reportID>0 && data.mode=='trees'" ng-click="emailReport()">View Customer Version</button>-->
+    </div>
+    <!-- dont show for now... need a new method now that we have a different access per user
+    <div class="inline" ng:cloak ng-show="report.reportID>0 && data.mode=='trees'">
+        <a href='{{report.reportLink}}' target=_new>View Customer Version</a>
+    </div>
+    -->
+    <div class="clearfloat"></div>
+</div>
+<div class = "clearfloat"></div>
 
-	    <tr ng-table ng-repeat="item in groupedItems" ng-if="report.items.length>0"
-            ng-class="rowHighlightClass(item)" id="rpt_item_{{item.treeID}}">
-                <td data-title="listing_image">
+<!-- Email logs -->
+<div ng-if="report.emailLogs && data.mode=='trees'">
+    Email logs:<BR>
+    <table class='table ng-table-responsive ng-table'>
+        <tr ng-table ng-repeat="itm in report.emailLogs">
+            <td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
+                &nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}'>link</a>
+            </td>
+            <td>{{itm.tstamp_sent}}</td>
+            <td>
+                <span class='textIconBlock-green' ng-if="itm.tstamp_opened">OPENED</span>
+                <span class='textIconBlock-red' ng-if="itm.result!=1 && !itm.tstamp_opened">SEND FAILED</span>
+            </td>
+        </tr>
+    </table>
+</div>
 
-						<!--data-template="js/trees/treeRollover.tpl.html"-->
 
-					<img ng-src='{{item.imgSm}}{{tree_cachebuster}}' class='item_thumb'
-						data-placement="right"
-						data-trigger="hover"
-						data-content="<img style='width:320px; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
-						data-html="true"
-						bs-popover
-						style="border:3px solid #{{colors.bg[item.colorID]}} !important"
-					/>
-				</td>
-                <td data-title="listing_ID">{{item.localTreeID}}</td>
-                <td data-title="listing_species">
-					{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
-					<span style='font-size:75%; color:#999;'>[{{item.treeID}}]</span>
-                    <br>
+<div class ="bottomSpace10"></div>
+<table class="table ng-table-responsive ng-scope ng-table mode_{{data_mode}}">
+    <tr id="estimate_table_heading">
+        <td></td>
+        <td><h1>Number</h1></td>
+        <td><h1>Name</h1></td>
+        <td><h1>Treatment</h1></td>
+        <td ng-if="data.mode=='trees'"><h1>Price</h1></td>
+        <td ng-if="data.mode=='trees'"></td>
+        <td ng-if="data.mode=='estimate'"><h1>Rating</h1></td>
+        <td ng-if="data.mode=='estimate'"><h1>Bid ($)</h1></td>
+    </tr>
+
+    <tr ng-table ng-repeat="item in groupedItems" ng-if="report.items.length>0"
+        ng-class="rowHighlightClass(item)" id="rpt_item_{{item.treeID}}">
+        <td data-title="listing_image">
+
+            <!--data-template="js/trees/treeRollover.tpl.html"-->
+
+            <img ng-src='{{item.imgSm}}{{tree_cachebuster}}' class='item_thumb'
+                 data-placement="right"
+                 data-trigger="hover"
+                 data-content="<img style='width:320px; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
+                 data-html="true"
+                 bs-popover
+                 style="border:3px solid #{{colors.bg[item.colorID]}} !important"
+                    />
+        </td>
+        <td data-title="listing_ID">{{item.localTreeID}}</td>
+        <td data-title="listing_species">
+            {{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
+            <span style='font-size:75%; color:#999;'>[{{item.treeID}}]</span>
+            <br>
                     <span data-title="listing_dbh" ng-if="data.mode=='trees'">
                         {{item.dbhID | dbhID2Name:this }}
                     </span>
-                    <div ng-if="item.notes">{{item.notes}}</div>
-				</td>
-                <td ng-if="data.mode=='estimate'">
-                    {{item.dbhID | dbhID2Name:this }}
-				</td>
-                <td ng-if="data.mode=='estimate'" data-title="treatment_yearAndType">
-				  {{item.treatmentTypeCode | getTreatmentTypeName:this}}
-                </td>
-                <td ng-if="data.mode=='estimate'" data-title="listing_rating">
-                  {{item.ratingID | treeRatingGetter:this}}
-                </td>
+            <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
+        </td>
+        <td ng-if="data.mode=='estimate'">
+            {{item.dbhID | dbhID2Name:this }}
+        </td>
+        <td ng-if="data.mode=='estimate'" data-title="treatment_yearAndType">
+            {{item.treatmentTypeCode | getTreatmentTypeName:this}}
+        </td>
+        <td ng-if="data.mode=='estimate'" data-title="listing_rating">
+            {{item.ratingID | treeRatingGetter:this}}
+        </td>
 
-                <td colspan="3" ng-if="data.mode === 'trees'">
-                    <table class="ng-table-responsive">
-                        <tr ng-repeat="treatment in item.treatments" ng-mouseover="hover=true" ng-mouseleave="hover=false">
-                            <td data-title="listing_treatment" ng-if="data.mode=='trees'" style="padding: 8px;">
-                                <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
-                                   editable-select="treatment.treatmentTypeCode"
-                                   onshow="onShowEditItem(item.$$hashKey)"
-                                   onhide="onHideEditItem()">
-                                    {{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
-                                </a>
-                            </td>
+        <td colspan="3" ng-if="data.mode === 'trees'">
+            <table class="ng-table-responsive">
+                <tr ng-repeat="treatment in item.treatments" ng-mouseover="hover=true" ng-mouseleave="hover=false">
+                    <td data-title="listing_treatment" ng-if="data.mode=='trees'" style="padding: 8px;">
+                        <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
+                           editable-select="treatment.treatmentTypeCode"
+                           onshow="onShowEditItem(item.$$hashKey)"
+                           onhide="onHideEditItem()">
+                            {{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
+                        </a>
+                    </td>
 
-                            <td ng-if="data.mode=='trees'" data-title="listing_price" style="padding: 8px;">&#36;
-                                <a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)"                                    onhide="onHideEditItem()">
-                                    {{treatment.price|formatPrice}}
-                                </a>
-                            </td>
+                    <td ng-if="data.mode=='trees'" data-title="listing_price" style="padding: 8px;">&#36;
+                        <a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)"                                    onhide="onHideEditItem()">
+                            {{treatment.price|formatPrice}}
+                        </a>
+                    </td>
 
-                            <td ng-if="data.mode=='trees'" data-title="listing_options" width='55px;' style="padding: 8px;">
-                                <a ng-show="hover" href='#/tree-edit/{{item.treeID}}' class='fa fa-pencil _grey _med'></a> &nbsp;
-                                <a ng-show="hover" href ng-click="removeItem(treatment.hashKey, 'items')" class='fa fa-times _red _med' ></a>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+                    <td ng-if="data.mode=='trees'" data-title="listing_options" width='55px;' style="padding: 8px;">
+                        <a ng-show="hover" href='#/tree-edit/{{item.treeID}}' class='fa fa-pencil _grey _med'></a> &nbsp;
+                        <a ng-show="hover" href ng-click="removeItem(treatment.hashKey, 'items')" class='fa fa-times _red _med' ></a>
+                    </td>
+                </tr>
+            </table>
+        </td>
 
-                <td ng-if="data.mode=='estimate'" data-title="listing_bid">
-               		&#36;{{item.price|formatPrice}}
-                </td>
-            </tr>
-			<tr ng-if="report.total.items && data.mode=='trees'">
-				<td colspan=4></td><td>Subtotal:</td>
-				<td>&#36;{{report.total.items|formatPrice}}</td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr ng-if="report.total.items && data.mode=='estimate'">
-				<td colspan=5></td><td>Subtotal:</td>
-				<td>&#36;{{report.total.items|formatPrice}}</td>
-			</tr>
-   	</table>
-   	
-   <table class="table ng-table-responsive ng-scope ng-table" ng-if="data.mode=='trees' || report.services.length>0 ">
-   <tr><td colspan="4"><h1>Misc. Services</h1></td></tr>
+        <td ng-if="data.mode=='estimate'" data-title="listing_bid">
+            &#36;{{item.price|formatPrice}}
+        </td>
+    </tr>
+    <tr ng-if="report.total.items && data.mode=='trees'">
+        <td colspan=4></td><td>Subtotal:</td>
+        <td>&#36;{{report.total.items|formatPrice}}</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr ng-if="report.total.items && data.mode=='estimate'">
+        <td colspan=5></td><td>Subtotal:</td>
+        <td>&#36;{{report.total.items|formatPrice}}</td>
+    </tr>
+</table>
 
-	<tr>
-	<th>Description</th>
-	<th>Quantity</th>
-	<th>Price</th>
-	<td> &nbsp; &nbsp; </td>
-	</tr>
+<table class="table ng-table-responsive ng-scope ng-table" ng-if="data.mode=='trees' || report.services.length>0 ">
+    <tr><td colspan="4"><h1>Misc. Services</h1></td></tr>
 
-   <tr ng-repeat="item in report.services" 
-		ng-mouseover="hover=true" ng-mouseleave="hover=false">
-	   <td data-title="service_desc"><a href editable-text='item.desc'>{{item.desc}}</a></td>
-		<td data-title="service_quantity"><a href editable-text='item.quantity'>{{item.quantity}}</a></td>
-		<td data-title="service_price"><a href editable-text='item.price'>{{item.price}}</a></td>
-		<td ng-if="data.mode=='trees'" width='50px;'>
-			<a ng-show="hover" href ng-click="removeItem(item.$$hashKey,'services')" class='fa fa-times _red _med' ></a>
-		</td>
-   </tr>
+    <tr>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <td> &nbsp; &nbsp; </td>
+    </tr>
 
-   <tr ng-if="data.mode=='trees'">
-	<td>
-	<textarea ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'></textarea>
-	</td>
-	<td>
+    <tr ng-repeat="item in report.services"
+        ng-mouseover="hover=true" ng-mouseleave="hover=false">
+        <td data-title="service_desc"><a href editable-text='item.desc'>{{item.desc}}</a></td>
+        <td data-title="service_quantity"><a href editable-text='item.quantity'>{{item.quantity}}</a></td>
+        <td data-title="service_price"><a href editable-text='item.price'>{{item.price}}</a></td>
+        <td ng-if="data.mode=='trees'" width='50px;'>
+            <a ng-show="hover" href ng-click="removeItem(item.$$hashKey,'services')" class='fa fa-times _red _med' ></a>
+        </td>
+    </tr>
+
+    <tr ng-if="data.mode=='trees'">
+        <td>
+            <textarea ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'></textarea>
+        </td>
+        <td>
 		<span>
 		x<input type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
 		</span>
-	</td>
-	<td style="padding-left:0px;padding-right:0px">
+        </td>
+        <td style="padding-left:0px;padding-right:0px">
 		<span>
 		$<input type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
 		</span>
-	</td>
-	<td>
-   		<button class="navButton width90 roundedCorners" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
-   </td>
-   </tr>
+        </td>
+        <td>
+            <button class="navButton width90 roundedCorners" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
+        </td>
+    </tr>
 
-	<!-- // Subtotals // -->
-	<tr ng-if="report.total.services">
-		<td align=right colspan="3">Misc Services Subtotal:</td>
-		<td>&#36;{{report.total.services|formatPrice}}</td>
-	</tr>
-	<tr ng-if="report.total.services">
-		<td align=right colspan="3">Tree Services Subtotal:</td>
-		<td>&#36;{{report.total.items|formatPrice}}</td>
-	</tr>
-   </table>
+    <!-- // Subtotals // -->
+    <tr ng-if="report.total.services">
+        <td align=right colspan="3">Misc Services Subtotal:</td>
+        <td>&#36;{{report.total.services|formatPrice}}</td>
+    </tr>
+    <tr ng-if="report.total.services">
+        <td align=right colspan="3">Tree Services Subtotal:</td>
+        <td>&#36;{{report.total.items|formatPrice}}</td>
+    </tr>
+</table>
 
-	<div style='text-align:right; font-weight:bold; font-size:1.2em;'>
-		Total: &#36;{{report.total.grand|formatPrice}}
-	</div>
+<div style='text-align:right; font-weight:bold; font-size:1.2em;'>
+    Total: &#36;{{report.total.grand|formatPrice}}
+</div>
 
-   	
-   	<div class="" ng-if="data.mode=='trees'">
-   	<p>Notes</p>
-        <textarea ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'></textarea>
-     </div>
-     
- 	<div class="" ng-if="data.mode=='estimate'">
- 		<h2>Notes</h2>
-        <pre>{{report.notes}}</pre>
-   	</div>
-     
-	  <div class ="bottomSpace10"></div>
-	</div>
+
+<div class="" ng-if="data.mode=='trees'">
+    <p>Notes</p>
+    <textarea ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'></textarea>
+</div>
+
+<div class="" ng-if="data.mode=='estimate'">
+    <h2>Notes</h2>
+    <pre>{{report.notes}}</pre>
+
+    <h2>Definition of Treatments:</h2>
+    <div ng-repeat=" desc in treatmentDescriptions ">
+        <p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
+    </div>
+</div>
+
+<div class ="bottomSpace10"></div>
+</div>
 </div> <!-- }}} .report_main -->
 
 
@@ -262,7 +268,7 @@
 
 
 <div style='margin:15px 0 60px 70px; font-size:130%; color:#555;' class="" ng-if="report.items.length<1">
-	(No Trees Added to Estimate Yet)	
+    (No Trees Added to Estimate Yet)
 </div>
 
 

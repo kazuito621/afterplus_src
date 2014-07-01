@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Restangular', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll',
-        function ($scope, Restangular, $route, $timeout, ReportService, $location, $anchorScroll) {
+    ['$scope', 'Restangular', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth',
+        function ($scope, Restangular, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
             'use strict';
 
             // local and scoped vars
@@ -17,6 +17,8 @@ var ReportCtrl = app.controller(
 //            s.service.price;
             s.emailRpt = {};
             s.groupedItems = [];
+            s.estimateTreatmentCodes = [];
+            s.treatmentDescriptions = [];
             var changedItems = [];
 
             var init = function () {
@@ -136,30 +138,30 @@ var ReportCtrl = app.controller(
                 $(window).scrollTop(s.tempScrollPos);
             };
             // another way later..if the above doesnt work that well, is this way:
-                /*
-                    add this to template in place of other onhide/onshow
-                        onhide="onAfterEditReportItem('rpt_item_'+item.$$hashKey)">
-                    s.onAfterEditReportItem = function(elID){
-                        $location.hash(elID);
-                        $anchorScroll();
-                    }
-                */
+            /*
+             add this to template in place of other onhide/onshow
+             onhide="onAfterEditReportItem('rpt_item_'+item.$$hashKey)">
+             s.onAfterEditReportItem = function(elID){
+             $location.hash(elID);
+             $anchorScroll();
+             }
+             */
 
 
-        /*
-            // when a selected report is loaded
-            s.$watch( function () { return ReportService.report; }, function ( report ) {
-                console.log("report returned: "+report);
-                if(!report) return;
-                if(s.report) return;
-                s.report=report;
-                return;
+            /*
+             // when a selected report is loaded
+             s.$watch( function () { return ReportService.report; }, function ( report ) {
+             console.log("report returned: "+report);
+             if(!report) return;
+             if(s.report) return;
+             s.report=report;
+             return;
 
-                if(!report.name) report.name=s.report.name;
-                if(!report.notes) report.notes=s.report.notes;
-                s.report=report;
-            });
-        */
+             if(!report.name) report.name=s.report.name;
+             if(!report.notes) report.notes=s.report.notes;
+             s.report=report;
+             });
+             */
 
 
             s.newReport = function () {
@@ -183,11 +185,11 @@ var ReportCtrl = app.controller(
                 s.emailRpt.reportID = s.report.reportID;
                 s.emailRpt.siteID = s.report.siteID;
                 s.emailRpt.contactEmail = s.report.contactEmail;
-                s.emailRpt.senderEmail = s.authData.email;
+                s.emailRpt.senderEmail = Auth.data().email;
                 s.emailRpt.subject = "A Plus Tree Estimate #" + s.report.reportID + " - " + s.report.name;
                 s.emailRpt.message = "Hi,\n\nThank you for providing us the opportunity to care for your trees!  In the link below you will find a customized estimate engineered by one of our Certified Arborist specifically for your trees.\n\n" + "Please review our proposal and get back to us at your earliest convenience as we look forward to thoroughly impressing you with our professional work and outstanding customer service.\n\n" + "From planting to removals, and everything in between, we've got you covered.  If you have any questions, feel free to contact us toll free at (866) 815-2525 or office@aplustree.com.\n\n" + "Sincerely,\n";
-                if (s.authData.fname) {
-                    s.emailRpt.message += s.authData.fname;
+                if (Auth.data().fname) {
+                    s.emailRpt.message += Auth.data().fname;
                 } else {
                     s.emailRpt.message += "A Plus Tree Service";
                 }

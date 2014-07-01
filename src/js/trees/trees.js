@@ -38,6 +38,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.siteLocs = [];
 		s.selectedValues = [];
 		s.thisYear=moment().format('YYYY');
+		s.listingMode = 'sites';
 
 		s.colors={
 			speciesCount:[]		// stores count of species ie. speciesCount[133]=5, speciesCount[431]=1  (speciesID 133 = 5 total)
@@ -177,6 +178,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 	}
 
 	s.onSelectSiteIDFromMap = s.safeApplyFn(function(id){
+		s.listingMode = 'trees';
+		console.log("onSelectSiteIDFromMap")
 		s.selected.siteID=id;
 		s.onSelectSiteID(id);
 		if(s.TFSdata.selectedFilters.length>0)
@@ -744,6 +747,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 	//Define function for showing trees from the selected proprty.
 	var getTreeListings = function(){
+		console.log("getTreeListings")
 		// reset selected trees to prevent duplicates
 		s.selectedTrees = [];
 		s.setAlert('Loading Trees',{busy:true});

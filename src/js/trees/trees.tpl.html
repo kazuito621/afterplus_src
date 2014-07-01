@@ -39,7 +39,7 @@
 
 
 <div class="clearfloat"></div>
-<section class="nav_listings" ng-if="data.mode=='trees'"> 
+<section class="nav_listings" ng-if="listingMode=='trees'"> 
 	<!--begin left hand column-->
   	<div>
      	<div class="nav_listings_header pullright centerText width192">Search Results: {{TFSdata.treeResultsCount}} Trees located </div>
@@ -105,6 +105,72 @@
 	</div> <!-- ng-cloak -->
 </section>	<!-- }}} listing options and left hand column-->
 
+
+<!-- site listings in left hand column -->
+<section class="nav_listings" ng-if="listingMode=='sites'">  
+	<!--begin left hand column-->
+	<div>
+		<div class="nav_listings_header pullright centerText width192">Search Results: {{TFSdata.treeResultsCount}} Sites located </div>
+		<div class="clearfloat"></div>
+	</div>
+	<div class="clearfloat"></div>
+	<div class="listings trees-result-list">
+		<div class ="listing_items" ng-repeat="tree in filteredSites" id="tree-result-item-row-{{tree.siteID}}">
+			<div ng-if="tree.hide != true" class='listingRow' ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
+				<!--<div class="listingHeader"></div>-->
+				<label>
+					<div class='pullright' style='padding:3px'>
+						<a ng-show="tree.showEdit"  href='#/tree-edit/{{tree.treeID}}' class='fa fa-pencil _med _grey'></a>
+					</div>
+					<div class="pullleft space5">
+						<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.siteID"> 
+					</div>
+					<div class="pullleft space5" 
+						tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
+					<img ng-src="{{tree.imgSm}}" data-treeID='{{tree.siteID}}' 
+						ng-mouseover="onTreeImageRollover(tree.siteID);" ng-mouseleave="onTreeImageRollout(tree.siteID);"
+						data-imgMed="{{tree.imgMed}}"
+						width="32px" height="32px" 
+						style="border:2px solid #{{colors.bg[tree.colorID]}}"
+						/>
+					</div>
+					<div class="pullleft space5" style='width:auto;'>
+						<h1>{{tree.siteName}}</h1><BR>
+						<span class='recYear {{tree.history|showRecoYear:"css"}}' ng-bind-html="tree.history|showRecoYear"></span>
+						(ID:{{tree.siteID}})
+					</div>
+				</label>
+			<div class="clearfloat"></div>
+			</div>
+		</div> <!-- }}} ng-repeat -->
+	</div>
+
+	<!--BEGIN LISTING OPTIONS SECTION-->
+	<div class="pullleft centerText width192 topSpace10">
+		Select:{{ alert(1) }}
+		<a href ng-click="toggleCheckedTrees(true)">ALL</a> |
+		<a href ng-click="toggleCheckedTrees('thisYear')">ALL {{thisYear}}</a> | 
+		<a href ng-click="toggleCheckedTrees(false)">NONE</a>
+	</div>
+
+	<div class="pullleft topSpace10 width192 centerText">
+		<p>{{selectedTrees.length}} of {{trees.length}} trees selected</p>
+	</div>
+
+	<!-- ADD TO ESTIMATE button/selectors -->
+	<div class="pullleft width192 topSpace5 space5">
+		<button class="navButton width180 roundedCorners" ng-click="addToEstimate()">Add to Estimate</button>
+		<div style='padding-top:1em; font-size:11pt;'>
+			<label><input type=checkbox ng-model='data.showTreatmentList'> Show Treatments</label>
+		</div>
+	</div>
+	<div class="pullleft width180 space5" ng-cloak ng-show="data.showTreatmentList">
+		<select class="multiList" size="10" multiple ng-model="selected.treatmentCodes">
+			<option ng-repeat="treatment in initData.filters.treatments" value="{{treatment.code}}">{{treatment.treatmentType}}</option>
+		</select>
+	</div> <!-- ng-cloak -->
+</section>
+<!-- /site listings in left hand column  -->
 
 
 <!-- begin center content area -->

@@ -779,8 +779,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// customer facing estimate view
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
-				if(!Auth.isSignedIn()){
+				//if the user is not signed in... OR if there IS a token, but a requestedReportID hasnt been translated, then go find it
+				if(!Auth.isSignedIn() || (custToken && Auth.data().requestedReportID===undefined)){		
 					Auth.signInCustToken(custToken).then( function(userData){
+						if(userData && !userData.requestedReportID) Auth.data({requestedReportID:0}, true);
 						// allow navigation to continue, now that user has logged in
 						deferredUserNav.resolve($route.current.params.param1);
 					});

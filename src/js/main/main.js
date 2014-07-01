@@ -35,6 +35,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 				s.setAlert('Error talking to the server (2)',{type:'danger'});
 				return {};
 			}
+			//if(res.request && res.fetchtime) dbg(res.request+' - '+res.fetchime+'s');
 			if( typeof res == 'string' ) res={result:0, msg:res};
 			res.data=res.data||{}		//make sure data exists
 			var msg=res.msg||res.message||res.data.msg||res.data.message, type='success'

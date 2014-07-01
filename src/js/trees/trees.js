@@ -860,7 +860,9 @@ app.service('SiteModelUpdateService',
 	}
 
 	this.updateReportSiteModel=function(){
-		this.reportSite.siteName = this.site.siteName;
+		if (!jQuery.isEmptyObject( this.reportSite )) {
+			this.reportSite.siteName = this.site.siteName;
+		}
 	}
 
 }]);

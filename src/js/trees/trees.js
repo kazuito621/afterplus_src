@@ -60,8 +60,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 		setupInitData();
 		if(s.data.mode=='estimate'){
 			// check for requestedReportID in user data (which means its verified)
-			if( AuthData.data().requestedReportID ){
-				ReportService.loadReport(AuthData.data().requestedReportID, {getTreeDetails:1})
+			if( Auth.data().requestedReportID ){
+				ReportService.loadReport(Auth.data().requestedReportID, {getTreeDetails:1})
 					.then(function(data){
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;

@@ -5,14 +5,13 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth',
-	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth) {
+	['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api',
+	function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api) {
 
 
 	// local and scoped vars
 	var s = window.tcs = $scope
 		,myStateID='trees'
-		,Rest = Restangular
 		,gMap, mapBounds, infowindow, inited, enableMap=true
 		,TFS=TreeFilterService
 		,markers_allSites = []
@@ -57,7 +56,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 	var init = function(urlParam1){
 		if(!Auth.isSignedIn()) return;
 		s.TFSdata=TFS.data;
-		setupInitData();
 		if(s.data.mode=='estimate'){
 			// check for requestedReportID in user data (which means its verified)
 			if( Auth.data().requestedReportID ){
@@ -85,7 +83,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 		}
 	}
 
-	var setupInitData = function(){
+	s.$on('onInitData', function(e,data){
+		setupInitData(data);
+	});
+	var setupInitData = function(data){
+		s.initData=data;
+	dbg(s.initData,'setup init')
 		s.filteredSites = s.initData.sites;
 		s.filteredClients = s.initData.clients;
 		s.ratingTypes = s.initData.filters.ratings;
@@ -366,8 +369,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 					infowindow.setContent(this.info); 
 					infowindow.open(gMap,this);
 					//Add call for client info here
-					Rest.all("siteID", this.siteID).then(function(data){
-					alert("hello")}); //test
+					//Rest.all("siteID", this.siteID).then(function(data){
+					//alert("hello")}); //test
 					//jQuery("#infoWin-clientName").innerHtml=data.clientName});
 					 
 				});
@@ -725,7 +728,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 			opts[name]=obj.join(',')
 		});
 
-		Rest.all('siteID').getList(opts)
+		Api.getSites(opts)
 			.then(function(siteIDs){
 				if(siteIDs && siteIDs.length>0){
 					s.TFSdata.filteredSiteIDs=siteIDs;
@@ -746,7 +749,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		// reset selected trees to prevent duplicates
 		s.selectedTrees = [];
 		s.setAlert('Loading Trees',{busy:true});
-		Rest.all('trees').getList({siteID:s.selected.siteID})
+		Api.getTrees(s.selected.siteID)
 			.then(function(data){
 				TFS.setTreeResults(data);		// after this, the trees get
 												// set back on $scope via $on('onTreeFilterUpdate')

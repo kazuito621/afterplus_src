@@ -1,11 +1,10 @@
 'use strict';
 
 var SigninCtrl = app.controller('SigninCtrl', 
-['$scope', 'Restangular', '$timeout', '$route','md5', '$location', 'Auth',
-function ($scope, Restangular, $timeout, $route, md5, $location, Auth) {
+['$scope', '$timeout', '$route','md5', '$location', 'Auth', 'Api',
+function ($scope, $timeout, $route, md5, $location, Auth, Api) {
 
 	var s = window.scs = $scope
-		,Rest=Restangular
 		,url
 		s.login={};
 		if(s.localStore.lastEmailUsed) s.login.email=s.localStore.lastEmailUsed;

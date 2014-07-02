@@ -29,7 +29,7 @@ var ReportCtrl = app.controller(
             };
 
             var groupReportItems = function () {
-                console.log('about to group report items', s.report.items);
+//                console.log('about to group report items', s.report.items);
                 var items = angular.copy(s.report.items);
                 var res = [];
                 var keys = [];
@@ -54,13 +54,13 @@ var ReportCtrl = app.controller(
                     }
                 });
 
-                console.log('after grouping', res);
-                console.log('report items initial after grouping', s.report.items);
+//                console.log('after grouping', res);
+//                console.log('report items initial after grouping', s.report.items);
                 return res;
             };
 
             var ungroupReportItems = function () {
-                console.log('about to ungroup report items', s.groupedItems);
+//                console.log('about to ungroup report items', s.groupedItems);
                 var items = angular.copy(s.groupedItems);
                 var res = [];
 
@@ -237,20 +237,40 @@ var ReportCtrl = app.controller(
                 s.service.price = "";
             };
 
+            // Remove treatment from estimate
+
+            s.removeTreatmentFromEstimate = function (treeIndex, treatmentIndex) {
+                // Remove treatment only if there is more than one treatment. Otherwise remove the item
+//                console.log('Tree index: %s, treatment index: %s', treeIndex, treatmentIndex);
+
+//                console.log(
+//                    'Removing treatment from a tree',
+//                    s.groupedItems[treeIndex],
+//                    s.groupedItems[treeIndex].treatments[treatmentIndex]
+//                );
+
+                var tree = s.groupedItems[treeIndex];
+
+                if (tree.treatments.length && tree.treatments.length > 1) { // remove only selected treatment
+                    tree.treatments.splice(treatmentIndex, 1);
+                    s.groupedItems[treeIndex] = tree;
+                } else { // remove item
+                    s.groupedItems.splice(treeIndex, 1);
+                }
+
+                s.report.items = ungroupReportItems();
+                s.groupedItems = groupReportItems();
+            };
+
             // remove item from array of items
             s.removeItem = function (hashKey, type) {
-                console.log('remove item', hashKey, type);
                 if (type === null) {
                     type = 'items';
                 }
+
                 s.report[type] = s.report[type].filter(function (item) {
-                    console.log('filtering report', item.$$hashKey, hashKey, item);
                     return (item.$$hashKey !== hashKey);
                 });
-
-                if (type === 'items') {
-                    s.groupedItems = groupReportItems();
-                }
             };
 
             var pre_init = function () {

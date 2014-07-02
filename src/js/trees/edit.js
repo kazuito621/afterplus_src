@@ -1,8 +1,8 @@
 'use strict';
 
 var EditTreeCtrl = app.controller('EditTreeCtrl', 
-	['$scope', '$http', 'Restangular', '$route', '$location',
-	function ($scope, $http, Restangular, $route, $location) {
+	['$scope', '$http', 'Api', '$route', '$location',
+	function ($scope, $http, Api, $route, $location) {
 	var s = window.ets = $scope
 		,myStateID='tree-edit';
 		s.treeID;
@@ -26,7 +26,7 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 			s.treeID = $route.current.params.param1;
 		}
 		if(!s.treeID) return;
-		Restangular.one('trees', s.treeID).get()
+		Api.getTree(s.treeID)
 			.then(function(data){
 				s.tree=data	
 				s.tree.mode=mode;

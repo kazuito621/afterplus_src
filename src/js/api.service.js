@@ -82,12 +82,41 @@ dbg("api serv ");
 		,getSites:function(opts){
 			return Rest.all('siteID').getList(opts)
 		}
+		,updateSite:function(siteID,data){
+			return Rest.one('site',siteID).get()
+		}
 		,getTrees:function(siteID){
-		
-		dbg("get trees "+siteID);
 			return Rest.all('trees').getList({siteID:siteID})
 		}
+		,getTree:function(treeID){
+			return Rest.one('trees', s.treeID).get()
+		}
+		,getSiteContacts:function(siteID){
+			return Rest.all('site/'+siteID+'/contacts').getList()
+		}
+		,getReport:function(reportID, opts){
+		dbg(reportID, opts, 'get report')
+			return Rest.one('estimate',reportID).get(opts)
+		}
+		,getRecentReports:function(opt){
+			return Rest.all('estimate').getList(opt)
+		}
+		,saveReport:function(reportObj){
+			// if its a Restangular obj, then post it...
+			if( reportObj.post && typeof reportObj.post === 'function' ) 
+				return reportObj.post();
 
+			//else, its a new one
+		dbg(reportObj,"save rep ");
+			return Rest.all('estimate').post(reportObj);
+		}
+		,sendReport:function(rpt){
+			return Rest.all('sendEstimate').post(s.rpt)
+		}
+		// @param ids ARRAY of IDs to get
+		,getTreatmentDesc:function(ids){
+			return Rest.one('service_desc','treatmenttype').get({id:ids.toString()})
+		}
 	};
 
 

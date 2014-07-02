@@ -2,13 +2,12 @@
 
 
 var ReportCtrl = app.controller('ReportCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService','$location', '$anchorScroll', 'Auth',
-	function ($scope, Restangular, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
+	['$scope', 'Api', '$route', '$timeout', 'ReportService','$location', '$anchorScroll', 'Auth',
+	function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
 
 	// local and scoped vars
 	var s = window.rcs = $scope
 		,myStateID='trees'	//this is trees because its embedded in trees controller
-		,Rest = Restangular
 		,RS = ReportService
 		s.whoami='ReportCtrl';
 		s.recentReportList;
@@ -144,7 +143,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.emailRpt.disableSendBtn=false;
 		s.emailRpt.sendBtnText='Send';
 
-		Rest.all('site/'+s.emailRpt.siteID+'/contacts').getList()
+		Api.getSiteContacts(s.emailRpt.siteID)
 			.then(function(res){
 				if(!res) return;
 				var emList=[];
@@ -158,7 +157,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 	s.sendReport = function(hideFn, showFn){
 		s.emailRpt.disableSendBtn=true;
 		s.emailRpt.sendBtnText='Sending and verifying...';
-		Rest.all('sendEstimate').post(s.emailRpt)
+		Api.sendReport(s.emailRpt)
 			.then(function(msg){
 				s.emailRpt.disableSendBtn=false;
 				s.emailRpt.sendBtnText='Send';

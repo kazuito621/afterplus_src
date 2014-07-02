@@ -64,18 +64,19 @@ var ReportCtrl = app.controller(
                 var items = angular.copy(s.groupedItems);
                 var res = [];
 
-                var setTreatment = function (item, treatment) {
-                    item.treatmentTypeCode = treatment.treatmentTypeCode;
-                    item.price = treatment.price;
-
-                    return item;
-                };
-
                 angular.forEach(items, function (item) {
                     angular.forEach(item.treatments, function (treatment) {
-                        res.push(setTreatment(item, treatment));
+                        var tmp = angular.copy(item);
+                        delete tmp.treatments;
+
+                        tmp.treatmentTypeCode = treatment.treatmentTypeCode;
+                        tmp.price = treatment.price;
+
+                        res.push(tmp);
                     });
                 });
+
+//                console.log('Ungrouped items', res);
 
                 return res;
             };

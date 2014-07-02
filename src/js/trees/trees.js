@@ -60,9 +60,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 		setupInitData();
 		if(s.data.mode=='estimate'){
 			// check for requestedReportID in user data (which means its verified)
-			if( Auth.data().requestedReportID ){
-				ReportService.loadReport(Auth.data().requestedReportID, {getTreeDetails:1})
+			if( Auth.requestedReportID ){
+				ReportService.loadReport(Auth.requestedReportID, {getTreeDetails:1})
 					.then(function(data){
+						delete Auth.requestedReportID;
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
 					});
@@ -780,9 +781,9 @@ var TreesCtrl = app.controller('TreesCtrl',
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
 				//if the user is not signed in... OR if there IS a token, but a requestedReportID hasnt been translated, then go find it
-				if(!Auth.isSignedIn() || (custToken && Auth.data().requestedReportID===undefined)){		
+				if(!Auth.isSignedIn() || (custToken && Auth.requestedReportID===undefined)){		
 					Auth.signInCustToken(custToken).then( function(userData){
-						if(userData && !userData.requestedReportID) Auth.data({requestedReportID:0}, true);
+						if(userData && userData.requestedReportID) Auth.requestedReportID=userData.requestedReportID;
 						// allow navigation to continue, now that user has logged in
 						deferredUserNav.resolve($route.current.params.param1);
 					});

@@ -57,7 +57,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
 
 	// so that services/factories can call the alert
-	s.$on('alert', function(data){
+	s.$on('alert', function(e,data){
 		s.setAlert(data.msg,data);
 	});
 

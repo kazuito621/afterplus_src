@@ -73,6 +73,7 @@ app.service('Auth',
 
 	this.signOut = function(){ 
 		this.data({});
+		Rest.one('signout').get();
 		// todo clear init data some how maybe with an event onSignOut
 		$location.url('/signin') 
 	}

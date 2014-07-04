@@ -106,6 +106,7 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', function (Re
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});
         },
+        // Auth
         signInCustToken: function (token, context, callback) {
             var deferred = $q.defer();
             if (!token) {
@@ -129,6 +130,16 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', function (Re
             Rest.one('signout').get();
             // TODO: clear init data some how maybe with an event onSignOut
             $location.url('/signin');
+        },
+        // Clients
+        saveNewClient: function (client) {
+            return Rest.all('client').post(client);
+        },
+        getClientById: function (id) {
+            return Rest.one('client', id).get();
+        },
+        removeClientById: function (id) {
+            return Rest.one('client', id).remove();
         }
     };
 

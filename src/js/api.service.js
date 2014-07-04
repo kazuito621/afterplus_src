@@ -147,6 +147,13 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', function (Re
         },
         saveSite: function (endpoint, data) {
             return Rest.all(endpoint).post(data);
+        },
+        // Sites
+        saveNewSite: function (site) {
+            return Rest.all('site').post(site);
+        },
+        removeSiteById: function (id) {
+            return Rest.one('site', id).remove();
         }
     };
 

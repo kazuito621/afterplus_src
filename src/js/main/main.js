@@ -30,9 +30,14 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
 	// this is triggered when user signs in, or if they already are signed in
 	// todo, cache initData into local storage... and only check for updates
+    var getInitDataCB = function (data) {
+        s.initData = data;
+        Auth.gotInitData = true;
+    };
+
 	var getInitData = function() {
-		Api.getInitData();
-	}
+		Api.getInitData(getInitDataCB);
+	};
 	s.refreshInitData=function(){ getInitData(); }
 	if(Auth.isSignedIn()) getInitData();
 	else s.$on('onSignin', angular.bind(this, getInitData))

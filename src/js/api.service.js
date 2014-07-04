@@ -78,15 +78,14 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', 'storage', 'Auth', functi
 
 
     return {
-        getInitData: function () {
+        getInitData: function (cb) {
             sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
             // Since this is an async call which may take time, we return
             // a dummy $object which will be populated when the data comes out
             Rest.one('init').get()
                 .then(function (data, x) {
                     dbg(data, x, 'Api.getinitdata');
-                    this.initData = data;
-                    this.gotInitData = true;
+                    cb(data);
                     sendEvt('onInitData', data);
                 });
         },

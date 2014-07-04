@@ -4,7 +4,7 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', 'storage', function (Rest, $rootScope, $q, storage) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', function (Rest, $rootScope, $q, $location) {
     'use strict';
     dbg("api serv ");
     window.Api = this;
@@ -105,6 +105,30 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', 'storage', function (Rest
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});
+        },
+        signInCustToken: function (token, context, callback) {
+            var deferred = $q.defer();
+            if (!token) {
+                deferred.reject('Invalid token');
+                return deferred.promise;
+            }
+
+            Rest.one('signincusttoken').get({custToken: token})
+                .then(angular.bind(context, callback, deferred));
+
+            return deferred.promise;
+        },
+        signIn: function (email, password, context, callback) {
+            var deferred = $q.defer();
+            Rest.one('signin').get({e: email, p: password})
+                .then(angular.bind(context, callback, deferred));
+            return deferred.promise;
+        },
+        signOut: function (Auth) {
+            Auth.data({});
+            Rest.one('signout').get();
+            // TODO: clear init data some how maybe with an event onSignOut
+            $location.url('/signin');
         }
     };
 

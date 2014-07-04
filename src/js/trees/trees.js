@@ -544,6 +544,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 	};
 
     var animateMarker = function (marker, animationType) {
+		if(!google.maps || !google.maps.Animation) return;
         var animation = google.maps.Animation[animationType];
 
         if (animationType === null) {
@@ -603,6 +604,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(added==-1)
 				return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
 		if(added.length==trees.length){
+			s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
 			s.setAlert('{0} item(s) added to estimate'.format(added.length),{type:'ok'})
 			return s.toggleCheckedTrees(false);
 		}
@@ -618,13 +620,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 			s.setAlert(msg,{type:'d', time:10});
 			s.toggleCheckedTrees(added);
 		}
+		s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
 	}
 
 
 	//MULTI SELECT CODE
     s.$watch('selected.treatmentCodes', function(nowSelected){
         s.data.currentTreatmentCodes = [];
-        
         if( ! nowSelected ){
             // here we've initialized selected already
             // but sometimes that's not the case
@@ -632,7 +634,6 @@ var TreesCtrl = app.controller('TreesCtrl',
             return;
         }
         angular.forEach(nowSelected, function(val){
-            console.log("value is now: "+val);
            s.data.currentTreatmentCodes.push(val);
         });
     });

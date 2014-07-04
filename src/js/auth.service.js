@@ -4,8 +4,8 @@
 	and Report Controller can build a UI based on the data
 **/
 app.service('Auth', 
-	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', 'storage',
-	function(Rest, $location, $timeout, $rootScope, md5, $q, storage) {
+	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', 'storage', 'Api',
+	function(Rest, $location, $timeout, $rootScope, md5, $q, storage, Api) {
 
 	window.Auth=this;
 	// private properties

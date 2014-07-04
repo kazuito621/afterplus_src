@@ -4,7 +4,7 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', 'storage', 'Auth', function (Rest, $rootScope, $q, storage, Auth) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', 'storage', function (Rest, $rootScope, $q, storage) {
     'use strict';
     dbg("api serv ");
     window.Api = this;
@@ -38,27 +38,6 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', 'storage', 'Auth', functi
                 sendEvt('alert', {msg: msg, type: type});
             }
             return res.data;
-        })
-        .addFullRequestInterceptor(function (element, operation, route, url, headers, params, httpConfig) {
-            headers = headers || {};
-            headers['X-token'] = Auth.data().token;
-            return {
-                headers: headers,
-                element: element,
-                params: params,
-                httpConfig: httpConfig
-            };
-        })
-        /*
-        .addResponseInterceptor(function(data, op, what, url, response, deferred){
-                if(data && data.result!=0 && op=='getList' && typeof data != 'Array')
-                    data=[];
-            })
-            */
-        .setErrorInterceptor(function () {
-            sendEvt('alert', {msg: 'Error talking to the server (3)', type: 'danger'});
-            dbg('REST error found in setErrorInterceptor');
-            //return true;  //todo -- what to do here? display error to user?
         });
 
     Rest.configuration.getIdFromElem = function (elem) {
@@ -132,3 +111,30 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', 'storage', 'Auth', functi
 }]);
 
 
+app.factory('ApiInterceptors', ['Restangular', '$rootScope', 'Auth', function (Rest, $rootScope, Auth) {
+    'use strict';
+
+    var sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); };
+
+    Rest.addFullRequestInterceptor(function (element, operation, route, url, headers, params, httpConfig) {
+        headers = headers || {};
+        headers['X-token'] = Auth.data().token;
+        return {
+            headers: headers,
+            element: element,
+            params: params,
+            httpConfig: httpConfig
+        };
+    })
+        /*
+         .addResponseInterceptor(function(data, op, what, url, response, deferred){
+         if(data && data.result!=0 && op=='getList' && typeof data != 'Array')
+         data=[];
+         })
+         */
+        .setErrorInterceptor(function () {
+            sendEvt('alert', {msg: 'Error talking to the server (3)', type: 'danger'});
+            dbg('REST error found in setErrorInterceptor');
+            //return true;  //todo -- what to do here? display error to user?
+        });
+}]);

@@ -3,13 +3,13 @@ TODO -- make this show a list of estimates for this user (currently logged in)
 // when they select one to view it, you should forward them to #/estimate/<estimateID>
 
 **/
-var EstimatesListCtrl = app.controller('EstimatesListCtrl', ['$scope', '$route', function ($scope, $route) {
+var EstimatesListCtrl = app.controller('EstimatesListCtrl', ['$scope', '$route', 'Api', function ($scope, $route, Api) {
     'use strict';
     var s = $scope,
         myStateID = 'sites';
 
     var init = function () {
-        Rest.all('site').getList().then(function (data) {
+        Api.getSitesList.then(function (data) {
             s.list = data;
         });
     };
@@ -21,7 +21,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl', ['$scope', '$route',
             endpoint += '/' + id; // updating existing....
         }
 
-        Rest.all(endpoint).post(obj).then(function (data) {
+        Api.saveSite(endpoint, obj).then(function (data) {
             dbg(data, 'return - saved object');
         });
     };

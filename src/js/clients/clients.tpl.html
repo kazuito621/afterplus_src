@@ -12,25 +12,26 @@
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th ng-if="auth.is('admin')"></th>
-					<th></th>
 					<th>ID</th>
 					<th>Name</th>
 					<th>Address</th>
 					<th>Contact Info</th>
+					<th></th>
 				</tr>
 			<thead>
-			<tr ng-repeat="c in initData.clients" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false" ng-class="{active : isSelected(c.clientID)}">
-				<td ng-if="auth.is('admin')" style="width:36px">
-					<a ng-click="queueOrDequeueItemForDelete(c.clientID)" ng-show="showEdit" class="pointer fa fa-times ng-hide _red _size5" data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover></a>
-				</td>
-				<td style="width:36px">
-					<a ng-click="existingClientModalOpen(c.clientID)" ng-show="showEdit" class="pointer fa fa-pencil _grey ng-hide"></a>
-				</td>
+			<tr ng-repeat="c in initData.clients" ng-class="{active : isSelected(c.clientID)}" class='hoverHotspot'>
+
 				<td>{{c.clientID}}</td>
 				<td>{{c.clientName}}</td>
 				<td>{{c.street}} {{c.city}}, {{c.state}}</td>
 				<td>{{c.contact}} {{c.contactPhone}}</td>
+
+				<td>
+					<a ng-if="auth.is('staff')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay"></a> &nbsp; 
+					<a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID)" class="fa fa-times _red _size7 hoverDisplay" 
+							data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover></a>
+				</td>
+
 			</tr>
 		</table>
 	</div>

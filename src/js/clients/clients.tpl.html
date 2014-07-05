@@ -27,9 +27,9 @@
 				<td>{{c.contact}} {{c.contactPhone}}</td>
 
 				<td>
-					<a ng-if="auth.is('staff')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay"></a> &nbsp; 
+					<a ng-if="auth.is('staff')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay" bs-tooltip title="Edit"></a> &nbsp; 
 					<a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID)" class="fa fa-times _red _size7 hoverDisplay" 
-							data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover></a>
+							data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover title="Delete"></a>
 				</td>
 
 			</tr>

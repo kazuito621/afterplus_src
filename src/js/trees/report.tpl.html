@@ -20,7 +20,7 @@
 
 <!--BEGIN ESTIMATE TABLE SECTION-->
 <BR>
-<div class="table_estimate report_main mode_{{data.mode}}" ng-if="report.items.length>0">
+<div class="table_estimate report_main mode_{{data.mode}}" ng-show="report.items.length>0">
 	<div>
 		<div class="pullleft">
 		<h1 style='font-size:28pt;'>Estimate for {{report.siteName}}</h1>
@@ -229,22 +229,31 @@
 	</div>
 
    	
-   	<div class="" ng-if="data.mode=='trees'">
-   	<p>Notes</p>
+   	<div class="" ng-if="data.mode === 'trees'">
+   	    <p>Notes</p>
         <textarea ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'></textarea>
-     </div>
+    </div>
      
- 	<div class="" ng-if="data.mode=='estimate'">
+ 	<div class="" ng-if="data.mode === 'estimate'">
  		<h2>Notes</h2>
         <pre>{{report.notes}}</pre>
 
-	<h2>Definition of Treatments:</h2>
-	<div ng-repeat=" desc in treatmentDescriptions "> 
-		<p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
-	</div>
+	    <h2>Definition of Treatments:</h2>
+	    <div ng-repeat="desc in treatmentDescriptions">
+		    <p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
+	    </div>
    	</div>
+
+    <div ng-show="data.mode === 'trees'">
+        <div id="estimate-files" class="dropzone" style="min-height: 260px; margin-top: 10px;"></div>
+    </div>
+
+    <div ng-if="data.mode === 'estimate'">
+
+    </div>
      
-	  <div class ="bottomSpace10"></div>
+	<div class="bottomSpace10"></div>
+
 	</div>
 </div> <!-- }}} .report_main -->
 

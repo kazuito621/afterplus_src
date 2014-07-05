@@ -20,11 +20,22 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.estimateTreatmentCodes = [];
 		s.treatmentDescriptions = [];
         var changedItems = [];
+        var estimateDropzone;
 
-	var init = function(){
-		RS.loadRecent();	
-		if(!s.report || !s.report.items) s.report = RS.getBlankReport();
-	}
+    var init = function () {
+        RS.loadRecent();
+        if (!s.report || !s.report.items) {
+            s.report = RS.getBlankReport();
+        }
+    };
+
+    var initDropzone = function (report) {
+        if (!estimateDropzone) {
+            estimateDropzone = new Dropzone("div#estimate-files", { url: "/file/post"});
+        }
+
+        console.log('Dropzone:', estimateDropzone);
+    };
 
 	// let's watch the recentReportList property, and update on scope if it changes
 	s.$on('onLoadRecent', function(evt, list){
@@ -44,6 +55,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 
 	// When a new report is loaded, bind it to this scope
 	s.$on('onLoadReport', function(evt, rpt){
+        console.log('new report loaded', evt, rpt);
 		s.report=rpt;
 		// set email links
 		if(rpt.emailLogs){
@@ -52,6 +64,9 @@ var ReportCtrl = app.controller('ReportCtrl',
 			});
 		}	
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
+        $timeout(function () {
+            initDropzone(rpt);
+        }, 100);
 	});
 
 	// After the counts for the treatments have been added, add in the service descriptions 

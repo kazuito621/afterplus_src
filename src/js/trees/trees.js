@@ -61,9 +61,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 		setupInitData();
 		if(s.data.mode=='estimate'){
 			// check for requestedReportID in user data (which means its verified)
-			if( Auth.data().requestedReportID ){
-				ReportService.loadReport(Auth.data().requestedReportID, {getTreeDetails:1})
+			if( Auth.requestedReportID ){
+				ReportService.loadReport(Auth.requestedReportID, {getTreeDetails:1})
 					.then(function(data){
+						delete Auth.requestedReportID;
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
 					});
@@ -547,6 +548,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 	};
 
     var animateMarker = function (marker, animationType) {
+		if(!google.maps || !google.maps.Animation) return;
         var animation = google.maps.Animation[animationType];
 
         if (animationType === null) {
@@ -606,6 +608,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(added==-1)
 				return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
 		if(added.length==trees.length){
+			s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
 			s.setAlert('{0} item(s) added to estimate'.format(added.length),{type:'ok'})
 			return s.toggleCheckedTrees(false);
 		}
@@ -621,13 +624,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 			s.setAlert(msg,{type:'d', time:10});
 			s.toggleCheckedTrees(added);
 		}
+		s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
 	}
 
 
 	//MULTI SELECT CODE
     s.$watch('selected.treatmentCodes', function(nowSelected){
         s.data.currentTreatmentCodes = [];
-        
         if( ! nowSelected ){
             // here we've initialized selected already
             // but sometimes that's not the case
@@ -635,7 +638,6 @@ var TreesCtrl = app.controller('TreesCtrl',
             return;
         }
         angular.forEach(nowSelected, function(val){
-            console.log("value is now: "+val);
            s.data.currentTreatmentCodes.push(val);
         });
     });
@@ -785,9 +787,9 @@ var TreesCtrl = app.controller('TreesCtrl',
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
 				//if the user is not signed in... OR if there IS a token, but a requestedReportID hasnt been translated, then go find it
-				if(!Auth.isSignedIn() || (custToken && Auth.data().requestedReportID===undefined)){		
+				if(!Auth.isSignedIn() || (custToken && Auth.requestedReportID===undefined)){		
 					Auth.signInCustToken(custToken).then( function(userData){
-						if(userData && !userData.requestedReportID) Auth.data({requestedReportID:0}, true);
+						if(userData && userData.requestedReportID) Auth.requestedReportID=userData.requestedReportID;
 						// allow navigation to continue, now that user has logged in
 						deferredUserNav.resolve($route.current.params.param1);
 					});

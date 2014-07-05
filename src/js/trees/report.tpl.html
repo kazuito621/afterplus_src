@@ -107,7 +107,7 @@
         <td ng-if="data.mode=='estimate'"><h1>Bid ($)</h1></td>
     </tr>
 
-    <tr ng-table ng-repeat="item in groupedItems" ng-if="report.items.length>0" ng-init="itemIndex = $index"
+    <tr ng-repeat="item in groupedItems" ng-if="report.items.length>0" ng-init="itemIndex = $index"
         ng-class="rowHighlightClass(item)" id="rpt_item_{{item.treeID}}">
         <td data-title="listing_image">
 
@@ -172,18 +172,18 @@
             &#36;{{item.price|formatPrice}}
         </td>
     </tr>
-    <tr ng-if="report.total.items && data.mode=='trees'">
+    <tr ng-if="report.total.items && data.mode === 'trees'">
         <td colspan=4></td><td>Subtotal:</td>
         <td>&#36;{{report.total.items|formatPrice}}</td>
         <td>&nbsp;</td>
     </tr>
-    <tr ng-if="report.total.items && data.mode=='estimate'">
+    <tr ng-if="report.total.items && data.mode === 'estimate'">
         <td colspan=5></td><td>Subtotal:</td>
         <td>&#36;{{report.total.items|formatPrice}}</td>
     </tr>
 </table>
 
-<table class="table ng-table-responsive ng-scope ng-table" ng-if="data.mode=='trees' || report.services.length>0 ">
+<table class="table ng-table-responsive ng-scope ng-table" ng-if="data.mode === 'trees' || report.services.length > 0 ">
     <tr><td colspan="4"><h1>Misc. Services</h1></td></tr>
 
     <tr>

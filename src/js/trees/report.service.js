@@ -107,7 +107,7 @@ app.service('ReportService',
 	this.updateSiteInfo = function(){
 		if(this.report && this.report.siteName && this.report.siteName.length) return;
 		var that=this;
-		Api.updateSite(this.siteID, data)
+		Api.updateSite(this.siteID)
 			.then(function(data) {
 				if(!data || !data.siteName) return;
 				_.copyProps(data, that.report, 'siteName,contact,contactEmail,contactPhone,street,city,state');

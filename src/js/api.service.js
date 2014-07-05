@@ -71,7 +71,7 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', function (Re
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },
-        updateSite: function (siteID, data) {
+        updateSite: function (siteID) {
             return Rest.one('site', siteID).get();
         },
         getTrees: function (siteID) {

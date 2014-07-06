@@ -21,6 +21,8 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.treatmentDescriptions = [];
         var changedItems = [];
 
+        s.editorOptions = {};
+
 	var init = function(){
 		RS.loadRecent();	
 		if(!s.report || !s.report.items) s.report = RS.getBlankReport();

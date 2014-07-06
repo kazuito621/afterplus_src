@@ -231,12 +231,13 @@
    	
    	<div class="" ng-if="data.mode=='trees'">
    	<p>Notes</p>
-        <textarea ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'></textarea>
+        <textarea ckeditor="editorOptions" ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'>
+        </textarea>
      </div>
      
  	<div class="" ng-if="data.mode=='estimate'">
  		<h2>Notes</h2>
-        <pre>{{report.notes}}</pre>
+        <span ng-bind-html="report.notes"></span>
 
 	<h2>Definition of Treatments:</h2>
 	<div ng-repeat=" desc in treatmentDescriptions "> 

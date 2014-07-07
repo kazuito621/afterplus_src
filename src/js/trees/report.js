@@ -21,7 +21,10 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.treatmentDescriptions = [];
         var changedItems = [];
 
-        s.editorOptions = {};
+        s.editorOptions = {
+            filebrowserBrowseUrl: '/browser/browse.php',
+            filebrowserUploadUrl: '/uploader/upload.php'
+        };
 
 	var init = function(){
 		RS.loadRecent();	

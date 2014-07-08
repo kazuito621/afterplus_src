@@ -638,12 +638,26 @@ color:#339900;
 .fa._grey, .fa._gray {
 	color:#777;
 	}
+
+.hoverHotspot:hover  .hoverDisplay{
+  opacity: 1.0;
+  filter: alpha(opacity=100); /* For IE8 and earlier */
+  }
+.hoverDisplay{
+  display: block !importnat;
+  opacity: 0.08;
+  filter: alpha(opacity=8); /* For IE8 and earlier */
+  }
+
+
+
 .fa._size5{ font-size:1.5em;}
 .fa._size6{ font-size: 1.62em;}
 .fa._size7{ font-size: 1.71em;}
 .fa._med, .fa._size8{ font-size:1.82em; }
 .fa._size9{ font-size:1.9em; }
 .fa._size10{font-size:2em;}
+
 
 /** used for delete clients/sites **/
 .active {

@@ -34,6 +34,8 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		s.renderTplID=s.renderPath[0];
 		if(s.renderTplID=='estimate') s.renderTplID='trees';		
 
+		if(lastRenderedTplID == s.renderTplID) return;
+
 		// lazy load the property template based on the base path
 		// ie. if "#/trees", then load "trees.tpl.html"
 		// this is done by setting the tpl_XXXX variable, which is the value of the template path

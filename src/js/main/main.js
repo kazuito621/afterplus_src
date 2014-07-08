@@ -25,29 +25,31 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	s.sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); }
 
 
-	var lastRenderedState='';
+	var lastRenderedTplID;
 	var render = function() {
 		// break up url path into array 
 		// ie. "#/trees/edit/1234" = ['trees', 'edit', '1234']
 		s.renderPath=$location.path().substr(1).split("/");
 
+		s.renderTplID=s.renderPath[0];
+		if(s.renderTplID=='estimate') s.renderTplID='trees';		
+
 		// lazy load the property template based on the base path
 		// ie. if "#/trees", then load "trees.tpl.html"
 		// this is done by setting the tpl_XXXX variable, which is the value of the template path
-		var tplID='tpl_'+s.renderPath[0];
-		var tplPath=getTemplatePath(s.renderPath[0]);
-		s[tplID]=tplPath;		// load the template, which changes the ng-include var in index.html
-		s['show_'+tplID]=true;	// now show it
+		var tplPath=getTemplatePath(s.renderTplID);
+		s['tpl_'+s.renderTplID]=tplPath;		// load the template, which changes the ng-include var in index.html
+		s['showtpl_'+s.renderTplID]=true;	// now show it
 
 		// no turn off last one
-		if(lastRenderedState) s['show_'+lastRenderedState]=false;
-		lastRenderedState=tplID;
+		if(lastRenderedTplID) s['showtpl_'+lastRenderedTplID]=false;
+		lastRenderedTplID=s.renderTplID;
 	}
 
-	var getTemplatePath = function(path){
-		if(path=='trees-edit') return 'js/trees/edit.tpl.html';
+	var getTemplatePath = function(tplID){
+		if(tplID=='trees-edit') return 'js/trees/edit.tpl.html';
 		// for signin, trees, sites, and clients... used default
-		return 'js/'+path+"/"+path+".tpl.html";
+		return 'js/'+tplID+"/"+tplID+".tpl.html";
 	}
 
 	s.$on("$routeChangeSuccess", function(evt, current, previous) {

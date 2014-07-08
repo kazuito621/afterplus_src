@@ -40,6 +40,29 @@ function (Rest, $rootScope, $q, $location) {
             }
             return res.data;
         });
+    Rest.addFullRequestInterceptor(function (element, operation, route, url, headers, params, httpConfig) {
+        headers = headers || {};
+		dbg(Auth.data().token, 'add req ueaders');
+        headers['X-token'] = Auth.data().token;
+        return {
+            headers: headers,
+            element: element,
+            params: params,
+            httpConfig: httpConfig
+        };
+    });
+        /*
+         .addResponseInterceptor(function(data, op, what, url, response, deferred){
+         if(data && data.result!=0 && op=='getList' && typeof data != 'Array')
+         data=[];
+         })
+         */
+   	Rest.setErrorInterceptor(function () {
+            sendEvt('alert', {msg: 'Error talking to the server (3)', type: 'danger'});
+            dbg('REST error found in setErrorInterceptor');
+            //return true;  //todo -- what to do here? display error to user?
+        });
+
 
     Rest.configuration.getIdFromElem = function (elem) {
             // ie. clientID, instead of "id", or treeID instead of "id"
@@ -58,8 +81,6 @@ function (Rest, $rootScope, $q, $location) {
 
 	// Make api call to get initdata, return a promise for when the async call comes back
 	var init=function(){  
-	dbg('init')
-	console.trace();
 		var deferred=$q.defer();
      	sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
 		Rest.one('init').get()
@@ -166,6 +187,7 @@ function (Rest, $rootScope, $q, $location) {
             return Rest.one('site', id).remove();
         }
     };
+
 
 }]);
 

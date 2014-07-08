@@ -6,7 +6,6 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	var s = window.mcs = $scope;
 	s.routeParams={};
 	s.appData={};
-	s.initData={};
 	s.whoami='MainCtrl'
 	s.alertBox;
 	s.localStore={};

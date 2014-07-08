@@ -82,13 +82,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 			}
 		}
 	}
-
-	s.$on('onInitData', function(e,data){
-		setupInitData(data);
-	});
-	var setupInitData = function(data){
+	var setupInitData = function(){
 		s.initData=data;
-	dbg(s.initData,'setup init')
 		s.filteredSites = s.initData.sites;
 		s.filteredClients = s.initData.clients;
 		s.ratingTypes = s.initData.filters.ratings;

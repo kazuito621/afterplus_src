@@ -55,16 +55,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	}
 
 	s.$on("$routeChangeSuccess", function(evt, current, previous) {
-		var authReq = $route.current && 
-				$route.current.$$route && 
-				$route.current.$$route.auth;
-		if (authReq && !Auth.isSignedIn() && $route.current.params.stateID!='estimate') {
+		var authReq = _.extract(current, '$$route.auth');
+		if (authReq && !Auth.isSignedIn()) {
 			//todo - maybe this hsould be stored internally instead of going to the url
 			//note: estimate handles its own signin
 			var currentUrl = $location.url();
 			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
 			return;
 		} 
+		dbg("no redir ");
 		s.routeParams=$routeParams;
        	if($route.current.resolve) render();
 	});

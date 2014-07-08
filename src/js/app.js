@@ -11,7 +11,17 @@ app.config(['$routeProvider', '$locationProvider',
 			// each route defenition must include a resolve object, even if blank,
 			// because were using that in the onRouteChange render action to tell if the resolve has completed
             .when('/signin',{auth:false,resolve:{}})
-            .when('/estimate/',{auth:false,resolve:{}})
+            .when('/estimate/:rptID', {
+                    auth:false
+                    ,resolve: {
+                      	deps:['Api', function(Api){  dbg('state resolve');return Api.getPromise(); }]
+						,signin:['Auth', '$route', function(Auth, $route){
+									dbg($route.current.params.rptID)
+									var rptID=$route.current.params.rptID;
+        							return Auth.signInCustToken(rptID);
+								}]
+                    }
+                })
             .when("/:state1/:state2?/:state3?", {
                     auth:true
                     ,resolve: {

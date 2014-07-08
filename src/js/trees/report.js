@@ -20,11 +20,6 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.treatmentDescriptions = [];
         var changedItems = [];
 
-	var init = function(){
-		RS.loadRecent();	
-		if(!s.report || !s.report.items) s.report = RS.getBlankReport();
-	}
-
 	// let's watch the recentReportList property, and update on scope if it changes
 	s.$on('onLoadRecent', function(evt, list){
 		s.recentReportList = list;
@@ -184,12 +179,12 @@ var ReportCtrl = app.controller('ReportCtrl',
 				return (item.$$hashKey !== hashKey)
 		});		
 	}
-	
-	var pre_init = function() {
-		if($route.current.params.stateID==myStateID) init();
+
+	// only if in trees state...
+	if(s.renderPath[0]=='trees') {
+		RS.loadRecent();	
+		if(!s.report || !s.report.items) s.report = RS.getBlankReport();
 	}
-	s.$on('$locationChangeSuccess', pre_init);
-	pre_init();
 
 }]);
 

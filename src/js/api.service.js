@@ -8,30 +8,35 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location',
 function (Rest, $rootScope, $q, $location ) {
     'use strict';
     window.Api = this;
-
 	var initData={};
     var sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); };
 
-	// Make api call to get initdata, return a promise for when the async call comes back
-	var init=function(){  
+	var init=function(forceRefresh){  
 		var deferred=$q.defer();
-     	sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
-		Rest.one('init').get()
-			.then(function (data) {
-				initData=data;
-				$rootScope.initData=data;
-				//cb(data);
-				sendEvt('onInitData', data);
-				deferred.resolve(); 
-			});
+		if(!_.isEmpty(initData) && forceRefresh!=true) deferred.resolve();
+		else{
+			sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
+			Rest.one('init').get()
+				.then(function (data) {
+					initData=data;
+					$rootScope.initData=data;
+					//cb(data);
+					sendEvt('onInitData', data);
+					deferred.resolve(); 
+				});
+		}
 		return deferred.promise;	
-	};
+	}
+
+	// after a user signs in, refresh init data
+	// this may not be needed... since route resolve solves this now?
+	//$rootScope.$on('onSignin', function(){ init(); });
 
     return {
 		getPromise:function(){ return init(); },
 		getInitData: function(){ return initData; },
 		// returns a promise... for .then() when refresh is done
-		refreshInitData: function(){ return init(); },	
+		refreshInitData: function(){ return init(true); },	
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },

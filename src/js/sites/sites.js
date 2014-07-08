@@ -24,7 +24,7 @@ var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$loc
 		} else {
             Api.saveNewSite(s.newSite).then(function(data) {});
 			siteEditModal.hide();
-			s.refreshInitData();
+			Api.refreshInitData();
 		}
 	};
 
@@ -32,7 +32,7 @@ var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$loc
 		var obj=s.site;
 		var that=this;
 		obj.post().then(function(){
-			s.refreshInitData();
+			Api.refreshInitData();
 		});
 		siteEditModal.hide();
 	};
@@ -67,9 +67,9 @@ var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$loc
 	s.deleteItems = function (itemID) {
 		console.log("itemID",itemID)
 		Api.removeSiteById(itemID).then(function(data) {
-			s.refreshInitData();
+			Api.refreshInitData();
 		});
-		s.refreshInitData();
+		Api.refreshInitData();
 	};
 
 	s.queueOrDequeueItemForDelete = function(itemID) {

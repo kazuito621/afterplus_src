@@ -43,7 +43,6 @@ app.service('Auth',
 
 	// After a login call, handle that and resolve the promise
 	var onDataBackFromSignIn = function (deferred, d) {
-	    dbg(d,'on data bak');
 		if (d && d.userID > 0) {
 			this.data(d);
 			this.sendEvt('onSignin');

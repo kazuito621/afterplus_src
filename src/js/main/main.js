@@ -25,24 +25,8 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	s.sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); }
 
 
-
-	// this is triggered when user signs in, or if they already are signed in
-	// todo, cache initData into local storage... and only check for updates
-    var getInitDataCB = function (data) {
-        //Auth.gotInitData = true;
-    };
-
-	var getInitData = function() {
-        Auth.gotInitData = true;
-	};
-	s.refreshInitData=function(){ dbg('refresh data requested!!!!!!!!!!!!!'); console.trace(); //Api.refreshInitData(); 
-	}
-	//if(Auth.isSignedIn()) getInitData();
-	//else s.$on('onSignin', angular.bind(this, getInitData))
-
-
+	var lastRenderedState='';
 	var render = function() {
-	dbg('render')
 		// break up url path into array 
 		// ie. "#/trees/edit/1234" = ['trees', 'edit', '1234']
 		s.renderPath=$location.path().substr(1).split("/");
@@ -50,10 +34,14 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		// lazy load the property template based on the base path
 		// ie. if "#/trees", then load "trees.tpl.html"
 		// this is done by setting the tpl_XXXX variable, which is the value of the template path
+		var tplID='tpl_'+s.renderPath[0];
 		var tplPath=getTemplatePath(s.renderPath[0]);
-		dbg(s.renderPath)
-		dbg(tplPath)
-		s['tpl_'+s.renderPath[0]]=tplPath;
+		s[tplID]=tplPath;		// load the template, which changes the ng-include var in index.html
+		s['show_'+tplID]=true;	// now show it
+
+		// no turn off last one
+		if(lastRenderedState) s['show_'+lastRenderedState]=false;
+		lastRenderedState=tplID;
 	}
 
 	var getTemplatePath = function(path){
@@ -73,7 +61,6 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
 			return;
 		} 
-
 		s.routeParams=$routeParams;
        	if($route.current.resolve) render();
 	});

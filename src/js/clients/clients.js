@@ -27,14 +27,14 @@ function ($scope, $route, $modal, Api) {
             });
         }
         clientEditModal.hide();
-        s.refreshInitData();
+        Api.refreshInitData();
     };
 
 	s.saveExistingClient = function() {
 		var obj=s.client;
 		var that=this;
 		obj.post().then(function(){
-			s.refreshInitData();
+			Api.refreshInitData();
 		});
 		clientEditModal.hide();
 	}
@@ -79,12 +79,12 @@ function ($scope, $route, $modal, Api) {
 	s.deleteItems = function (itemID) {
         Api.removeClientById(itemID)
 			.then(function() {
-				s.refreshInitData();
+				Api.refreshInitData();
 			},function err(){
 				//todo ... how do we get this?
 				// todo -- ad this same functionality to delete of site
 			});
-		s.refreshInitData();
+		Api.refreshInitData();
 	};
 
 	s.queueOrDequeueItemForDelete = function(itemID) {

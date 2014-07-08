@@ -4,11 +4,12 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', function (Rest, $rootScope, $q, $location) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 
+function (Rest, $rootScope, $q, $location) {
     'use strict';
-    dbg("api serv ");
     window.Api = this;
 
+	var initData={};
     var sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); };
 
     // -------------------------------------------------  Setup REST API service
@@ -55,19 +56,28 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', function (Re
         return id;
     };
 
+	// Make api call to get initdata, return a promise for when the async call comes back
+	var init=function(){  
+	dbg('init')
+	console.trace();
+		var deferred=$q.defer();
+     	sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
+		Rest.one('init').get()
+			.then(function (data) {
+				initData=data;
+				$rootScope.initData=data;
+				//cb(data);
+				sendEvt('onInitData', data);
+				deferred.resolve(); 
+			});
+		return deferred.promise;	
+	};
 
     return {
-        getInitData: function (cb) {
-            sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
-            // Since this is an async call which may take time, we return
-            // a dummy $object which will be populated when the data comes out
-            Rest.one('init').get()
-                .then(function (data, x) {
-                    dbg(data, x, 'Api.getinitdata');
-                    cb(data);
-                    sendEvt('onInitData', data);
-                });
-        },
+		getPromise:function(){ return init(); },
+		getInitData: function(){ return initData; },
+		// returns a promise... for .then() when refresh is done
+		refreshInitData: function(){ return init(); },	
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },

@@ -1,8 +1,8 @@
 'use strict';
 
 var SigninCtrl = app.controller('SigninCtrl', 
-['$scope', '$timeout', '$route','md5', '$location', 'Auth', 'Api',
-function ($scope, $timeout, $route, md5, $location, Auth, Api) {
+['$scope', '$timeout', '$route','md5', '$location', 'Auth', 
+function ($scope, $timeout, $route, md5, $location, Auth ){
 
 	var s = window.scs = $scope
 		,url

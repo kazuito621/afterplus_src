@@ -1,8 +1,8 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 'Api', 'ApiInterceptors',
-function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth, Api) {
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 
+function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
 	var s = window.mcs = $scope;
 	s.routeParams={};
 	s.appData={};
@@ -27,29 +27,48 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
 
 
-
 	// this is triggered when user signs in, or if they already are signed in
 	// todo, cache initData into local storage... and only check for updates
     var getInitDataCB = function (data) {
-        s.initData = data;
-        Auth.gotInitData = true;
+        //Auth.gotInitData = true;
     };
 
 	var getInitData = function() {
-		Api.getInitData(getInitDataCB);
+        Auth.gotInitData = true;
 	};
-	s.refreshInitData=function(){ getInitData(); }
-	if(Auth.isSignedIn()) getInitData();
-	else s.$on('onSignin', angular.bind(this, getInitData))
+	s.refreshInitData=function(){ dbg('refresh data requested!!!!!!!!!!!!!'); console.trace(); //Api.refreshInitData(); 
+	}
+	//if(Auth.isSignedIn()) getInitData();
+	//else s.$on('onSignin', angular.bind(this, getInitData))
 
 
+	var render = function() {
+	dbg('render')
+		// break up url path into array 
+		// ie. "#/trees/edit/1234" = ['trees', 'edit', '1234']
+		s.renderPath=$location.path().substr(1).split("/");
 
-	s.$on("$routeChangeSuccess", function(current) {
-		var rp=$routeParams;
+		// lazy load the property template based on the base path
+		// ie. if "#/trees", then load "trees.tpl.html"
+		// this is done by setting the tpl_XXXX variable, which is the value of the template path
+		var tplPath=getTemplatePath(s.renderPath[0]);
+		dbg(s.renderPath)
+		dbg(tplPath)
+		s['tpl_'+s.renderPath[0]]=tplPath;
+	}
+
+	var getTemplatePath = function(path){
+		if(path=='trees-edit') return 'js/trees/edit.tpl.html';
+		// for signin, trees, sites, and clients... used default
+		return 'js/'+path+"/"+path+".tpl.html";
+	}
+
+	s.$on("$routeChangeSuccess", function(evt, current, previous) {
 		var authReq = $route.current && 
 				$route.current.$$route && 
 				$route.current.$$route.auth;
 		if (authReq && !Auth.isSignedIn() && $route.current.params.stateID!='estimate') {
+			//todo - maybe this hsould be stored internally instead of going to the url
 			//note: estimate handles its own signin
 			var currentUrl = $location.url();
 			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
@@ -57,7 +76,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		} 
 
 		s.routeParams=$routeParams;
-			
+       	if($route.current.resolve) render();
 	});
 
 

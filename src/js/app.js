@@ -7,10 +7,26 @@ var app = angular.module('arborPlusApp',
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
+        $routeProvider  
+			// each route defenition must include a resolve object, even if blank,
+			// because were using that in the onRouteChange render action to tell if the resolve has completed
+            .when('/signin',{auth:false,resolve:{}})
+            .when('/estimate/',{auth:false,resolve:{}})
+            .when("/:state1/:state2?/:state3?", {
+                    auth:true
+                    ,resolve: {
+                      deps:['Api', function(Api){  dbg('state resolve');return Api.getPromise(); }]
+                    }
+                })
+            .otherwise({redirectTo: "/signin"});
+
+/*
         $routeProvider
 				.when('/signin', {templateUrl:'js/signin/signin.tpl.html', controller:'SigninCtrl'})
                	.when('/:stateID/:param1?', {auth:true, controller: MainCtrl})
                 .otherwise({redirectTo: '/signin'});
+*/
+
 	}]);
 
 app.run(function(editableOptions){

@@ -1,0 +1,621 @@
+/* line 17, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1;
+}
+
+/* line 24, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, C:/Ruby200/lib/ruby/gems/2.0.0/gems/compass-0.12.6/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+/* line 4, ../scss/partials/_buttons.scss */
+.btn.btn-lg {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 25px;
+  font-weight: normal;
+  color: white;
+  line-height: 25px;
+  width: 100%;
+  max-width: 130px;
+}
+/* line 11, ../scss/partials/_buttons.scss */
+.btn.btn-xs {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: white;
+  line-height: 20px;
+}
+/* line 16, ../scss/partials/_buttons.scss */
+.btn.btn-block {
+  display: block;
+}
+/* line 21, ../scss/partials/_buttons.scss */
+.btn.btn-red {
+  background: #f84540;
+  border: 1px solid #faaaa9;
+  background-image: -webkit-linear-gradient(#ee4f3a, #d93f33 50%, #db382f);
+  background-image: -o-linear-gradient(#ee4f3a, #d93f33 50%, #db382f);
+  background-image: linear-gradient(#ee4f3a, #d93f33 50%, #db382f);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEE4F3A', endColorstr='#FFDB382F', GradientType=0);
+  -webkit-transition: background linear 0.2s;
+  -o-transition: background linear 0.2s;
+  transition: background linear 0.2s;
+}
+/* line 27, ../scss/partials/_buttons.scss */
+.btn.btn-red:hover, .btn.btn-red:focus, .btn.btn-red:active {
+  background: #f84540;
+  background-image: -webkit-linear-gradient(#ee4f3a, #ee4f3a 50%, #ee4f3a);
+  background-image: -o-linear-gradient(#ee4f3a, #ee4f3a 50%, #ee4f3a);
+  background-image: linear-gradient(#ee4f3a, #ee4f3a 50%, #ee4f3a);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEE4F3A', endColorstr='#FFEE4F3A', GradientType=0);
+}
+/* line 34, ../scss/partials/_buttons.scss */
+.btn.btn-blue {
+  background: #5099e5;
+  border: 1px solid #abd7f4;
+  background-image: -webkit-linear-gradient(#5596da, #519ae7 50%, #3d80ce);
+  background-image: -o-linear-gradient(#5596da, #519ae7 50%, #3d80ce);
+  background-image: linear-gradient(#5596da, #519ae7 50%, #3d80ce);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF5596DA', endColorstr='#FF3D80CE', GradientType=0);
+  -webkit-transition: background linear 0.2s;
+  -o-transition: background linear 0.2s;
+  transition: background linear 0.2s;
+}
+/* line 40, ../scss/partials/_buttons.scss */
+.btn.btn-blue:hover, .btn.btn-blue:focus, .btn.btn-blue:active {
+  background: #5099e5;
+  background-image: -webkit-linear-gradient(#5596da, #5596da 50%, #5596da);
+  background-image: -o-linear-gradient(#5596da, #5596da 50%, #5596da);
+  background-image: linear-gradient(#5596da, #5596da 50%, #5596da);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF5596DA', endColorstr='#FF5596DA', GradientType=0);
+}
+/* line 47, ../scss/partials/_buttons.scss */
+.btn.btn-green {
+  background: #9bc21b;
+  border: 1px solid #c2d981;
+  background-image: -webkit-linear-gradient(#9bc21b, #8fb428 50%, #89a72b);
+  background-image: -o-linear-gradient(#9bc21b, #8fb428 50%, #89a72b);
+  background-image: linear-gradient(#9bc21b, #8fb428 50%, #89a72b);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF9BC21B', endColorstr='#FF89A72B', GradientType=0);
+  -webkit-transition: background linear 0.2s;
+  -o-transition: background linear 0.2s;
+  transition: background linear 0.2s;
+}
+/* line 53, ../scss/partials/_buttons.scss */
+.btn.btn-green:hover, .btn.btn-green:focus, .btn.btn-green:active {
+  background: #5099e5;
+  background-image: -webkit-linear-gradient(#9bc21b, #9bc21b 50%, #9bc21b);
+  background-image: -o-linear-gradient(#9bc21b, #9bc21b 50%, #9bc21b);
+  background-image: linear-gradient(#9bc21b, #9bc21b 50%, #9bc21b);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF9BC21B', endColorstr='#FF9BC21B', GradientType=0);
+}
+/* line 60, ../scss/partials/_buttons.scss */
+.btn.btn-orange {
+  background: #ec983e;
+  border: 1px solid #deac65;
+  background-image: -webkit-linear-gradient(#ec983e, #dc842d 50%, #de8c38);
+  background-image: -o-linear-gradient(#ec983e, #dc842d 50%, #de8c38);
+  background-image: linear-gradient(#ec983e, #dc842d 50%, #de8c38);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEC983E', endColorstr='#FFDE8C38', GradientType=0);
+  -webkit-transition: background linear 0.2s;
+  -o-transition: background linear 0.2s;
+  transition: background linear 0.2s;
+}
+/* line 66, ../scss/partials/_buttons.scss */
+.btn.btn-orange:hover, .btn.btn-orange:focus, .btn.btn-orange:active {
+  background: #5099e5;
+  background-image: -webkit-linear-gradient(#ec983e, #ec983e 50%, #ec983e);
+  background-image: -o-linear-gradient(#ec983e, #ec983e 50%, #ec983e);
+  background-image: linear-gradient(#ec983e, #ec983e 50%, #ec983e);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEC983E', endColorstr='#FFEC983E', GradientType=0);
+}
+
+/* line 2, ../scss/partials/_common.scss */
+body {
+  background-color: #fff;
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-print-color-adjust: exact;
+}
+
+/* line 10, ../scss/partials/_common.scss */
+header {
+  background: none;
+  background-color: black;
+  padding: 15px 20px;
+}
+/* line 16, ../scss/partials/_common.scss */
+header .cnt-logo {
+  float: left;
+  display: inline-block;
+}
+/* line 20, ../scss/partials/_common.scss */
+header .cnt-logo img {
+  width: 150px;
+  height: auto;
+}
+/* line 26, ../scss/partials/_common.scss */
+header .cnt-action {
+  float: right;
+  margin-top: 0;
+  display: inline-block;
+}
+
+/* line 34, ../scss/partials/_common.scss */
+.row-xs {
+  margin-left: -5px;
+  margin-right: -5px;
+}
+/* line 39, ../scss/partials/_common.scss */
+.row-xs > .col {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+/* line 46, ../scss/partials/_common.scss */
+footer {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  color: black;
+  line-height: 20px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-top: 1px solid #BBB;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+/* line 2, ../scss/partials/_estimate.scss */
+.action-container {
+  padding: 15px 0;
+  background: white;
+}
+/* line 7, ../scss/partials/_estimate.scss */
+.action-container.affix {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+}
+@media (max-width: 991px) {
+  /* line 7, ../scss/partials/_estimate.scss */
+  .action-container.affix {
+    position: relative;
+    top: 0;
+  }
+}
+/* line 31, ../scss/partials/_estimate.scss */
+.action-container .row-action > .col:last-child {
+  border-right: none;
+}
+@media (max-width: 767px) {
+  /* line 26, ../scss/partials/_estimate.scss */
+  .action-container .row-action > .col {
+    border: none;
+  }
+}
+@media (max-width: 767px) {
+  /* line 43, ../scss/partials/_estimate.scss */
+  .action-container .action-block {
+    margin-bottom: 10px;
+  }
+}
+/* line 50, ../scss/partials/_estimate.scss */
+.action-container .action-block.no-border {
+  border: none;
+}
+/* line 55, ../scss/partials/_estimate.scss */
+.action-container .action-block.action-block-1 {
+  padding: 5px 0;
+}
+/* line 60, ../scss/partials/_estimate.scss */
+.action-container .action-block.action-block-3 {
+  padding: 12px 0;
+}
+/* line 65, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats {
+  text-align: center;
+}
+/* line 71, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats .stat .number {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 40px;
+  font-weight: normal;
+  color: #f84540;
+  line-height: 40px;
+  margin: 0;
+}
+/* line 77, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats .stat .text {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  font-weight: normal;
+  color: black;
+  line-height: 10px;
+  text-transform: uppercase;
+}
+@media (max-width: 767px) {
+  /* line 87, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-1 {
+    text-align: center;
+  }
+}
+@media (max-width: 500px) {
+  /* line 97, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-3 .col-xs-4 {
+    float: none;
+    clear: both;
+    display: block;
+    width: 100%;
+  }
+  /* line 105, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-3 .btn-block {
+    margin-bottom: 10px;
+  }
+}
+
+/* line 113, ../scss/partials/_estimate.scss */
+.estimate-container {
+  padding: 0;
+  margin: 0;
+}
+/* line 120, ../scss/partials/_estimate.scss */
+.estimate-container .row-estimate .col {
+  min-height: 100%;
+}
+/* line 125, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary {
+  -webkit-print-color-adjust: exact;
+  position: relative;
+  background: #333333;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 15px;
+}
+/* line 137, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .estimate-info .title {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+  font-weight: normal;
+  color: #f84540;
+  line-height: 30px;
+  margin: 0;
+  text-transform: uppercase;
+}
+/* line 144, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .estimate-info .name {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  color: white;
+  line-height: 24px;
+}
+/* line 15, ../scss/modules/mixins/_clearfix.scss */
+.estimate-container .estimate-summary .estimate-info dl:before, .estimate-container .estimate-summary .estimate-info dl:after {
+  content: " ";
+  display: table;
+}
+/* line 19, ../scss/modules/mixins/_clearfix.scss */
+.estimate-container .estimate-summary .estimate-info dl:after {
+  clear: both;
+}
+/* line 153, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .estimate-info dl dt {
+  float: left;
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: white;
+  line-height: 20px;
+  margin-right: 5px;
+}
+/* line 160, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .estimate-info dl dd {
+  float: left;
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  color: white;
+  line-height: 20px;
+}
+/* line 168, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .estimate-info dl.small dt {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: white;
+  line-height: 20px;
+  margin-right: 5px;
+}
+/* line 174, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .estimate-info dl.small dd {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: white;
+  line-height: 20px;
+}
+/* line 182, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .bid-info {
+  display: table;
+  min-height: 135px;
+  width: 100%;
+}
+/* line 188, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-summary .bid-info .bid {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+  font-weight: normal;
+  color: #f84540;
+  line-height: 30px;
+  margin: 0;
+  text-align: right;
+  display: table-cell;
+  vertical-align: bottom;
+}
+@media (max-width: 991px) {
+  /* line 182, ../scss/partials/_estimate.scss */
+  .estimate-container .estimate-summary .bid-info {
+    min-height: 0;
+    margin-top: 10px;
+  }
+  /* line 202, ../scss/partials/_estimate.scss */
+  .estimate-container .estimate-summary .bid-info .bid {
+    text-align: left;
+  }
+}
+
+/* line 211, ../scss/partials/_estimate.scss */
+.table-container {
+  margin-bottom: 30px;
+}
+/* line 216, ../scss/partials/_estimate.scss */
+.table-container .row-table .col-md-3 {
+  float: right;
+}
+@media (max-width: 991px) {
+  /* line 216, ../scss/partials/_estimate.scss */
+  .table-container .row-table .col-md-3 {
+    display: block;
+    float: none;
+    width: 100%;
+  }
+  /* line 15, ../scss/modules/mixins/_clearfix.scss */
+  .table-container .row-table .col-md-3:before, .table-container .row-table .col-md-3:after {
+    content: " ";
+    display: table;
+  }
+  /* line 19, ../scss/modules/mixins/_clearfix.scss */
+  .table-container .row-table .col-md-3:after {
+    clear: both;
+  }
+}
+/* line 229, ../scss/partials/_estimate.scss */
+.table-container .row-table .col-md-9 {
+  float: left;
+}
+@media (max-width: 991px) {
+  /* line 229, ../scss/partials/_estimate.scss */
+  .table-container .row-table .col-md-9 {
+    display: block;
+    float: none;
+    width: 100%;
+  }
+  /* line 15, ../scss/modules/mixins/_clearfix.scss */
+  .table-container .row-table .col-md-9:before, .table-container .row-table .col-md-9:after {
+    content: " ";
+    display: table;
+  }
+  /* line 19, ../scss/modules/mixins/_clearfix.scss */
+  .table-container .row-table .col-md-9:after {
+    clear: both;
+  }
+}
+/* line 245, ../scss/partials/_estimate.scss */
+.table-container .map-container.mode_estimate {
+  position: relative;
+}
+/* line 249, ../scss/partials/_estimate.scss */
+.table-container .map-container.mode_estimate.affix {
+  position: fixed;
+  top: 100px;
+}
+@media (max-width: 991px) {
+  /* line 249, ../scss/partials/_estimate.scss */
+  .table-container .map-container.mode_estimate.affix {
+    position: relative;
+    top: 0;
+    margin-bottom: 15px;
+  }
+}
+/* line 264, ../scss/partials/_estimate.scss */
+.table-container .table {
+  border: 1px solid #acaead;
+}
+/* line 269, ../scss/partials/_estimate.scss */
+.table-container .table thead tr {
+  border-color: #acaead;
+}
+/* line 272, ../scss/partials/_estimate.scss */
+.table-container .table thead tr td {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+  line-height: 20px;
+  background: #f2f3f5;
+  border: none;
+  border-bottom: 1px solid #acaead;
+  white-space: normal !important;
+}
+/* line 280, ../scss/partials/_estimate.scss */
+.table-container .table thead tr td.amount {
+  text-align: right;
+}
+/* line 285, ../scss/partials/_estimate.scss */
+.table-container .table thead tr td:last-child {
+  border-right: 1px solid #acaead;
+}
+/* line 295, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr {
+  border-color: #acaead;
+}
+/* line 298, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td {
+  border: none;
+  border-bottom: 1px solid #acaead;
+  white-space: normal !important;
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: #646665;
+  line-height: 16px;
+}
+/* line 306, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td .light {
+  color: #a8a8a8;
+}
+/* line 311, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td.amount {
+  text-align: right;
+}
+/* line 316, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td:last-child {
+  border-right: 1px solid #acaead;
+}
+/* line 324, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr:nth-child(odd) td {
+  background: #fafcfb;
+}
+/* line 332, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr:nth-child(even) td {
+  background: #f2f3f5;
+}
+/* line 340, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
+  background: #eaeaea;
+}
+/* line 349, ../scss/partials/_estimate.scss */
+.table-container .total-amount {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+  font-weight: normal;
+  color: #f84540;
+  line-height: 30px;
+  text-align: right;
+}
+
+/* line 356, ../scss/partials/_estimate.scss */
+.section-container {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  color: black;
+  line-height: 18px;
+}
+/* line 358, ../scss/partials/_estimate.scss */
+.section-container .section-sub-title {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  line-height: 18px;
+}
+/* line 363, ../scss/partials/_estimate.scss */
+.section-container .section-mini-title {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+  line-height: 18px;
+  margin-top: 10px;
+}
+
+@media print {
+  /* line 374, ../scss/partials/_estimate.scss */
+  .action-container {
+    display: none;
+  }
+
+  /* line 381, ../scss/partials/_estimate.scss */
+  .estimate-container .estimate-summary {
+    border: 1px solid black;
+  }
+
+  /* line 389, ../scss/partials/_estimate.scss */
+  .table-container .map-container {
+    display: block;
+    width: 100% !important;
+    margin: auto;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+}

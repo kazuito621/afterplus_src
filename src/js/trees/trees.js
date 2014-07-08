@@ -66,6 +66,28 @@ var TreesCtrl = app.controller('TreesCtrl',
 						delete Auth.requestedReportID;
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
+
+						setTimeout(function()
+						{
+							$('#treeMap_estimate').width($('#treeMap_estimate').width());
+							$('#treeMap_estimate').affix(
+							{
+								offset: 
+								{
+									top: $('#treeMap_estimate').offset().top - 120
+								}
+							});
+
+							$('#action-container').affix(
+							{
+								offset: 
+								{
+									top: $('#action-container').offset().top
+								}
+							});
+
+						} , 1000);	
+
 					});
 			}else{
 				// forward them to a place where they can view a list of esimates ... ie (#/estimates)

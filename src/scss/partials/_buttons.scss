@@ -1,0 +1,71 @@
+.btn 
+{
+	&.btn-lg 
+	{
+		@include font-g(25px , normal , $white-color , 25px);
+		width: 100%;
+		max-width: 130px;			
+	}
+
+	&.btn-xs
+	{
+		@include font-g(12px , normal , $white-color , 20px);
+	}
+
+	&.btn-block 
+	{
+		display: block;
+	}
+
+	&.btn-red 
+	{
+		background: $orange-color;
+		border: 1px solid #faaaa9;
+		@include gradient-vertical-three-colors(#ee4f3a , #d93f33 , 50% , #db382f);
+		@include animate(background);
+		&:hover, &:focus, &:active
+		{
+			background: $orange-color;
+			@include gradient-vertical-three-colors(#ee4f3a , #ee4f3a , 50% , #ee4f3a);
+		}
+	}
+
+	&.btn-blue 
+	{
+		background: #5099e5;
+		border: 1px solid #abd7f4;
+		@include gradient-vertical-three-colors(#5596da , #519ae7 , 50% , #3d80ce);
+		@include animate(background);
+		&:hover, &:focus, &:active
+		{
+			background: #5099e5;
+			@include gradient-vertical-three-colors(#5596da , #5596da , 50% , #5596da);
+		}
+	}
+
+	&.btn-green 
+	{
+		background: #9bc21b;
+		border: 1px solid #c2d981;
+		@include gradient-vertical-three-colors(#9bc21b , #8fb428 , 50% , #89a72b);
+		@include animate(background);
+		&:hover, &:focus, &:active
+		{
+			background: #5099e5;
+			@include gradient-vertical-three-colors(#9bc21b , #9bc21b , 50% , #9bc21b);
+		}
+	}
+
+	&.btn-orange 
+	{
+		background: #ec983e;
+		border: 1px solid #deac65;
+		@include gradient-vertical-three-colors(#ec983e , #dc842d , 50% , #de8c38);
+		@include animate(background);
+		&:hover, &:focus, &:active
+		{
+			background: #5099e5;
+			@include gradient-vertical-three-colors(#ec983e , #ec983e , 50% , #ec983e);
+		}
+	}
+}

@@ -19,15 +19,57 @@ app.config(['$routeProvider', '$locationProvider',
                     }
                 })
             .otherwise({redirectTo: "/signin"});
+	}])
+	.config(['RestangularProvider',
+		function(RestProvider){
+			RestProvider
+				.setBaseUrl(cfg.apiBaseUrl())
+				//.setDefaultRequestParams({ apiKey: 'xx' })
+				.setRestangularFields({ selfLink: 'self.link'})		// todo ... explore this option
+				.setResponseExtractor(function(res, op) {
+					if( !res ){
+						s.setAlert('Error talking to the server (2)',{type:'danger'});
+						return {};
+					}
+					//if(res.request && res.fetchtime) dbg(res.request+' - '+res.fetchime+'s');
+					if( typeof res == 'string' ) res={result:0, msg:res};
+					res.data=res.data||{}		//make sure data exists
+					var msg=res.msg||res.message||res.data.msg||res.data.message, type='success'
+					if(res.result != 1){
+						if(op=='getList' && typeof res != 'Array') res.data=[];
+						if(!msg) msg='Error talking to the server';
+						type='danger';
+					}
+					if(msg) s.setAlert(msg, {type:type});
+					return res.data;
+				})
+				.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
+					headers=headers||{};
+					headers['X-token']=Auth.data().token;
+					return {
+						headers:headers
+						,element:element
+						,params:params
+						,httpConfig:httpConfig
+					}
+				})
+				.setErrorInterceptor(function(){
+					s.setAlert('Error talking to the server (3)',{type:'danger'});
+					dbg('REST error found in setErrorInterceptor');
+					//return true;	//todo -- what to do here? display error to user?
+					})
+			RestProvider.configuration.getIdFromElem = function(elem) {
+				// ie. clientID, instead of "id", or treeID instead of "id"
+				// todo ... seems like theres a bug.. when you call Rest.one('client',123'), 
+					// the elementID gets set as "id"... instead of resepecting this...
+					// need to add changes, ie "getIdName"... should do a REST pull request?
+				var id=elem[elem.route + "ID"];
+				if(!id) id=elem['reportID'];
+				if(!id) return elem.id;
+				return id;
+			}
+		}]);
 
-/*
-        $routeProvider
-				.when('/signin', {templateUrl:'js/signin/signin.tpl.html', controller:'SigninCtrl'})
-               	.when('/:stateID/:param1?', {auth:true, controller: MainCtrl})
-                .otherwise({redirectTo: '/signin'});
-*/
-
-	}]);
 
 app.run(function(editableOptions){
  	editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'

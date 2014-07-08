@@ -19,7 +19,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.tree_cachebuster='?ts='+moment().unix();	
 		s.data={mode:''					// either "trees" or "estimate"
 				,showTreeDetails:false
-				,showMap:false			
+				,showMap:true			// not needed now? since new routing technique
 				,showTreatmentList:false
 				,currentTreatmentCodes:[]		// array of treatment codes user selected in multi-box
 				};								// for adding trees to the estimate
@@ -82,8 +82,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 			}
 		}
 	}
+
 	var setupInitData = function(){
-		s.initData=data;
 		s.filteredSites = s.initData.sites;
 		s.filteredClients = s.initData.clients;
 		s.ratingTypes = s.initData.filters.ratings;
@@ -276,13 +276,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(gMap)return;
 		google.load("maps", "3", {other_params:'sensor=false', callback:function(){
 			var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122),mapTypeId:'hybrid'};
-			var map_id=(s.data.mode=='trees') ? 'treeMap' : 'treeMap2';
+			var map_id=(s.data.mode=='estimate') ? 'treeMap2' : 'treeMap';
 			gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
 			google.maps.event.addListener(gMap, 'click', function() {
 			dbg(s,'click')
        			if(infowindow && infowindow.setMap) infowindow.setMap(null);
 	    	});
-
 			deferred.resolve();
 		}});
 		return deferred.promise;
@@ -765,7 +764,11 @@ var TreesCtrl = app.controller('TreesCtrl',
 	}	
 
 
+	setupInitData();
+	init();
 
+
+/*
 	// pre-init stuff ----------------------------------------------
 	var deferredUserNav, deferredInitData
 
@@ -796,6 +799,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		}
 	}
 
+
 	var waitForUser = function(){ deferredUserNav=$q.defer(); return deferredUserNav.promise; }
 	var waitForInitData = function(){ deferredInitData=$q.defer(); return deferredInitData.promise; }
 	var pre_init = function() {
@@ -818,6 +822,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 	s.$on('onSignin', function(evt){
 		pre_init();
 	});
+*/
 
 }]);	// }}} TreesCtrl
 

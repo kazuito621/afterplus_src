@@ -5,7 +5,7 @@
     and Report Controller can build a UI based on the data
 **/
 app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 
-function (Rest, $rootScope, $q, $location) {
+function (Rest, $rootScope, $q, $location ) {
     'use strict';
     window.Api = this;
 
@@ -42,7 +42,6 @@ function (Rest, $rootScope, $q, $location) {
         });
     Rest.addFullRequestInterceptor(function (element, operation, route, url, headers, params, httpConfig) {
         headers = headers || {};
-		dbg(Auth.data().token, 'add req ueaders');
         headers['X-token'] = Auth.data().token;
         return {
             headers: headers,

@@ -17,12 +17,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 		,markers_allSites = []
 		,markers_singleSite= []
 		s.tree_cachebuster='?ts='+moment().unix();	
-		s.data={mode:s.renderPath[0] 					// either "trees" or "estimate"
-				,showTreeDetails:false
+		s.data={
+				showTreeDetails:false
 				,showMap:true			// not needed now? since new routing technique
 				,showTreatmentList:false
 				,currentTreatmentCodes:[]		// array of treatment codes user selected in multi-box
-				};								// for adding trees to the estimate
+												// for adding trees to the estimate
+				,mode:function(){ return s.renderPath[0]; }					// either "trees" or "estimate"
+				};
 		s.whoami='TreesCtrl';
 		s.TFSdata;	//holds tree results count, etc. Remember, always put scope data into an object
 					// or it will pass by value, not reference
@@ -62,7 +64,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
 		s.TFSdata=TFS.data;
-		if(s.data.mode=='estimate'){
+		if(s.data.mode()=='estimate'){
 			var rptHash=s.renderPath[1];
 			if( rptHash ){ 
 				ReportService.loadReport(rptHash, {getTreeDetails:1})
@@ -95,7 +97,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		$timeout(function(){
 			storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]}});
 			s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
-			if( !s.selected.siteID && s.data.mode!='estimate') showMappedSites();
+			if( !s.selected.siteID && s.data.mode()!='estimate') showMappedSites();
 		},1);
 
 	
@@ -183,7 +185,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 	//		2. ELSE, if siteID exists, show TREES on the map
 	s.$watch('selected.siteID', function(ID, oldID) {
 		ReportService.setSiteID(ID);
-		if(s.data.mode=='trees'){
+		if(s.data.mode()=='trees'){
 			ReportService.loadRecent();
 			if(ID && ID>0) getTreeListings();
 			// todo -- else zoom in on the selected Site...
@@ -193,7 +195,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 	s.$watch('selected.clientID', function(ID, oldID) {
 		ReportService.setClientID(ID);
-		if(s.data.mode=='trees') ReportService.loadRecent();
+		if(s.data.mode()=='trees') ReportService.loadRecent();
 	});
 
 	// When the trees[] array changes because of a filter event... update the ui.
@@ -274,7 +276,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(gMap)return;
 		google.load("maps", "3", {other_params:'sensor=false', callback:function(){
 			var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122),mapTypeId:'hybrid'};
-			var map_id=(s.data.mode=='estimate') ? 'treeMap2' : 'treeMap';
+			var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
 			gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
 			google.maps.event.addListener(gMap, 'click', function() {
 			dbg(s,'click')
@@ -426,14 +428,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 	//Define function to show site specific trees in map
 	var showMappedTrees = _.throttle(function(treeSet){
 		if(!gMap) return initMap().then(function(){ showMappedTrees(treeSet); })
-		if(s.data.mode=='estimate' && s.report && s.report.items) treeSet=s.report.items;
+		if(s.data.mode()=='estimate' && s.report && s.report.items) treeSet=s.report.items;
 		clearMarkers();
 		var set2=[],ratingD,o;
 		if(!infowindow) infowindow = new google.maps.InfoWindow();
 		_.each(treeSet, function(itm){
 			if(!itm || itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
-			if(s.data.mode=='trees'){
+			if(s.data.mode()=='trees'){
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
 				o= '<div class="mapWindowContainer">'
 				+'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)

@@ -37,6 +37,17 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.siteLocs = [];
 		s.selectedValues = [];
 		s.thisYear=moment().format('YYYY');
+		s.filteredSites = s.initData.sites;
+		s.filteredClients = s.initData.clients;
+		s.ratingTypes = s.initData.filters.ratings;
+		s.filters = s.initData.filters;
+		s.filters.year=[{id:moment().format('YYYY'), desc:'This year'}
+									,{id:moment().add('year',1).format('YYYY'), desc:'Next yr'}
+									,{id:moment().add('year',2).format('YYYY'), desc:'2yr'}
+									,{id:moment().add('year',3).format('YYYY'), desc:'3yr'}
+									,{id:moment().add('year',4).format('YYYY'), desc:'4yr'}]
+		s.treatmentTypes = s.initData.filters.treatments;
+		ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 
 		s.colors={
 			speciesCount:[]		// stores count of species ie. speciesCount[133]=5, speciesCount[431]=1  (speciesID 133 = 5 total)
@@ -49,26 +60,20 @@ var TreesCtrl = app.controller('TreesCtrl',
 			,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
 			};
 
-	// INIT is not called until
-	//	1. user has browsed to this page  AND
-	//	2. initData has arrived from the server
-	// this is accomplished via $q.defer (see pre_init())
-	var init = function(urlParam1){
-		if(!Auth.isSignedIn()) return;
+
 		s.TFSdata=TFS.data;
 		if(s.data.mode=='estimate'){
-			// check for requestedReportID in user data (which means its verified)
-			if( Auth.data().requestedReportID ){
-				ReportService.loadReport(Auth.data().requestedReportID, {getTreeDetails:1})
+			var rptHash=s.renderPath[1];
+			if( rptHash ){ 
+				ReportService.loadReport(rptHash, {getTreeDetails:1})
 					.then(function(data){
+					dbg(data,'rserv return')
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
+						showMappedTrees();
 					});
-			}else{
-				// forward them to a place where they can view a list of esimates ... ie (#/estimates)
 			}
 		}
-		s.data.showMap=true;
 
 		// here, we account for 2 usecases:
 		// 1. if user comes to this state 2nd (ie after editing a tree.. so we need a resize)
@@ -81,20 +86,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 				},2000);
 			}
 		}
-	}
 
-	var setupInitData = function(){
-		s.filteredSites = s.initData.sites;
-		s.filteredClients = s.initData.clients;
-		s.ratingTypes = s.initData.filters.ratings;
-		s.filters = s.initData.filters;
-		s.filters.year=[{id:moment().format('YYYY'), desc:'This year'}
-									,{id:moment().add('year',1).format('YYYY'), desc:'Next yr'}
-									,{id:moment().add('year',2).format('YYYY'), desc:'2yr'}
-									,{id:moment().add('year',3).format('YYYY'), desc:'3yr'}
-									,{id:moment().add('year',4).format('YYYY'), desc:'4yr'}]
-		s.treatmentTypes = s.initData.filters.treatments;
-		ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 		TFS.init(s.initData);
 
 		// bind variabels to local storage, so that stuff is remembered	
@@ -105,7 +97,9 @@ var TreesCtrl = app.controller('TreesCtrl',
 			s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
 			if( !s.selected.siteID && s.data.mode!='estimate') showMappedSites();
 		},1);
-	};	
+
+	
+
 
     var highlightResultRow = function (treeID) {
         if (s.activeResultRow) {
@@ -189,13 +183,17 @@ var TreesCtrl = app.controller('TreesCtrl',
 	//		2. ELSE, if siteID exists, show TREES on the map
 	s.$watch('selected.siteID', function(ID, oldID) {
 		ReportService.setSiteID(ID);
-		if(ID && ID>0) getTreeListings();
-		// todo -- else zoom in on the selected Site...
-		// zoomMap(lat, long) ??
+		if(s.data.mode=='trees'){
+			ReportService.loadRecent();
+			if(ID && ID>0) getTreeListings();
+			// todo -- else zoom in on the selected Site...
+			// zoomMap(lat, long)?
+		}
 	});
 
 	s.$watch('selected.clientID', function(ID, oldID) {
 		ReportService.setClientID(ID);
+		if(s.data.mode=='trees') ReportService.loadRecent();
 	});
 
 	// When the trees[] array changes because of a filter event... update the ui.
@@ -738,7 +736,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
 
-	//Define function for showing trees from the selected proprty.
 	var getTreeListings = function(){
 		// reset selected trees to prevent duplicates
 		s.selectedTrees = [];
@@ -764,8 +761,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 	}	
 
 
-	setupInitData();
-	init();
 
 
 /*

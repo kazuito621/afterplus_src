@@ -44,11 +44,9 @@ app.service('ReportService',
 
 	this.setSiteID = function(ID) {
 		this.siteID=ID;
-		this.loadRecent();
 	}
 	this.setClientID = function(ID) {
 		this.clientID=ID;
-		this.loadRecent();
 	}
 	this.setTreatmentPrices = function(tp) {
 		this.treatmentPrices=tp;

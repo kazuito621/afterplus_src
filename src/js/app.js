@@ -20,15 +20,15 @@ app.config(['$routeProvider', '$locationProvider',
                 })
             .otherwise({redirectTo: "/signin"});
 	}])
-	.config(['RestangularProvider',
-		function(RestProvider){
+	.run(['Restangular', '$rootScope',
+		function(RestProvider, rs){
 			RestProvider
 				.setBaseUrl(cfg.apiBaseUrl())
 				//.setDefaultRequestParams({ apiKey: 'xx' })
 				.setRestangularFields({ selfLink: 'self.link'})		// todo ... explore this option
 				.setResponseExtractor(function(res, op) {
 					if( !res ){
-						s.setAlert('Error talking to the server (2)',{type:'danger'});
+						rs.$broadcast('alert', {msg:'Error talking to the server (2)', type:'danger'}); 
 						return {};
 					}
 					//if(res.request && res.fetchtime) dbg(res.request+' - '+res.fetchime+'s');
@@ -40,7 +40,7 @@ app.config(['$routeProvider', '$locationProvider',
 						if(!msg) msg='Error talking to the server';
 						type='danger';
 					}
-					if(msg) s.setAlert(msg, {type:type});
+					if(msg) rs.$broadcast('alert', {msg:msg, type:type}); 
 					return res.data;
 				})
 				.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
@@ -54,7 +54,7 @@ app.config(['$routeProvider', '$locationProvider',
 					}
 				})
 				.setErrorInterceptor(function(){
-					s.setAlert('Error talking to the server (3)',{type:'danger'});
+					rs.$broadcast('alert', {msg:'Error talking to the server (3)', type:'danger'});
 					dbg('REST error found in setErrorInterceptor');
 					//return true;	//todo -- what to do here? display error to user?
 					})

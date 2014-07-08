@@ -28,59 +28,6 @@ var ReportCtrl = app.controller(
                 }
             };
 
-            var groupReportItems = function () {
-//                console.log('about to group report items', s.report.items);
-                var items = angular.copy(s.report.items);
-                var res = [];
-                var keys = [];
-
-                var getTreatment = function (item) {
-                    return {
-                        treatmentTypeCode: item.treatmentTypeCode,
-                        price: item.price
-                    };
-                };
-
-                angular.forEach(items, function (item) {
-                    var index = keys.indexOf(item.treeID);
-                    if (index !== -1) { // another action for this tree
-                        res[index].treatments.push(getTreatment(item));
-                    } else {
-                        var i = angular.copy(item);
-                        keys.push(i.treeID);
-                        i.treatments = [];
-                        i.treatments.push(getTreatment(item));
-                        res.push(i);
-                    }
-                });
-
-//                console.log('after grouping', res);
-//                console.log('report items initial after grouping', s.report.items);
-                return res;
-            };
-
-            var ungroupReportItems = function () {
-//                console.log('about to ungroup report items', s.groupedItems);
-                var items = angular.copy(s.groupedItems);
-                var res = [];
-
-                angular.forEach(items, function (item) {
-                    angular.forEach(item.treatments, function (treatment) {
-                        var tmp = angular.copy(item);
-                        delete tmp.treatments;
-
-                        tmp.treatmentTypeCode = treatment.treatmentTypeCode;
-                        tmp.price = treatment.price;
-
-                        res.push(tmp);
-                    });
-                });
-
-//                console.log('Ungrouped items', res);
-
-                return res;
-            };
-
             // let's watch the recentReportList property, and update on scope if it changes
             s.$on('onLoadRecent', function (evt, list) {
                 s.recentReportList = list;
@@ -109,7 +56,11 @@ var ReportCtrl = app.controller(
                     });
                 }
                 //s.report.grandTotal = RS.getGrandTotal(s.report.items);
-                s.groupedItems = groupReportItems();
+                s.groupedItems = ReportService.groupReportItems();
+            });
+
+            s.$on('itemsAddedToReport', function () {
+                s.groupedItems = ReportService.groupReportItems();
             });
 
             // returns true if row with passed id is the current highlighted row
@@ -259,8 +210,8 @@ var ReportCtrl = app.controller(
                     s.groupedItems.splice(treeIndex, 1);
                 }
 
-                s.report.items = ungroupReportItems();
-                s.groupedItems = groupReportItems();
+                s.report.items = ReportService.ungroupReportItems();
+                s.groupedItems = ReportService.groupReportItems();
             };
 
             // remove item from array of items

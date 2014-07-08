@@ -5,8 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth',
-	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth) {
+	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', '$rootScope',
+	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, $rootScope) {
 
 
 	// local and scoped vars
@@ -601,6 +601,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
 		var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
 		added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
+        $rootScope.$broadcast('itemsAddedToReport');
+
 		if(added==-1)
 				return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
 		if(added.length==trees.length){

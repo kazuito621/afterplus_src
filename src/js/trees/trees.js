@@ -17,7 +17,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		,markers_allSites = []
 		,markers_singleSite= []
 		s.tree_cachebuster='?ts='+moment().unix();	
-		s.data={mode:''					// either "trees" or "estimate"
+		s.data={mode:'trees'					// either "trees" or "estimate"
 				,showTreeDetails:false
 				,showMap:true			// not needed now? since new routing technique
 				,showTreatmentList:false

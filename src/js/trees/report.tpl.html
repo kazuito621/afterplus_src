@@ -259,11 +259,23 @@
    						<tbody>
 							<tr ng-repeat="item in report.services" 
 								ng-mouseover="hover=true" ng-mouseleave="hover=false">
-							   	<td data-title="service_desc"><a href editable-text='item.desc'>{{item.desc}}</a></td>
-								<td data-title="service_quantity"><a href editable-text='item.quantity'>{{item.quantity}}</a></td>
-								<td data-title="service_price"><a href editable-text='item.price'>{{item.price}}</a></td>
+							   	<td data-title="service_desc">
+									<a href editable-text='item.desc' ng-if='auth.is("staff")'>{{item.desc}}</a>
+									<span ng-if='!auth.is("staff")'>{{item.desc}}</span>
+								</td>
+								<td data-title="service_quantity">
+									<a href editable-text='item.quantity' ng-if='auth.is("staff")'>{{item.quantity}}</a>
+									<span ng-if='!auth.is("staff")'>{{item.quantity}}</span>
+								</td>
+								<td data-title="service_price">
+									<a href editable-text='item.price' ng-if='auth.is("staff")'>{{item.price}}</a>
+									<span ng-if='!auth.is("staff")'>{{item.price}}</span>
+								</td>
 								<td>
-									<div ng-if="data.mode()=='trees'"><a ng-show="hover" href ng-click="removeItem(item.$$hashKey,'services')" class='fa fa-times _red _med' ></a></div>
+									<div ng-if="auth.is('staff') && data.mode=='trees'">
+											<a ng-show="hover" href ng-click="removeItem(item.$$hashKey,'services')" 
+												class='fa fa-times _red _med' ></a>
+									</div>
 								</td>
 							</tr>
 

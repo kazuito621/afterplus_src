@@ -1,10 +1,14 @@
-<div class='header-nav'>
-	<div ng-if="auth.isSignedIn()">
-		<span ng-if="auth.is('staff')">	
-		<a href='#/trees'>Trees</a> |  <a href='#/sites'>Properties</a> | <a href='#/clients'>Clients</a> | 
-		</span>
-		<span>
-			<b>{{auth.getLoginName()}}</b> <a href ng-click="auth.signOut()">Sign Out</a>
-		</span>
-	</div>
+<div class="header-inner">
+	<div class="cnt-logo"><img src="http://aplustree.com/home/wp-content/uploads/2011/06/A-Plus-Tree-Service-Red-Black_sm.png"></div>
+	<div class='header-nav cnt-actions'>
+		<div ng-if="auth.isSignedIn()">
+			<span ng-if="auth.is('staff')">	
+				<a href='#/trees'>Trees</a> |  <a href='#/sites'>Properties</a> | <a href='#/clients'>Clients</a> | 
+			</span>
+			<span>
+				<b>{{auth.getLoginName()}}</b> <a href ng-click="auth.signOut()">Sign Out</a>
+			</span>
+		</div>
+	</div>	
+	<div class="clearfix"></div>
 </div>

@@ -73,6 +73,30 @@ var TreesCtrl = app.controller('TreesCtrl',
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
 						showMappedTrees();
+
+						// todo - find a better place for this.... should happen after
+						// tree map is initialized
+						setTimeout(function()
+						{
+							$('#treeMap_estimate').width($('#treeMap_estimate').width());
+							$('#treeMap_estimate').affix(
+							{
+								offset: 
+								{
+									top: $('#treeMap_estimate').offset().top - 120
+								}
+							});
+
+							$('#action-container').affix(
+							{
+								offset: 
+								{
+									top: $('#action-container').offset().top
+								}
+							});
+
+						} , 1000);	
+
 					});
 			}
 		}

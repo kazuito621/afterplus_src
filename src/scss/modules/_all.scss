@@ -1,0 +1,20 @@
+@import "mixins";
+
+@mixin font($font-size , $font-weight , $color , $line-height) 
+{
+	font-size: $font-size;
+	font-weight: $font-weight;
+	color: $color;
+	line-height: $line-height;
+}
+
+
+@mixin border-radius($radius) 
+{
+	border-radius: $radius;
+}
+
+@mixin animate($property : all)
+{
+  	@include transition($property linear 0.2s);
+}

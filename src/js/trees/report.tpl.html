@@ -188,6 +188,7 @@
 								</td>
 				                <td data-title="listing_ID">{{item.localTreeID}}</td>
 				                <td data-title="listing_species">
+                    				{{item.dbhID | dbhID2Name:this }}
 									{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
 									<span class="light">[{{item.treeID}}]</span>
 									<div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>

@@ -454,7 +454,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// <span class='textIconBlock-red'>2014</span>
 			// .... or ...textIconBlock-grey
 			//	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-				o+='</div><a href="#/tree-edit/'+itm.treeID+'">Edit Tree</a><BR></div>';
+				o+='</div><a href="#/tree_edit/'+itm.treeID+'">Edit Tree</a><BR></div>';
 				itm.info=o;
 
 			}else{

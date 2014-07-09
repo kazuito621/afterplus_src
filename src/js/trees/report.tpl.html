@@ -120,7 +120,7 @@
 						data-template="js/trees/emailReport.tpl.html"
 						ng-click="initEmailModal()"
 						>Send</button>
-				<a href='{{report.reportLink}}' target=_new>Customer View</a> 
+				<a ng-if='report.reportLink' href='{{report.reportLink}}' target=_new>Customer View</a> 
 
 			 </div>
 			 <div class="clearfloat"></div>

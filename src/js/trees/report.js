@@ -20,6 +20,11 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.treatmentDescriptions = [];
         var changedItems = [];
 
+        s.editorOptions = {
+            filebrowserBrowseUrl: '/browser/browse.php',
+            filebrowserUploadUrl: '/uploader/upload.php'
+        };
+
 	// let's watch the recentReportList property, and update on scope if it changes
 	s.$on('onLoadRecent', function(evt, list){
 		s.recentReportList = list;

@@ -2,13 +2,12 @@
 
 
 var ReportCtrl = app.controller('ReportCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService','$location', '$anchorScroll', 'Auth',
-	function ($scope, Restangular, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
+	['$scope', 'Api', '$route', '$timeout', 'ReportService','$location', '$anchorScroll', 'Auth',
+	function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
 
 	// local and scoped vars
 	var s = window.rcs = $scope
 		,myStateID='trees'	//this is trees because its embedded in trees controller
-		,Rest = Restangular
 		,RS = ReportService
 		s.whoami='ReportCtrl';
 		s.recentReportList;
@@ -20,11 +19,6 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.estimateTreatmentCodes = [];
 		s.treatmentDescriptions = [];
         var changedItems = [];
-
-	var init = function(){
-		RS.loadRecent();	
-		if(!s.report || !s.report.items) s.report = RS.getBlankReport();
-	}
 
 	// let's watch the recentReportList property, and update on scope if it changes
 	s.$on('onLoadRecent', function(evt, list){
@@ -144,7 +138,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.emailRpt.disableSendBtn=false;
 		s.emailRpt.sendBtnText='Send';
 
-		Rest.all('site/'+s.emailRpt.siteID+'/contacts').getList()
+		Api.getSiteContacts(s.emailRpt.siteID)
 			.then(function(res){
 				if(!res) return;
 				var emList=[];
@@ -158,7 +152,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 	s.sendReport = function(hideFn, showFn){
 		s.emailRpt.disableSendBtn=true;
 		s.emailRpt.sendBtnText='Sending and verifying...';
-		Rest.all('sendEstimate').post(s.emailRpt)
+		Api.sendReport(s.emailRpt)
 			.then(function(msg){
 				s.emailRpt.disableSendBtn=false;
 				s.emailRpt.sendBtnText='Send';
@@ -185,12 +179,12 @@ var ReportCtrl = app.controller('ReportCtrl',
 				return (item.$$hashKey !== hashKey)
 		});		
 	}
-	
-	var pre_init = function() {
-		if($route.current.params.stateID==myStateID) init();
+
+	// only if in trees state...
+	if(s.renderPath[0]=='trees') {
+		RS.loadRecent();	
+		if(!s.report || !s.report.items) s.report = RS.getBlankReport();
 	}
-	s.$on('$locationChangeSuccess', pre_init);
-	pre_init();
 
 }]);
 

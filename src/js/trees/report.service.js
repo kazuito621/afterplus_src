@@ -4,11 +4,10 @@
 	and Report Controller can build a UI based on the data
 **/
 app.service('ReportService', 
-	['Restangular', '$timeout', '$rootScope', 'md5', '$q',
-	function(Restangular, $timeout, $rootScope, md5, $q) {
+	['Api', '$timeout', '$rootScope', 'md5', '$q',
+	function(Api, $timeout, $rootScope, md5, $q) {
 	// private properties
-	var Rest=Restangular
-		,nextItemID=1
+	var nextItemID=1
 
 	// public properties
 	this.recentReportList;			// store the list of reports
@@ -45,11 +44,9 @@ app.service('ReportService',
 
 	this.setSiteID = function(ID) {
 		this.siteID=ID;
-		this.loadRecent();
 	}
 	this.setClientID = function(ID) {
 		this.clientID=ID;
-		this.loadRecent();
 	}
 	this.setTreatmentPrices = function(tp) {
 		this.treatmentPrices=tp;
@@ -71,28 +68,29 @@ app.service('ReportService',
 		if(!opts) opts={};
 		opts.getTreeDetails=1;
 		var that=this;
-		Rest.one('estimate',reportID).get(opts).then(function(data) {
-			that.report=data;
-			// renumber the ID's into lower numbers
-			var localID=1;
-			if(data.items){
-				_.each(data.items, function(d){
-					d.localTreeID=localID++;
-				})
-			}
-			$rootScope.$broadcast('onLoadReport', data);
-			$timeout(function(){
-				that.getReportMd5(true);
-			},500);
-			deferred.resolve(data);
-		});	
+		Api.getReport(reportID,opts)
+			.then(function(data) {
+				that.report=data;
+				// renumber the ID's into lower numbers
+				var localID=1;
+				if(data.items){
+					_.each(data.items, function(d){
+						d.localTreeID=localID++;
+					})
+				}
+				$rootScope.$broadcast('onLoadReport', data);
+				$timeout(function(){
+					that.getReportMd5(true);
+				},500);
+				deferred.resolve(data);
+			});	
 		return deferred.promise;
 	}
 
 	this.getReportMd5 = function(set){
-		if( !this.report ) return '';
-		if( !this.report.items.length ) return '';
-		var str=JSON.stringify(this.report.items) + JSON.stringify(this.report.services)
+		var items=_.extract(this, 'report.items');
+		if( !items || !items.length ) return '';
+		var str=JSON.stringify(items) + JSON.stringify(this.report.services)
 			+this.report.name;
 		var m = md5.createHash(str);
 		if(set)this.lastReportMd5=m;
@@ -107,12 +105,11 @@ app.service('ReportService',
 	this.updateSiteInfo = function(){
 		if(this.report && this.report.siteName && this.report.siteName.length) return;
 		var that=this;
-		Rest.one('site',this.siteID).get().then(function(data) {
-			if(!data || !data.siteName) return;
-			dbg(data)
-			_.copyProps(data, that.report, 'siteName,contact,contactEmail,contactPhone,street,city,state');
-			dbg(that.report)
-		});	
+		Api.updateSite(this.siteID)
+			.then(function(data) {
+				if(!data || !data.siteName) return;
+				_.copyProps(data, that.report, 'siteName,contact,contactEmail,contactPhone,street,city,state');
+			});	
 	}
 
 	// Get the treatment descriptions using the API
@@ -134,7 +131,7 @@ app.service('ReportService',
 		ids=_.uniq(ids);
 
      	// Finally make rest call to get descriptions
-		Rest.one('service_desc','treatmenttype').get({id:ids.toString()})
+		Api.getTreatmentDesc(ids)
 			.then(function(descriptions){
 			dbg(descriptions);
 				that.treatmentDescriptions = descriptions;
@@ -247,18 +244,14 @@ app.service('ReportService',
 		if(!this.report.siteID) this.report.siteID=this.siteID;
 		this.getReportMd5(true);
 
-		// if its a Restangular obj, then post it...
-		if( this.report.post && typeof this.report.post === 'function' ) 
-			return this.report.post();
-
-		//else, its a new one
 		var that=this;
-		Rest.all('estimate').post(this.report).then(function(data){
-			if(data && data.reportID) that.report.reportID = data.reportID;
-			if(data.token) that.report.token=data.token;
-			console.log("Report data returned: "+that.report.reportID);
-			that.setReportLink();
-		});
+		Api.saveReport(this.report)
+			.then(function(data){
+				if(data && data.reportID) that.report.reportID = data.reportID;
+				if(data.token) that.report.token=data.token;
+				console.log("Report data returned: "+that.report.reportID);
+				that.setReportLink();
+			});
 
 		this.loadRecent();
 	}
@@ -283,8 +276,8 @@ app.service('ReportService',
 		var that=this;
 		if(this.siteID) opt.siteID=this.siteID;
 		else if(this.clientID) opt.clientID=this.clientID;
-		Rest.all('estimate').getList(opt).then(
-			function(data){
+		Api.getRecentReports(opt)
+			.then(function(data){
 				that.recentReportList=data;
 				$rootScope.$broadcast('onLoadRecent', data);
 			});

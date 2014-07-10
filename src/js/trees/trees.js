@@ -442,7 +442,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		_.each(treeSet, function(itm){
 			if(!itm || itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
-			if(s.data.mode()=='trees'){
+			if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
 				o= '<div class="mapWindowContainer">'
 				+'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
@@ -461,15 +461,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// <span class='textIconBlock-red'>2014</span>
 			// .... or ...textIconBlock-grey
 			//	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-				o+='</div><a href="#/tree_edit/'+itm.treeID+'">Edit Tree</a><BR></div>';
-				itm.info=o;
+                if (s.data.mode() === 'trees') {
+                    o += '</div><a href="#/tree_edit/' + itm.treeID + '">Edit Tree</a><BR></div>';
+                }
 
-			}else{
-				itm.info = '<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
-				+'treeID: '+itm.treeID
-				+'</div>'
+				itm.info = o;
 			}
-				setIconColor(itm);
+
+            setIconColor(itm);
 			set2.push(itm)
 		});
 		if(set2.length>0) addMarkers(set2,'singleSite');

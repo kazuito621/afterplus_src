@@ -3,7 +3,7 @@
 
 
 	<!-- ///// TOP 3 DROP DOWNS  -->
-<nav ng-if="data.mode=='trees' && auth.is('admin')">
+<nav ng-if="data.mode()=='trees' && auth.is('admin')">
   	<div class="styled-select">
    		<select id="select_clientType" class='styled-select' 
 			ng-model="selected.clientTypeID" 
@@ -39,7 +39,7 @@
 
 
 <div class="clearfloat"></div>
-<section class="nav_listings" ng-if="listingMode=='trees'"> 
+<section class="nav_listings" ng-if="data.mode()=='trees' && listingMode=='trees'"> 
 	<!--begin left hand column-->
   	<div>
      	<div class="nav_listings_header pullright centerText width192">Search Results: {{TFSdata.treeResultsCount}} Trees located </div>
@@ -52,7 +52,7 @@
         		<!--<div class="listingHeader"></div>-->
 				<label>
 					<div class='pullright' style='padding:3px'>
-						<a href='#/tree-edit/{{tree.treeID}}' class='fa fa-pencil _med _grey hoverDisplay' bs-tooltip title="View/Edit Details"></a>
+						<a href='#/tree_edit/{{tree.treeID}}' class='fa fa-pencil _med _grey hoverDisplay' bs-tooltip title="View/Edit Details"></a>
 					</div>
         			<div class="pullleft space5">
 						<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID"> 
@@ -107,7 +107,7 @@
 
 
 <!-- site listings in left hand column -->
-<section class="nav_listings" ng-if="listingMode=='sites'">  
+<section class="nav_listings" ng-if="data.mode()=='trees' && listingMode=='sites'">  
 	<!--begin left hand column-->
 	<div>
 		<div class="nav_listings_header pullright centerText width192">Search Results: {{TFSdata.treeResultsCount}} Sites located </div>
@@ -174,16 +174,16 @@
 
 
 <!-- begin center content area -->
-<section class="mainContent mode_{{data.mode}}">
-	<div id='treeDetails' ng:cloak ng-show="data.showTreeDetails && data.mode=='trees'" ng-include="'js/trees/edit.tpl.html'"></div>
-	<div ng:cloak ng-show="data.showMap && data.mode=='trees'" id="treeMap" class="{{data.mode}}"></div>
+<section class="mainContent" ng-class="{{'mode_'+data.mode()}}">
+	<div id='treeDetails' ng:cloak ng-show="data.showTreeDetails && data.mode()=='trees'" ng-include="'js/trees/edit.tpl.html'"></div>
+	<div ng:cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="{{data.mode()}}"></div>
 </section>	<!-- }}} mainContent -->
 
 
 
 
 <!--begin right hand column-->
-<section class="filters space5" ng-if="data.mode=='trees'"> 
+<section class="filters space5" ng-if="data.mode()=='trees'"> 
 	<div ng:cloak ng-show="TFSdata.selectedFilters.length>0" style='background-color:#9AED95; padding:2px 4px;'>
 		{{TFSdata.selectedFilters.length}} Filters Active &nbsp; [<a href ng-click='clearFilters();'>Clear</a>]
 	</div>

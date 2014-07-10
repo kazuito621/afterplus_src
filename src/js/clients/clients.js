@@ -1,11 +1,10 @@
 'use strict';
 
-var ClientsCtrl = app.controller('ClientsCtrl', 
-['$scope', 'Restangular', '$route', '$modal',
-function ($scope, Restangular, $route, $modal) {
+var ClientsCtrl = app.controller('ClientsCtrl',
+['$scope', '$route', '$modal', 'Api',
+function ($scope, $route, $modal, Api) {
 	var s = window.cts = $scope
 		,myStateID='clients'
-		,Rest=Restangular
 		,mode=''
 		,type='client'
 		s.newClient={};
@@ -17,30 +16,28 @@ function ($scope, Restangular, $route, $modal) {
 
 	//s.Rclient.push() .. to push new data...
 
-	s.saveNewClient = function() {
-		if(!s.newClient.clientTypeID) {
-			return s.setAlert('Choose a client type for the new client',{type:'d'});
-		} else {
-			Rest.all('client').post(s.newClient).then( function(data) {
-			})
-		}
-		clientEditModal.hide();
-		s.refresh();
-	}
-
-	s.refresh = function() {
-		if($route.current.params.stateID=='clients') {
-			s.refreshInitData();
-		}
-	}
+    s.saveNewClient = function() {
+        if(!s.newClient.clientTypeID) {
+            return s.setAlert('Choose a client type for the new client',{type:'d'});
+        } else {
+            Api.saveNewClient(s.newClient).then( function(data) {
+                console.log(s.newClient);
+                console.log("Post new client response:");
+                console.dir(data);
+            });
+        }
+        clientEditModal.hide();
+        Api.refreshInitData();
+    };
 
 	s.saveExistingClient = function() {
 		var obj=s.client;
 		var that=this;
 		obj.post().then(function(){
-			if($route.current.params.stateID=='clients') {
-				s.refresh();
-			}
+			//in the old HEAD of evren07, this if statement existed priort to the "refresh" call
+			//is this necessary? would "saveExistingClient" every be executed if the state was NOT clients??
+			//if($route.current.params.stateID=='clients') {
+			Api.refreshInitData();
 		});
 		clientEditModal.hide();
 	}
@@ -71,28 +68,28 @@ function ($scope, Restangular, $route, $modal) {
 		s.newClient={};
 		s.mode='new';
 		clientEditModal.show();
-	}
+	};
 
 	s.existingClientModalOpen = function (clientID) {
 		s.client={};
-		Restangular.one('client', clientID).get()
+        Api.getClientById(clientID)
 			.then(function(data){
-				s.client=data
+				s.client = data;
 		});
 		s.mode = 'edit';
 		clientEditModal.show();
-	}
+	};
 
 	s.deleteItems = function (itemID) {
-		Restangular.one('client', itemID).remove()
+        Api.removeClientById(itemID)
 			.then(function() {
-				s.refreshInitData();
+				Api.refreshInitData();
 			},function err(){
 				//todo ... how do we get this?
 				// todo -- ad this same functionality to delete of site
 			});
-		s.refreshInitData();
-	}
+		Api.refreshInitData();
+	};
 
 	s.queueOrDequeueItemForDelete = function(itemID) {
 		if (!s.isSelected(itemID)) {
@@ -101,7 +98,7 @@ function ($scope, Restangular, $route, $modal) {
 			delete s.items[itemID];
 		}
 		s.type = 'client';
-	}
+	};
 
 	s.isSelected = function(itemID) {
 		if (s.items[itemID] == 1) {

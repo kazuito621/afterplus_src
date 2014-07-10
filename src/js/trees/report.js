@@ -1,13 +1,12 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Restangular', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth',
-        function ($scope, Restangular, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
             'use strict';
 
             // local and scoped vars
             var s = window.rcs = $scope;
             var myStateID = 'trees'; //this is trees because its embedded in trees controller
-            var Rest = Restangular;
             var RS = ReportService;
             s.whoami = 'ReportCtrl';
 //            s.recentReportList; // I don't understand the purpose of this so I commented it. Nikita.
@@ -21,11 +20,9 @@ var ReportCtrl = app.controller(
             s.treatmentDescriptions = [];
             var changedItems = [];
 
-            var init = function () {
-                RS.loadRecent();
-                if (!s.report || !s.report.items) {
-                    s.report = RS.getBlankReport();
-                }
+            s.editorOptions = {
+                filebrowserBrowseUrl: '/browser/browse.php',
+                filebrowserUploadUrl: '/uploader/upload.php'
             };
 
             // let's watch the recentReportList property, and update on scope if it changes
@@ -63,8 +60,13 @@ var ReportCtrl = app.controller(
                 s.groupedItems = ReportService.groupReportItems();
             });
 
-            // returns true if row with passed id is the current highlighted row
+            // After the counts for the treatments have been added, add in the service descriptions 
+            s.$on('treatmentCountsProcessed', function (evt, treatments) {
+                var that = $scope;
+                RS.setTreatmentDescriptions(treatments, that);
+            });
 
+            // returns true if row with passed id is the current highlighted row
             s.rowHighlightClass = function (item) {
                 if (item.$$hashKey === s.highLightedRowId) {
                     return 'highlighted-row';
@@ -149,7 +151,7 @@ var ReportCtrl = app.controller(
                 s.emailRpt.disableSendBtn = false;
                 s.emailRpt.sendBtnText = 'Send';
 
-                Rest.all('site/' + s.emailRpt.siteID + '/contacts').getList()
+                Api.getSiteContacts(s.emailRpt.siteID)
                     .then(function (res) {
                         if (!res) {
                             return;
@@ -169,7 +171,7 @@ var ReportCtrl = app.controller(
             s.sendReport = function (hideFn, showFn) {
                 s.emailRpt.disableSendBtn = true;
                 s.emailRpt.sendBtnText = 'Sending and verifying...';
-                Rest.all('sendEstimate').post(s.emailRpt)
+                Api.sendReport(s.emailRpt)
                     .then(function (msg) {
                         s.emailRpt.disableSendBtn = false;
                         s.emailRpt.sendBtnText = 'Send';
@@ -225,12 +227,12 @@ var ReportCtrl = app.controller(
                 });
             };
 
-            var pre_init = function () {
-                if ($route.current.params.stateID === myStateID) {
-                    init();
+            // only if in trees state...
+            if (s.renderPath[0] === 'trees') {
+                RS.loadRecent();
+                if (!s.report || !s.report.items) {
+                    s.report = RS.getBlankReport();
                 }
-            };
-            s.$on('$locationChangeSuccess', pre_init);
-            pre_init();
+            }
         }]
 );

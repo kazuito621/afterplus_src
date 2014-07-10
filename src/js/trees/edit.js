@@ -1,10 +1,15 @@
 'use strict';
+/**
+ * Note: this controller is used in 2 different applications:
+ * 1. when user navigates to #/tree_edit/<TREEID>
+ * 2. When user rolls over a thumbnail of a tree icon in the tree results page in #/tree (which then temporarily
+ *		opens this view up in place of the map
+ */
 
 var EditTreeCtrl = app.controller('EditTreeCtrl', 
-	['$scope', '$http', 'Restangular', '$route', '$location',
-	function ($scope, $http, Restangular, $route, $location) {
-	var s = window.ets = $scope
-		,myStateID='tree-edit';
+	['$scope', '$http', 'Api', '$route', '$location',
+	function ($scope, $http, Api, $route, $location) {
+	var s = window.ets = $scope;
 		s.treeID;
 		s.tree;
 		s.ratingTypes = '';
@@ -20,13 +25,11 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 		// todo -- editmode should be controlled by user privilege
 		if(!mode) mode='edit';
 
-		if(treeID){
-			s.treeID=treeID;
-		}else{ 
-			s.treeID = $route.current.params.param1;
-		}
+		if(treeID) s.treeID=treeID;
+		else s.treeID = s.renderPath[1];
+
 		if(!s.treeID) return;
-		Restangular.one('trees', s.treeID).get()
+		Api.getTree(s.treeID)
 			.then(function(data){
 				s.tree=data	
 				s.tree.mode=mode;
@@ -36,9 +39,6 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 	s.$on('onTreeResultImageRollover', function(evt, treeID){
 		init(treeID, 'rollover');		
 	});
-
-
-//todo - watch tree history obj, and only send on save, if it has changed?
 
 	s.updateTreeName = function(){
 		s.tree.commonName=_.findObj(s.initData.filters.species, 'speciesID', s.tree.speciesID).commonName
@@ -76,12 +76,7 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 	 }
 
 
-
-	var pre_init = function() {
-		if($route.current.params.stateID==myStateID) init();
-	}
-	s.$on('$locationChangeSuccess', pre_init);
-	pre_init();
+	init();
 
 }]);
 

@@ -4,8 +4,8 @@
 	and Report Controller can build a UI based on the data
 **/
 app.service('Auth', 
-	['Restangular', '$location', '$timeout', '$rootScope', 'md5', '$q', '$rootScope', 'storage',
-	function(Rest, $location, $timeout, $rootScope, md5, $q, $rootScope, storage) {
+	['$location', '$timeout', '$rootScope', 'md5', '$q', 'storage', 'Api',
+	function($location, $timeout, $rootScope, md5, $q, storage, Api) {
 
 	window.Auth=this;
 	// private properties
@@ -42,40 +42,30 @@ app.service('Auth',
 	this.isSignedIn = function(){ return (this.data().userID>0); };
 
 	// After a login call, handle that and resolve the promise
-	var onDataBackFromSignIn = function(deferred, d){
-	dbg(d,'on data bak')
-		if(d && d.userID > 0){
+	var onDataBackFromSignIn = function (deferred, d) {
+		if (d && d.userID > 0) {
 			this.data(d);
 			this.sendEvt('onSignin');
 			return deferred.resolve(d);
-		}else{
-			var msg=(d && d.msg) ? d.msg : 'Login failed';
+		} else {
+			var msg = (d && d.msg) ? d.msg : 'Login failed';
 			return deferred.reject(msg);
 		}
-	}
+	};
 
 	// Returns a promise with either a resolve or a reject
-	this.signInCustToken = function(custToken){
-		var deferred=$q.defer();
-		if(!custToken){ deferred.reject('Invalid token'); return deferred.promise; }
-		Rest.one('signincusttoken').get({custToken:custToken})
-			.then(angular.bind(this, onDataBackFromSignIn, deferred));
-		return deferred.promise;
-	}
+	this.signInCustToken = function (custToken){
+        return Api.signInCustToken(custToken, this, onDataBackFromSignIn);
+	};
 
 	// Returns a promise with either a resolve or a reject
-	this.signIn = function(email, pswd){
-		var deferred = $q.defer();
-		Rest.one('signin').get({e:email, p:pswd})
-			.then( angular.bind(this, onDataBackFromSignIn, deferred) );
-		return deferred.promise;
-	}
+	this.signIn = function (email, pswd) {
+        return Api.signIn(email, pswd, this, onDataBackFromSignIn);
+	};
 
-	this.signOut = function(){ 
-		this.data({});
-		// todo clear init data some how maybe with an event onSignOut
-		$location.url('/signin') 
-	}
+	this.signOut = function () {
+        Api.signOut(this);
+	};
 
 	this.role2id = function(role){
 		var n=this.userRoles[role];

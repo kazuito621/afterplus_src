@@ -438,44 +438,44 @@ footer {
   margin-bottom: 30px;
 }
 /* line 216, ../scss/partials/_estimate.scss */
-.table-container .row-table .col-md-3 {
+.table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
   /* line 216, ../scss/partials/_estimate.scss */
-  .table-container .row-table .col-md-3 {
+  .table-container .row-table .col-md-4 {
     display: block;
     float: none;
     width: 100%;
   }
   /* line 15, ../scss/modules/mixins/_clearfix.scss */
-  .table-container .row-table .col-md-3:before, .table-container .row-table .col-md-3:after {
+  .table-container .row-table .col-md-4:before, .table-container .row-table .col-md-4:after {
     content: " ";
     display: table;
   }
   /* line 19, ../scss/modules/mixins/_clearfix.scss */
-  .table-container .row-table .col-md-3:after {
+  .table-container .row-table .col-md-4:after {
     clear: both;
   }
 }
 /* line 229, ../scss/partials/_estimate.scss */
-.table-container .row-table .col-md-9 {
+.table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
   /* line 229, ../scss/partials/_estimate.scss */
-  .table-container .row-table .col-md-9 {
+  .table-container .row-table .col-md-8 {
     display: block;
     float: none;
     width: 100%;
   }
   /* line 15, ../scss/modules/mixins/_clearfix.scss */
-  .table-container .row-table .col-md-9:before, .table-container .row-table .col-md-9:after {
+  .table-container .row-table .col-md-8:before, .table-container .row-table .col-md-8:after {
     content: " ";
     display: table;
   }
   /* line 19, ../scss/modules/mixins/_clearfix.scss */
-  .table-container .row-table .col-md-9:after {
+  .table-container .row-table .col-md-8:after {
     clear: both;
   }
 }

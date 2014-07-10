@@ -148,17 +148,17 @@
      
    	<div class="table-container">
    		<div class="row row-table">
-   			<div class="col-md-3">
+   			<div class="col-md-4">
    				<div id="treeMap_estimate" class="map-container mode_{{data.mode()}}" ng-if="data.mode()=='estimate'">
 					<div id="treeMap2" class="mode_{{data.mode()}}"></div>
 				</div>
    			</div>
-   			<div class="col-md-9">
+   			<div class="col-md-8">
    				<div class="table-responsive">
 				   	<table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}">
 				   		<thead>
 							<tr id="estimate_table_heading">
-						       <td ng-if="data.mode()=='trees'">Tree</td>
+						       <td>Tree</td>
 						       <td>ID</td>
 						       <td>Name</td>
 						       <td ng-if="data.mode()=='trees'">Size</td>
@@ -180,7 +180,7 @@
 									<img ng-src='{{item.imgSm}}{{tree_cachebuster}}' class='item_thumb'
 										data-placement="right"
 										data-trigger="hover"
-										data-content="<img style='width:320px; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
+										data-content="<img style='width:100%; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
 										data-html="true"
 										bs-popover
 										style="border:3px solid #{{colors.bg[item.colorID]}} !important"
@@ -315,24 +315,27 @@
 				<div class="total-amount">
 					Total: &#36;{{report.total.grand|formatPrice}}
 				</div>
+
+				<div class="section-container" ng-if="data.mode()=='trees'">
+			   		<h6 class="section-sub-title">Notes</h6>
+			        <textarea ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'></textarea>
+			     </div>
+			     
+			 	<div class="section-container" ng-if="data.mode()=='estimate'">
+			 		<h6 class="section-sub-title">Notes</h6>
+			        <pre>{{report.notes}}</pre>
+
+					<h2 class="section-mini-title">Definition of Treatments:</h2>
+					<div ng-repeat=" desc in treatmentDescriptions "> 
+						<p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
+					</div>
+			   	</div>
+			   	
    			</div>
    		</div>
    	</div>
    	
-   	<div class="section-container" ng-if="data.mode()=='trees'">
-   		<h6 class="section-sub-title">Notes</h6>
-        <textarea ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'></textarea>
-     </div>
-     
- 	<div class="section-container" ng-if="data.mode()=='estimate'">
- 		<h6 class="section-sub-title">Notes</h6>
-        <pre>{{report.notes}}</pre>
-
-		<h2 class="section-mini-title">Definition of Treatments:</h2>
-		<div ng-repeat=" desc in treatmentDescriptions "> 
-			<p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
-		</div>
-   	</div>
+   	
 	</div>
 </div> <!-- }}} .report_main -->
 

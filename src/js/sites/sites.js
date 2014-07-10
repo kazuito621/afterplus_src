@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 'use strict';
 
 var SitesCtrl = app.controller('SitesCtrl', 

@@ -87,7 +87,7 @@
                     editable-select='o.treatmentTypeID'>
                         {{o.treatmentTypeID|treatmentTypeID2Name:this}}</a>
             </td>
-            <td width='40%'><a href e-ng-options='t.treatmentStatusCode as t.treatmentStatusCode for t in initData.filters.treatmentStatus'
+            <td width='40%'><a href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses'
                     editable-select='o.treatmentStatusCode'>
                         {{o.treatmentStatusCode|treatmentStatusName:this}}</a>
             </td>

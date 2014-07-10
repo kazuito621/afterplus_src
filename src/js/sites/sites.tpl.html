@@ -12,25 +12,23 @@
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th ng-if="auth.is('admin')"></th>
-					<th></th>
 					<th>ID</th>
 					<th>Tree Count</th>
 					<th>Name</th>
 					<th>City</th>
+					<th ng-if="auth.is('admin')"></th>
 				</tr>
 			<thead>
-			<tr ng-repeat="s in initData.sites" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false" ng-class="{active : isSelected(s.siteID)}">
-				<td ng-if="auth.is('admin')" style="width:36px">
-					<a ng-click="queueOrDequeueItemForDelete(s.siteID)" ng-show="showEdit" class="pointer fa fa-times ng-hide _red _size5" data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover></a>
-				</td>
-				<td style="width:36px">
-					<a ng-click="existingSiteModalOpen(s.siteID)" ng-show="showEdit" class="pointer fa fa-pencil _grey ng-hide"></a>
-				</td>
+			<tr ng-repeat="s in initData.sites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
 				<td>{{s.siteID}}</td>
 				<td>{{s.treeCount}}</td>
 				<td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
 				<td>{{s.city}}, {{s.state}}</td>
+				<td>
+					<a ng-if="auth.is('staff')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit"></a> &nbsp; 
+					<a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID)" class="fa fa-times _red _size7 hoverDisplay" 
+						data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover title="Delete"></a>
+				</td>
 			</tr>
 		</table>
 	</div>

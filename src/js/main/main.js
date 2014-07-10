@@ -1,12 +1,11 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular', 'Auth',
-function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular, Auth) {
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 
+function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
 	var s = window.mcs = $scope;
 	s.routeParams={};
 	s.appData={};
-	s.initData={};
 	s.whoami='MainCtrl'
 	s.alertBox;
 	s.localStore={};
@@ -26,102 +25,54 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	s.sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); }
 
 
-	// -------------------------------------------------  Setup REST API service 
-	Rest.setBaseUrl(cfg.apiBaseUrl())
-		//.setDefaultRequestParams({ apiKey: 'xx' })
-		.setRestangularFields({ selfLink: 'self.link'})		// todo ... explore this option
-		.setResponseExtractor(function(res, op) {
-			if( !res ){
-				s.setAlert('Error talking to the server (2)',{type:'danger'});
-				return {};
-			}
-			//if(res.request && res.fetchtime) dbg(res.request+' - '+res.fetchime+'s');
-			if( typeof res == 'string' ) res={result:0, msg:res};
-			res.data=res.data||{}		//make sure data exists
-			var msg=res.msg||res.message||res.data.msg||res.data.message, type='success'
-			if(res.result != 1){
-				if(op=='getList' && typeof res != 'Array') res.data=[];
-				if(!msg) msg='Error talking to the server';
-				type='danger';
-			}
-			if(msg) s.setAlert(msg, {type:type});
-			return res.data;
-		})
-		.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
-			headers=headers||{};
-			headers['X-token']=Auth.data().token;
-			return {
-				headers:headers
-				,element:element
-				,params:params
-				,httpConfig:httpConfig
-			}
-		})
-		/*
-		.addResponseInterceptor(function(data, op, what, url, response, deferred){
-				if(data && data.result!=0 && op=='getList' && typeof data != 'Array')
-					data=[];
-			})
-			*/
-		.setErrorInterceptor(function(){
-			s.setAlert('Error talking to the server (3)',{type:'danger'});
-			dbg('REST error found in setErrorInterceptor');
-			//return true;	//todo -- what to do here? display error to user?
-			})
+	var lastRenderedTplID;
+	var render = function() {
+		// break up url path into array 
+		// ie. "#/trees/edit/1234" = ['trees', 'edit', '1234']
+		s.renderPath=$location.path().substr(1).split("/");
 
-	Rest.configuration.getIdFromElem = function(elem) {
-			// ie. clientID, instead of "id", or treeID instead of "id"
-			// todo ... seems like theres a bug.. when you call Rest.one('client',123'), 
-				// the elementID gets set as "id"... instead of resepecting this...
-				// need to add changes, ie "getIdName"... should do a REST pull request?
-  			var id=elem[elem.route + "ID"];
-			if(!id) id=elem['reportID'];
-			if(!id) return elem.id;
-			return id;
-		}
+		s.renderTplID=s.renderPath[0];
+		if(s.renderTplID=='estimate') s.renderTplID='trees';		
 
+		if(lastRenderedTplID == s.renderTplID) return;
 
+		// lazy load the property template based on the base path
+		// ie. if "#/trees", then load "trees.tpl.html"
+		// this is done by setting the tpl_XXXX variable, which is the value of the template path
+		var tplPath=getTemplatePath(s.renderTplID);
+		s['tpl_'+s.renderTplID]=tplPath;		// load the template, which changes the ng-include var in index.html
+		s['showtpl_'+s.renderTplID]=true;	// now show it
 
-
-
-
-	// this is triggered when user signs in, or if they already are signed in
-	// todo, cache initData into local storage... and only check for updates
-	var getInitData = function() {
-			if(s.setAlert) s.setAlert('Loading...', {time:3, type:'ok'});
-			// Since this is an async call which may take time, we return
-			// a dummy $object which will be populated when the data comes out
-			Rest.one('init').get()
-				.then(function(data){
-					s.initData=data
-					Auth.gotInitData=true;
-					s.sendEvt('onInitData', data);
-				});
+		// no turn off last one
+		if(lastRenderedTplID) s['showtpl_'+lastRenderedTplID]=false;
+		lastRenderedTplID=s.renderTplID;
 	}
-	s.refreshInitData=function(){ getInitData(); }
-	if(Auth.isSignedIn()) getInitData();
-	else s.$on('onSignin', angular.bind(this, getInitData))
 
+	var getTemplatePath = function(tplID){
+		if(tplID=='tree_edit') return 'js/trees/edit.tpl.html';
+		// for signin, trees, sites, and clients... used default
+		return 'js/'+tplID+"/"+tplID+".tpl.html";
+	}
 
-
-	s.$on("$routeChangeSuccess", function(current) {
-		var rp=$routeParams;
-		var authReq = $route.current && 
-				$route.current.$$route && 
-				$route.current.$$route.auth;
-		if (authReq && !Auth.isSignedIn() && $route.current.params.stateID!='estimate') {
+	s.$on("$routeChangeSuccess", function(evt, current, previous) {
+		var authReq = _.extract(current, '$$route.auth');
+		if (authReq && !Auth.isSignedIn()) {
+			//todo - maybe this hsould be stored internally instead of going to the url
 			//note: estimate handles its own signin
 			var currentUrl = $location.url();
 			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
 			return;
 		} 
-
+		dbg("no redir ");
 		s.routeParams=$routeParams;
-			
+       	if($route.current.resolve) render();
 	});
 
 
-
+	// so that services/factories can call the alert
+	s.$on('alert', function(e,data){
+		s.setAlert(data.msg,data);
+	});
 
 
 

@@ -12,7 +12,6 @@ window.cfg={
             var h=this.host()||'';
             if(h.match(/app.arbor/)) return this.host()+'/api/v2.0';
             else return 'http://dev.arborplus.com/api/v2.0';
-                // todo - above should point at dev.arborplus, as soon as we get the subdomain up
         }
     };
 

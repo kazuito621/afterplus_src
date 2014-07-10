@@ -2,13 +2,12 @@
 
 
 var ReportCtrl = app.controller('ReportCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService','$location', '$anchorScroll',
-	function ($scope, Restangular, $route, $timeout, ReportService, $location, $anchorScroll) {
+	['$scope', 'Api', '$route', '$timeout', 'ReportService','$location', '$anchorScroll', 'Auth',
+	function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
 
 	// local and scoped vars
 	var s = window.rcs = $scope
 		,myStateID='trees'	//this is trees because its embedded in trees controller
-		,Rest = Restangular
 		,RS = ReportService
 		s.whoami='ReportCtrl';
 		s.recentReportList;
@@ -21,10 +20,10 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.treatmentDescriptions = [];
         var changedItems = [];
 
-	var init = function(){
-		RS.loadRecent();	
-		if(!s.report || !s.report.items) s.report = RS.getBlankReport();
-	}
+        s.editorOptions = {
+            filebrowserBrowseUrl: '/browser/browse.php',
+            filebrowserUploadUrl: '/uploader/upload.php'
+        };
 
 	// let's watch the recentReportList property, and update on scope if it changes
 	s.$on('onLoadRecent', function(evt, list){
@@ -132,19 +131,19 @@ var ReportCtrl = app.controller('ReportCtrl',
 		s.emailRpt.reportID=s.report.reportID;
 		s.emailRpt.siteID=s.report.siteID
 		s.emailRpt.contactEmail=s.report.contactEmail;
-		s.emailRpt.senderEmail=s.authData.email;
+		s.emailRpt.senderEmail=Auth.data().email;
 		s.emailRpt.subject="A Plus Tree Estimate #"+s.report.reportID+" - "+s.report.name;
 		s.emailRpt.message="Hi,\n\nThank you for providing us the opportunity to care for your trees!  In the link below you will find a customized estimate engineered by one of our Certified Arborist specifically for your trees.\n\n"
 			+"Please review our proposal and get back to us at your earliest convenience as we look forward to thoroughly impressing you with our professional work and outstanding customer service.\n\n"
 			+"From planting to removals, and everything in between, we've got you covered.  If you have any questions, feel free to contact us toll free at (866) 815-2525 or office@aplustree.com.\n\n"
 			+"Sincerely,\n";
-			if(s.authData.fname) s.emailRpt.message+=s.authData.fname;
+			if(Auth.data().fname) s.emailRpt.message+=Auth.data().fname;
 			else s.emailRpt.message+="A Plus Tree Service";
 		s.emailRpt.emailCC="";
 		s.emailRpt.disableSendBtn=false;
 		s.emailRpt.sendBtnText='Send';
 
-		Rest.all('site/'+s.emailRpt.siteID+'/contacts').getList()
+		Api.getSiteContacts(s.emailRpt.siteID)
 			.then(function(res){
 				if(!res) return;
 				var emList=[];
@@ -158,7 +157,7 @@ var ReportCtrl = app.controller('ReportCtrl',
 	s.sendReport = function(hideFn, showFn){
 		s.emailRpt.disableSendBtn=true;
 		s.emailRpt.sendBtnText='Sending and verifying...';
-		Rest.all('sendEstimate').post(s.emailRpt)
+		Api.sendReport(s.emailRpt)
 			.then(function(msg){
 				s.emailRpt.disableSendBtn=false;
 				s.emailRpt.sendBtnText='Send';
@@ -185,12 +184,12 @@ var ReportCtrl = app.controller('ReportCtrl',
 				return (item.$$hashKey !== hashKey)
 		});		
 	}
-	
-	var pre_init = function() {
-		if($route.current.params.stateID==myStateID) init();
+
+	// only if in trees state...
+	if(s.renderPath[0]=='trees') {
+		RS.loadRecent();	
+		if(!s.report || !s.report.items) s.report = RS.getBlankReport();
 	}
-	s.$on('$locationChangeSuccess', pre_init);
-	pre_init();
 
 }]);
 

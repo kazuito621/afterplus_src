@@ -1,94 +1,23 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q','Restangular',
-function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Restangular) {
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 
+function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
 	var s = window.mcs = $scope;
 	s.routeParams={};
 	s.appData={};
-	s.initData={};
 	s.whoami='MainCtrl'
 	s.alertBox;
-	s.authData={};
 	s.localStore={};
-	storage.bind(s, 'authData', {defaultValue:{token:'',userID:0,email:''}});
 	storage.bind(s, 'localStore', {defaultValue:{token:false}});
 
-
-
-	/**
-	 * Auth class/object - todo , break this into its own file
-	 */
-	s.auth=function(){return{ 
-		isSignedIn:function(){ return (s.authData && s.authData.userID>0) }
-		,signInCustToken: function(custToken){
-				var deferred=$q.defer();
-				if(!custToken){ deferred.reject('Invalid token'); return deferred.promise; }
-				Restangular.one('signincusttoken').get({custToken:custToken})
-					.then( function(d){
-						if(d && d.userID > 0){
-							s.auth.setAuth(d);
-							s.sendEvt('onSignin');
-							return deferred.resolve(d);
-						}
-						
-					});
-				return deferred.promise;
-			}
-		,signOut:function(){ 
-			_.each(s.authData, function(val,key){
-				s.authData[key]=null;
-			});
-			_.each(s.initData, function(val,key){
-				s.initData[key]=null;
-			});
-			$location.url('/signin') 
-		}
-		,userRoles:{
-					public: 	1, // 001
-					customer:   2, // 010
-					staff:		3,
-					admin:  	5,  // 100
-					superadmin: 10
-					}
-		,role2id:function(role){
-					var n=this.userRoles[role];
-					if(n) return n;
-					return 1;
-				}
-		,accessLevels:function(){
-			return {
-					public: this.userRoles.public | // 111
-							this.userRoles.user   | 
-							this.userRoles.admin,   
-					anon:   this.userRoles.public,  // 001
-					user:   this.userRoles.user |   // 110
-							this.userRoles.admin,                    
-					admin:  this.userRoles.admin    // 100
-					}
-		}
-		,setAuth:function(obj){ 
-			s.authData=obj;
-		}
-		,getUserRole:function(){
-			if(s.authData.role) return s.authData.role;
-			else return 'public';
-		}
-		,is:function(role){
-			var urID=this.role2id(this.getUserRole());
-			var rID=this.role2id(role);
-			if(urID >= rID) return true;
-			else return false;
-		}
-		,getLoginName:function(){ 
-				if( s.authData && s.authData.userID>0 ){
-					if( s.authData.email ) return "Hi, "+s.authData.email+".";
-					else return "You are logged in.";
-				}
-				return 'Not logged in';
-			}
-
-	}}();
+	// links for $scope to Auth class (so templates can use them)
+	s.auth={
+		is: angular.bind(Auth, Auth.is)
+		,isSignedIn: angular.bind(Auth, Auth.isSignedIn)
+		,getLoginName: angular.bind(Auth, Auth.getLoginName)
+		,signOut: angular.bind(Auth, Auth.signOut)
+	}
 
 	// global wrapper for broadcasting, so that each controller doesnt need $rootScope
 	// why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,
@@ -96,106 +25,54 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	s.sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); }
 
 
+	var lastRenderedTplID;
+	var render = function() {
+		// break up url path into array 
+		// ie. "#/trees/edit/1234" = ['trees', 'edit', '1234']
+		s.renderPath=$location.path().substr(1).split("/");
 
+		s.renderTplID=s.renderPath[0];
+		if(s.renderTplID=='estimate') s.renderTplID='trees';		
 
+		if(lastRenderedTplID == s.renderTplID) return;
 
+		// lazy load the property template based on the base path
+		// ie. if "#/trees", then load "trees.tpl.html"
+		// this is done by setting the tpl_XXXX variable, which is the value of the template path
+		var tplPath=getTemplatePath(s.renderTplID);
+		s['tpl_'+s.renderTplID]=tplPath;		// load the template, which changes the ng-include var in index.html
+		s['showtpl_'+s.renderTplID]=true;	// now show it
 
-	// -------------------------------------------------  Setup REST API service 
-	Rest.setBaseUrl(cfg.apiBaseUrl())
-		//.setDefaultRequestParams({ apiKey: 'xx' })
-		.setRestangularFields({ selfLink: 'self.link'})		// todo ... explore this option
-		.setResponseExtractor(function(res, op) {
-			if( !res ){
-				s.setAlert('Error talking to the server (2)',{type:'danger'});
-				return {};
-			}
-			if( typeof res == 'string' ) res={result:0, msg:res};
-			res.data=res.data||{}		//make sure data exists
-			var msg=res.msg||res.message||res.data.msg||res.data.message, type='success'
-			if(res.result != 1){
-				if(op=='getList' && typeof res != 'Array') res.data=[];
-				if(!msg) msg='Error talking to the server';
-				type='danger';
-			}
-			if(msg) s.setAlert(msg, {type:type});
-			return res.data;
-		})
-		.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
-			if(s.authData.token){
-				headers=headers||{};
-				headers['X-token']=s.authData.token;
-			}
-			return {
-				headers:headers
-				,element:element
-				,params:params
-				,httpConfig:httpConfig
-			}
-		})
-		/*
-		.addResponseInterceptor(function(data, op, what, url, response, deferred){
-				if(data && data.result!=0 && op=='getList' && typeof data != 'Array')
-					data=[];
-			})
-			*/
-		.setErrorInterceptor(function(){
-			s.setAlert('Error talking to the server (3)',{type:'danger'});
-			dbg('REST error found in setErrorInterceptor');
-			//return true;	//todo -- what to do here? display error to user?
-			})
-
-	Rest.configuration.getIdFromElem = function(elem) {
-			// ie. clientID, instead of "id", or treeID instead of "id"
-			// todo ... seems like theres a bug.. when you call Rest.one('client',123'), 
-				// the elementID gets set as "id"... instead of resepecting this...
-				// need to add changes, ie "getIdName"... should do a REST pull request?
-  			var id=elem[elem.route + "ID"];
-			if(!id) id=elem['reportID'];
-			if(!id) return elem.id;
-			return id;
-		}
-
-
-
-
-
-
-	// this is triggered when user signs in, or if they already are signed in
-	// todo, cache initData into local storage... and only check for updates
-	var getInitData = function() {
-			if(s.setAlert) s.setAlert('Loading...', {time:3, type:'ok'});
-			// Since this is an async call which may take time, we return
-			// a dummy $object which will be populated when the data comes out
-			Rest.one('init').get()
-				.then(function(data){
-					s.initData=data
-					s.sendEvt('onInitData', data);
-				});
+		// no turn off last one
+		if(lastRenderedTplID) s['showtpl_'+lastRenderedTplID]=false;
+		lastRenderedTplID=s.renderTplID;
 	}
-	s.refreshInitData=function(){ getInitData(); }
-	if(s.auth.isSignedIn()) getInitData();
-	else s.$on('onSignin', angular.bind(this, getInitData))
 
+	var getTemplatePath = function(tplID){
+		if(tplID=='tree_edit') return 'js/trees/edit.tpl.html';
+		// for signin, trees, sites, and clients... used default
+		return 'js/'+tplID+"/"+tplID+".tpl.html";
+	}
 
-
-	s.$on("$routeChangeSuccess", function(current) {
-		var rp=$routeParams;
-		var authReq = $route.current && 
-				$route.current.$$route && 
-				$route.current.$$route.auth;
-		if (authReq && !s.auth.isSignedIn() && $route.current.params.stateID!='estimate') {
+	s.$on("$routeChangeSuccess", function(evt, current, previous) {
+		var authReq = _.extract(current, '$$route.auth');
+		if (authReq && !Auth.isSignedIn()) {
+			//todo - maybe this hsould be stored internally instead of going to the url
 			//note: estimate handles its own signin
 			var currentUrl = $location.url();
 			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
 			return;
 		} 
-
+		dbg("no redir ");
 		s.routeParams=$routeParams;
-			
+       	if($route.current.resolve) render();
 	});
 
 
-
+	// so that services/factories can call the alert
+	s.$on('alert', function(e,data){
+		s.setAlert(data.msg,data);
+	});
 
 
 

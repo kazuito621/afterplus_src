@@ -5,24 +5,26 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl', 
-	['$scope', 'Restangular', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'SiteModelUpdateService', 
-	function ($scope, Restangular, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, SiteModelUpdateService) {
+	['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService',
+	function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService) {
+
 
 	// local and scoped vars
 	var s = window.tcs = $scope
 		,myStateID='trees'
-		,Rest = Restangular
 		,gMap, mapBounds, infowindow, inited, enableMap=true
 		,TFS=TreeFilterService
 		,markers_allSites = []
 		,markers_singleSite= []
 		s.tree_cachebuster='?ts='+moment().unix();	
-		s.data={mode:''					// either "trees" or "estimate"
-				,showTreeDetails:false
-				,showMap:false			
+		s.data={
+				showTreeDetails:false
+				,showMap:true			// not needed now? since new routing technique
 				,showTreatmentList:false
 				,currentTreatmentCodes:[]		// array of treatment codes user selected in multi-box
-				};								// for adding trees to the estimate
+												// for adding trees to the estimate
+				,mode:function(){ return s.renderPath[0]; }					// either "trees" or "estimate"
+				};
 		s.whoami='TreesCtrl';
 		s.TFSdata;	//holds tree results count, etc. Remember, always put scope data into an object
 					// or it will pass by value, not reference
@@ -37,6 +39,17 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.siteLocs = [];
 		s.selectedValues = [];
 		s.thisYear=moment().format('YYYY');
+		s.filteredSites = s.initData.sites;
+		s.filteredClients = s.initData.clients;
+		s.ratingTypes = s.initData.filters.ratings;
+		s.filters = s.initData.filters;
+		s.filters.year=[{id:moment().format('YYYY'), desc:'This year'}
+									,{id:moment().add('year',1).format('YYYY'), desc:'Next yr'}
+									,{id:moment().add('year',2).format('YYYY'), desc:'2yr'}
+									,{id:moment().add('year',3).format('YYYY'), desc:'3yr'}
+									,{id:moment().add('year',4).format('YYYY'), desc:'4yr'}]
+		s.treatmentTypes = s.initData.filters.treatments;
+		ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 
 		s.colors={
 			speciesCount:[]		// stores count of species ie. speciesCount[133]=5, speciesCount[431]=1  (speciesID 133 = 5 total)
@@ -49,27 +62,20 @@ var TreesCtrl = app.controller('TreesCtrl',
 			,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
 			};
 
-	// INIT is not called until
-	//	1. user has browsed to this page  AND
-	//	2. initData has arrived from the server
-	// this is accomplished via $q.defer (see pre_init())
-	var init = function(urlParam1){
-		if(!s.auth.isSignedIn()) return;
+
 		s.TFSdata=TFS.data;
-		setupInitData();
-		if(s.data.mode=='estimate'){
-			// check for requestedReportID in user data (which means its verified)
-			if( s.authData.requestedReportID ){
-				ReportService.loadReport(s.authData.requestedReportID, {getTreeDetails:1})
+		if(s.data.mode()=='estimate'){
+			var rptHash=s.renderPath[1];
+			if( rptHash ){ 
+				ReportService.loadReport(rptHash, {getTreeDetails:1})
 					.then(function(data){
+						if(Auth && Auth.Auth.requestedReportID) delete Auth.requestedReportID;
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
+						showMappedTrees();
 					});
-			}else{
-				// forward them to a place where they can view a list of esimates ... ie (#/estimates)
 			}
 		}
-		s.data.showMap=true;
 
 		// here, we account for 2 usecases:
 		// 1. if user comes to this state 2nd (ie after editing a tree.. so we need a resize)
@@ -82,20 +88,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 				},2000);
 			}
 		}
-	}
 
-	var setupInitData = function(){
-		s.filteredSites = s.initData.sites;
-		s.filteredClients = s.initData.clients;
-		s.ratingTypes = s.initData.filters.ratings;
-		s.filters = s.initData.filters;
-		s.filters.year=[{id:moment().format('YYYY'), desc:'This year'}
-									,{id:moment().add('year',1).format('YYYY'), desc:'Next yr'}
-									,{id:moment().add('year',2).format('YYYY'), desc:'2yr'}
-									,{id:moment().add('year',3).format('YYYY'), desc:'3yr'}
-									,{id:moment().add('year',4).format('YYYY'), desc:'4yr'}]
-		s.treatmentTypes = s.initData.filters.treatments;
-		ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 		TFS.init(s.initData);
 
 		// bind variabels to local storage, so that stuff is remembered	
@@ -104,9 +97,11 @@ var TreesCtrl = app.controller('TreesCtrl',
 		$timeout(function(){
 			storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]}});
 			s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
-			if( !s.selected.siteID && s.data.mode!='estimate') showMappedSites();
+			if( !s.selected.siteID && s.data.mode()!='estimate') showMappedSites();
 		},1);
-	};	
+
+	
+
 
     var highlightResultRow = function (treeID) {
         if (s.activeResultRow) {
@@ -191,13 +186,17 @@ var TreesCtrl = app.controller('TreesCtrl',
 	s.$watch('selected.siteID', function(ID, oldID) {
 		SiteModelUpdateService.setSites(s.filteredSites);
 		ReportService.setSiteID(ID);
-		if(ID && ID>0) getTreeListings();
-		// todo -- else zoom in on the selected Site...
-		// zoomMap(lat, long) ??
+		if(s.data.mode()=='trees'){
+			ReportService.loadRecent();
+			if(ID && ID>0) getTreeListings();
+			// todo -- else zoom in on the selected Site...
+			// zoomMap(lat, long)?
+		}
 	});
 
 	s.$watch('selected.clientID', function(ID, oldID) {
 		ReportService.setClientID(ID);
+		if(s.data.mode()=='trees') ReportService.loadRecent();
 	});
 
 	// When the trees[] array changes because of a filter event... update the ui.
@@ -278,13 +277,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(gMap)return;
 		google.load("maps", "3", {other_params:'sensor=false', callback:function(){
 			var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122),mapTypeId:'hybrid'};
-			var map_id=(s.data.mode=='trees') ? 'treeMap' : 'treeMap2';
+			var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
 			gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
 			google.maps.event.addListener(gMap, 'click', function() {
 			dbg(s,'click')
        			if(infowindow && infowindow.setMap) infowindow.setMap(null);
 	    	});
-
 			deferred.resolve();
 		}});
 		return deferred.promise;
@@ -366,8 +364,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 					infowindow.setContent(this.info); 
 					infowindow.open(gMap,this);
 					//Add call for client info here
-					Rest.all("siteID", this.siteID).then(function(data){
-					alert("hello")}); //test
+					//Rest.all("siteID", this.siteID).then(function(data){
+					//alert("hello")}); //test
 					//jQuery("#infoWin-clientName").innerHtml=data.clientName});
 					 
 				});
@@ -431,14 +429,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 	//Define function to show site specific trees in map
 	var showMappedTrees = _.throttle(function(treeSet){
 		if(!gMap) return initMap().then(function(){ showMappedTrees(treeSet); })
-		if(s.data.mode=='estimate' && s.report && s.report.items) treeSet=s.report.items;
+		if(s.data.mode()=='estimate' && s.report && s.report.items) treeSet=s.report.items;
 		clearMarkers();
 		var set2=[],ratingD,o;
 		if(!infowindow) infowindow = new google.maps.InfoWindow();
 		_.each(treeSet, function(itm){
-			if(itm.hide) return;
+			if(!itm || itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
-			if(s.data.mode=='trees'){
+			if(s.data.mode()=='trees'){
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
 				o= '<div class="mapWindowContainer">'
 				+'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
@@ -457,7 +455,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// <span class='textIconBlock-red'>2014</span>
 			// .... or ...textIconBlock-grey
 			//	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-				o+='</div><a href="#/tree-edit/'+itm.treeID+'">Edit Tree</a><BR></div>';
+				o+='</div><a href="#/tree_edit/'+itm.treeID+'">Edit Tree</a><BR></div>';
 				itm.info=o;
 
 			}else{
@@ -543,6 +541,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 	};
 
     var animateMarker = function (marker, animationType) {
+		if(!google.maps || !google.maps.Animation) return;
         var animation = google.maps.Animation[animationType];
 
         if (animationType === null) {
@@ -602,6 +601,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		if(added==-1)
 				return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
 		if(added.length==trees.length){
+			s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
 			s.setAlert('{0} item(s) added to estimate'.format(added.length),{type:'ok'})
 			return s.toggleCheckedTrees(false);
 		}
@@ -617,13 +617,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 			s.setAlert(msg,{type:'d', time:10});
 			s.toggleCheckedTrees(added);
 		}
+		s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
 	}
 
 
 	//MULTI SELECT CODE
     s.$watch('selected.treatmentCodes', function(nowSelected){
         s.data.currentTreatmentCodes = [];
-        
         if( ! nowSelected ){
             // here we've initialized selected already
             // but sometimes that's not the case
@@ -631,7 +631,6 @@ var TreesCtrl = app.controller('TreesCtrl',
             return;
         }
         angular.forEach(nowSelected, function(val){
-            console.log("value is now: "+val);
            s.data.currentTreatmentCodes.push(val);
         });
     });
@@ -725,7 +724,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 			opts[name]=obj.join(',')
 		});
 
-		Rest.all('siteID').getList(opts)
+		Api.getSites(opts)
 			.then(function(siteIDs){
 				if(siteIDs && siteIDs.length>0){
 					s.TFSdata.filteredSiteIDs=siteIDs;
@@ -741,12 +740,11 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
 
-	//Define function for showing trees from the selected proprty.
 	var getTreeListings = function(){
 		// reset selected trees to prevent duplicates
 		s.selectedTrees = [];
 		s.setAlert('Loading Trees',{busy:true});
-		Rest.all('trees').getList({siteID:s.selected.siteID})
+		Api.getTrees(s.selected.siteID)
 			.then(function(data){
 				TFS.setTreeResults(data);		// after this, the trees get
 												// set back on $scope via $on('onTreeFilterUpdate')
@@ -768,6 +766,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
 
+
+/*
 	// pre-init stuff ----------------------------------------------
 	var deferredUserNav, deferredInitData
 
@@ -779,8 +779,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// customer facing estimate view
 			if(st=='estimate'){
 				var custToken=$route.current.params.param1;
-				if(!s.auth.isSignedIn()){
-					s.auth.signInCustToken(custToken).then( function(userData){
+				//if the user is not signed in... OR if there IS a token, but a requestedReportID hasnt been translated, then go find it
+				if(!Auth.isSignedIn() || (custToken && Auth.requestedReportID===undefined)){		
+					Auth.signInCustToken(custToken).then( function(userData){
+						if(userData && userData.requestedReportID) Auth.requestedReportID=userData.requestedReportID;
 						// allow navigation to continue, now that user has logged in
 						deferredUserNav.resolve($route.current.params.param1);
 					});
@@ -795,6 +797,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 			s.sendEvt('registerPreventNav');
 		}
 	}
+
 
 	var waitForUser = function(){ deferredUserNav=$q.defer(); return deferredUserNav.promise; }
 	var waitForInitData = function(){ deferredInitData=$q.defer(); return deferredInitData.promise; }
@@ -818,9 +821,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 	s.$on('onSignin', function(evt){
 		pre_init();
 	});
+*/
 
 }]);	// }}} TreesCtrl
-
-
 
 

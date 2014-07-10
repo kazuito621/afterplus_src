@@ -1,4 +1,4 @@
-<div class='container signin' style='width:500px; margin:50px auto;'>
+<div ng-controller='SigninCtrl' class='container signin' style='width:500px; margin:50px auto;'>
 
 
 <div class='panel panel-default'>
@@ -6,7 +6,7 @@
 		<h3 class='panel-title'>Sign In</h3>
 	</div>
 	<div class='panel-body' ng-if="auth.isSignedIn()">
-		You are signed in:  {{authData.email}}<Br>
+		You are signed in:  {{auth.getLoginName()}}<Br>
 		<a href ng-click="goTrees()">Continue</a> &nbsp;
 		<a href ng-click="auth.signOut()">Sign Out</a> 
 	</div>

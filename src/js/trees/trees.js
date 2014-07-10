@@ -66,10 +66,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.TFSdata=TFS.data;
 		if(s.data.mode()=='estimate'){
 			var rptHash=s.renderPath[1];
-			if( rptHash ){ 
+			if( rptHash ){
+                console.log('Auth', Auth);
+
 				ReportService.loadReport(rptHash, {getTreeDetails:1})
 					.then(function(data){
-						if(Auth && Auth.Auth.requestedReportID) delete Auth.requestedReportID;
+						if(Auth && Auth.Auth && Auth.Auth.requestedReportID) delete Auth.requestedReportID;
 						s.report=data;
 						if(data && data.siteID) s.selected.siteID=data.siteID;
 						showMappedTrees();
@@ -104,6 +106,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
     var highlightResultRow = function (treeID) {
+        if (s.data.mode() !== 'trees') {
+            return;
+        }
+
         if (s.activeResultRow) {
             $('#tree-result-item-row-' + s.activeResultRow).toggleClass('highlighted-row');
         }

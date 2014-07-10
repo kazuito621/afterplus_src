@@ -30,8 +30,9 @@
       	</select>
     </div>
 	<span>[<a href ng-click='reset()'>RESET</a>] &nbsp; 
-		<span style='color:#667;'>siteID: {{selected.siteID}}</span> 
+		<span ng-if="selected.siteID>0" style='color:#667;'>siteID: {{selected.siteID}}</span> 
 	</span>
+	<span><a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" ng-click='existingSiteModalOpen(selected.siteID);' class="pointer fa fa-pencil _grey"></a></span>
 </nav>
 
 

@@ -34,6 +34,9 @@ function ($scope, $route, $modal, Api) {
 		var obj=s.client;
 		var that=this;
 		obj.post().then(function(){
+			//in the old HEAD of evren07, this if statement existed priort to the "refresh" call
+			//is this necessary? would "saveExistingClient" every be executed if the state was NOT clients??
+			//if($route.current.params.stateID=='clients') {
 			Api.refreshInitData();
 		});
 		clientEditModal.hide();
@@ -62,6 +65,7 @@ function ($scope, $route, $modal, Api) {
 
 	s.newClientModalOpen = function (clientID) {
 		s.client={};
+		s.newClient={};
 		s.mode='new';
 		clientEditModal.show();
 	};

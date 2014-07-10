@@ -33,8 +33,8 @@
 			</span>
 			<BR>
 		Estimate ID: {{report.reportID}}<BR>
-		<strong>Contact:&nbsp;</strong>{{report.contact}}
-		{{report.contactPhone}}<BR>
+		<strong>Contact:&nbsp;</strong>{{report.contact}} 
+		{{report.contactPhone}} <a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" ng-click='existingSiteModalOpen(selected.siteID)' class="pointer fa fa-pencil _grey _size5"></a><BR>
 		<strong>Address:&nbsp;</strong>
 			{{report.street}}, {{report.city}},{{report.state}} {{report.zip}}<BR>
 		</div>
@@ -116,7 +116,7 @@
 					<img ng-src='{{item.imgSm}}{{tree_cachebuster}}' class='item_thumb'
 						data-placement="right"
 						data-trigger="hover"
-						data-content="<img style='width:320px; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
+						data-content="<img style='width: 100%; height:100%;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
 						data-html="true"
 						bs-popover
 						style="border:3px solid #{{colors.bg[item.colorID]}} !important"

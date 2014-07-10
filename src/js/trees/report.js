@@ -34,6 +34,10 @@ var ReportCtrl = app.controller('ReportCtrl',
 		RS.loadRecent();
 	});
 
+	s.$on('onTreatmentDescriptions', function(evt, desc){
+		s.treatmentDescriptions=desc;
+	});
+
 	// when a recent report is selected
 	s.$watch( 'rdata.recentReportID', function ( ID ) {
 		// todo -- if changes were made, but not saved to the report, we should probably
@@ -51,12 +55,6 @@ var ReportCtrl = app.controller('ReportCtrl',
 			});
 		}	
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
-	});
-
-	// After the counts for the treatments have been added, add in the service descriptions 
-	s.$on('treatmentCountsProcessed', function(evt, treatments){
-		var that = $scope;
-		RS.setTreatmentDescriptions(treatments,that);
 	});
 
     // returns true if row with passed id is the current highlighted row

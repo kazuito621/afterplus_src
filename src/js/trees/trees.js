@@ -599,7 +599,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
                 added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
                 $rootScope.$broadcast('itemsAddedToReport');
-                
+
                 if(added==-1)
                     return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
                 if(added.length==trees.length){

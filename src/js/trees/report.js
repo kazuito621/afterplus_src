@@ -34,6 +34,10 @@ var ReportCtrl = app.controller(
                 RS.loadRecent();
             });
 
+            s.$on('onTreatmentDescriptions', function (evt, desc) {
+                s.treatmentDescriptions = desc;
+            });
+
             // when a recent report is selected
             s.$watch('rdata.recentReportID', function (ID) {
                 // todo -- if changes were made, but not saved to the report, we should probably

@@ -45,6 +45,10 @@ app.service('ReportService',
 	this.setSiteID = function(ID) {
 		this.siteID=ID;
 	}
+	this.setSiteIDs = function(IDs) {
+		this.siteIDs=IDs;
+		this.loadRecent();
+	}
 	this.setClientID = function(ID) {
 		this.clientID=ID;
 	}
@@ -243,6 +247,8 @@ app.service('ReportService',
 
 	this.saveReport = function() {
 		if(!this.report.siteID) this.report.siteID=this.siteID;
+		if(!this.report.siteIDs) this.report.siteIDs=this.siteIDs;
+		if(!this.report.clientID) this.report.clientID=this.clientID;
 		this.getReportMd5(true);
 
 		var that=this;

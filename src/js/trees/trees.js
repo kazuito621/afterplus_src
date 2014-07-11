@@ -151,6 +151,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 			var clientObj = s.getClientByID(s.selected.clientID);
 			s.selected.clientTypeID=clientObj.clientTypeID;
 			showMappedSites();
+			getTreeListings();
 		}else{					//else, go back to showing clientType
 			s.onSelectClientTypeID();
 		}
@@ -623,6 +624,43 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
 	}
 
+	// TODO: This is temporary to isolate changes while testing 
+	// Add all trees from selected sites to the estimate.. 
+	// IF data.showTreatmentList && currentTreatmentCodes is selected, then use those (pass them in)
+	// BUT if they are not, then the ReportService will assume the "next recommended treatment"
+	s.addSitesToEstimate = function (){
+		// get an array of selected treeID's
+		var added,msg,trees=[];
+		_.each(s.trees, function(t){
+			trees.push(t);
+		});
+		var siteIDs=[];
+		_.each(s.siteLocs, function(siteLoc){
+			siteIDs.push(siteLoc.siteID);
+		});
+		ReportService.setSiteIDs(siteIDs);
+		if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
+		var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
+		added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
+		if(added==-1)
+				return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
+		if(added.length==trees.length){
+			s.setAlert('{0} item(s) added to estimate'.format(added.length),{type:'ok'})
+			return s.toggleCheckedTrees(false);
+		}
+		if(added.length < trees.length){
+			if(s.data.currentTreatmentCodes)	
+				msg=(added.length) ? 'Err 47 - Some trees were not added to estimate' : 'Err 48 - No trees added to estimate';
+			else{
+				if( added.length ) 
+					msg='{0} trees added. Some did not have recommendations assigned'.format(added.length)
+				else
+					msg='These trees did not have recommendations assigned.';
+			}
+			s.setAlert(msg,{type:'d', time:10});
+			s.toggleCheckedTrees(added);
+		}
+	}
 
 	//MULTI SELECT CODE
     s.$watch('selected.treatmentCodes', function(nowSelected){
@@ -744,18 +782,50 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
 	var getTreeListings = function(){
-		console.log("getTreeListings")
-		// reset selected trees to prevent duplicates
-		s.selectedTrees = [];
 		s.setAlert('Loading Trees',{busy:true});
-		Api.getTrees(s.selected.siteID)
-			.then(function(data){
-				TFS.setTreeResults(data);		// after this, the trees get
+		s.selectedTrees = [];
+		var siteTrees = {};
+
+		if (s.selected.siteID == '') { //selected client id but not site) 
+			var siteTrees = {};
+			s.processSitesTrees(siteTrees).done(function(siteTrees){
+				// defer processing till all the getTrees api calls are done
+				TFS.setTreeResults(siteTrees);		// after this, the trees get
 												// set back on $scope via $on('onTreeFilterUpdate')
 				s.setAlert(false);
 			});
+		}else{
+			// reset selected trees to prevent duplicates
+			Api.getTrees(s.selected.siteID)
+				.then(function(data){
+					TFS.setTreeResults(data);		// after this, the trees get
+													// set back on $scope via $on('onTreeFilterUpdate')
+					s.setAlert(false);
+				});
+		}
 	};
 
+  // get all the trees for all the selected sites
+  // @TODO move server side?
+	s.processSitesTrees = function(siteTrees) {
+		var promises = [];
+		_.each(s.filteredSites, function(filteredSite){
+			var def = new $.Deferred();
+			Api.getTrees(filteredSite.siteID)
+			.then(function(data){
+				_.each(data, function(tree){
+					if ($.isEmptyObject(siteTrees)) {
+						siteTrees = data;
+					}else{
+						siteTrees.push(tree);
+					}
+				});
+				def.resolve(siteTrees);
+			})
+			promises.push(def);
+		});
+		return $.when.apply(undefined, promises).promise();
+	}
 
 	// --- GETTERS for specific client, types, or site objects by ID
 	s.getClientByID = function(id) {

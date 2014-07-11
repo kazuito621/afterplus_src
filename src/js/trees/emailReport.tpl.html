@@ -10,7 +10,7 @@
 
 			<form class="form-inline" ng-submit="emailEstimate()">
 				<table cellpadding='2'>
-					 <tr><td>To:</td><td><textarea form style='width:450px; height:45px;' ng-model="emailRpt.contactEmail"></textarea><BR>
+					 <tr ng-repeat="s in emailRpt.siteIDs"><td>ClientID: {{s}} To:</td><td><textarea form style='width:450px; height:45px;' ng-model="emailRpt.contactEmail"></textarea><BR>
 					 <!--
 					 <tr><td>CC:</td><td> <input type="email" ng-model="emailRpt.emailCC" size=55></td></tr>
 					 -->

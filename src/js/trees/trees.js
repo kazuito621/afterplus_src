@@ -66,9 +66,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		s.TFSdata=TFS.data;
 		if(s.data.mode()=='estimate'){
 			var rptHash=s.renderPath[1];
-			if( rptHash ){
-                console.log('Auth', Auth);
-
+			if( rptHash ){ 
 				ReportService.loadReport(rptHash, {getTreeDetails:1})
 					.then(function(data){
 						if(Auth && Auth.Auth && Auth.Auth.requestedReportID) delete Auth.requestedReportID;
@@ -109,7 +107,7 @@ var TreesCtrl = app.controller('TreesCtrl',
         if (s.data.mode() !== 'trees') {
             return;
         }
-
+        
         if (s.activeResultRow) {
             $('#tree-result-item-row-' + s.activeResultRow).toggleClass('highlighted-row');
         }
@@ -442,7 +440,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 		_.each(treeSet, function(itm){
 			if(!itm || itm.hide) return;
 			if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
-			if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
+            if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
 				ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
 				o= '<div class="mapWindowContainer">'
 				+'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
@@ -461,14 +459,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 			// <span class='textIconBlock-red'>2014</span>
 			// .... or ...textIconBlock-grey
 			//	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-                if (s.data.mode() === 'trees') {
-                    o += '</div><a href="#/tree_edit/' + itm.treeID + '">Edit Tree</a><BR></div>';
-                }
-
+				if (s.data.mode() === 'trees') {
+						o += '</div><a href="#/tree_edit/' + itm.treeID + '">Edit Tree</a><BR></div>';
+				}
+				
 				itm.info = o;
 			}
-
-            setIconColor(itm);
+				setIconColor(itm);
 			set2.push(itm)
 		});
 		if(set2.length>0) addMarkers(set2,'singleSite');

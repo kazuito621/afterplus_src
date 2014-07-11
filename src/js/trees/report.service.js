@@ -79,6 +79,13 @@ app.service('ReportService',
 					})
 				}
 				$rootScope.$broadcast('onLoadReport', data);
+
+				// only needed during customer view... but if we're not sure.. then show them anyways
+				var showTreatmentDesc=true;
+				if($rootScope && $rootScope.renderPath && $rootScope.renderPath[0] != 'estimate' )
+					showTreatmentDesc=false;
+				if(showTreatmentDesc) that.setTreatmentDescriptions();
+
 				$timeout(function(){
 					that.getReportMd5(true);
 				},500);
@@ -114,28 +121,18 @@ app.service('ReportService',
 	}
 
 	// Get the treatment descriptions using the API
-	// Filter out the description IDs to only include what is needed.
-	// This mmight be able to simplified if API supports query by codes
-	// and/or look for a way to combine the filtering.
- 	this.setTreatmentDescriptions = function(treatmentTypes, that){
-		// NOTE -- this is not a good way to do this. An instance of the report controller He's passing in an instance to
-		// of the report controller, which would make this service dependant.
-
-		var tc,tObj,ids=[];		// treatment type ID's
+ 	this.setTreatmentDescriptions = function(){
+		var tc,tObj,codes=[];		// treatment type ID's
 		_.each(this.report.items, function(itm){
 			tc=itm.treatmentTypeCode;
 			if(!tc) return;
-			tObj=_.findObj(treatmentTypes, 'code', tc);
-			if(tObj && tObj.treatmentTypeID) ids.push(tObj.treatmentTypeID);
+			codes.push(tc);
 		});
+		codes=_.uniq(codes);
 
-		ids=_.uniq(ids);
-
-     	// Finally make rest call to get descriptions
-		Api.getTreatmentDesc(ids)
-			.then(function(descriptions){
-			dbg(descriptions);
-				that.treatmentDescriptions = descriptions;
+		Api.getTreatmentDesc(codes)
+			.then(function(desc){
+				$rootScope.$broadcast('onTreatmentDescriptions', desc);
 			});
   	}
 

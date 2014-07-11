@@ -108,7 +108,7 @@
         <td  ng-if="data.mode()=='estimate'"><h1>Bid ($)</h1></td>
     </tr>
 
-    <tr ng-table ng-repeat="item in groupedItems" ng-if="report.items.length>0"
+    <tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
         ng-init="itemIndex = $index"
         ng-class="rowHighlightClass(item)"
         ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.treeID}}">

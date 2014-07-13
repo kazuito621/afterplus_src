@@ -41,21 +41,19 @@ app.service('Auth',
 
 	this.isSignedIn = function(){ return (this.data().userID>0); };
 
-	// After a login call, handle that and resolve the promise
-	var onDataBackFromSignIn = function (deferred, d) {
-		if (d && d.userID > 0) {
-			this.data(d);
-			this.sendEvt('onSignin');
-			return deferred.resolve(d);
-		} else {
-			var msg = (d && d.msg) ? d.msg : 'Login failed';
-			return deferred.reject(msg);
-		}
-	};
-
 	// Returns a promise with either a resolve or a reject
 	this.signInCustToken = function (custToken){
-        return Api.signInCustToken(custToken, this, onDataBackFromSignIn);
+		var that=this;
+        Api.signInCustToken(custToken).then(function(d){
+			if (d && d.userID > 0) {
+				that.data(d);
+				if(d.requestedReportID) $rootScope.requestedReportID=d.requestedReportID;
+				that.sendEvt('onSignin');
+			} else {
+				var msg = (d && d.msg) ? d.msg : 'Login failed';
+				return deferred.reject(msg);
+			}
+		});
 	};
 
 	// Returns a promise with either a resolve or a reject

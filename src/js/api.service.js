@@ -87,7 +87,9 @@ function (Rest, $rootScope, $q, $location ) {
                 deferred.reject('Invalid token');
                 return deferred.promise;
             }
-            return Rest.one('signincusttoken').get({custToken: token});
+            Rest.one('signincusttoken').get({custToken: token})
+                .then(angular.bind(context, callback, deferred));
+			return deferred.promise;
         },
         signIn: function (email, password, context, callback) {
             var deferred = $q.defer();

@@ -43,6 +43,8 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		s['tpl_'+s.renderTplID]=tplPath;		// load the template, which changes the ng-include var in index.html
 		s['showtpl_'+s.renderTplID]=true;	// now show it
 
+		s.sendEvt('nav', {new:s.renderTplID, old:lastRenderedTplID});
+
 		// no turn off last one
 		if(lastRenderedTplID) s['showtpl_'+lastRenderedTplID]=false;
 		lastRenderedTplID=s.renderTplID;

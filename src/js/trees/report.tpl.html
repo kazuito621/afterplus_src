@@ -99,13 +99,9 @@
         <td><h1>ID</h1></td>
         <td><h1>Name</h1></td>
         <td><h1>Size</h1></td>
-        <td style='min-width:210px;'>
-            <h1>Treatment</h1>
-        </td>
-        <td ng-if="data.mode()=='trees'"><h1>Price</h1></td>
-        <td ng-if="data.mode()=='trees'"></td>
-        <td ng-if="data.mode()=='estimate'"><h1>Rating</h1></td>
-        <td ng-if="data.mode()=='estimate'"><h1>Bid ($)</h1></td>
+        <td style='min-width:210px;'><h1>Treatment</h1></td>
+        <td></td>
+        <td><h1>Bid ($)</h1></td>
     </tr>
 
     <tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
@@ -131,25 +127,16 @@
             <span style='font-size:75%; color:#ccc;'>[{{item.treeID}}]</span>
             <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
         </td>
-        <td ng-if="data.mode()=='estimate'">
+        <td data-title="listing_dbh">
             {{item.dbhID | dbhID2Name:this }}
         </td>
-        <td ng-if="data.mode()=='estimate'" data-title="treatment_yearAndType">
-            {{item.treatmentTypeCode | getTreatmentTypeName:this}}
-        </td>
-        <td ng-if="data.mode()=='estimate'" data-title="listing_rating">
-            {{item.ratingID | treeRatingGetter:this}}
-        </td>
-        <td data-title="listing_dbh" ng-if="data.mode()=='trees'">
-            {{item.dbhID | dbhID2Name:this }}
-        </td>
-        <td colspan="3" ng-if="data.mode() === 'trees'">
+        <td colspan="3">
             <table class="ng-table-responsive">
                 <tr ng-repeat="treatment in item.treatments" ng-init="treatmentIndex = $index" ng-mouseover="hover=true" ng-mouseleave="hover=false">
                     <!-- the problem here, is since we are putting a table in a table.. if we have a mixture of items...
                          those with a single treatment.. .and those with multiple treatments... then the pricing column becomes
                          unaligned... so for now. im using min-width to fix. not sure if best way -tim -->
-                    <td data-title="listing_treatment" ng-if="data.mode()=='trees'" style="padding: 8px; min-width: 210px;">
+                    <td data-title="listing_treatment" style="padding: 8px; min-width: 210px;">
                         <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
                            editable-select="treatment.treatmentTypeCode"
                            onshow="onShowEditItem(item.$$hashKey)"
@@ -157,22 +144,17 @@
                             {{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
                         </a>
                     </td>
-
-                    <td ng-if="data.mode()=='trees'" data-title="listing_price" style="padding: 8px;">&#36;
+                    <td data-title="listing_price" style="padding: 8px;">&#36;
                         <a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)"                                    onhide="onHideEditItem()">
                             {{treatment.price|formatPrice}}
                         </a>
                     </td>
-
-                    <td ng-if="data.mode()=='trees'" data-title="listing_options" width='55px;' style="padding: 8px;">
+                    <td data-title="listing_options" width='55px;' style="padding: 8px;">
                         <a ng-show="hover" href='#/tree-edit/{{item.treeID}}' class='fa fa-pencil _grey _med'></a> &nbsp;
                         <a ng-show="hover" href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='fa fa-times _red _med' ></a>
                     </td>
                 </tr>
             </table>
-        </td>
-        <td ng-if="data.mode()=='estimate'" data-title="listing_bid">
-            &#36;{{item.price|formatPrice}}
         </td>
     </tr>
     <tr ng-if="report.total.items && data.mode()=='trees'">

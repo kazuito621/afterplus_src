@@ -69,7 +69,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if( rptHash ){
                     ReportService.loadReport(rptHash, {getTreeDetails:1})
                         .then(function(data){
-                            if(Auth && Auth.Auth.requestedReportID) delete Auth.requestedReportID;
+                            if(Auth && Auth.requestedReportID) delete Auth.requestedReportID;
                             s.report=data;
                             if(data && data.siteID) s.selected.siteID=data.siteID;
                             showMappedTrees();

@@ -331,8 +331,8 @@ var TreesCtrl = app.controller('TreesCtrl',
             },1500);
 
             var setSiteColor = function (site) {
-                var bg = '000000';
-                var fg = '000000';
+                var bg = '565656';
+                var fg = 'aaaaaa';
                 var base='https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
                 var num = '';
 

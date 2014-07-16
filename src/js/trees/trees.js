@@ -312,6 +312,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                         '<p><strong>Total Trees:'+s.trees.length+'</strong></p>'+
                         '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
                     site.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+
+                    // add color to site marker
+                    setSiteColor(site);
+
                     s.siteLocs.push(site);
                 });
 
@@ -325,6 +329,20 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 replaceMarkers(s.siteLocs,'allSites');
             },1500);
+
+            var setSiteColor = function (site) {
+                var bg = '565656';
+                var fg = 'aaaaaa';
+                var base='https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
+                var num = '';
+
+                if (site.species && site.species.length > 0) {
+                    bg = 'FE7569';
+                    fg = '000000';
+                }
+
+                site.iconType = base + num + '|' + bg + '|' + fg;
+            };
 
             var replaceMarkers = function(arr,addType) {
                 clearMarkers();
@@ -481,7 +499,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 var idx=s.colors.speciesCount[itm.speciesID].colorID;
                 //https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=1|006256|000000
-                var base='https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
+                var base='https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
                 var num = itm.localTreeID || '';
                 var bg=s.colors.bg[idx];
                 var fg=s.colors.fg[idx];

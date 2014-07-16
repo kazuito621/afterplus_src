@@ -1,3 +1,4 @@
+/*global moment*/
 /**
  * Note: this controller is used in 2 different applications:
  * 1. when user navigates to #/tree_edit/<TREEID>
@@ -17,20 +18,7 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
             s.ynOptions = ['yes', 'no'];
             s.ynpOptions = ['yes', 'no', 'potential'];
             s.tree_cachebuster = '?ts=' + moment().unix();
-            s.yearOptions = function () {
-                var y = [];
-                var i;
-                for (i = 2012; i < 2012 + 6; i += 1) {
-                    y.push('' + i);
-                }
-                return y;
-            }();
-
-            s.$on('nav', function (e, data) {
-                if (data.new === myStateID) {
-                    init();
-                }
-            });
+            s.yearOptions = ["2012", "2013", "2014", "2015", "2016", "2017"];
 
             // added throttle, because on fist load, it might fire twice, once from init() on load,
             // and once from the $on(nav) event above
@@ -57,6 +45,12 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 
             s.$on('onTreeResultImageRollover', function (evt, treeID) {
                 init(treeID, 'rollover');
+            });
+
+            s.$on('nav', function (e, data) {
+                if (data.new === myStateID) {
+                    init();
+                }
             });
 
             s.updateTreeName = function () {

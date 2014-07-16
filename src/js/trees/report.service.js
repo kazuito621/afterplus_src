@@ -146,9 +146,8 @@ app.service('ReportService',
 	// @return MIXED - If any trees were successful, return ARRAY of ID's that succeeded
 	//				 - if error mixing trees from different sites, return "-1"
 	this.addItems = function(trees, treatmentCodes, selectedFilters) {
-
 		// dont let them add trees to a report that has a different siteID
-		if(this.report.siteID && this.report.siteID!=this.siteID)
+		if(this.report.siteID && this.siteID && this.report.siteID!=this.siteID)
 				return -1;
 
 		if(!this.report.siteID) this.report.siteID=this.siteID;

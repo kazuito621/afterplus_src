@@ -22,7 +22,8 @@ var ReportCtrl = app.controller(
 
             s.editorOptions = {
                 filebrowserBrowseUrl: '/browser/browse.php',
-                filebrowserUploadUrl: '/uploader/upload.php'
+                filebrowserUploadUrl: '/uploader/upload.php',
+                disableNativeSpellChecker: false
             };
 
             // let's watch the recentReportList property, and update on scope if it changes

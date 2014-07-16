@@ -30,8 +30,9 @@
       	</select>
     </div>
 	<span>[<a href ng-click='reset()'>RESET</a>] &nbsp; 
-		<span style='color:#667;'>siteID: {{selected.siteID}}</span> 
+		<span ng-if="selected.siteID>0" style='color:#667;'>siteID: {{selected.siteID}}</span> 
 	</span>
+	<span><a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" ng-click='existingSiteModalOpen(selected.siteID);' class="pointer fa fa-pencil _grey"></a></span>
 </nav>
 
 
@@ -46,7 +47,7 @@
     </div>
     <div class="clearfloat"></div>
     <div class="listings trees-result-list">
-     	<div class ="listing_items hoverHotspot" ng-repeat="tree in trees" id="tree-result-item-row-{{tree.treeID}}">
+     	<div class="listing_items hoverHotspot" ng-repeat="tree in trees" id="tree-result-item-row-{{tree.treeID}}">
 			<div ng-if="tree.hide != true" class='listingRow' ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
         		<!--<div class="listingHeader"></div>-->
 				<label>

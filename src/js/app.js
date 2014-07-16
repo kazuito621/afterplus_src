@@ -3,7 +3,7 @@
 
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
-	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model']);
+	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model', 'ngCkeditor']);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
@@ -25,7 +25,7 @@ app.config(['$routeProvider', '$locationProvider',
             .when("/:state1/:state2?/:state3?", {
                     auth:true
                     ,resolve: {
-                      deps:['Api', function(Api){  dbg('state resolve');return Api.getPromise(); }]
+                      deps:['Api', function(Api){  return Api.getPromise(); }]
                     }
                 })
             .otherwise({redirectTo: "/signin"});

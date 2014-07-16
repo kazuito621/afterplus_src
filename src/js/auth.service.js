@@ -45,7 +45,8 @@ app.service('Auth',
 	var onDataBackFromSignIn = function (deferred, d) {
 		if (d && d.userID > 0) {
 			this.data(d);
-			this.sendEvt('onSignin');
+			if(d.requestedReportID) $rootScope.requestedReportID=d.requestedReportID;
+			sendEvt('onSignin');
 			return deferred.resolve(d);
 		} else {
 			var msg = (d && d.msg) ? d.msg : 'Login failed';
@@ -98,7 +99,7 @@ app.service('Auth',
 	};
 
 
-	this.sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); };
+	var sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); };
 
 
 

@@ -1,5 +1,8 @@
-var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$location', 'Api', function ($scope, $route, $modal, $location, Api) {
-    'use strict';
+'use strict';
+
+var SitesCtrl = app.controller('SitesCtrl', 
+['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api',
+function ($scope, $route, $modal, $location, SiteModelUpdateService, Api) {
 	var s=window.scs=$scope
 		,myStateID='sites'
 		,mode=''
@@ -24,6 +27,8 @@ var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$loc
 		} else {
             Api.saveNewSite(s.newSite).then(function(data) {});
 			siteEditModal.hide();
+			// is this needed? this may have been in evrens 07 branch
+			// if($route.current.params.stateID=='sites') {
 			Api.refreshInitData();
 		}
 	};
@@ -34,6 +39,8 @@ var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$loc
 		obj.post().then(function(){
 			Api.refreshInitData();
 		});
+		// Update all other sites models, eg. the sites dropdown on the trees report
+		SiteModelUpdateService.updateSiteModels(obj);
 		siteEditModal.hide();
 	};
 	
@@ -50,6 +57,7 @@ var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$loc
 
 	s.newSiteModalOpen = function (siteID) {
 		s.site={};
+		s.newSite={clientID:''};
 		s.mode='new';
 		siteEditModal.show();
 	};
@@ -65,7 +73,6 @@ var SitesCtrl = app.controller('SitesCtrl', ['$scope', '$route', '$modal', '$loc
 	};
 
 	s.deleteItems = function (itemID) {
-		console.log("itemID",itemID)
 		Api.removeSiteById(itemID).then(function(data) {
 			Api.refreshInitData();
 		});

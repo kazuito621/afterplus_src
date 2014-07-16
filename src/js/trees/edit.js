@@ -9,7 +9,8 @@
 var EditTreeCtrl = app.controller('EditTreeCtrl', 
 	['$scope', '$http', 'Api', '$route', '$location',
 	function ($scope, $http, Api, $route, $location) {
-	var s = window.ets = $scope;
+	var s = window.ets = $scope
+		,myStateID='tree_edit';		// matches with the templateID
 		s.treeID;
 		s.tree;
 		s.ratingTypes = '';
@@ -21,20 +22,25 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 			return y; 
 		}();
 
-	var init = function(treeID, mode) {
+	s.$on('nav', function(e, data){
+		if(data.new==myStateID) init();
+	});
+
+	// added throttle, because on fist load, it might fire twice, once from init() on load,
+	// and once from the $on(nav) event above
+	var init = _.throttle(function(treeID, mode) {
 		// todo -- editmode should be controlled by user privilege
 		if(!mode) mode='edit';
 
 		if(treeID) s.treeID=treeID;
 		else s.treeID = s.renderPath[1];
-
 		if(!s.treeID) return;
 		Api.getTree(s.treeID)
 			.then(function(data){
 				s.tree=data	
 				s.tree.mode=mode;
 			});
-	}
+	},1500);
 
 	s.$on('onTreeResultImageRollover', function(evt, treeID){
 		init(treeID, 'rollover');		
@@ -74,7 +80,6 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 					treeHistoryID:0, year:moment().format('YYYY')};
 		s.tree.history.splice(0,0,itm);
 	 }
-
 
 	init();
 

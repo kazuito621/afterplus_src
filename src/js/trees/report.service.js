@@ -9,16 +9,17 @@ app.service('ReportService',
 	// private properties
 	var nextItemID=1
 
+    var that=this;
 	// public properties
 	this.recentReportList;			// store the list of reports
 	this.report={};					// the actual report object that is requested 
 	this.grandTotal = 0.00;		// GrandTotal of item pricing, listed on report			
 	this.lastReportMd5;
 	this.emailRpt = {};
+    this.groupedItems = [];
 
 	this.init=function(){
 		this.getBlankReport();
-		var that=this;
 		// when reportID changes, update the report Link
 		$rootScope.$watch(function(){ return that.report.reportID}, function(){ 
 				var t=that.report.token || that.report.reportID;
@@ -79,6 +80,13 @@ app.service('ReportService',
 					})
 				}
 				$rootScope.$broadcast('onLoadReport', data);
+
+				// only needed during customer view... but if we're not sure.. then show them anyways
+				var showTreatmentDesc=true;
+				if($rootScope && $rootScope.renderPath && $rootScope.renderPath[0] != 'estimate' )
+					showTreatmentDesc=false;
+				if(showTreatmentDesc) that.setTreatmentDescriptions();
+
 				$timeout(function(){
 					that.getReportMd5(true);
 				},500);
@@ -114,28 +122,18 @@ app.service('ReportService',
 	}
 
 	// Get the treatment descriptions using the API
-	// Filter out the description IDs to only include what is needed.
-	// This mmight be able to simplified if API supports query by codes
-	// and/or look for a way to combine the filtering.
- 	this.setTreatmentDescriptions = function(treatmentTypes, that){
-		// NOTE -- this is not a good way to do this. An instance of the report controller He's passing in an instance to
-		// of the report controller, which would make this service dependant.
-
-		var tc,tObj,ids=[];		// treatment type ID's
+ 	this.setTreatmentDescriptions = function(){
+		var tc,tObj,codes=[];		// treatment type ID's
 		_.each(this.report.items, function(itm){
 			tc=itm.treatmentTypeCode;
 			if(!tc) return;
-			tObj=_.findObj(treatmentTypes, 'code', tc);
-			if(tObj && tObj.treatmentTypeID) ids.push(tObj.treatmentTypeID);
+			codes.push(tc);
 		});
+		codes=_.uniq(codes);
 
-		ids=_.uniq(ids);
-
-     	// Finally make rest call to get descriptions
-		Api.getTreatmentDesc(ids)
-			.then(function(descriptions){
-			dbg(descriptions);
-				that.treatmentDescriptions = descriptions;
+		Api.getTreatmentDesc(codes)
+			.then(function(desc){
+				$rootScope.$broadcast('onTreatmentDescriptions', desc);
 			});
   	}
 
@@ -283,6 +281,62 @@ app.service('ReportService',
 				$rootScope.$broadcast('onLoadRecent', data);
 			});
 	},1000);
+
+        this.groupReportItems = function () {
+//                console.log('about to group report items', that.report.items);
+            var items = angular.copy(that.report.items);
+            var res = [];
+            var keys = [];
+
+            var getTreatment = function (item) {
+                return {
+                    treatmentTypeCode: item.treatmentTypeCode,
+                    price: item.price
+                };
+            };
+
+            angular.forEach(items, function (item) {
+                var index = keys.indexOf(item.treeID);
+                if (index !== -1) { // another action for this tree
+                    res[index].treatments.push(getTreatment(item));
+                } else {
+                    var i = angular.copy(item);
+                    keys.push(i.treeID);
+                    i.treatments = [];
+                    i.treatments.push(getTreatment(item));
+                    res.push(i);
+                }
+            });
+
+//                console.log('after grouping', res);
+//                console.log('report items initial after grouping', that.report.items);
+            that.groupedItems = res;
+
+            return res;
+        };
+
+        this.ungroupReportItems = function (groupedItems) {
+            groupedItems = groupedItems || that.groupedItems;
+//                console.log('about to ungroup report items', groupedItems);
+            var items = angular.copy(groupedItems);
+            var res = [];
+
+            angular.forEach(items, function (item) {
+                angular.forEach(item.treatments, function (treatment) {
+                    var tmp = angular.copy(item);
+                    delete tmp.treatments;
+
+                    tmp.treatmentTypeCode = treatment.treatmentTypeCode;
+                    tmp.price = treatment.price;
+
+                    res.push(tmp);
+                });
+            });
+
+//                console.log('Ungrouped items', res);
+
+            return res;
+        };
 
 	this.init();
 

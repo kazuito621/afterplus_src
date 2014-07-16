@@ -25,7 +25,7 @@ app.config(['$routeProvider', '$locationProvider',
             .when("/:state1/:state2?/:state3?", {
                     auth:true
                     ,resolve: {
-                      deps:['Api', function(Api){  dbg('state resolve');return Api.getPromise(); }]
+                      deps:['Api', function(Api){  return Api.getPromise(); }]
                     }
                 })
             .otherwise({redirectTo: "/signin"});

@@ -67,13 +67,16 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 	 * Based on tree results, only show filters that are relevant...
 	 * ie. if there are no Pine trees in the results, then dont show any F'ing
 	 * pine tree filters! 
+	 * This is done by looping through the tree results array and tallying up into an "exist[]" array.
+	 * Once thats done, the 2nd helper method (filterTheFilters2) will apply the exist array to the initData item count properties
+	 * which the html templates will react to
 	 */
 	this.filterTheFilters = function() {
 		if(!this.trees || !this.trees.length) return;
 
 		this.data.filterTypeCounts={species:0, dbh:0, rating:0, treatments:0, caDamage:0, building:0, powerline:0}
-		var exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, building:{},powerline:{}}     //ie. {species:{'1':3}, rating:'4':1}
-            ,that=this 			              	//     -- there are 3 trees with speciesID 1, one with rating 4
+		this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, building:{},powerline:{}}     //ie. {species:{'1':3}, rating:'4':1}I
+        var exist=this.exist,that=this 			              	//     -- there are 3 trees with speciesID 1, one with rating 4
 
 		// loop through each tree and tally up the possible filter counts
 		_.each(this.trees, function(tree){
@@ -139,6 +142,16 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 		});
 
+		this.filterTheFilters2();
+	}
+
+	/**
+	 * Use the exist[] array, and apply those tallies to the initData count objects
+	 * @param reset BOOL - whether to reset the counts
+	 */
+	this.filterTheFilters2 = function(reset) {
+		var exist=this.exist;
+
 		// loop through each tally of existing tree filter types
 		// and set the correspoding ng-model data for each filter
 		var idata=this.initData, seachObj, idName, filterArray, c;
@@ -151,13 +164,13 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 			_.each(filterArray, function(filterItm) {
 				// if the count is in exist, then set it, else set to 0
 				c = exist[filterName][filterItm[idName]];
-				if(c) filterItm.count = c;
-				else filterItm.count = 0;
+				if(reset) filterItm.count=null;
+				else{
+					if(c) filterItm.count = c;
+					else filterItm.count = 0;
+				}
 			});
 		});
-		// Inform listners that the treatment counts have been added
-		$rootScope.$broadcast('treatmentCountsProcessed',this.initData.filters.treatments);
-
 	}
 
 
@@ -216,6 +229,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		});
 		this.data.lastFilterCount=selectedFilters.length;
 		selectedFilters.splice(0, selectedFilters.length);
+		this.filterTheFilters2(true);
 		if(!clearTrees) this.filterTrees();
 	}
 

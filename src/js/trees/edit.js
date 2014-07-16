@@ -1,4 +1,4 @@
-/*global moment*/
+/*global moment, $*/
 /**
  * Note: this controller is used in 2 different applications:
  * 1. when user navigates to #/tree_edit/<TREEID>
@@ -91,7 +91,19 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
                 s.tree.history.splice(0, 0, itm);
             };
 
+            s.onCancel = function () {
+                $location.path('/trees');
+                s.$apply();
+            };
+
             init();
+
+            $(document).keyup(function (e) {
+                var location = $location.path().split('/');
+                if (e.keyCode === 27 && typeof s.onCancel === 'function' && location[1] === 'tree_edit') {
+                    s.onCancel();
+                }
+            });
 
         }]);
 

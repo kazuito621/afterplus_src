@@ -53,6 +53,11 @@ function (Rest, $rootScope, $q, $location ) {
             return Rest.all('site/' + siteID + '/contacts').getList();
         },
         getReport: function (reportID, opts) {
+			var r=$rootScope.requestedReportID;
+			if(r && r>1){
+				reportID=r;
+				delete $rootScope.requestedReportI;
+			}
             dbg(reportID, opts, 'get report');
             return Rest.one('estimate', reportID).get(opts);
         },
@@ -82,11 +87,9 @@ function (Rest, $rootScope, $q, $location ) {
                 deferred.reject('Invalid token');
                 return deferred.promise;
             }
-
             Rest.one('signincusttoken').get({custToken: token})
                 .then(angular.bind(context, callback, deferred));
-
-            return deferred.promise;
+			return deferred.promise;
         },
         signIn: function (email, password, context, callback) {
             var deferred = $q.defer();

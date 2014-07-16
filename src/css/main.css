@@ -635,6 +635,10 @@ color:#339900;
 	font-size: 165%;
 	}
 
+td.estimate_multirow_col{
+	min-width:210px;
+}
+
 
 ._red {color:#f33;}
 ._orange{ color:#ff8c26; }

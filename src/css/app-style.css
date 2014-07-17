@@ -193,47 +193,96 @@ body {
 header {
   background: none;
   background-color: black;
-  padding: 15px 20px;
+  padding: 0 20px;
 }
 /* line 16, ../scss/partials/_common.scss */
 header .cnt-logo {
+  padding: 15px 0;
   float: left;
   display: inline-block;
+  margin-right: 100px;
 }
-/* line 20, ../scss/partials/_common.scss */
+/* line 23, ../scss/partials/_common.scss */
 header .cnt-logo img {
   width: 150px;
   height: auto;
 }
-/* line 26, ../scss/partials/_common.scss */
+/* line 30, ../scss/partials/_common.scss */
+header .nav-container {
+  float: left;
+}
+/* line 35, ../scss/partials/_common.scss */
+header .nav-container nav ul {
+  margin: 0;
+}
+/* line 38, ../scss/partials/_common.scss */
+header .nav-container nav ul li {
+  float: left;
+  padding: 0;
+}
+/* line 42, ../scss/partials/_common.scss */
+header .nav-container nav ul li a {
+  text-align: center;
+  display: block;
+  padding: 17px 40px;
+  -webkit-transition: all linear 0.2s;
+  -o-transition: all linear 0.2s;
+  transition: all linear 0.2s;
+}
+/* line 48, ../scss/partials/_common.scss */
+header .nav-container nav ul li a i {
+  display: block;
+  font-size: 30px;
+  color: #adadad;
+}
+/* line 55, ../scss/partials/_common.scss */
+header .nav-container nav ul li a .text {
+  display: block;
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  color: #adadad;
+  line-height: 24px;
+}
+/* line 62, ../scss/partials/_common.scss */
+header .nav-container nav ul li a.active, header .nav-container nav ul li a:hover, header .nav-container nav ul li a:focus, header .nav-container nav ul li a:active {
+  text-decoration: none;
+  background: white;
+}
+/* line 67, ../scss/partials/_common.scss */
+header .nav-container nav ul li a.active i, header .nav-container nav ul li a.active .text, header .nav-container nav ul li a:hover i, header .nav-container nav ul li a:hover .text, header .nav-container nav ul li a:focus i, header .nav-container nav ul li a:focus .text, header .nav-container nav ul li a:active i, header .nav-container nav ul li a:active .text {
+  color: #f84540;
+}
+/* line 78, ../scss/partials/_common.scss */
 header .cnt-action {
   float: right;
+  padding: 15px 0;
   margin-top: 0;
   display: inline-block;
 }
 
-/* line 34, ../scss/partials/_common.scss */
+/* line 87, ../scss/partials/_common.scss */
 .row-xs {
   margin-left: -5px;
   margin-right: -5px;
 }
-/* line 39, ../scss/partials/_common.scss */
+/* line 92, ../scss/partials/_common.scss */
 .row-xs > .col {
   padding-left: 5px;
   padding-right: 5px;
 }
 
-/* line 46, ../scss/partials/_common.scss */
+/* line 99, ../scss/partials/_common.scss */
 .top-margin-none {
   margin-top: 0 !important;
 }
 
-/* line 51, ../scss/partials/_common.scss */
+/* line 104, ../scss/partials/_common.scss */
 .padding-top-none {
   padding-top: 0 !important;
 }
 
-/* line 56, ../scss/partials/_common.scss */
+/* line 109, ../scss/partials/_common.scss */
 footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;

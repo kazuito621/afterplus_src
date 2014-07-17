@@ -82,10 +82,18 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   line-height: 20px;
 }
 /* line 16, ../scss/partials/_buttons.scss */
+.btn.btn-sm {
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  color: white;
+  line-height: 24px;
+}
+/* line 21, ../scss/partials/_buttons.scss */
 .btn.btn-block {
   display: block;
 }
-/* line 21, ../scss/partials/_buttons.scss */
+/* line 26, ../scss/partials/_buttons.scss */
 .btn.btn-red {
   background: #f84540;
   border: 1px solid #faaaa9;
@@ -98,7 +106,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -o-transition: background linear 0.2s;
   transition: background linear 0.2s;
 }
-/* line 27, ../scss/partials/_buttons.scss */
+/* line 32, ../scss/partials/_buttons.scss */
 .btn.btn-red:hover, .btn.btn-red:focus, .btn.btn-red:active {
   background: #f84540;
   background-image: -webkit-linear-gradient(#ee4f3a, #ee4f3a 50%, #ee4f3a);
@@ -107,7 +115,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEE4F3A', endColorstr='#FFEE4F3A', GradientType=0);
 }
-/* line 34, ../scss/partials/_buttons.scss */
+/* line 39, ../scss/partials/_buttons.scss */
 .btn.btn-blue {
   background: #5099e5;
   border: 1px solid #abd7f4;
@@ -120,7 +128,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -o-transition: background linear 0.2s;
   transition: background linear 0.2s;
 }
-/* line 40, ../scss/partials/_buttons.scss */
+/* line 45, ../scss/partials/_buttons.scss */
 .btn.btn-blue:hover, .btn.btn-blue:focus, .btn.btn-blue:active {
   background: #5099e5;
   background-image: -webkit-linear-gradient(#5596da, #5596da 50%, #5596da);
@@ -129,7 +137,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF5596DA', endColorstr='#FF5596DA', GradientType=0);
 }
-/* line 47, ../scss/partials/_buttons.scss */
+/* line 52, ../scss/partials/_buttons.scss */
 .btn.btn-green {
   background: #9bc21b;
   border: 1px solid #c2d981;
@@ -142,7 +150,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -o-transition: background linear 0.2s;
   transition: background linear 0.2s;
 }
-/* line 53, ../scss/partials/_buttons.scss */
+/* line 58, ../scss/partials/_buttons.scss */
 .btn.btn-green:hover, .btn.btn-green:focus, .btn.btn-green:active {
   background: #5099e5;
   background-image: -webkit-linear-gradient(#9bc21b, #9bc21b 50%, #9bc21b);
@@ -151,7 +159,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF9BC21B', endColorstr='#FF9BC21B', GradientType=0);
 }
-/* line 60, ../scss/partials/_buttons.scss */
+/* line 65, ../scss/partials/_buttons.scss */
 .btn.btn-orange {
   background: #ec983e;
   border: 1px solid #deac65;
@@ -164,7 +172,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -o-transition: background linear 0.2s;
   transition: background linear 0.2s;
 }
-/* line 66, ../scss/partials/_buttons.scss */
+/* line 71, ../scss/partials/_buttons.scss */
 .btn.btn-orange:hover, .btn.btn-orange:focus, .btn.btn-orange:active {
   background: #5099e5;
   background-image: -webkit-linear-gradient(#ec983e, #ec983e 50%, #ec983e);
@@ -216,6 +224,16 @@ header .cnt-action {
 }
 
 /* line 46, ../scss/partials/_common.scss */
+.top-margin-none {
+  margin-top: 0 !important;
+}
+
+/* line 51, ../scss/partials/_common.scss */
+.padding-top-none {
+  padding-top: 0 !important;
+}
+
+/* line 56, ../scss/partials/_common.scss */
 footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -229,12 +247,18 @@ footer {
   margin-right: 15px;
 }
 
-/* line 2, ../scss/partials/_estimate.scss */
+/* line 4, ../scss/partials/_estimate.scss */
+.mainContent.mode_estimate {
+  display: none;
+}
+
+/* line 10, ../scss/partials/_estimate.scss */
 .action-container {
   padding: 15px 0;
   background: white;
+  margin: 0;
 }
-/* line 7, ../scss/partials/_estimate.scss */
+/* line 16, ../scss/partials/_estimate.scss */
 .action-container.affix {
   position: fixed;
   top: 0;
@@ -245,54 +269,74 @@ footer {
   padding: 15px;
 }
 @media (max-width: 991px) {
-  /* line 7, ../scss/partials/_estimate.scss */
+  /* line 16, ../scss/partials/_estimate.scss */
   .action-container.affix {
     position: relative;
     top: 0;
   }
 }
-/* line 31, ../scss/partials/_estimate.scss */
+/* line 40, ../scss/partials/_estimate.scss */
 .action-container .row-action > .col:last-child {
   border-right: none;
 }
 @media (max-width: 767px) {
-  /* line 26, ../scss/partials/_estimate.scss */
+  /* line 35, ../scss/partials/_estimate.scss */
   .action-container .row-action > .col {
     border: none;
   }
 }
 @media (max-width: 767px) {
-  /* line 43, ../scss/partials/_estimate.scss */
+  /* line 52, ../scss/partials/_estimate.scss */
   .action-container .action-block {
     margin-bottom: 10px;
   }
 }
-/* line 50, ../scss/partials/_estimate.scss */
+/* line 59, ../scss/partials/_estimate.scss */
 .action-container .action-block.no-border {
   border: none;
 }
-/* line 55, ../scss/partials/_estimate.scss */
+/* line 64, ../scss/partials/_estimate.scss */
 .action-container .action-block.action-block-1 {
   padding: 5px 0;
 }
-/* line 60, ../scss/partials/_estimate.scss */
-.action-container .action-block.action-block-3 {
-  padding: 12px 0;
+/* line 69, ../scss/partials/_estimate.scss */
+.action-container .action-block.action-block-2 {
+  padding: 3px 0;
 }
-/* line 65, ../scss/partials/_estimate.scss */
+/* line 74, ../scss/partials/_estimate.scss */
+.action-container .action-block.action-block-3 {
+  padding: 10px 0;
+}
+/* line 79, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats {
   text-align: center;
 }
-/* line 71, ../scss/partials/_estimate.scss */
+/* line 85, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .number {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 40px;
   font-weight: normal;
-  color: #f84540;
+  color: #333333;
   line-height: 40px;
   margin: 0;
+  position: relative;
+  display: inline-block;
 }
-/* line 77, ../scss/partials/_estimate.scss */
+/* line 92, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats .stat .number .supp {
+  position: absolute;
+  right: -15px;
+  top: -5px;
+  background: #f84540;
+  border-radius: 100px;
+  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  font-weight: normal;
+  color: white;
+  line-height: 5px;
+  padding: 5px;
+}
+/* line 104, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .text {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9px;
@@ -302,35 +346,35 @@ footer {
   text-transform: uppercase;
 }
 @media (max-width: 767px) {
-  /* line 87, ../scss/partials/_estimate.scss */
+  /* line 114, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-1 {
     text-align: center;
   }
 }
 @media (max-width: 500px) {
-  /* line 97, ../scss/partials/_estimate.scss */
+  /* line 124, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-3 .col-xs-4 {
     float: none;
     clear: both;
     display: block;
     width: 100%;
   }
-  /* line 105, ../scss/partials/_estimate.scss */
+  /* line 132, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-3 .btn-block {
     margin-bottom: 10px;
   }
 }
 
-/* line 113, ../scss/partials/_estimate.scss */
+/* line 140, ../scss/partials/_estimate.scss */
 .estimate-container {
   padding: 0;
   margin: 0;
 }
-/* line 120, ../scss/partials/_estimate.scss */
+/* line 147, ../scss/partials/_estimate.scss */
 .estimate-container .row-estimate .col {
   min-height: 100%;
 }
-/* line 125, ../scss/partials/_estimate.scss */
+/* line 152, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary {
   -webkit-print-color-adjust: exact;
   position: relative;
@@ -340,7 +384,7 @@ footer {
   border-radius: 5px 5px 0 0;
   margin-bottom: 15px;
 }
-/* line 137, ../scss/partials/_estimate.scss */
+/* line 164, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -350,7 +394,7 @@ footer {
   margin: 0;
   text-transform: uppercase;
 }
-/* line 144, ../scss/partials/_estimate.scss */
+/* line 171, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .name {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -367,7 +411,7 @@ footer {
 .estimate-container .estimate-summary .estimate-info dl:after {
   clear: both;
 }
-/* line 153, ../scss/partials/_estimate.scss */
+/* line 180, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dt {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -377,7 +421,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 160, ../scss/partials/_estimate.scss */
+/* line 187, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dd {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -386,7 +430,7 @@ footer {
   color: white;
   line-height: 20px;
 }
-/* line 168, ../scss/partials/_estimate.scss */
+/* line 195, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -395,7 +439,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 174, ../scss/partials/_estimate.scss */
+/* line 201, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -403,13 +447,13 @@ footer {
   color: white;
   line-height: 20px;
 }
-/* line 182, ../scss/partials/_estimate.scss */
+/* line 209, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info {
   display: table;
   min-height: 135px;
   width: 100%;
 }
-/* line 188, ../scss/partials/_estimate.scss */
+/* line 215, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .bid {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -422,27 +466,27 @@ footer {
   vertical-align: bottom;
 }
 @media (max-width: 991px) {
-  /* line 182, ../scss/partials/_estimate.scss */
+  /* line 209, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info {
     min-height: 0;
     margin-top: 10px;
   }
-  /* line 202, ../scss/partials/_estimate.scss */
+  /* line 229, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info .bid {
     text-align: left;
   }
 }
 
-/* line 211, ../scss/partials/_estimate.scss */
+/* line 238, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 216, ../scss/partials/_estimate.scss */
+/* line 243, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 216, ../scss/partials/_estimate.scss */
+  /* line 243, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -458,12 +502,12 @@ footer {
     clear: both;
   }
 }
-/* line 229, ../scss/partials/_estimate.scss */
+/* line 256, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 229, ../scss/partials/_estimate.scss */
+  /* line 256, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -479,32 +523,57 @@ footer {
     clear: both;
   }
 }
-/* line 245, ../scss/partials/_estimate.scss */
+/* line 272, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 249, ../scss/partials/_estimate.scss */
+/* line 276, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 249, ../scss/partials/_estimate.scss */
+  /* line 276, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 264, ../scss/partials/_estimate.scss */
+/* line 291, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 269, ../scss/partials/_estimate.scss */
+/* line 297, ../scss/partials/_estimate.scss */
+.table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
+  vertical-align: middle;
+}
+/* line 302, ../scss/partials/_estimate.scss */
+.table-container .table tr .td-treatment {
+  width: 300px;
+  text-align: left;
+}
+/* line 307, ../scss/partials/_estimate.scss */
+.table-container .table tr .td-bid {
+  min-width: 60px;
+  text-align: right;
+}
+/* line 313, ../scss/partials/_estimate.scss */
+.table-container .table tr .td-action {
+  min-width: 40px;
+  text-align: right;
+}
+/* line 319, ../scss/partials/_estimate.scss */
+.table-container .table tr .td-treatment-bid {
+  padding-left: 0;
+  padding-right: 0;
+  vertical-align: middle;
+}
+/* line 329, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 272, ../scss/partials/_estimate.scss */
+/* line 332, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -516,19 +585,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 280, ../scss/partials/_estimate.scss */
+/* line 340, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 285, ../scss/partials/_estimate.scss */
+/* line 345, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 295, ../scss/partials/_estimate.scss */
+/* line 355, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 298, ../scss/partials/_estimate.scss */
+/* line 358, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -539,31 +608,76 @@ footer {
   color: #646665;
   line-height: 16px;
 }
-/* line 306, ../scss/partials/_estimate.scss */
+/* line 366, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 311, ../scss/partials/_estimate.scss */
+/* line 371, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 316, ../scss/partials/_estimate.scss */
+/* line 376, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 324, ../scss/partials/_estimate.scss */
+/* line 381, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td .row-action {
+  opacity: 0.8;
+  -webkit-transition: all linear 0.2s;
+  -o-transition: all linear 0.2s;
+  transition: all linear 0.2s;
+  font-size: 12px;
+  margin-right: 5px;
+}
+/* line 388, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
+  opacity: 1;
+}
+/* line 393, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td .row-action:last-child {
+  margin-right: 0;
+}
+/* line 398, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td .row-action .clr-primary {
+  color: #333333;
+}
+/* line 403, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td .row-action .clr-danger {
+  color: #f84540;
+}
+/* line 409, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td table {
+  width: 100%;
+  border: none;
+}
+/* line 416, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td table tr td {
+  padding: 8px;
+  border-right: none;
+  background: none !important;
+  border-bottom: 1px solid #CCCCCC;
+}
+/* line 423, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td table tr td:last-child {
+  border-right: none;
+}
+/* line 431, ../scss/partials/_estimate.scss */
+.table-container .table tbody tr td table tr:last-child td {
+  border-bottom: none;
+}
+/* line 442, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 332, ../scss/partials/_estimate.scss */
+/* line 450, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 340, ../scss/partials/_estimate.scss */
+/* line 458, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 349, ../scss/partials/_estimate.scss */
+/* line 467, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -573,7 +687,7 @@ footer {
   text-align: right;
 }
 
-/* line 356, ../scss/partials/_estimate.scss */
+/* line 474, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -581,7 +695,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 358, ../scss/partials/_estimate.scss */
+/* line 476, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -589,7 +703,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 363, ../scss/partials/_estimate.scss */
+/* line 481, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -600,17 +714,17 @@ footer {
 }
 
 @media print {
-  /* line 374, ../scss/partials/_estimate.scss */
+  /* line 492, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 381, ../scss/partials/_estimate.scss */
+  /* line 499, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid black;
   }
 
-  /* line 389, ../scss/partials/_estimate.scss */
+  /* line 507, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;

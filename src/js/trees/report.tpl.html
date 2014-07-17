@@ -1,4 +1,4 @@
-<div ng-controller="ReportCtrl" class='ReportCtrl div_{{routeParams.stateID}}'>
+<div ng-controller="ReportCtrl" class='ReportCtrl div_{{routeParams.stateID}} padding-top-none'>
 
 
 
@@ -23,11 +23,11 @@
 			</div>
 		</div>
 		<div class="col-sm-4 col">
-			<div class="action-block">
+			<div class="action-block action-block-2">
 				<ul class="stats list-unstyled list-inline row">
 					<li class="col-xs-4">
 						<div class="stat">
-							<p class="number">4</p>
+							<p class="number">4 <span class="supp">2</span></p>
 							<p class="text">Estimates</p>
 						</div>
 					</li>
@@ -50,13 +50,13 @@
 			<div class="action-block no-border action-block-3">
 				<div class="row row-xs">
 					<div class="col-xs-4 col">
-						<a href="#" class="btn btn-xs btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download</a>
+						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download</a>
 					</div>
 					<div class="col-xs-4 col">
-						<a href="#" class="btn btn-xs btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
+						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
 					</div>
 					<div class="col-xs-4 col">
-						<a href="#" class="btn btn-xs btn-block btn-green"><i class="fa fa-check"></i> Approve Estimate</a>
+						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Approve Estimate</a>
 					</div>
 				</div>
 			</div>
@@ -158,12 +158,12 @@
 				   	<table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}">
 				   		<thead>
 							<tr id="estimate_table_heading">
-						       <td>Tree</td>
-						       <td>ID</td>
-						       <td>Name</td>
-						       <td style='min-width:210px;'>Treatment</td>
-							   <td></td>	<!-- this col contains the sub-table for grouping multiple treatments on a single tree -->
-						       <td class="amount">Bid ($)</td>
+						       <td class="td-image">Tree</td>
+						       <td class="td-id">ID</td>
+						       <td class="td-name">Name</td>
+						       <td class="td-treatment">Treatment</td>
+						       <td class="td-bid">Bid ($)</td>
+						       <td class="td-action"></td>
 							</tr>
 						</thead>
 						<tbody>
@@ -171,7 +171,7 @@
 								ng-init="itemIndex = $index"
 								ng-class="rowHighlightClass(item)"
 								ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.treeID}}">
-				                <td data-title="listing_image">
+				                <td data-title="listing_image" class="td-image">
 									<img ng-src='{{item.imgSm}}{{tree_cachebuster}}' class='item_thumb'
 										data-placement="right"
 										data-trigger="hover"
@@ -181,37 +181,32 @@
 										style="border:3px solid #{{colors.bg[item.colorID]}} !important"
 									/>
 								</td>
-				                <td data-title="listing_ID">{{item.localTreeID}}</td>
-				                <td data-title="listing_species">
+				                <td data-title="listing_ID" class="td-id">{{item.localTreeID}}</td>
+				                <td data-title="listing_species" class="td-name">
                     				{{item.dbhID | dbhID2Name:this }}
 									{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
 									<span class="light">[{{item.treeID}}]</span>
 									<div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
 								</td>
-				                <td data-title="listing_treatment" colspan="3">
+				                <td data-title="listing_treatment" colspan="3" class="td-treatment-bid">
 									<table class="ng-table-responsive">
 			 							<tr ng-repeat="treatment in item.treatments" ng-init="treatmentIndex = $index" ng-mouseover="hover=true" ng-mouseleave="hover=false">
-										<!-- the problem here, is since we are putting a table in a table.. if we have a mixture of items...
-											 those with a single treatment.. .and those with multiple treatments... then the pricing column becomes
-											 unaligned... so for now. im using min-width to fix. not sure if best way -tim -->
-										<td data-title="listing_treatment" style="padding: 8px; min-width: 210px;">
-											<a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
-											   editable-select="treatment.treatmentTypeCode"
-											   onshow="onShowEditItem(item.$$hashKey)"
-											   onhide="onHideEditItem()">
-												{{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
-											</a>
-										</td>
-										<td data-title="listing_price" style="padding: 8px;">&#36;
-											<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)"                                    onhide="onHideEditItem()">
-												{{treatment.price|formatPrice}}
-											</a>
-										</td>
+											<td data-title="listing_treatment" class="td-treatment">
+												<a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
+												   editable-select="treatment.treatmentTypeCode"
+												   onshow="onShowEditItem(item.$$hashKey)"
+												   onhide="onHideEditItem()">
+													{{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
+												</a>
+											</td>
+											<td data-title="listing_price" class="td-bid">
+												&#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()">{{treatment.price|formatPrice}}</a>
+											</td>
 
-										<td data-title="listing_options" width='55px;' style="padding: 8px;">
-											<a ng-show="hover" href='#/tree-edit/{{item.treeID}}' class='fa fa-pencil _grey _med'></a> &nbsp;
-											<a ng-show="hover" href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='fa fa-times _red _med' ></a>
-										</td>
+											<td data-title="listing_options" class="td-action">
+												<a href='#/tree-edit/{{item.treeID}}' class='row-action'><i class="fa fa-pencil clr-primary"></i></a>
+												<a href="#" ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action'><i class="fa fa-times clr-danger"></i></a>
+											</td>
 										</tr>
 									</table>
 				                </td>	<!-- }}} listing_treatment colspan=3 -->
@@ -236,7 +231,7 @@
 							<tr>
 								<td colspan="{{ data.mode()=='trees' && '1' || '2' }}">Description</td>
 								<td>Quantity</td>
-								<td>Price</td>
+								<td class="text-right">Price</td>
 								<td ng-if="data.mode()=='trees'"></td>
 							</tr>
 						</thead>
@@ -252,7 +247,7 @@
 									<a href editable-text='item.quantity' ng-if='auth.is("staff")'>{{item.quantity}}</a>
 									<span ng-if='!auth.is("staff")'>{{item.quantity}}</span>
 								</td>
-								<td data-title="service_price">
+								<td data-title="service_price" class="text-right">
 									<a href editable-text='item.price' ng-if='auth.is("staff")'>{{item.price}}</a>
 									<span ng-if='!auth.is("staff")'>{{item.price}}</span>
 								</td>
@@ -273,7 +268,7 @@
 										x<input type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
 									</span>
 								</td>
-								<td style="padding-left:0px;padding-right:0px">
+								<td style="padding-left:0px;padding-right:0px"  class="text-right">
 									<span>
 										$<input type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
 									</span>
@@ -286,11 +281,11 @@
 							<!-- // Subtotals // -->
 							<tr ng-if="report.total.services">
 								<td align=right colspan="3">Misc Services Subtotal:</td>
-								<td>&#36;{{report.total.services|formatPrice}}</td>
+								<td class="text-right">&#36;{{report.total.services|formatPrice}}</td>
 							</tr>
 							<tr ng-if="report.total.services">
 								<td align=right colspan="3">Tree Services Subtotal:</td>
-								<td>&#36;{{report.total.items|formatPrice}}</td>
+								<td class="text-right">&#36;{{report.total.items|formatPrice}}</td>
 							</tr>
 						</tbody>	
    					</table>   					

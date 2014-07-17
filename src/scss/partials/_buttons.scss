@@ -12,6 +12,11 @@
 		@include font-g(12px , normal , $white-color , 20px);
 	}
 
+	&.btn-sm
+	{
+		@include font-g(14px , normal , $white-color , 24px);
+	}
+
 	&.btn-block 
 	{
 		display: block;

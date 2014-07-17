@@ -1,8 +1,8 @@
 'use strict';
 
 var SitesCtrl = app.controller('SitesCtrl', 
-['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api',
-function ($scope, $route, $modal, $location, SiteModelUpdateService, Api) {
+['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api', '$rootScope', //TODO remove $rootScope
+function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $rootScope) {
 	var s=window.scs=$scope
 		,myStateID='sites'
 		,mode=''
@@ -40,7 +40,8 @@ function ($scope, $route, $modal, $location, SiteModelUpdateService, Api) {
 			Api.refreshInitData();
 		});
 		// Update all other sites models, eg. the sites dropdown on the trees report
-		SiteModelUpdateService.updateSiteModels(obj);
+		$rootScope.$emit('onSiteUpdate',s.site); //TODO remove this
+		s.sendEvt('onSiteUpdate', s.site);
 		siteEditModal.hide();
 	};
 	
@@ -50,6 +51,11 @@ function ($scope, $route, $modal, $location, SiteModelUpdateService, Api) {
         }
 	};
 	s.$on('$locationChangeSuccess', pre_init);
+
+	s.$on('onSiteUpdate', function(evt, obj){
+		// s.site.siteName=obj.siteName;
+	});
+
 	pre_init();
 
 	// Pre-fetch an external template populated with a custom scope

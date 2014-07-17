@@ -222,6 +222,16 @@ var TreesCtrl = app.controller('TreesCtrl',
 		}
 	});
 
+	s.$on('onSiteUpdate',function(evt, obj){
+		if (!$.isEmptyObject(s.filteredSites)){
+			$.each(s.filteredSites, function(index, curSite){
+				if (obj.siteID == curSite.siteID) {
+					curSite.siteName = obj.siteName;
+					return false; //break out of each
+				}
+			});
+		}
+	});
 
 	// Anytime any filter checkbox is changed
 	// If a specific site is selected, then filter the trees by passing onto TFS

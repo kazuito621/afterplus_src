@@ -57,6 +57,11 @@ var ReportCtrl = app.controller('ReportCtrl',
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
 	});
 
+	s.$on('onSiteUpdate',function(evt, obj){
+		//TODO
+	});
+
+
     // returns true if row with passed id is the current highlighted row
     s.rowHighlightClass = function (item) {
         if (item.$$hashKey === s.highLightedRowId) {

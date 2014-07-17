@@ -298,25 +298,28 @@ section.mainContent.mode_estimate{
 	}
 
 
-.mapWindowContainer{
-	width:350px;
-	height:320px;
-	}
-.mwcImg{
+.mapWindowContainer {
+	/*width:350px;*/
+	/*height:320px;*/
+}
+.mwcImg {
 	max-width:100%;
-	height:auto;
-	}
-.mwcImgCt{
+	/*height:auto;*/
+	height:100%;
+}
+.mwcImgCt {
 	float:left;
 	width:50%;
+    max-width: 170px;
+    max-height: 160px;
 	height:100%;
-	}
-.mwcBody{
+}
+.mwcBody {
 	float:left;
 	width:50%;
 	margin:auto 0;
 	padding-left:5px;
-	}
+}
 
 
 

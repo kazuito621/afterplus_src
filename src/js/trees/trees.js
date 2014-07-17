@@ -69,7 +69,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if( rptHash ){
                     ReportService.loadReport(rptHash, {getTreeDetails:1})
                         .then(function(data){
-                            if(Auth && Auth.Auth.requestedReportID) delete Auth.requestedReportID;
+                            if(Auth && Auth.requestedReportID) delete Auth.requestedReportID;
                             s.report=data;
                             if(data && data.siteID) s.selected.siteID=data.siteID;
                             showMappedTrees();
@@ -104,6 +104,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
             var highlightResultRow = function (treeID) {
+                if (s.data.mode() !== 'trees') {
+                    return;
+                }
+
                 if (s.activeResultRow) {
                     $('#tree-result-item-row-' + s.activeResultRow).toggleClass('highlighted-row');
                 }
@@ -312,6 +316,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                         '<p><strong>Total Trees:'+s.trees.length+'</strong></p>'+
                         '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
                     site.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+
+                    // add color to site marker
+                    setSiteColor(site);
+
                     s.siteLocs.push(site);
                 });
 
@@ -325,6 +333,20 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 replaceMarkers(s.siteLocs,'allSites');
             },1500);
+
+            var setSiteColor = function (site) {
+                var bg = '565656';
+                var fg = 'aaaaaa';
+                var base='https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
+                var num = '';
+
+                if (site.species && site.species.length > 0) {
+                    bg = 'FE7569';
+                    fg = '000000';
+                }
+
+                site.iconType = base + num + '|' + bg + '|' + fg;
+            };
 
             var replaceMarkers = function(arr,addType) {
                 clearMarkers();
@@ -436,7 +458,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 _.each(treeSet, function(itm){
                     if(!itm || itm.hide) return;
                     if(itm.commonName==null || itm.commonName=='null' || !itm.commonName) itm.commonName=' ';
-                    if(s.data.mode()=='trees'){
+                    if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
                         ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
                         o= '<div class="mapWindowContainer">'
                             +'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
@@ -455,13 +477,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                         // <span class='textIconBlock-red'>2014</span>
                         // .... or ...textIconBlock-grey
                         //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-                        o+='</div><a href="#/tree_edit/'+itm.treeID+'">Edit Tree</a><BR></div>';
-                        itm.info=o;
+                        if (s.data.mode() === 'trees') {
+                            o += '</div><a href="#/tree_edit/' + itm.treeID + '">Edit Tree</a><BR></div>';
+                        }
 
-                    }else{
-                        itm.info = '<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
-                            +'treeID: '+itm.treeID
-                            +'</div>'
+                        itm.info = o;
                     }
                     setIconColor(itm);
                     set2.push(itm)
@@ -481,7 +501,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 var idx=s.colors.speciesCount[itm.speciesID].colorID;
                 //https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=1|006256|000000
-                var base='https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld='
+                var base='https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
                 var num = itm.localTreeID || '';
                 var bg=s.colors.bg[idx];
                 var fg=s.colors.fg[idx];

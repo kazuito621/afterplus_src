@@ -109,7 +109,7 @@
     </div>
 
         <div ng-if="tree.mode!='rollover'" class=''>
-            <button class='navButton' ng-click="save();">Save</button> &nbsp;<a href='#/trees'>Cancel</a>
+            <button class='navButton' ng-click="save();">Save</button> &nbsp;<a ng-click="onCancel()" bs-tooltip title="Hotkey: Press Escape to cancel">Cancel</a> 
         </div>
 
         <BR>

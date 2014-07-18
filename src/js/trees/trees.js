@@ -100,6 +100,26 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+            if(s.data.mode()=='trees')
+            {
+                setTimeout(function()
+                {
+                    $('.collapse-container .collapse-head a').click(function(event) {
+                        var $collapse_container = $(this).closest('.collapse-container');
+                        $collapse_container.find('.collapse-body').slideToggle('slow');
+                        if($(this).find('i').hasClass('fa-angle-double-down'))
+                        {
+                            $(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+                        }
+                        else 
+                        {
+                            $(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+                        }
+                        return false;
+                    });
+                } , 2000);
+            }
+
             // here, we account for 2 usecases:
             // 1. if user comes to this state 2nd (ie after editing a tree.. so we need a resize)
             // 2. if user comes here first... 

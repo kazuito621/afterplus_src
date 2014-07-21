@@ -1,9 +1,30 @@
+$tree-min-height: 700px;
 .trees-container
 {
 	.filters-container
 	{
 		background: $gray-color;
 		padding: 20px 15px;
+		min-height: $tree-min-height;
+
+		@media(max-width: $screen-sm-max)
+		{
+			min-height: 0;
+		}
+
+		.row-xss
+		{
+			> .col 
+			{
+				@media(min-width: $screen-md-min)
+				{
+					display: block;
+					float: none;
+					@include clearfix();
+					width: 100%;
+				}
+			}
+		}
 		section 
 		{
 			width: 100%;
@@ -187,22 +208,237 @@
 
 	.content-container
 	{
+		min-height: $tree-min-height;
+
+		@media(max-width: $screen-sm-max)
+		{
+			min-height: 0;
+		}
+		
 		section 
 		{
 			width: 100%;
 			margin: 0;
 			padding: 0;
 		}
+
+		.map-container
+		{
+			min-height: $tree-min-height - 72;
+
+			@media(max-width: $screen-sm-max)
+			{
+				min-height: 0;
+			}
+
+			.map 
+			{
+				min-height: $tree-min-height - 72;				
+				height: auto;
+
+				@media(max-width: $screen-sm-max)
+				{
+					min-height: 0;
+					height: 300px !important;
+				}
+			}
+		}
 	}
 
 	.result-container
-	{
+	{		
 		padding: 20px 15px;
+		min-height: $tree-min-height;
+
+		@media(max-width: $screen-sm-max)
+		{
+			min-height: 0;
+		}
+
 		section 
 		{
 			width: 100%;
 			margin: 0;
 			padding: 0;
+		}
+
+		.tree-list-outer
+		{
+			max-height: $tree-min-height - 98;
+			overflow-y: auto;
+		}
+
+		table.tree-list-container
+		{
+			width: 100%;
+
+			thead 
+			{
+				tr 
+				{
+					td 
+					{
+						background: #333333;
+						color: $white-color;
+
+						h6 
+						{
+							color: $white-color;
+						}
+						.btn-group
+						{
+							button 
+							{
+								color: $white-color;
+								border: none;
+								background: none;
+								padding-left: 0;
+								padding-right: 0;
+
+								i 
+								{
+									font-size: 14px;
+								}
+							}
+
+							.dropdown-menu
+							{
+								border: 1px solid #6b6c6a;
+								min-width: 90px;
+								left: -5px;
+								margin-top: 5px;
+								overflow: hidden;
+								padding: 0;
+								li 
+								{
+									padding: 0;
+									background: #ffffff;
+
+									a 
+									{
+										padding: 0 5px;
+										@include font-g(12px , normal , $gray-color , 24px);		
+										@include animate(all);
+
+										&:hover, &:focus, &:active 
+										{
+											background: $gray-color;
+											color: $white-color;
+										}
+									}
+
+									&:nth-child(odd)
+									{
+										background: #f3f3f4
+									}
+
+									&:nth-child(even)
+									{
+										background: #ffffff;
+									}
+								}
+								
+							}
+						}
+					}
+				}
+			}
+
+			tbody 
+			{
+				max-height: 200px;
+				overflow-y: auto;
+			}
+			
+			tfoot 
+			{
+				td 
+				{
+					background: none;
+					padding: 0;
+				}
+			}
+
+			tr 
+			{
+				@include animate(all);
+				td 
+				{
+					padding: 5px;
+					border-top: 1px solid #f0f1f1;
+					border-bottom: 1px solid #ffffff;
+					h6 
+					{
+						@include font-g(14px , bold , #3f3f3f , 20px);						
+					}
+
+					p 
+					{
+						@include font-g(12px , normal , #3f3f3f , 16px);							
+					}
+
+					small 
+					{
+						@include font-g(10px , normal , #3f3f3f , 16px);
+					}
+
+					&.td-check
+					{
+						background: #c7c9c9;
+						text-align: center;
+					}	
+
+					&.td-img 
+					{
+						img
+						{
+							width: 40px;
+							height: 50px;
+						}
+					}
+
+					&.td-action
+					{
+						a 
+						{
+							font-size: 18px;
+							color: $white-color;
+							@include animate(all);
+
+							&:hover, &:focus, &:active 
+							{
+								text-decoration: none;
+							}
+						}
+					}
+				}
+
+				&:nth-child(odd)
+				{
+					background: #f3f3f4;
+				}
+
+				&:nth-child(even)
+				{
+					background: #e7eaea;
+				}
+
+				&:hover, &:focus, &:active 
+				{
+					background: #c7c9c9;
+
+					td 
+					{
+						&.td-action
+						{
+							a 
+							{
+								color: $gray-color;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -225,6 +461,11 @@
 				background: #5c5c5c;
 				color: $white-color;	
 				border: 1px solid #696a6a;		
+
+				@media(max-width: $screen-xs-max)
+				{
+					margin-bottom: 10px;
+				}
 			}
 
 			.inpt-select 

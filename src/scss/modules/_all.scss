@@ -16,5 +16,5 @@
 
 @mixin animate($property : all)
 {
-  	@include transition($property linear 0.2s);
+  	@include transition($property linear 0.4s);
 }

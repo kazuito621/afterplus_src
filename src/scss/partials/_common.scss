@@ -9,6 +9,16 @@ body
     outline: 0;
 }
 
+.clr-white 
+{
+	color: $white-color !important;
+}
+
+.txt-bold 
+{
+	font-weight: bold !important;
+}
+
 header 
 {
 	background: none;
@@ -21,7 +31,17 @@ header
 		float: left;
 		display: inline-block;
 		margin-right: 100px;
-		
+
+		@media(max-width: 790px)
+		{
+			float: none;
+			clear: both;
+			display: block;
+			@include clearfix();
+			text-align: center;
+			margin-right: 0;
+		}
+
 		img 
 		{
 			width: 150px;
@@ -32,11 +52,27 @@ header
 	.nav-container
 	{
 		float: left;
+
+		@media(max-width: 790px)
+		{
+			float: none;
+			clear: both;
+			display: block;
+			@include clearfix();
+			text-align: center;
+		}
 		nav 
 		{
 			ul 
 			{
 				margin: 0;
+				display: block;
+
+				@media(max-width: 790px)
+				{
+					display: inline-block;
+				}
+				
 				li 
 				{
 					float: left;
@@ -47,11 +83,26 @@ header
 						display: block;
 						padding: 14px 40px;
 
+						@media(max-width: 540px)
+						{
+							padding: 14px 20px;
+						}
+
+						@media(max-width: 480px)
+						{
+							padding: 15px 15px;
+						}
+
 						i 
 						{
 							display: block;
 							font-size: 30px;
 							color: #adadad;
+
+							@media(max-width: 480px)
+							{
+								font-size: 18px;
+							}
 						}
 
 						.text 
@@ -60,6 +111,11 @@ header
 							@include font-g(18px , normal , #adadad , 24px);
 							text-transform: uppercase;
 							margin-top: 5px;
+
+							@media(max-width: 480px)
+							{
+								@include font-g(12px , normal , #adadad , 18px);
+							}
 						}
 
 						@include animate(all);
@@ -80,12 +136,22 @@ header
 		}
 	}
 
-	.cnt-action
+	.header-nav
 	{
 		float: right;
 		padding: 15px 0;
 		margin-top: 0;
+		padding-bottom: 20px;
 		display: inline-block;
+
+		@media(max-width: 1080px)
+		{
+			display: block;
+			float: none;
+			@include clearfix();
+			clear: both;
+			text-align: center;
+		}
 	}
 }
 
@@ -110,6 +176,20 @@ header
 	{
 		padding-left: 0;
 		padding-right: 0;
+	}
+}
+
+.row-xss 
+{
+	@media(max-width: 500px)
+	{
+		> .col 
+		{
+			display: block;
+			@include clearfix();
+			float: none;
+			width: 100%;
+		}
 	}
 }
 

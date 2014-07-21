@@ -46,6 +46,8 @@ app.config(['$routeProvider', '$locationProvider',
 					res.data=res.data||{}		//make sure data exists
 					var msg=res.msg||res.message||res.data.msg||res.data.message, type='success'
 					if(res.result != 1){
+						dbg(res,op,'rest err ');
+						console.trace();
 						if(op=='getList' && typeof res != 'Array') res.data=[];
 						if(!msg) msg='Error talking to the server';
 						type='danger';

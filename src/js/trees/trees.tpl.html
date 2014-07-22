@@ -360,7 +360,7 @@
 													<td class="td-img">
 														<div tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
 															<img ng-src="{{tree.imgSm}}" data-treeID='{{tree.treeID}}' 
-															ng-mouseover="onTreeImageRollover(tree.treeID);" ng-mouseleave="onTreeImageRollout(tree.treeID);"
+															ng-click="onTreeImageRollover(tree.treeID);" ng-mouseover="onTreeImageRollover(tree.treeID);" ng-mouseleave2="onTreeImageRollout(tree.treeID);"
 															data-imgMed="{{tree.imgMed}}"
 															style="border:2px solid #{{colors.bg[tree.colorID]}}"
 															/>

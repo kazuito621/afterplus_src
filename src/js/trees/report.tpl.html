@@ -3,7 +3,7 @@
 
 
 <!-- LOAD recent estimates list -->
-<div ng-if="data.mode()=='trees'">
+<div ng-if="data.mode()=='trees'" style="margin-bottom: 15px;">
     <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
         <option value="">Recent Estimates</option>
         <option ng-repeat="r in recentReportList" value="{{r.reportID}}">{{r.name}} - {{r.tstamp_updated}}</option>

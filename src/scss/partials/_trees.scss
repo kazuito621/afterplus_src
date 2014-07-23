@@ -6,6 +6,7 @@ $tree-min-height: 700px;
 		background: $gray-color;
 		padding: 20px 15px;
 		min-height: $tree-min-height;
+		margin-bottom: 24px;
 
 		@media(max-width: $screen-sm-max)
 		{
@@ -35,7 +36,7 @@ $tree-min-height: 700px;
 		.filter-container-title
 		{
 			padding: 5px;
-			@include border-radius(5px);
+			@include border-radius(3px);
 			background: #9AED95;
 			margin-bottom: 10px;
 
@@ -64,6 +65,8 @@ $tree-min-height: 700px;
 		{
 			padding: 0;
 			margin-bottom: 20px;
+			padding-left: 10px;
+			padding-right: 10px;
 
 			.filter-header
 			{
@@ -109,7 +112,7 @@ $tree-min-height: 700px;
 				width: 100%;
 				display: block;
 				padding: 5px;
-				@include border-radius(5px);	
+				@include border-radius(3px);	
 				background: #5c5c5c;
 				color: $white-color;	
 				border: 1px solid #696a6a;
@@ -130,14 +133,14 @@ $tree-min-height: 700px;
 
 			.filter-block
 			{
-				@include border-radius(5px);					
+				@include border-radius(3px);					
 				overflow: hidden;
 				height: auto;
 				padding: 0;
 
 				.filter-items 
 				{					
-					max-height: 192px;
+					max-height: 120px;
 					overflow-y: auto;
 					padding: 0;
 
@@ -252,7 +255,7 @@ $tree-min-height: 700px;
 
 	.result-container
 	{		
-		padding: 20px 15px;
+		padding: 20px 20px;
 		min-height: $tree-min-height;
 
 		@media(max-width: $screen-sm-max)
@@ -374,7 +377,7 @@ $tree-min-height: 700px;
 					border-bottom: 1px solid #ffffff;
 					h6 
 					{
-						@include font-g(14px , bold , #3f3f3f , 20px);						
+						@include font-g(13px , bold , #3f3f3f , 20px);						
 					}
 
 					p 
@@ -462,7 +465,7 @@ $tree-min-height: 700px;
 				width: 100%;
 				display: block;
 				padding: 5px;
-				@include border-radius(5px);	
+				@include border-radius(3px);	
 				background: #5c5c5c;
 				color: $white-color;	
 				border: 1px solid #696a6a;		

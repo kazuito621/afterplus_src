@@ -392,8 +392,19 @@ header .header-nav {
   padding-right: 0;
 }
 
+/* line 183, ../scss/partials/_common.scss */
+.row-pad20 {
+  margin-left: -20px;
+  margin-right: -20px;
+}
+/* line 188, ../scss/partials/_common.scss */
+.row-pad20 > .col {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 @media (max-width: 500px) {
-  /* line 187, ../scss/partials/_common.scss */
+  /* line 199, ../scss/partials/_common.scss */
   .row-xss > .col {
     display: block;
     float: none;
@@ -410,17 +421,17 @@ header .header-nav {
   }
 }
 
-/* line 197, ../scss/partials/_common.scss */
+/* line 209, ../scss/partials/_common.scss */
 .top-margin-none {
   margin-top: 0 !important;
 }
 
-/* line 202, ../scss/partials/_common.scss */
+/* line 214, ../scss/partials/_common.scss */
 .padding-top-none {
   padding-top: 0 !important;
 }
 
-/* line 207, ../scss/partials/_common.scss */
+/* line 219, ../scss/partials/_common.scss */
 footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -434,7 +445,7 @@ footer {
   margin-right: 15px;
 }
 
-/* line 221, ../scss/partials/_common.scss */
+/* line 233, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -448,18 +459,18 @@ footer {
   border-bottom: 1px solid #d5d5d5;
   position: relative;
 }
-/* line 231, ../scss/partials/_common.scss */
+/* line 243, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a:hover, .collapse-container .collapse-head a:focus {
   text-decoration: none;
   color: white;
 }
-/* line 237, ../scss/partials/_common.scss */
+/* line 249, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a i {
   position: absolute;
   right: 0;
   top: 9px;
 }
-/* line 246, ../scss/partials/_common.scss */
+/* line 258, ../scss/partials/_common.scss */
 .collapse-container .collapse-body {
   display: none;
 }
@@ -693,17 +704,25 @@ footer {
     text-align: left;
   }
 }
+/* line 237, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-actions {
+  margin-bottom: 15px;
+}
+/* line 241, ../scss/partials/_estimate.scss */
+.estimate-container .estimate-actions button {
+  width: 180px;
+}
 
-/* line 238, ../scss/partials/_estimate.scss */
+/* line 248, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 243, ../scss/partials/_estimate.scss */
+/* line 253, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 243, ../scss/partials/_estimate.scss */
+  /* line 253, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -719,12 +738,12 @@ footer {
     clear: both;
   }
 }
-/* line 256, ../scss/partials/_estimate.scss */
+/* line 266, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 256, ../scss/partials/_estimate.scss */
+  /* line 266, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -740,57 +759,73 @@ footer {
     clear: both;
   }
 }
-/* line 272, ../scss/partials/_estimate.scss */
+/* line 279, ../scss/partials/_estimate.scss */
+.table-container .row-table .col-info-trees {
+  width: 100%;
+  display: block;
+  float: none;
+  width: 100%;
+}
+/* line 15, ../scss/modules/mixins/_clearfix.scss */
+.table-container .row-table .col-info-trees:before, .table-container .row-table .col-info-trees:after {
+  content: " ";
+  display: table;
+}
+/* line 19, ../scss/modules/mixins/_clearfix.scss */
+.table-container .row-table .col-info-trees:after {
+  clear: both;
+}
+/* line 292, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 276, ../scss/partials/_estimate.scss */
+/* line 296, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 276, ../scss/partials/_estimate.scss */
+  /* line 296, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 291, ../scss/partials/_estimate.scss */
+/* line 311, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 297, ../scss/partials/_estimate.scss */
+/* line 317, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
   vertical-align: middle;
 }
-/* line 302, ../scss/partials/_estimate.scss */
+/* line 322, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment {
   width: 300px;
   text-align: left;
 }
-/* line 307, ../scss/partials/_estimate.scss */
+/* line 327, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-bid {
   min-width: 60px;
   text-align: right;
 }
-/* line 313, ../scss/partials/_estimate.scss */
+/* line 333, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
   min-width: 40px;
   text-align: right;
 }
-/* line 319, ../scss/partials/_estimate.scss */
+/* line 339, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment-bid {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
 }
-/* line 329, ../scss/partials/_estimate.scss */
+/* line 349, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 332, ../scss/partials/_estimate.scss */
+/* line 352, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -802,19 +837,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 340, ../scss/partials/_estimate.scss */
+/* line 360, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 345, ../scss/partials/_estimate.scss */
+/* line 365, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 355, ../scss/partials/_estimate.scss */
+/* line 375, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 358, ../scss/partials/_estimate.scss */
+/* line 378, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -825,19 +860,19 @@ footer {
   color: #646665;
   line-height: 16px;
 }
-/* line 366, ../scss/partials/_estimate.scss */
+/* line 386, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 371, ../scss/partials/_estimate.scss */
+/* line 391, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 376, ../scss/partials/_estimate.scss */
+/* line 396, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 381, ../scss/partials/_estimate.scss */
+/* line 401, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
   -webkit-transition: all linear 0.4s;
@@ -846,55 +881,55 @@ footer {
   font-size: 12px;
   margin-right: 5px;
 }
-/* line 388, ../scss/partials/_estimate.scss */
+/* line 408, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
   opacity: 1;
 }
-/* line 393, ../scss/partials/_estimate.scss */
+/* line 413, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:last-child {
   margin-right: 0;
 }
-/* line 398, ../scss/partials/_estimate.scss */
+/* line 418, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-primary {
   color: #333333;
 }
-/* line 403, ../scss/partials/_estimate.scss */
+/* line 423, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-danger {
   color: #f84540;
 }
-/* line 409, ../scss/partials/_estimate.scss */
+/* line 429, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table {
   width: 100%;
   border: none;
 }
-/* line 416, ../scss/partials/_estimate.scss */
+/* line 436, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td {
   padding: 8px;
   border-right: none;
   background: none !important;
   border-bottom: 1px solid #CCCCCC;
 }
-/* line 423, ../scss/partials/_estimate.scss */
+/* line 443, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td:last-child {
   border-right: none;
 }
-/* line 431, ../scss/partials/_estimate.scss */
+/* line 451, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr:last-child td {
   border-bottom: none;
 }
-/* line 442, ../scss/partials/_estimate.scss */
+/* line 462, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 450, ../scss/partials/_estimate.scss */
+/* line 470, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 458, ../scss/partials/_estimate.scss */
+/* line 478, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 467, ../scss/partials/_estimate.scss */
+/* line 487, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -904,7 +939,7 @@ footer {
   text-align: right;
 }
 
-/* line 474, ../scss/partials/_estimate.scss */
+/* line 494, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -912,7 +947,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 476, ../scss/partials/_estimate.scss */
+/* line 496, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -920,7 +955,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 481, ../scss/partials/_estimate.scss */
+/* line 501, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -931,17 +966,17 @@ footer {
 }
 
 @media print {
-  /* line 492, ../scss/partials/_estimate.scss */
+  /* line 512, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 499, ../scss/partials/_estimate.scss */
+  /* line 519, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid black;
   }
 
-  /* line 507, ../scss/partials/_estimate.scss */
+  /* line 527, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;
@@ -955,6 +990,7 @@ footer {
   background: #333333;
   padding: 20px 15px;
   min-height: 700px;
+  margin-bottom: 24px;
 }
 @media (max-width: 991px) {
   /* line 5, ../scss/partials/_trees.scss */
@@ -963,7 +999,7 @@ footer {
   }
 }
 @media (min-width: 992px) {
-  /* line 18, ../scss/partials/_trees.scss */
+  /* line 19, ../scss/partials/_trees.scss */
   .trees-container .filters-container .row-xss > .col {
     display: block;
     float: none;
@@ -979,16 +1015,16 @@ footer {
     clear: both;
   }
 }
-/* line 29, ../scss/partials/_trees.scss */
+/* line 30, ../scss/partials/_trees.scss */
 .trees-container .filters-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 36, ../scss/partials/_trees.scss */
+/* line 37, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title {
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 3px;
   background: #9AED95;
   margin-bottom: 10px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -998,26 +1034,28 @@ footer {
   line-height: 20px;
   position: relative;
 }
-/* line 47, ../scss/partials/_trees.scss */
+/* line 48, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title .lnk-clear {
   position: absolute;
   right: 8px;
   top: 5px;
 }
-/* line 52, ../scss/partials/_trees.scss */
+/* line 53, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title .lnk-clear a {
   color: #f84540;
 }
-/* line 56, ../scss/partials/_trees.scss */
+/* line 57, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title .lnk-clear a:hover, .trees-container .filters-container .filter-container-title .lnk-clear a:focus {
   color: #f84540;
 }
-/* line 64, ../scss/partials/_trees.scss */
+/* line 65, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container {
   padding: 0;
   margin-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
-/* line 69, ../scss/partials/_trees.scss */
+/* line 72, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-header {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -1028,12 +1066,12 @@ footer {
   margin-bottom: 10px;
   padding: 0 5px;
 }
-/* line 77, ../scss/partials/_trees.scss */
+/* line 80, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input {
   margin-bottom: 8px;
   position: relative;
 }
-/* line 82, ../scss/partials/_trees.scss */
+/* line 85, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear {
   position: absolute;
   right: 8px;
@@ -1044,25 +1082,25 @@ footer {
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 91, ../scss/partials/_trees.scss */
+/* line 94, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear a {
   color: #d5d5d5;
   font-size: 12px;
 }
-/* line 95, ../scss/partials/_trees.scss */
+/* line 98, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear a:hover {
   color: #FFF;
 }
-/* line 101, ../scss/partials/_trees.scss */
+/* line 104, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear:hover {
   color: #FFF;
 }
-/* line 108, ../scss/partials/_trees.scss */
+/* line 111, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .inpt {
   width: 100%;
   display: block;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 3px;
   background: #5c5c5c;
   color: white;
   border: 1px solid #696a6a;
@@ -1073,37 +1111,37 @@ footer {
   color: #d5d5d5;
   line-height: 16px;
 }
-/* line 124, ../scss/partials/_trees.scss */
+/* line 127, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .inpt-select option.option {
   padding: 5px;
   background: #f3f3f4;
   color: #333333;
 }
-/* line 132, ../scss/partials/_trees.scss */
+/* line 135, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block {
-  border-radius: 5px;
+  border-radius: 3px;
   overflow: hidden;
   height: auto;
   padding: 0;
 }
-/* line 139, ../scss/partials/_trees.scss */
+/* line 142, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items {
-  max-height: 192px;
+  max-height: 120px;
   overflow-y: auto;
   padding: 0;
 }
-/* line 147, ../scss/partials/_trees.scss */
+/* line 150, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label {
   display: block;
   padding: 0 5px;
   clear: both;
 }
-/* line 153, ../scss/partials/_trees.scss */
+/* line 156, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label:before {
   clear: both;
   float: none;
 }
-/* line 159, ../scss/partials/_trees.scss */
+/* line 162, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label input {
   float: left;
   display: inline-block;
@@ -1111,7 +1149,7 @@ footer {
   margin-top: 5px;
   margin-right: 5px;
 }
-/* line 168, ../scss/partials/_trees.scss */
+/* line 171, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label .text {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1121,108 +1159,108 @@ footer {
   float: left;
   display: inline-block;
 }
-/* line 174, ../scss/partials/_trees.scss */
+/* line 177, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label .text i.fa {
   width: 20px;
   text-align: center;
 }
-/* line 182, ../scss/partials/_trees.scss */
+/* line 185, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item:nth-child(odd) {
   background: #cccccc;
 }
-/* line 187, ../scss/partials/_trees.scss */
+/* line 190, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item:nth-child(even) {
   background: #dfdfdf;
 }
-/* line 193, ../scss/partials/_trees.scss */
+/* line 196, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-inline {
   background: #dfdfdf;
 }
-/* line 197, ../scss/partials/_trees.scss */
+/* line 200, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-inline .filter-item {
   float: left;
   display: inline-block;
   background: none;
   margin-right: 10px;
 }
-/* line 210, ../scss/partials/_trees.scss */
+/* line 213, ../scss/partials/_trees.scss */
 .trees-container .content-container {
   min-height: 700px;
 }
 @media (max-width: 991px) {
-  /* line 210, ../scss/partials/_trees.scss */
+  /* line 213, ../scss/partials/_trees.scss */
   .trees-container .content-container {
     min-height: 0;
   }
 }
-/* line 219, ../scss/partials/_trees.scss */
+/* line 222, ../scss/partials/_trees.scss */
 .trees-container .content-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 226, ../scss/partials/_trees.scss */
+/* line 229, ../scss/partials/_trees.scss */
 .trees-container .content-container #treeDetails {
   height: auto;
 }
-/* line 231, ../scss/partials/_trees.scss */
+/* line 234, ../scss/partials/_trees.scss */
 .trees-container .content-container .map-container {
   min-height: 628px;
 }
 @media (max-width: 991px) {
-  /* line 231, ../scss/partials/_trees.scss */
+  /* line 234, ../scss/partials/_trees.scss */
   .trees-container .content-container .map-container {
     min-height: 0;
   }
 }
-/* line 240, ../scss/partials/_trees.scss */
+/* line 243, ../scss/partials/_trees.scss */
 .trees-container .content-container .map-container .map {
   min-height: 628px;
   height: auto;
 }
 @media (max-width: 991px) {
-  /* line 240, ../scss/partials/_trees.scss */
+  /* line 243, ../scss/partials/_trees.scss */
   .trees-container .content-container .map-container .map {
     min-height: 0;
     height: 300px !important;
   }
 }
-/* line 254, ../scss/partials/_trees.scss */
+/* line 257, ../scss/partials/_trees.scss */
 .trees-container .result-container {
-  padding: 20px 15px;
+  padding: 20px 20px;
   min-height: 700px;
 }
 @media (max-width: 991px) {
-  /* line 254, ../scss/partials/_trees.scss */
+  /* line 257, ../scss/partials/_trees.scss */
   .trees-container .result-container {
     min-height: 0;
   }
 }
-/* line 264, ../scss/partials/_trees.scss */
+/* line 267, ../scss/partials/_trees.scss */
 .trees-container .result-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 271, ../scss/partials/_trees.scss */
+/* line 274, ../scss/partials/_trees.scss */
 .trees-container .result-container .tree-list-outer {
   max-height: 602px;
   overflow-y: auto;
 }
-/* line 277, ../scss/partials/_trees.scss */
+/* line 280, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container {
   width: 100%;
 }
-/* line 285, ../scss/partials/_trees.scss */
+/* line 288, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td {
   background: #333333;
   color: white;
 }
-/* line 290, ../scss/partials/_trees.scss */
+/* line 293, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td h6 {
   color: white;
 }
-/* line 296, ../scss/partials/_trees.scss */
+/* line 299, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group button {
   color: white;
   border: none;
@@ -1230,11 +1268,11 @@ footer {
   padding-left: 0;
   padding-right: 0;
 }
-/* line 304, ../scss/partials/_trees.scss */
+/* line 307, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group button i {
   font-size: 14px;
 }
-/* line 310, ../scss/partials/_trees.scss */
+/* line 313, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu {
   border: 1px solid #6b6c6a;
   min-width: 90px;
@@ -1243,12 +1281,12 @@ footer {
   overflow: hidden;
   padding: 0;
 }
-/* line 318, ../scss/partials/_trees.scss */
+/* line 321, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li {
   padding: 0;
   background: #ffffff;
 }
-/* line 323, ../scss/partials/_trees.scss */
+/* line 326, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a {
   padding: 0 5px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1260,50 +1298,50 @@ footer {
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 329, ../scss/partials/_trees.scss */
+/* line 332, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:hover, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:focus, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:active {
   background: #333333;
   color: white;
 }
-/* line 336, ../scss/partials/_trees.scss */
+/* line 339, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li:nth-child(odd) {
   background: #f3f3f4;
 }
-/* line 341, ../scss/partials/_trees.scss */
+/* line 344, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li:nth-child(even) {
   background: #ffffff;
 }
-/* line 353, ../scss/partials/_trees.scss */
+/* line 356, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tbody {
   max-height: 200px;
   overflow-y: auto;
 }
-/* line 361, ../scss/partials/_trees.scss */
+/* line 364, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tfoot td {
   background: none;
   padding: 0;
 }
-/* line 368, ../scss/partials/_trees.scss */
+/* line 371, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr {
   -webkit-transition: all linear 0.4s;
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 371, ../scss/partials/_trees.scss */
+/* line 374, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td {
   padding: 5px;
   border-top: 1px solid #f0f1f1;
   border-bottom: 1px solid #ffffff;
 }
-/* line 376, ../scss/partials/_trees.scss */
+/* line 379, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td h6 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 381, ../scss/partials/_trees.scss */
+/* line 384, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td p {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1311,7 +1349,7 @@ footer {
   color: #3f3f3f;
   line-height: 16px;
 }
-/* line 386, ../scss/partials/_trees.scss */
+/* line 389, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td small {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
@@ -1319,17 +1357,17 @@ footer {
   color: #3f3f3f;
   line-height: 16px;
 }
-/* line 391, ../scss/partials/_trees.scss */
+/* line 394, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-check {
   background: #c7c9c9;
   text-align: center;
 }
-/* line 399, ../scss/partials/_trees.scss */
+/* line 402, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-img img {
   width: 40px;
   height: 50px;
 }
-/* line 408, ../scss/partials/_trees.scss */
+/* line 411, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a {
   font-size: 18px;
   color: white;
@@ -1337,59 +1375,59 @@ footer {
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 414, ../scss/partials/_trees.scss */
+/* line 417, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a:hover, .trees-container .result-container table.tree-list-container tr td.td-action a:focus, .trees-container .result-container table.tree-list-container tr td.td-action a:active {
   text-decoration: none;
 }
-/* line 422, ../scss/partials/_trees.scss */
+/* line 425, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:nth-child(odd) {
   background: #f3f3f4;
 }
-/* line 427, ../scss/partials/_trees.scss */
+/* line 430, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:nth-child(even) {
   background: #e7eaea;
 }
-/* line 432, ../scss/partials/_trees.scss */
+/* line 435, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:hover, .trees-container .result-container table.tree-list-container tr:focus, .trees-container .result-container table.tree-list-container tr:active {
   background: #c7c9c9;
 }
-/* line 440, ../scss/partials/_trees.scss */
+/* line 443, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:hover td.td-action a, .trees-container .result-container table.tree-list-container tr:focus td.td-action a, .trees-container .result-container table.tree-list-container tr:active td.td-action a {
   color: #333333;
 }
-/* line 451, ../scss/partials/_trees.scss */
+/* line 454, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container {
   padding: 20px 15px;
   background: #333333;
 }
-/* line 456, ../scss/partials/_trees.scss */
+/* line 459, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group {
   display: block;
   width: 100%;
 }
-/* line 461, ../scss/partials/_trees.scss */
+/* line 464, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group .inpt {
   width: 100%;
   display: block;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 3px;
   background: #5c5c5c;
   color: white;
   border: 1px solid #696a6a;
 }
 @media (max-width: 767px) {
-  /* line 461, ../scss/partials/_trees.scss */
+  /* line 464, ../scss/partials/_trees.scss */
   .trees-container .admin-filter-container .input-group .inpt {
     margin-bottom: 10px;
   }
 }
-/* line 479, ../scss/partials/_trees.scss */
+/* line 482, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group .inpt-select option.option {
   padding: 5px;
   background: #f3f3f4;
   color: #333333;
 }
-/* line 488, ../scss/partials/_trees.scss */
+/* line 491, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .lnk {
   line-height: 30px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1398,7 +1436,7 @@ footer {
   color: white;
   line-height: 30px;
 }
-/* line 493, ../scss/partials/_trees.scss */
+/* line 496, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .lnk a {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
@@ -1407,18 +1445,18 @@ footer {
   line-height: 30px;
 }
 
-/* line 503, ../scss/partials/_trees.scss */
+/* line 506, ../scss/partials/_trees.scss */
 .edit-tree-container .image {
   padding: 5px;
   border: 1px solid #ccc;
 }
-/* line 508, ../scss/partials/_trees.scss */
+/* line 511, ../scss/partials/_trees.scss */
 .edit-tree-container .image img {
   width: 100%;
   display: block;
   height: auto;
 }
-/* line 516, ../scss/partials/_trees.scss */
+/* line 519, ../scss/partials/_trees.scss */
 .edit-tree-container .content {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1426,7 +1464,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 519, ../scss/partials/_trees.scss */
+/* line 522, ../scss/partials/_trees.scss */
 .edit-tree-container .content h2 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -1436,7 +1474,7 @@ footer {
   margin-bottom: 10px;
   margin-top: 15px;
 }
-/* line 526, ../scss/partials/_trees.scss */
+/* line 529, ../scss/partials/_trees.scss */
 .edit-tree-container .content h3 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1445,11 +1483,11 @@ footer {
   line-height: 24px;
   margin-top: 15px;
 }
-/* line 532, ../scss/partials/_trees.scss */
+/* line 535, ../scss/partials/_trees.scss */
 .edit-tree-container .content pre {
   padding: 5px 10px;
 }
-/* line 539, ../scss/partials/_trees.scss */
+/* line 542, ../scss/partials/_trees.scss */
 .edit-tree-container .content dl dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1458,7 +1496,7 @@ footer {
   line-height: 24px;
   text-align: left;
 }
-/* line 545, ../scss/partials/_trees.scss */
+/* line 548, ../scss/partials/_trees.scss */
 .edit-tree-container .content dl dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1466,7 +1504,7 @@ footer {
   color: #3f3f3f;
   line-height: 24px;
 }
-/* line 555, ../scss/partials/_trees.scss */
+/* line 558, ../scss/partials/_trees.scss */
 .edit-tree-container .content table tr td, .edit-tree-container .content table tr th {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1474,7 +1512,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 559, ../scss/partials/_trees.scss */
+/* line 562, ../scss/partials/_trees.scss */
 .edit-tree-container .content table tr td a, .edit-tree-container .content table tr th a {
   font-size: 12px;
   line-height: 16px;

@@ -3,13 +3,13 @@
 
 
 <!-- LOAD recent estimates list -->
-<div class="pullleft width180" ng-if="data.mode()=='trees'">
+<div ng-if="data.mode()=='trees'">
     <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
         <option value="">Recent Estimates</option>
         <option ng-repeat="r in recentReportList" value="{{r.reportID}}">{{r.name}} - {{r.tstamp_updated}}</option>
     </select>
     <BR><BR>
-    <button ng-cloak ng:show="report.items.length>0" ng-click="newReport();">New Report</button>
+    <button class="btn btn-blue clr-white" ng-cloak ng:show="report.items.length>0" ng-click="newReport();">New Report</button>
 </div>
 
     
@@ -107,26 +107,17 @@
 		</div>	
 	</div>
 	
-	<div ng-if="data.mode()=='trees'">
-		<div class = "clearfloat"></div>
-		<div class="inlineBlock pullleft">
-			 <div class="inline pullleft rightSpace20">
-
-				<button class="navButton width180 roundedCorners" ng-click="saveReport()">Save</button>
-				<button class="navButton width180 roundedCorners" 
-						data-backdrop='static'
-						data-keyboard=true
-						bs-modal
-						data-template="js/trees/emailReport.tpl.html"
-						ng-click="initEmailModal()"
-						>Send</button>
-				<a ng-if='report.reportLink' href='{{report.reportLink}}' target=_new>Customer View</a> 
-
-			 </div>
-			 <div class="clearfloat"></div>
-
-		 </div>
-		 <div class = "clearfloat"></div>
+	<div class="estimate-actions" ng-if="data.mode()=='trees'">
+		<button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>
+		<button class="btn btn-red clr-white" 
+				data-backdrop='static'
+				data-keyboard=true
+				bs-modal
+				data-template="js/trees/emailReport.tpl.html"
+				ng-click="initEmailModal()"
+				>Send</button>
+		<a ng-if='report.reportLink' href='{{report.reportLink}}' target=_new>Customer View</a> 
+		<div class="clearfix"></div>
 	</div>	 
 
 	<!-- Email logs -->
@@ -148,12 +139,12 @@
      
    	<div class="table-container">
    		<div class="row row-table">
-   			<div class="col-md-4">
-   				<div id="treeMap_estimate" class="map-container mode_{{data.mode()}}" ng-if="data.mode()=='estimate'">
+   			<div class="col-md-4" ng-if="data.mode()=='estimate'">
+   				<div id="treeMap_estimate" class="map-container mode_{{data.mode()}}">
 					<div id="treeMap2" class="mode_{{data.mode()}}"></div>
 				</div>
    			</div>
-   			<div class="col-md-8">
+   			<div class="col-md-8 col-info-{{data.mode()}}">
    				<div class="table-responsive">
 				   	<table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}">
 				   		<thead>
@@ -212,8 +203,8 @@
 				                </td>	<!-- }}} listing_treatment colspan=3 -->
 				            </tr>
 							<tr ng-if="report.total.items && data.mode()=='trees'">
-								<td colspan=4></td><td>Subtotal:</td>
-								<td>&#36;{{report.total.items|formatPrice}}</td>
+								<td colspan="4" class="td-bid">Subtotal:</td>
+								<td class="td-bid">&#36;{{report.total.items|formatPrice}}</td>
 								<td>&nbsp;</td>
 							</tr> 
 						</tbody>		
@@ -265,16 +256,16 @@
 								</td>
 								<td>
 									<span>
-										x<input type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
+										x&nbsp;<input type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
 									</span>
 								</td>
 								<td style="padding-left:0px;padding-right:0px"  class="text-right">
 									<span>
-										$<input type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
+										$&nbsp;<input type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
 									</span>
 								</td>
-								<td>
-						   			<button class="navButton width90 roundedCorners" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
+								<td class="text-right">
+						   			<button class="btn btn-red clr-white" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
 						   		</td>
 						   	</tr>
 
@@ -297,7 +288,7 @@
 
 				<div class="section-container" ng-if="data.mode()=='trees'">
 			   		<h6 class="section-sub-title">Notes</h6>
-			        <textarea ng-model="report.notes" class="styled_input" placeholder="Notes" style='width:80%;height:8em;'></textarea>
+			        <textarea ng-model="report.notes" placeholder="Notes" style='width:100%;height:100px;'></textarea>
 			     </div>
 			     
 			 	<div class="section-container" ng-if="data.mode()=='estimate'">

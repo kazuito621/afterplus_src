@@ -232,6 +232,16 @@
 			}
 		}
 	}
+
+	.estimate-actions
+	{
+		margin-bottom: 15px;
+
+		button	
+		{
+			width: 180px;
+		}
+	}
 }
 
 .table-container
@@ -264,6 +274,16 @@
 				width: 100%;
 			}
 		}
+
+		.col-info-trees 
+		{
+			width: 100%;
+			@include clearfix();
+			display: block;
+			float: none;
+			width: 100%;
+		}
+
 	}
 
 	.map-container

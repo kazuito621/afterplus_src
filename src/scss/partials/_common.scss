@@ -179,6 +179,18 @@ header
 	}
 }
 
+.row-pad20 
+{
+	margin-left: -20px;
+	margin-right: -20px;
+
+	> .col 
+	{
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+
 .row-xss 
 {
 	@media(max-width: 500px)

@@ -98,7 +98,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
      */
 	var alertCfg={placement:'top', keyboard:true, show:true, type:'info', template:'js/main/alert.tpl.html'}
 	s.setAlert = function(txt, opt) {
-		if(!txt || txt==''){ 
+		if(!txt || txt=='' || txt=='false'){ 
 			return;
 			if( s.alertBox && s.alertBox.hide && _.isFunction(s.alertBox.hide) ){
 				s.alertBox.hide();

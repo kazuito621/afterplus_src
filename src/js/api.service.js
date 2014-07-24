@@ -18,9 +18,9 @@ function (Rest, $rootScope, $q, $location ) {
 			sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
 			Rest.one('init').get()
 				.then(function (data) {
+				dbg(data,'got init back')
 					initData=data;
 					$rootScope.initData=data;
-					//cb(data);
 					sendEvt('onInitData', data);
 					deferred.resolve(); 
 				});
@@ -29,8 +29,7 @@ function (Rest, $rootScope, $q, $location ) {
 	}
 
 	// after a user signs in, refresh init data
-	// this may not be needed... since route resolve solves this now?
-	//$rootScope.$on('onSignin', function(){ init(); });
+	$rootScope.$on('onSignin', function(){ init(true); });
 
     return {
 		getPromise:function(){ return init(); },
@@ -76,6 +75,9 @@ function (Rest, $rootScope, $q, $location ) {
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },
+		approveReport: function( rptID ){
+			return Rest.one('estimate',rptID).post('approve');
+		},
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});

@@ -97,7 +97,9 @@
                 </a>
             </td>
             <td>
-                <span ng-show="o.price !== null && o.price" ng-bind="o.price | formatPrice"></span>
+                <a href editable-text='o.price' ng-show="o.price !== null && o.price">
+                    ${{o.price|formatPrice}}
+                </a>
             </td>
             <td align='right'>
                 <a ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>

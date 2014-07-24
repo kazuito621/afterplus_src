@@ -67,7 +67,10 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		} 
 		dbg("no redir ");
 		s.routeParams=$routeParams;
-       	if($route.current.resolve) render();
+        if ($route.current.resolve) {
+            render();
+            s.currentTab = s.renderPath[0];
+        }
 	});
 
 

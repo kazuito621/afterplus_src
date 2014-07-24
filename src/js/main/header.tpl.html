@@ -3,9 +3,9 @@
 	<div class="nav-container">
 		<nav ng-if="auth.is('staff')">
 			<ul>
-				<li><a href="#/trees" title="" class="active"><i class="fa fa-tree"></i><span class="text">Trees</span></a></li>
-				<li><a href="#/sites" title=""><i class="fa fa-home"></i><span class="text">Properties</span></a></li>
-				<li><a href="#/clients" title=""><i class="fa fa-user"></i><span class="text">Clients</span></a></li>
+				<li><a href="#/trees" title="" ng-class="{active: currentTab === 'trees'}"><i class="fa fa-tree"></i><span class="text">Trees</span></a></li>
+				<li><a href="#/sites" title="" ng-class="{active: currentTab === 'sites'}"><i class="fa fa-home"></i><span class="text">Properties</span></a></li>
+				<li><a href="#/clients" title="" ng-class="{active: currentTab === 'clients'}"><i class="fa fa-user"></i><span class="text">Clients</span></a></li>
 			</ul>
 		</nav>
 	</div>

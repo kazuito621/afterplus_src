@@ -25,7 +25,10 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 		Auth.signIn(s.login.email, s.login.pswd)
 			.then(function(result){
 				s.login.btnDisabled=false;
-				if(q.redirect) $location.url(q.redirect);
+				if(q.redirect){ 
+					var url=cfg.hostAndPort() + '/#' + q.redirect;
+					document.location=url;
+				}
 				else s.goTrees();
 			}, function err(err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
 									//that could possibly throw errors
@@ -38,7 +41,8 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 	}
 
 	s.goTrees=function(){
-		$location.url('/trees');
+		var url=cfg.hostAndPort() + '/#trees';
+		document.location=url;
 	}
 
 }]);

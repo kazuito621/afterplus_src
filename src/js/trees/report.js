@@ -26,6 +26,18 @@ var ReportCtrl = app.controller(
                 disableNativeSpellChecker: false
             };
 
+            s.getRecentReportTitle = function (report) {
+                var res = '';
+
+                if (report.approved == 1) {
+                    res += '[APPROVED] ';
+                }
+
+                res += report.name + ' - ' + report.tstamp_updated;
+
+                return res;
+            };
+
             // let's watch the recentReportList property, and update on scope if it changes
             s.$on('onLoadRecent', function (evt, list) {
                 s.recentReportList = list;
@@ -198,10 +210,11 @@ var ReportCtrl = app.controller(
 
 
 			s.approveEstimate = function(){
-				//%%todo - disable btn, 
+                s.disableApproveButton = true;
              	s.setAlert('Processing...', {time: 5});
 				Api.approveReport(s.report.reportID).then(function(data){
-					//%%todo - replace button with "APPROVED" stamp graphic
+                    s.report.approved = '1';
+                    s.disableApproveButton = false;
 				});
 			}
 

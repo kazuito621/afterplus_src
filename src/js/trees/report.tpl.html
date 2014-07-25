@@ -6,7 +6,8 @@
 <div ng-if="data.mode()=='trees'" style="margin-bottom: 15px;">
     <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
         <option value="">Recent Estimates</option>
-        <option ng-repeat="r in recentReportList" value="{{r.reportID}}">{{r.name}} - {{r.tstamp_updated}}</option>
+        <option ng-repeat="r in recentReportList" value="{{r.reportID}}" ng-bind="getRecentReportTitle(r)">
+        </option>
     </select>
     <BR><BR>
     <button class="btn btn-blue clr-white" ng-cloak ng:show="report.items.length>0" ng-click="newReport();">New Report</button>
@@ -56,8 +57,10 @@
 						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
 					</div>
 					<div class="col-xs-4 col">						
-						<a href ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Approve Estimate</a>
-						<div ng-if="s.report.approved==1" class="img-approve"><img src="img/approved.png"></div>
+						<button ng-if="report.approved == 0" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
+                            <i class="fa fa-check"></i> Approve Estimate
+                        </button>
+						<div ng-if="report.approved == 1" class="img-approve"><img src="img/approved.png"></div>
 					</div>
 				</div>
 			</div>

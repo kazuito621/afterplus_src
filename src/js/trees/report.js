@@ -201,7 +201,7 @@ var ReportCtrl = app.controller(
 				//%%todo - disable btn, 
              	s.setAlert('Processing...', {time: 5});
 				Api.approveReport(s.report.reportID).then(function(data){
-					//%%todo - replace button with "APPROVED" stamp graphic
+					s.report.approved=1;
 				});
 			}
 

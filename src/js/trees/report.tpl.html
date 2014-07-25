@@ -56,8 +56,8 @@
 						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
 					</div>
 					<div class="col-xs-4 col">						
-						<a href ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Approve Estimate</a>
-						<div ng-if="s.report.approved==1" class="img-approve"><img src="img/approved.png"></div>
+						<a href ng-if="report.approved!=1" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Approve Estimate</a>
+						<div ng-if="report.approved==1" class="img-approve"><img src="img/approved.png"></div>
 					</div>
 				</div>
 			</div>

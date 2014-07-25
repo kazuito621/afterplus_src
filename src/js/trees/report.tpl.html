@@ -59,6 +59,10 @@
 						<a href ng-if="report.approved!=1" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Approve Estimate</a>
 						<div ng-if="report.approved==1" class="img-approve"><img src="img/approved.png"></div>
 					</div>
+					<!--
+						we need to show a DONE button, if the job is approve,d and the user viewing is a STAFF role
+						%%todo - <div ng-if="report.approved==1 && auth.is('staff')">Job Done</div>
+					-->
 				</div>
 			</div>
 		</div>

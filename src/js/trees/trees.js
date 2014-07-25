@@ -43,11 +43,16 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
-            s.filters.year=[{id:moment().format('YYYY'), desc:'This year'}
-                ,{id:moment().add('year',1).format('YYYY'), desc:'Next yr'}
-                ,{id:moment().add('year',2).format('YYYY'), desc:'2yr'}
-                ,{id:moment().add('year',3).format('YYYY'), desc:'3yr'}
-                ,{id:moment().add('year',4).format('YYYY'), desc:'4yr'}]
+            s.filters.year=[
+                {id:moment().format('YYYY'), desc:'This year'},
+                {id:moment().add('year',1).format('YYYY'), desc:'Next yr'},
+                {id:moment().add('year',2).format('YYYY'), desc:'2yr'},
+                {id:moment().add('year',3).format('YYYY'), desc:'3yr'},
+                {id:moment().add('year',4).format('YYYY'), desc:'4yr'},
+                {id:moment().add('year',-1).format('YYYY'), desc:'Prev year'}, // index: 5
+                {id:moment().add('year',-2).format('YYYY'), desc:'Year -2'},
+                {id:moment().add('year',-3).format('YYYY'), desc:'Year -3'}
+            ];
             s.treatmentTypes = s.initData.filters.treatments;
             ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 

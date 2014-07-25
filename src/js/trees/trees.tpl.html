@@ -139,6 +139,41 @@
 									</div>	
 								</div>
 							    <!-- END YEAR FILTER SECTION --> 
+								<!-- START OLD YEARS FILTER SECTION -->
+								<div class="filter-container">
+									<div class="filterHeader filter-header">
+										<h3>Old years:</h3>
+									</div>
+									<div class='filterItems filter-block'>
+										<div class="filter-items filter-items-inline">
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[5].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[5].id}}',initData.filters.year[5].selected)">
+													<span class="text">2013</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[6].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[6].id}}',initData.filters.year[6].selected)">
+													<span class="text">2012</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[7].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[7].id}}',initData.filters.year[7].selected)">
+													<span class="text">2011</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							    <!-- END OLD YEARS FILTER SECTION -->
 							</div>
 
 							<div class="collapse-body">

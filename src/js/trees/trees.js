@@ -244,6 +244,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+          	s.$on('trees.reset', function(){
+				s.filteredSites=s.initData.sites;
+				s.selected.clientTypeID=s.selected.clientID=s.selected.siteID='';
+			});
+
             s.reset = function(){
                 ReportService.getBlankReport();
                 TFS.clearFilters(true);

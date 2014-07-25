@@ -28,6 +28,7 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 				if(q.redirect){ 
 					var url=cfg.hostAndPort() + '/#' + q.redirect;
 					document.location=url;
+					document.location.reload();
 				}
 				else s.goTrees();
 			}, function err(err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
@@ -41,8 +42,10 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 	}
 
 	s.goTrees=function(){
-		var url=cfg.hostAndPort() + '/#trees';
+		s.sendEvt('trees.reset');		
+		var url=cfg.hostAndPort() + '/#/trees';
 		document.location=url;
+		document.location.reload();
 	}
 
 }]);

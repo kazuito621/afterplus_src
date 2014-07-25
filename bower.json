@@ -20,7 +20,8 @@
     "angularLocalStorage": "~0.1.7",
     "angular-md5": "~0.1.7",
     "font-awesome-bower": "~4.1.0",
-    "ng-ckeditor": "~0.2.1"
+    "ng-ckeditor": "~0.2.1",
+    "angular-bindonce": "~0.3.1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.6",

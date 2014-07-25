@@ -244,6 +244,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+          	s.$on('trees.reset', function(){
+				s.filteredSites=s.initData.sites;
+				s.selected.clientTypeID=s.selected.clientID=s.selected.siteID='';
+			});
+
             s.reset = function(){
                 ReportService.getBlankReport();
                 TFS.clearFilters(true);
@@ -278,24 +283,26 @@ var TreesCtrl = app.controller('TreesCtrl',
             // ------------------------------------------------------ GOOGLE MAPS
             var initMap = function(){
                 var deferred=$q.defer();
-                if(gMap)return;
+
                 google.load("maps", "3", {other_params:'sensor=false', callback:function(){
                     var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122),mapTypeId:'hybrid'};
                     var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
                     gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
                     google.maps.event.addListener(gMap, 'click', function() {
-                        dbg(s,'click')
+                        dbg(s,'click');
                         if(infowindow && infowindow.setMap) infowindow.setMap(null);
                     });
                     deferred.resolve();
                 }});
                 return deferred.promise;
-            }
+            };
 
             var showMappedSites = _.throttle(function() {
                 var a, l, siteLoc, noLoc=0, numSpecies
                 if(enableMap==false || !s.filteredSites || !s.filteredSites.length) return;
-                if(!gMap) return initMap().then(function(){ showMappedSites(); })
+                if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
+                    return initMap().then(function(){ showMappedSites(); })
+                }
 
                 s.siteLocs = [];
 
@@ -450,7 +457,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function(treeSet){
-                if(!gMap) return initMap().then(function(){ showMappedTrees(treeSet); })
+                if(!gMap) return initMap().then(function(){ showMappedTrees(treeSet); });
                 if(s.data.mode()=='estimate' && s.report && s.report.items) treeSet=s.report.items;
                 clearMarkers();
                 var set2=[],ratingD,o;
@@ -844,6 +851,15 @@ var TreesCtrl = app.controller('TreesCtrl',
              pre_init();
              });
              */
+
+            s.$on('onInitData', function (e,data) {
+                console.log('On init data in trees');
+
+                if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
+                    initMap().then(function(){ showMappedSites(); })
+                }
+            });
+
 
         }]);	// }}} TreesCtrl
 

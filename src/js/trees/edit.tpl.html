@@ -77,22 +77,29 @@
     <div class='table-responsive tableHist'>
         <table class='table table-striped'>
         <thead>
-            <tr><th colspan=3>Recommendations/History</th>
+            <tr><th colspan=4>Recommendations/History</th>
             <td ng-if="auth.is('staff')" align='right'>
                 <a href ng-click="addTreeRec()" class="fa fa-plus-square _size8"></a>
             </td></tr>
         <thead>
         <tr id="treeHistoryItem" ng-repeat="o in tree.history" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false">
-            <td width='50%'><a href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments'
+            <td width='44%'><a href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments'
                     editable-select='o.treatmentTypeID'>
                         {{o.treatmentTypeID|treatmentTypeID2Name:this}}</a>
             </td>
-            <td width='40%'><a href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses'
+            <td width='34%'><a href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses'
                     editable-select='o.treatmentStatusCode'>
                         {{o.treatmentStatusCode|treatmentStatusName:this}}</a>
             </td>
-            <td><a href e-ng-options='y for y in yearOptions' editable-select='o.year'
-                >{{o.year}}</a>
+            <td>
+                <a href e-ng-options='y for y in yearOptions' editable-select='o.year'>
+                    {{o.year}}
+                </a>
+            </td>
+            <td>
+                <a href editable-text='o.price' ng-show="o.price !== null && o.price">
+                    ${{o.price|formatPrice}}
+                </a>
             </td>
             <td align='right'>
                 <a ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>

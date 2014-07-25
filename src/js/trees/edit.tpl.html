@@ -87,7 +87,7 @@
                             </tr>
                         <thead>
                         <tbody>
-                            <tr id="treeHistoryItem" ng-repeat="o in tree.history" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false">
+                            <tr id="treeHistoryItem" ng-repeat="o in tree.history" class="hoverHotspot">
                                 <td width='50%'><a href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments'
                                         editable-select='o.treatmentTypeID'>
                                             {{o.treatmentTypeID|treatmentTypeID2Name:this}}</a>
@@ -100,7 +100,7 @@
                                     >{{o.year}}</a>
                                 </td>
                                 <td align='right'>
-                                    <a ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>
+                                    <a href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4 hoverDisplay' ></a>
                                 </td>
                                 <td></td> <!-- todo: add a note icon, if there is a note, and rollover to show it -->
                             </tr>

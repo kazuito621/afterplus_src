@@ -73,8 +73,51 @@ var TreesCtrl = app.controller('TreesCtrl',
                             s.report=data;
                             if(data && data.siteID) s.selected.siteID=data.siteID;
                             showMappedTrees();
+
+                            // todo - find a better place for this.... should happen after
+                            // tree map is initialized
+                            setTimeout(function()
+                            {
+                                $('#treeMap_estimate').width($('#treeMap_estimate').width());
+                                $('#treeMap_estimate').affix(
+                                {
+                                    offset: 
+                                    {
+                                        top: $('#treeMap_estimate').offset().top - 120
+                                    }
+                                });
+
+                                $('#action-container').affix(
+                                {
+                                    offset: 
+                                    {
+                                        top: $('#action-container').offset().top
+                                    }
+                                });
+
+                            } , 1000);  
                         });
                 }
+            }
+
+            if(s.data.mode()=='trees')
+            {
+                setTimeout(function()
+                {
+                    $('.collapse-container .collapse-head a').click(function(event) {
+                        var $collapse_container = $(this).closest('.collapse-container');
+                        $collapse_container.find('.collapse-body').slideToggle('slow');
+                        if($(this).find('i').hasClass('fa-angle-double-down'))
+                        {
+                            $(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+                        }
+                        else 
+                        {
+                            $(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+                        }
+                        return false;
+                    });
+                } , 2000);
             }
 
             // here, we account for 2 usecases:

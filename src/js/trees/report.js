@@ -196,8 +196,16 @@ var ReportCtrl = app.controller(
                 s.service.price = "";
             };
 
-            // Remove treatment from estimate
 
+			s.approveEstimate = function(){
+				//%%todo - disable btn, 
+             	s.setAlert('Processing...', {time: 5});
+				Api.approveReport(s.report.reportID).then(function(data){
+					//%%todo - replace button with "APPROVED" stamp graphic
+				});
+			}
+
+            // Remove treatment from estimate
             s.removeTreatmentFromEstimate = function (treeIndex, treatmentIndex) {
                 // Remove treatment only if there is more than one treatment. Otherwise remove the item
 //                console.log('Tree index: %s, treatment index: %s', treeIndex, treatmentIndex);

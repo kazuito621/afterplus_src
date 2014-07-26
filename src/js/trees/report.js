@@ -209,14 +209,14 @@ var ReportCtrl = app.controller(
             };
 
 
-			s.approveEstimate = function(){
+            s.approveEstimate = function(){
                 s.disableApproveButton = true;
-             	s.setAlert('Processing...', {time: 5});
-				Api.approveReport(s.report.reportID).then(function(data){
+                s.setAlert('Processing...', {time: 5});
+                Api.approveReport(s.report.reportID).then(function(data){
                     s.report.approved = '1';
                     s.disableApproveButton = false;
-				});
-			}
+                });
+            }
 
             // Remove treatment from estimate
             s.removeTreatmentFromEstimate = function (treeIndex, treatmentIndex) {

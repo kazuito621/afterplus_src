@@ -82,7 +82,7 @@
                             <tr>
                                 <th colspan="4">Recommendations/History</th>
                                 <th ng-if="auth.is('staff')" align='right'>
-                                    <a href ng-click="addTreeRec()" class="fa fa-plus-square _size8"></a>
+                                    <a href ng-click="addTreeRec()" class="fa fa-plus-square _size10"></a>
                                 </th>
                             </tr>
                         <thead>
@@ -99,6 +99,11 @@
                                 <td><a href e-ng-options='y for y in yearOptions' editable-select='o.year'
                                     >{{o.year}}</a>
                                 </td>
+								<td>
+									<a href editable-text='o.price' ng-show="o.price !== null && o.price">
+										${{o.price|formatPrice}}
+									</a>
+								</td>
                                 <td align='right'>
                                     <a ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>
                                 </td>

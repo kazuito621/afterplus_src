@@ -67,7 +67,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 ,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
             };
 
-
             s.TFSdata=TFS.data;
             if(s.data.mode()=='estimate'){
                 var rptHash=s.renderPath[1];

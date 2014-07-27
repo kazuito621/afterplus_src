@@ -19,18 +19,19 @@
 					<th>City</th>
 					<th ng-if="auth.is('admin')"></th>
 				</tr>
-			<thead>
-			<tr bindonce ng-repeat="s in initData.sites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
-				<td bo-text="s.siteID"></td>
-				<td>{{s.treeCount}}</td>
-				<td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
-				<td>{{s.city}}, {{s.state}}</td>
-				<td>
-					<a ng-if="auth.is('staff')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit"></a> &nbsp; 
-					<a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID)" class="fa fa-times _red _size7 hoverDisplay" 
-						data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover title="Delete"></a>
-				</td>
-			</tr>
+			</thead>
+            <tbody infinite-scroll="showMoreSites()" infinite-scroll-distance="3">
+                <tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
+                    <td ng-bind="s.siteID"></td>
+                    <td>{{s.treeCount}}</td>
+                    <td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
+                    <td>{{s.city}}, {{s.state}}</td>
+                    <td>
+                        <a ng-if="auth.is('staff')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
+                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID)" class="fa fa-times _red _size7 hoverDisplay"  bs-modal="siteDeleteModal" title="Delete" style="text-decoration: none;"></a>
+                    </td>
+                </tr>
+            </tbody>
 		</table>
 	</div>
 

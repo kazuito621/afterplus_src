@@ -8,8 +8,10 @@ var SitesCtrl = app.controller('SitesCtrl',
             s.type = 'site';
             s.newSite = {clientID: ''};
             s.items = {};
+            s.displayedSites = [];
 
             var init = function () {
+                s.displayedSites = s.initData.sites.slice(0, 49);
                 return;	// using initData list for now... may need this later if we want more data
             };
 
@@ -22,6 +24,16 @@ var SitesCtrl = app.controller('SitesCtrl',
             // Pre-fetch an external template populated with a custom scope
             var siteEditModal = $modal({scope: $scope, template: 'js/sites/edit.tpl.html', show: false});
 
+
+            s.showMoreSites = function () {
+                var count = s.displayedSites.length;
+                if (count === s.initData.sites.length) {
+                    return;
+                }
+
+                var addon = s.initData.sites.slice(count, count + 50);
+                s.displayedSites = s.displayedSites.concat(addon);
+            };
             s.select = function (siteID) {
                 return;
                 //todo - make this work... there is a bug here

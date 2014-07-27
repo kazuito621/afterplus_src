@@ -117,7 +117,8 @@
 				data-template="js/trees/emailReport.tpl.html"
 				ng-click="initEmailModal()"
 				>Send</button>
-		<a ng-if='report.reportLink' href='{{report.reportLink}}' target=_new>Customer View</a> 
+		<a ng-if='report.reportLink' href='{{report.reportLink}}' target='_cust_view'
+			onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> 
 		<div class="clearfix"></div>
 	</div>	 
 

@@ -27,6 +27,16 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 
             //s.Rclient.push() .. to push new data...
 
+            s.showMoreClients = function () {
+                var count = s.displayedClients.length;
+                if (count === s.initData.clients.length) {
+                    return;
+                }
+
+                var addon = s.initData.clients.slice(count, count + 50);
+                s.displayedClients = s.displayedClients.concat(addon);
+            };
+
             s.saveNewClient = function () {
                 if (!s.newClient.clientTypeID) {
                     return s.setAlert('Choose a client type for the new client', {type: 'd'});

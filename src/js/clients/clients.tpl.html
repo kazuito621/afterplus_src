@@ -5,6 +5,7 @@
 	data-placement="center"
 	ng-click="newClientModalOpen()"
 	class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+    style="max-width: 100%; width: auto;"
 	data-animation="am-fade-and-scale" >New Client</button>
 
 	<div class='table-responsive'>
@@ -18,21 +19,23 @@
 					<th>Contact Info</th>
 					<th></th>
 				</tr>
-			<thead>
-			<tr ng-repeat="c in initData.clients" ng-class="{active : isSelected(c.clientID)}" class='hoverHotspot'>
+			</thead>
+            <tbody infinite-scroll="showMoreClients()" infinite-scroll-distance="3">
+                <tr ng-repeat="c in displayedClients" ng-class="{active : isSelected(c.clientID)}" class='hoverHotspot'>
 
-				<td>{{c.clientID}}</td>
-				<td>{{c.clientName}}</td>
-				<td>{{c.street}} {{c.city}}, {{c.state}}</td>
-				<td>{{c.contact}} {{c.contactPhone}}</td>
+                    <td>{{c.clientID}}</td>
+                    <td>{{c.clientName}}</td>
+                    <td>{{c.street}} {{c.city}}, {{c.state}}</td>
+                    <td>{{c.contact}} {{c.contactPhone}}</td>
 
-				<td>
-					<a ng-if="auth.is('staff')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay" bs-tooltip title="Edit"></a> &nbsp; 
-					<a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID)" class="fa fa-times _red _size7 hoverDisplay" 
-							data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover title="Delete"></a>
-				</td>
+                    <td>
+                        <a ng-if="auth.is('staff')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
+                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID)" class="fa fa-times _red _size7 hoverDisplay"
+                                data-template="js/partial_views/delete.tpl.html" data-animation="am-flip-x" bs-popover title="Delete" style="text-decoration: none;"></a>
+                    </td>
 
-			</tr>
+                </tr>
+            </tbody>
 		</table>
 	</div>
 

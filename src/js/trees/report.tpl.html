@@ -71,16 +71,16 @@
 
 
 <!--BEGIN ESTIMATE TABLE SECTION-->
-<div class="table_estimate estimate-container report_main mode_{{data.mode()}}" ng-if="report.items.length>0">
+<div bindonce="report" class="table_estimate estimate-container report_main mode_{{data.mode()}}" ng-if="report.items.length>0">
 	<div class="estimate-summary">
 		<div class="row row-estimate">
 			<div class="col-md-8 col">
 				<div class="estimate-info">
 					<dl class="small">
 						<dt>Created: </dt>
-						<dd>{{report.tstamp_updated}}</dd>
+						<dd bo-text="report.tstamp_updated"></dd>
 					</dl>
-					<h1 class="title">Estimate for {{report.siteName}}</h1>
+					<h1 class="title" bo-text="'Estimate for ' + report.siteName"></h1>
 					<p class="name">
 						<span ng-if="data.mode()=='trees'">
 							<a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
@@ -91,15 +91,15 @@
 					</p>	
 					<dl>
 						<dt>Estimate ID: </dt>
-						<dd>{{report.reportID}}</dd>
+						<dd bo-text="report.reportID"></dd>
 					</dl>
 					<dl>	
 						<dt>Contact: </dt>
-						<dd>{{report.contact}} ({{report.contactPhone}})</dd>
+						<dd bo-text="report.contact + ' (' + report.contactPhone + ')'"></dd>
 					</dl>
 					<dl>	
 						<dt>Address: </dt>
-						<dd>{{report.street}}, {{report.city}},{{report.state}} {{report.zip}}</dd>
+						<dd bo-text="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip"></dd>
 					</dl>
 				</div>	
 			</div>

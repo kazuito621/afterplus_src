@@ -20,8 +20,8 @@
 					<th ng-if="auth.is('admin')"></th>
 				</tr>
 			<thead>
-			<tr ng-repeat="s in initData.sites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
-				<td>{{s.siteID}}</td>
+			<tr bindonce ng-repeat="s in initData.sites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
+				<td bo-text="s.siteID"></td>
 				<td>{{s.treeCount}}</td>
 				<td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
 				<td>{{s.city}}, {{s.state}}</td>

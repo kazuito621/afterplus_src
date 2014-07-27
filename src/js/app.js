@@ -3,7 +3,7 @@
 
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
-	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model', 'ngCkeditor']);
+	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model', 'ngCkeditor', 'pasvaz.bindonce']);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {

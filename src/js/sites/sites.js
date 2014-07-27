@@ -22,8 +22,9 @@ var SitesCtrl = app.controller('SitesCtrl',
             };
 
             // Pre-fetch an external template populated with a custom scope
-            var siteEditModal = $modal({scope: $scope, template: 'js/sites/edit.tpl.html', show: false});
+            var siteEditModal = $modal({scope: $scope, template: '/js/sites/edit.tpl.html', show: false});
 
+            var siteDeleteModal = $modal({
 
             s.showMoreSites = function () {
                 var count = s.displayedSites.length;

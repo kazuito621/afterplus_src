@@ -6,7 +6,7 @@
 <div ng-if="data.mode()=='trees'" style="margin-bottom: 15px;">
     <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
         <option value="">Recent Estimates</option>
-        <option ng-repeat="r in recentReportList" value="{{r.reportID}}" ng-bind="getRecentReportTitle(r)">
+        <option bindonce ng-repeat="r in recentReportList" bo-value="r.reportID" ng-bind="getRecentReportTitle(r)">
         </option>
     </select>
     <BR><BR>
@@ -128,11 +128,11 @@
 	 <div ng-if="report.emailLogs && data.mode()=='trees'">
 		Email logs:<BR>
 		<table class='table ng-table-responsive ng-table'>
-			<tr ng-table ng-repeat="itm in report.emailLogs">
+			<tr bindonce ng-table ng-repeat="itm in report.emailLogs">
 				<td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
 				&nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}'>link</a>
 				</td>
-				<td>{{itm.tstamp_sent}}</td>
+				<td bo-text="itm.tstamp_sent"></td>
 				<td>
 					<span class='textIconBlock-green' ng-if="itm.tstamp_opened">OPENED</span>
 					<span class='textIconBlock-red' ng-if="itm.result!=1 && !itm.tstamp_opened">SEND FAILED</span>
@@ -162,12 +162,12 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
+							<tr bindonce ng-repeat="item in groupedItems" ng-if="report.items.length>0"
 								ng-init="itemIndex = $index"
 								ng-class="rowHighlightClass(item)"
 								ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.treeID}}">
 				                <td data-title="listing_image" class="td-image">
-									<img ng-src='{{item.imgSm}}{{tree_cachebuster}}' class='item_thumb'
+									<img bo-src='item.imgSm + tree_cachebuster' class='item_thumb'
 										data-placement="right"
 										data-trigger="hover"
 										data-content="<img style='width:100%; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
@@ -180,7 +180,7 @@
 				                <td data-title="listing_species" class="td-name">
                     				{{item.dbhID | dbhID2Name:this }}
 									{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
-									<span class="light">[{{item.treeID}}]</span>
+									<span class="light" bo-text="'[' + item.treeID + ']'"></span>
 									<div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
 								</td>
 				                <td data-title="listing_treatment" colspan="3" class="td-treatment-bid">
@@ -199,8 +199,8 @@
 											</td>
 
 											<td data-title="listing_options" class="td-action">
-												<a href='#/tree-edit/{{item.treeID}}' class='row-action'><i class="fa fa-pencil clr-primary"></i></a>
-												<a href="#" ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action'><i class="fa fa-times clr-danger"></i></a>
+												<a href='#/tree_edit/{{item.treeID}}' class='row-action'><i class="fa fa-pencil clr-primary"></i></a>
+												<a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action'><i class="fa fa-times clr-danger"></i></a>
 											</td>
 										</tr>
 									</table>

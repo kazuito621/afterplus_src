@@ -13,11 +13,16 @@ $tree-min-height: 700px;
 			min-height: 0;
 		}
 
+		@media(max-width: $screen-xs-max)
+		{
+			margin-bottom: 0;
+		}
+
 		.row-xss
 		{
 			> .col 
 			{
-				@media(min-width: $screen-md-min)
+				@media(min-width: $screen-sm-min)
 				{
 					display: block;
 					float: none;
@@ -232,7 +237,7 @@ $tree-min-height: 700px;
 
 		.map-container
 		{
-			min-height: $tree-min-height - 72;
+			min-height: $tree-min-height - 100;
 
 			@media(max-width: $screen-sm-max)
 			{
@@ -241,7 +246,7 @@ $tree-min-height: 700px;
 
 			.map 
 			{
-				min-height: $tree-min-height - 72;				
+				min-height: $tree-min-height - 100;				
 				height: auto;
 
 				@media(max-width: $screen-sm-max)

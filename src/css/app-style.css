@@ -850,7 +850,7 @@ footer {
 }
 /* line 369, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
-  min-width: 40px;
+  min-width: 45px;
   text-align: right;
 }
 /* line 375, ../scss/partials/_estimate.scss */
@@ -893,10 +893,10 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: normal;
   color: #646665;
-  line-height: 16px;
+  line-height: 20px;
 }
 /* line 422, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
@@ -1036,8 +1036,14 @@ footer {
     min-height: 0;
   }
 }
-@media (min-width: 992px) {
-  /* line 19, ../scss/partials/_trees.scss */
+@media (max-width: 767px) {
+  /* line 5, ../scss/partials/_trees.scss */
+  .trees-container .filters-container {
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 768px) {
+  /* line 24, ../scss/partials/_trees.scss */
   .trees-container .filters-container .row-xss > .col {
     display: block;
     float: none;
@@ -1053,13 +1059,13 @@ footer {
     clear: both;
   }
 }
-/* line 30, ../scss/partials/_trees.scss */
+/* line 35, ../scss/partials/_trees.scss */
 .trees-container .filters-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 37, ../scss/partials/_trees.scss */
+/* line 42, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title {
   padding: 5px;
   border-radius: 3px;
@@ -1072,28 +1078,28 @@ footer {
   line-height: 20px;
   position: relative;
 }
-/* line 48, ../scss/partials/_trees.scss */
+/* line 53, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title .lnk-clear {
   position: absolute;
   right: 8px;
   top: 5px;
 }
-/* line 53, ../scss/partials/_trees.scss */
+/* line 58, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title .lnk-clear a {
   color: #f84540;
 }
-/* line 57, ../scss/partials/_trees.scss */
+/* line 62, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container-title .lnk-clear a:hover, .trees-container .filters-container .filter-container-title .lnk-clear a:focus {
   color: #f84540;
 }
-/* line 65, ../scss/partials/_trees.scss */
+/* line 70, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container {
   padding: 0;
   margin-bottom: 20px;
   padding-left: 10px;
   padding-right: 10px;
 }
-/* line 72, ../scss/partials/_trees.scss */
+/* line 77, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-header {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -1104,12 +1110,12 @@ footer {
   margin-bottom: 10px;
   padding: 0 5px;
 }
-/* line 80, ../scss/partials/_trees.scss */
+/* line 85, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input {
   margin-bottom: 8px;
   position: relative;
 }
-/* line 85, ../scss/partials/_trees.scss */
+/* line 90, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear {
   position: absolute;
   right: 8px;
@@ -1120,20 +1126,20 @@ footer {
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 94, ../scss/partials/_trees.scss */
+/* line 99, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear a {
   color: #d5d5d5;
   font-size: 12px;
 }
-/* line 98, ../scss/partials/_trees.scss */
+/* line 103, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear a:hover {
   color: #FFF;
 }
-/* line 104, ../scss/partials/_trees.scss */
+/* line 109, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear:hover {
   color: #FFF;
 }
-/* line 111, ../scss/partials/_trees.scss */
+/* line 116, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .inpt {
   width: 100%;
   display: block;
@@ -1149,37 +1155,37 @@ footer {
   color: #d5d5d5;
   line-height: 16px;
 }
-/* line 127, ../scss/partials/_trees.scss */
+/* line 132, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .inpt-select option.option {
   padding: 5px;
   background: #f3f3f4;
   color: #333333;
 }
-/* line 135, ../scss/partials/_trees.scss */
+/* line 140, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block {
   border-radius: 3px;
   overflow: hidden;
   height: auto;
   padding: 0;
 }
-/* line 142, ../scss/partials/_trees.scss */
+/* line 147, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items {
   max-height: 120px;
   overflow-y: auto;
   padding: 0;
 }
-/* line 150, ../scss/partials/_trees.scss */
+/* line 155, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label {
   display: block;
   padding: 0 5px;
   clear: both;
 }
-/* line 156, ../scss/partials/_trees.scss */
+/* line 161, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label:before {
   clear: both;
   float: none;
 }
-/* line 162, ../scss/partials/_trees.scss */
+/* line 167, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label input {
   float: left;
   display: inline-block;
@@ -1187,7 +1193,7 @@ footer {
   margin-top: 5px;
   margin-right: 5px;
 }
-/* line 171, ../scss/partials/_trees.scss */
+/* line 176, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label .text {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1197,108 +1203,108 @@ footer {
   float: left;
   display: inline-block;
 }
-/* line 177, ../scss/partials/_trees.scss */
+/* line 182, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item label .text i.fa {
   width: 20px;
   text-align: center;
 }
-/* line 185, ../scss/partials/_trees.scss */
+/* line 190, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item:nth-child(odd) {
   background: #cccccc;
 }
-/* line 190, ../scss/partials/_trees.scss */
+/* line 195, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items .filter-item:nth-child(even) {
   background: #dfdfdf;
 }
-/* line 196, ../scss/partials/_trees.scss */
+/* line 201, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-inline {
   background: #dfdfdf;
 }
-/* line 200, ../scss/partials/_trees.scss */
+/* line 205, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-inline .filter-item {
   float: left;
   display: inline-block;
   background: none;
   margin-right: 10px;
 }
-/* line 213, ../scss/partials/_trees.scss */
+/* line 218, ../scss/partials/_trees.scss */
 .trees-container .content-container {
   min-height: 700px;
 }
 @media (max-width: 991px) {
-  /* line 213, ../scss/partials/_trees.scss */
+  /* line 218, ../scss/partials/_trees.scss */
   .trees-container .content-container {
     min-height: 0;
   }
 }
-/* line 222, ../scss/partials/_trees.scss */
+/* line 227, ../scss/partials/_trees.scss */
 .trees-container .content-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 229, ../scss/partials/_trees.scss */
+/* line 234, ../scss/partials/_trees.scss */
 .trees-container .content-container #treeDetails {
   height: auto;
 }
-/* line 234, ../scss/partials/_trees.scss */
+/* line 239, ../scss/partials/_trees.scss */
 .trees-container .content-container .map-container {
-  min-height: 628px;
+  min-height: 600px;
 }
 @media (max-width: 991px) {
-  /* line 234, ../scss/partials/_trees.scss */
+  /* line 239, ../scss/partials/_trees.scss */
   .trees-container .content-container .map-container {
     min-height: 0;
   }
 }
-/* line 243, ../scss/partials/_trees.scss */
+/* line 248, ../scss/partials/_trees.scss */
 .trees-container .content-container .map-container .map {
-  min-height: 628px;
+  min-height: 600px;
   height: auto;
 }
 @media (max-width: 991px) {
-  /* line 243, ../scss/partials/_trees.scss */
+  /* line 248, ../scss/partials/_trees.scss */
   .trees-container .content-container .map-container .map {
     min-height: 0;
     height: 300px !important;
   }
 }
-/* line 257, ../scss/partials/_trees.scss */
+/* line 262, ../scss/partials/_trees.scss */
 .trees-container .result-container {
   padding: 20px 20px;
   min-height: 700px;
 }
 @media (max-width: 991px) {
-  /* line 257, ../scss/partials/_trees.scss */
+  /* line 262, ../scss/partials/_trees.scss */
   .trees-container .result-container {
     min-height: 0;
   }
 }
-/* line 267, ../scss/partials/_trees.scss */
+/* line 272, ../scss/partials/_trees.scss */
 .trees-container .result-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 274, ../scss/partials/_trees.scss */
+/* line 279, ../scss/partials/_trees.scss */
 .trees-container .result-container .tree-list-outer {
   max-height: 602px;
   overflow-y: auto;
 }
-/* line 280, ../scss/partials/_trees.scss */
+/* line 285, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container {
   width: 100%;
 }
-/* line 288, ../scss/partials/_trees.scss */
+/* line 293, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td {
   background: #333333;
   color: white;
 }
-/* line 293, ../scss/partials/_trees.scss */
+/* line 298, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td h6 {
   color: white;
 }
-/* line 299, ../scss/partials/_trees.scss */
+/* line 304, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group button {
   color: white;
   border: none;
@@ -1306,11 +1312,11 @@ footer {
   padding-left: 0;
   padding-right: 0;
 }
-/* line 307, ../scss/partials/_trees.scss */
+/* line 312, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group button i {
   font-size: 14px;
 }
-/* line 313, ../scss/partials/_trees.scss */
+/* line 318, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu {
   border: 1px solid #6b6c6a;
   min-width: 90px;
@@ -1319,12 +1325,12 @@ footer {
   overflow: hidden;
   padding: 0;
 }
-/* line 321, ../scss/partials/_trees.scss */
+/* line 326, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li {
   padding: 0;
   background: #ffffff;
 }
-/* line 326, ../scss/partials/_trees.scss */
+/* line 331, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a {
   padding: 0 5px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1336,42 +1342,42 @@ footer {
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 332, ../scss/partials/_trees.scss */
+/* line 337, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:hover, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:focus, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:active {
   background: #333333;
   color: white;
 }
-/* line 339, ../scss/partials/_trees.scss */
+/* line 344, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li:nth-child(odd) {
   background: #f3f3f4;
 }
-/* line 344, ../scss/partials/_trees.scss */
+/* line 349, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li:nth-child(even) {
   background: #ffffff;
 }
-/* line 356, ../scss/partials/_trees.scss */
+/* line 361, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tbody {
   max-height: 200px;
   overflow-y: auto;
 }
-/* line 364, ../scss/partials/_trees.scss */
+/* line 369, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tfoot td {
   background: none;
   padding: 0;
 }
-/* line 371, ../scss/partials/_trees.scss */
+/* line 376, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr {
   -webkit-transition: all linear 0.4s;
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 374, ../scss/partials/_trees.scss */
+/* line 379, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td {
   padding: 5px;
   border-top: 1px solid #f0f1f1;
   border-bottom: 1px solid #ffffff;
 }
-/* line 379, ../scss/partials/_trees.scss */
+/* line 384, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td h6 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
@@ -1379,7 +1385,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 384, ../scss/partials/_trees.scss */
+/* line 389, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td p {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1387,7 +1393,7 @@ footer {
   color: #3f3f3f;
   line-height: 16px;
 }
-/* line 389, ../scss/partials/_trees.scss */
+/* line 394, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td small {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
@@ -1395,17 +1401,17 @@ footer {
   color: #3f3f3f;
   line-height: 16px;
 }
-/* line 394, ../scss/partials/_trees.scss */
+/* line 399, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-check {
   background: #c7c9c9;
   text-align: center;
 }
-/* line 402, ../scss/partials/_trees.scss */
+/* line 407, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-img img {
   width: 40px;
   height: 50px;
 }
-/* line 411, ../scss/partials/_trees.scss */
+/* line 416, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a {
   font-size: 18px;
   color: white;
@@ -1413,37 +1419,37 @@ footer {
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 417, ../scss/partials/_trees.scss */
+/* line 422, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a:hover, .trees-container .result-container table.tree-list-container tr td.td-action a:focus, .trees-container .result-container table.tree-list-container tr td.td-action a:active {
   text-decoration: none;
 }
-/* line 425, ../scss/partials/_trees.scss */
+/* line 430, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:nth-child(odd) {
   background: #f3f3f4;
 }
-/* line 430, ../scss/partials/_trees.scss */
+/* line 435, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:nth-child(even) {
   background: #e7eaea;
 }
-/* line 435, ../scss/partials/_trees.scss */
+/* line 440, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:hover, .trees-container .result-container table.tree-list-container tr:focus, .trees-container .result-container table.tree-list-container tr:active {
   background: #c7c9c9;
 }
-/* line 443, ../scss/partials/_trees.scss */
+/* line 448, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:hover td.td-action a, .trees-container .result-container table.tree-list-container tr:focus td.td-action a, .trees-container .result-container table.tree-list-container tr:active td.td-action a {
   color: #333333;
 }
-/* line 454, ../scss/partials/_trees.scss */
+/* line 459, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container {
   padding: 20px 15px;
   background: #333333;
 }
-/* line 459, ../scss/partials/_trees.scss */
+/* line 464, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group {
   display: block;
   width: 100%;
 }
-/* line 464, ../scss/partials/_trees.scss */
+/* line 469, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group .inpt {
   width: 100%;
   display: block;
@@ -1454,18 +1460,18 @@ footer {
   border: 1px solid #696a6a;
 }
 @media (max-width: 767px) {
-  /* line 464, ../scss/partials/_trees.scss */
+  /* line 469, ../scss/partials/_trees.scss */
   .trees-container .admin-filter-container .input-group .inpt {
     margin-bottom: 10px;
   }
 }
-/* line 482, ../scss/partials/_trees.scss */
+/* line 487, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group .inpt-select option.option {
   padding: 5px;
   background: #f3f3f4;
   color: #333333;
 }
-/* line 491, ../scss/partials/_trees.scss */
+/* line 496, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .lnk {
   line-height: 30px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1474,7 +1480,7 @@ footer {
   color: white;
   line-height: 30px;
 }
-/* line 496, ../scss/partials/_trees.scss */
+/* line 501, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .lnk a {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
@@ -1483,18 +1489,18 @@ footer {
   line-height: 30px;
 }
 
-/* line 506, ../scss/partials/_trees.scss */
+/* line 511, ../scss/partials/_trees.scss */
 .edit-tree-container .image {
   padding: 5px;
   border: 1px solid #ccc;
 }
-/* line 511, ../scss/partials/_trees.scss */
+/* line 516, ../scss/partials/_trees.scss */
 .edit-tree-container .image img {
   width: 100%;
   display: block;
   height: auto;
 }
-/* line 519, ../scss/partials/_trees.scss */
+/* line 524, ../scss/partials/_trees.scss */
 .edit-tree-container .content {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1502,7 +1508,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 522, ../scss/partials/_trees.scss */
+/* line 527, ../scss/partials/_trees.scss */
 .edit-tree-container .content h2 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -1512,7 +1518,7 @@ footer {
   margin-bottom: 10px;
   margin-top: 15px;
 }
-/* line 529, ../scss/partials/_trees.scss */
+/* line 534, ../scss/partials/_trees.scss */
 .edit-tree-container .content h3 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1521,11 +1527,11 @@ footer {
   line-height: 24px;
   margin-top: 15px;
 }
-/* line 535, ../scss/partials/_trees.scss */
+/* line 540, ../scss/partials/_trees.scss */
 .edit-tree-container .content pre {
   padding: 5px 10px;
 }
-/* line 542, ../scss/partials/_trees.scss */
+/* line 547, ../scss/partials/_trees.scss */
 .edit-tree-container .content dl dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1534,7 +1540,7 @@ footer {
   line-height: 24px;
   text-align: left;
 }
-/* line 548, ../scss/partials/_trees.scss */
+/* line 553, ../scss/partials/_trees.scss */
 .edit-tree-container .content dl dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1542,7 +1548,7 @@ footer {
   color: #3f3f3f;
   line-height: 24px;
 }
-/* line 558, ../scss/partials/_trees.scss */
+/* line 563, ../scss/partials/_trees.scss */
 .edit-tree-container .content table tr td, .edit-tree-container .content table tr th {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1550,7 +1556,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 562, ../scss/partials/_trees.scss */
+/* line 567, ../scss/partials/_trees.scss */
 .edit-tree-container .content table tr td a, .edit-tree-container .content table tr th a {
   font-size: 12px;
   line-height: 16px;

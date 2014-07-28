@@ -52,17 +52,16 @@
 					<div class="col-xs-4 col">
 						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download</a>
 					</div>
-					<div class="col-xs-4 col">
+					<div class="col-xs-4 col" ng-if="report.approved!=1">
 						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
+					</div>
+					<div class="col-xs-4 col" ng-if="report.approved==1 && auth.is('staff')">
+						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>
 					</div>
 					<div class="col-xs-4 col">						
 						<a href ng-if="report.approved!=1" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Approve Estimate</a>
 						<div ng-if="report.approved==1" class="img-approve"><img src="img/approved.png"></div>
 					</div>
-					<!--
-						we need to show a DONE button, if the job is approve,d and the user viewing is a STAFF role
-						%%todo - <div ng-if="report.approved==1 && auth.is('staff')">Job Done</div>
-					-->
 				</div>
 			</div>
 		</div>

@@ -57,10 +57,16 @@ var ReportCtrl = app.controller('ReportCtrl',
 		//s.report.grandTotal = RS.getGrandTotal(s.report.items);
 	});
 
-	s.$on('onSiteUpdate',function(evt, obj){
-		//TODO
+	s.$on('onSiteUpdate',function(evt, site){
+		if (ReportService.report.siteID == site.siteID) {
+			ReportService.report.siteName = site.siteName;
+			ReportService.report.contact = site.contact;
+			ReportService.report.contactPhone = site.contactPhone;
+			ReportService.report.street = site.street;
+			ReportService.report.city = site.city;
+			ReportService.report.state = site.state;
+		}
 	});
-
 
     // returns true if row with passed id is the current highlighted row
     s.rowHighlightClass = function (item) {

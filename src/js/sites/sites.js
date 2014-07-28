@@ -1,8 +1,8 @@
 'use strict';
 
 var SitesCtrl = app.controller('SitesCtrl', 
-['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api', '$rootScope', //TODO remove $rootScope
-function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $rootScope) {
+['$scope', '$route', '$modal', '$location', 'Api', '$rootScope', 'ReportService',//TODO remove $rootScope
+function ($scope, $route, $modal, $location, Api, $rootScope, ReportService) {
 	var s=window.scs=$scope
 		,myStateID='sites'
 		,mode=''
@@ -40,7 +40,6 @@ function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $rootS
 			Api.refreshInitData();
 		});
 		// Update all other sites models, eg. the sites dropdown on the trees report
-		$rootScope.$emit('onSiteUpdate',s.site); //TODO remove this
 		s.sendEvt('onSiteUpdate', s.site);
 		siteEditModal.hide();
 	};

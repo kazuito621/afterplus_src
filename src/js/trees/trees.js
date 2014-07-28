@@ -5,8 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl', 
-	['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService',
-	function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService) {
+	['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api',
+	function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api) {
 
 
 	// local and scoped vars
@@ -184,7 +184,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 	// 		1. if set to null, then show SITES on map
 	//		2. ELSE, if siteID exists, show TREES on the map
 	s.$watch('selected.siteID', function(ID, oldID) {
-		SiteModelUpdateService.setSites(s.filteredSites);
 		ReportService.setSiteID(ID);
 		if(s.data.mode()=='trees'){
 			ReportService.loadRecent();

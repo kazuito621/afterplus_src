@@ -28,7 +28,7 @@
                     <td>{{s.city}}, {{s.state}}</td>
                     <td>
                         <a ng-if="auth.is('staff')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
-                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID)" class="fa fa-times _red _size7 hoverDisplay"  bs-modal="siteDeleteModal" title="Delete" style="text-decoration: none;"></a>
+                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size7 hoverDisplay" bs-tooltip title="Delete" style="text-decoration: none;"></a>
                     </td>
                 </tr>
             </tbody>

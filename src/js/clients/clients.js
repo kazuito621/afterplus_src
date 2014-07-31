@@ -1,15 +1,17 @@
 var ClientsCtrl = app.controller('ClientsCtrl',
-    ['$scope', '$route', '$modal', 'Api',
-        function ($scope, $route, $modal, Api) {
+    ['$scope', '$route', '$modal', 'Api', '$popover',
+        function ($scope, $route, $modal, Api, $popover) {
             'use strict';
 
             var s = window.cts = $scope;
             var myStateID = 'clients';
+            var clientDeletePopover;
             s.mode = '';
             s.type = 'client';
             s.newClient = {};
             s.items = {};
             s.displayedClients = [];
+            s.activePopover = {};
 
             var init = function () {
                 s.displayedClients = s.initData.clients.slice(0, 49);
@@ -25,11 +27,22 @@ var ClientsCtrl = app.controller('ClientsCtrl',
             // Pre-fetch an external template populated with a custom scope
             var clientEditModal = $modal({scope: $scope, template: '/js/clients/edit.tpl.html', show: false});
 
+            var deletePopoverFactory = function (el) {
+                return $popover(el, {
+                    scope: $scope,
+                    template: '/js/partial_views/delete.tpl.html',
+                    show: false,
+                    animation: 'am-flip-x',
+                    placement: 'left',
+                    trigger: 'focus'
+                });
+            };
+
             //s.Rclient.push() .. to push new data...
 
             s.showMoreClients = function () {
                 var count = s.displayedClients.length;
-                if (count === s.initData.clients.length) {
+                if (s.initData === undefined || s.initData.clients === undefined || count === s.initData.clients.length) {
                     return;
                 }
 
@@ -92,32 +105,35 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 clientEditModal.show();
             };
 
-            s.deleteItems = function (itemID) {
-                Api.removeClientById(itemID)
+            s.deleteCurrentItem = function () {
+                Api.removeClientById(s.activePopover.clientID)
                     .then(function () {
                         Api.refreshInitData();
-                    }, function err () {
+                    }, function err() {
                         //todo ... how do we get this?
-                        // todo -- ad this same functionality to delete of site
+                        // todo -- ad this same functionality to delete of client
                     });
                 Api.refreshInitData();
+                clientDeletePopover.hide();
+                delete s.activePopover.clientID;
             };
 
-            s.queueOrDequeueItemForDelete = function (itemID) {
-                if (!s.isSelected(itemID)) {
-                    s.items[itemID] = '1';
-                } else {
-                    delete s.items[itemID];
+            s.queueOrDequeueItemForDelete = function (itemID, event) {
+                if (clientDeletePopover && typeof clientDeletePopover.hide === 'function') {
+                    delete s.activePopover.clientID;
+                    clientDeletePopover.hide();
                 }
+
+                if (!s.activePopover.clientID && event && event.target) {
+                    s.activePopover.clientID = itemID
+                    clientDeletePopover = deletePopoverFactory($(event.target));
+
+                    clientDeletePopover.$promise.then(function () {
+                        clientDeletePopover.show();
+                    });
+                }
+
                 s.type = 'client';
-            };
-
-            s.isSelected = function (itemID) {
-                if (s.items[itemID] === 1) {
-                    return true;
-                }
-
-                return false;
             };
 
             s.$on('$locationChangeSuccess', pre_init);

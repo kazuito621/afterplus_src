@@ -158,7 +158,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.activeResultRow = treeID;
 
                 var newActiveRow = $('#tree-result-item-row-' + s.activeResultRow);
-                var listContainer = $('.trees-result-list');
+                var listContainer = $('#tree-list-container');
 
                 var scrollTo = function (value) {
                     listContainer.animate({

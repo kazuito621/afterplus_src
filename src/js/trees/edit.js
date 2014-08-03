@@ -87,7 +87,7 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
 
             s.addTreeRec = function () {
                 var itm = {treatmentStatusCode: 'rec', treatmentTypeCode: 'new', treatmentTypeID: -9,
-                    treeHistoryID: 0, year: moment().format('YYYY')};
+                    treeHistoryID: 0, year: moment().format('YYYY'), price: '0.00'};
                 s.tree.history.splice(0, 0, itm);
             };
 

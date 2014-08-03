@@ -43,11 +43,16 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
-            s.filters.year=[{id:moment().format('YYYY'), desc:'This year'}
-                ,{id:moment().add('year',1).format('YYYY'), desc:'Next yr'}
-                ,{id:moment().add('year',2).format('YYYY'), desc:'2yr'}
-                ,{id:moment().add('year',3).format('YYYY'), desc:'3yr'}
-                ,{id:moment().add('year',4).format('YYYY'), desc:'4yr'}]
+            s.filters.year=[
+                {id:moment().format('YYYY'), desc:'This year'},
+                {id:moment().add('year',1).format('YYYY'), desc:'Next yr'},
+                {id:moment().add('year',2).format('YYYY'), desc:'2yr'},
+                {id:moment().add('year',3).format('YYYY'), desc:'3yr'},
+                {id:moment().add('year',4).format('YYYY'), desc:'4yr'},
+                {id:moment().add('year',-1).format('YYYY'), desc:'Prev year'}, // index: 5
+                {id:moment().add('year',-2).format('YYYY'), desc:'Year -2'},
+                {id:moment().add('year',-3).format('YYYY'), desc:'Year -3'}
+            ];
             s.treatmentTypes = s.initData.filters.treatments;
             ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 
@@ -62,7 +67,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 ,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
             };
 
-
             s.TFSdata=TFS.data;
             if(s.data.mode()=='estimate'){
                 var rptHash=s.renderPath[1];
@@ -73,8 +77,51 @@ var TreesCtrl = app.controller('TreesCtrl',
                             s.report=data;
                             if(data && data.siteID) s.selected.siteID=data.siteID;
                             showMappedTrees();
+
+                            // todo - find a better place for this.... should happen after
+                            // tree map is initialized
+                            setTimeout(function()
+                            {
+                                $('#treeMap_estimate').width($('#treeMap_estimate').width());
+                                $('#treeMap_estimate').affix(
+                                {
+                                    offset: 
+                                    {
+                                        top: $('#treeMap_estimate').offset().top - 120
+                                    }
+                                });
+
+                                $('#action-container').affix(
+                                {
+                                    offset: 
+                                    {
+                                        top: $('#action-container').offset().top
+                                    }
+                                });
+
+                            } , 1000);  
                         });
                 }
+            }
+
+            if(s.data.mode()=='trees')
+            {
+                setTimeout(function()
+                {
+                    $('.collapse-container .collapse-head a').click(function(event) {
+                        var $collapse_container = $(this).closest('.collapse-container');
+                        $collapse_container.find('.collapse-body').slideToggle('slow');
+                        if($(this).find('i').hasClass('fa-angle-double-down'))
+                        {
+                            $(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+                        }
+                        else 
+                        {
+                            $(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+                        }
+                        return false;
+                    });
+                } , 2000);
             }
 
             // here, we account for 2 usecases:
@@ -115,7 +162,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.activeResultRow = treeID;
 
                 var newActiveRow = $('#tree-result-item-row-' + s.activeResultRow);
-                var listContainer = $('.trees-result-list');
+                var listContainer = $('#tree-list-container');
 
                 var scrollTo = function (value) {
                     listContainer.animate({
@@ -243,6 +290,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                     showMappedSites();
                 }
             }
+
+          	s.$on('trees.reset', function(){
+				s.filteredSites=s.initData.sites;
+				s.selected.clientTypeID=s.selected.clientID=s.selected.siteID='';
+			});
 
             s.reset = function(){
                 ReportService.getBlankReport();

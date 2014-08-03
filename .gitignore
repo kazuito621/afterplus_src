@@ -19,3 +19,5 @@ nohup.out
 *.out
 *.log
 php
+*.sass-cache
+Thumbs.db

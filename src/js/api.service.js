@@ -75,6 +75,9 @@ function (Rest, $rootScope, $q, $location ) {
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },
+		approveReport: function( rptID ){
+			return Rest.one('estimate',rptID).post('approve');
+		},
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});

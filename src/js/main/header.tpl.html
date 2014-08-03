@@ -1,10 +1,20 @@
-<div class='header-nav'>
-	<div ng-if="auth.isSignedIn()">
-		<span ng-if="auth.is('staff')">	
-		<a href='#/trees'>Trees</a> |  <a href='#/sites'>Properties</a> | <a href='#/clients'>Clients</a> | 
-		</span>
-		<span>
-			<b>{{auth.getLoginName()}}</b> <a href ng-click="auth.signOut()">Sign Out</a>
-		</span>
+<div class="header-inner">
+	<div class="cnt-logo"><img src="img/logo.png"></div>
+	<div class="nav-container">
+		<nav ng-if="auth.is('staff')">
+			<ul>
+				<li><a href="#/trees" title="" ng-class="{active: currentTab === 'trees'}"><i class="fa fa-tree"></i><span class="text">Trees</span></a></li>
+				<li><a href="#/sites" title="" ng-class="{active: currentTab === 'sites'}"><i class="fa fa-home"></i><span class="text">Properties</span></a></li>
+				<li><a href="#/clients" title="" ng-class="{active: currentTab === 'clients'}"><i class="fa fa-user"></i><span class="text">Clients</span></a></li>
+			</ul>
+		</nav>
 	</div>
+	<div class='header-nav cnt-actions'>
+		<div ng-if="auth.isSignedIn()">
+			<span>
+				<b>{{auth.getLoginName()}}</b> <a href ng-click="auth.signOut()">Sign Out</a>
+			</span>
+		</div>
+	</div>	
+	<div class="clearfix"></div>
 </div>

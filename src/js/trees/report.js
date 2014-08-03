@@ -26,6 +26,18 @@ var ReportCtrl = app.controller(
                 disableNativeSpellChecker: false
             };
 
+            s.getRecentReportTitle = function (report) {
+                var res = '';
+
+                if (report.approved == 1) {
+                    res += '[APPROVED] ';
+                }
+
+                res += report.name + ' - ' + report.tstamp_updated;
+
+                return res;
+            };
+
             // let's watch the recentReportList property, and update on scope if it changes
             s.$on('onLoadRecent', function (evt, list) {
                 s.recentReportList = list;
@@ -196,8 +208,17 @@ var ReportCtrl = app.controller(
                 s.service.price = "";
             };
 
-            // Remove treatment from estimate
 
+            s.approveEstimate = function(){
+                s.disableApproveButton = true;
+                s.setAlert('Processing...', {time: 5});
+                Api.approveReport(s.report.reportID).then(function(data){
+                    s.report.approved = '1';
+                    s.disableApproveButton = false;
+                });
+            }
+
+            // Remove treatment from estimate
             s.removeTreatmentFromEstimate = function (treeIndex, treatmentIndex) {
                 // Remove treatment only if there is more than one treatment. Otherwise remove the item
 //                console.log('Tree index: %s, treatment index: %s', treeIndex, treatmentIndex);

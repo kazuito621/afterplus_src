@@ -43,11 +43,16 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
-            s.filters.year=[{id:moment().format('YYYY'), desc:'This year'}
-                ,{id:moment().add('year',1).format('YYYY'), desc:'Next yr'}
-                ,{id:moment().add('year',2).format('YYYY'), desc:'2yr'}
-                ,{id:moment().add('year',3).format('YYYY'), desc:'3yr'}
-                ,{id:moment().add('year',4).format('YYYY'), desc:'4yr'}]
+            s.filters.year=[
+                {id:moment().format('YYYY'), desc:'This year'},
+                {id:moment().add('year',1).format('YYYY'), desc:'Next yr'},
+                {id:moment().add('year',2).format('YYYY'), desc:'2yr'},
+                {id:moment().add('year',3).format('YYYY'), desc:'3yr'},
+                {id:moment().add('year',4).format('YYYY'), desc:'4yr'},
+                {id:moment().add('year',-1).format('YYYY'), desc:'Prev year'}, // index: 5
+                {id:moment().add('year',-2).format('YYYY'), desc:'Year -2'},
+                {id:moment().add('year',-3).format('YYYY'), desc:'Year -3'}
+            ];
             s.treatmentTypes = s.initData.filters.treatments;
             ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 
@@ -61,7 +66,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 ,bg:['78ee31','2044df','ce2712','db7e00','646464','6d2dd5','f5f02c','ed79fb','a8621c','487123','751307','dc85ee','9baeec','298d8c','8bf8f7','fdc476','a5a5a5','e27966','6aab09','ad8cd6']
                 ,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
             };
-
 
             s.TFSdata=TFS.data;
             if(s.data.mode()=='estimate'){
@@ -158,7 +162,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.activeResultRow = treeID;
 
                 var newActiveRow = $('#tree-result-item-row-' + s.activeResultRow);
-                var listContainer = $('.trees-result-list');
+                var listContainer = $('#tree-list-container');
 
                 var scrollTo = function (value) {
                     listContainer.animate({

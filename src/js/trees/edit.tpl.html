@@ -1,8 +1,8 @@
 <div ng-controller='EditTreeCtrl' class="treeEditBox edit-tree-container">
 
-    <div class="row">
+    <div class="row" bindonce="tree">
         <div class="col-md-6">
-            <div class="image"><img ng-src="{{tree.imgMed}}{{tree_cachebuster}}"/></div>
+            <div class="image"><img bo-src="tree.imgMed + tree_cachebuster"/></div>
         </div>
         <div class="col-md-6">
             <div class="content">
@@ -16,8 +16,8 @@
                         {{ tree.commonName || '(not specified)' }}
                     </span>
                 </h2>
-                {{ tree.speciesID|speciesID2Name:'bot':this }}<br>
-                (treeID: {{treeID}}, SpeciesID:{{tree.speciesID}}, siteID:{{tree.siteID}})<BR><BR>
+                <span bo-text="tree.speciesID|speciesID2Name:'bot':this"></span><br>
+                <span bo-text="'(treeID:' + treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
                 
                 <dl class="dl-horizontal">
                     <dt>Diameter:</dt>
@@ -56,7 +56,7 @@
                     <dd>
                         <div ng-if="tree.mode=='edit'" class="pullright centerText">
                             <a href ng-if="auth.is('staff')" e-ng-options="obj for obj in ynOptions"  editable-radiolist="tree.building">{{tree.building || "(not specified)"}}</a>
-                            <span ng-if="!auth.is('staff')" e-ng-options="obj for obj in ynOptions">{{tree.building || "(not specified)"}}</a>
+                            <span ng-if="!auth.is('staff')" e-ng-options="obj for obj in ynOptions">{{tree.building || "(not specified)"}}</span>
                         </div>
                         <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.building}}</div>
                     </dd>  
@@ -64,7 +64,7 @@
                     <dd>
                         <div ng-if="tree.mode=='edit'" class="pullright centerText">
                             <a href ng-if="auth.is('staff')" e-ng-options="obj for obj in ynpOptions"  editable-radiolist="tree.caDamage">{{tree.caDamage || "(not specified)"}}</a>
-                            <span ng-if="!auth.is('staff')" e-ng-options="obj for obj in ynpOptions">{{tree.caDamage || "(not specified)"}}</a>
+                            <span ng-if="!auth.is('staff')" e-ng-options="obj for obj in ynpOptions">{{tree.caDamage || "(not specified)"}}</span>
                         </div>
                         <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.caDamage}}</div>
                     </dd>  
@@ -87,23 +87,23 @@
                             </tr>
                         <thead>
                         <tbody>
-                            <tr id="treeHistoryItem" ng-repeat="o in tree.history" ng-mouseover="showEdit=true" ng-mouseleave="showEdit=false">
-                                <td width='50%'><a href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments'
-                                        editable-select='o.treatmentTypeID'>
-                                            {{o.treatmentTypeID|treatmentTypeID2Name:this}}</a>
-                                </td>
-                                <td width='40%'><a href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses'
-                                        editable-select='o.treatmentStatusCode'>
-                                            {{o.treatmentStatusCode|treatmentStatusName:this}}</a>
-                                </td>
-                                <td><a href e-ng-options='y for y in yearOptions' editable-select='o.year'
+												<tr id="treeHistoryItem" ng-repeat="o in tree.history" class="hoverHotspot">
+														<td width='44%'><a href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments'
+																							 editable-select='o.treatmentTypeID'>
+																{{o.treatmentTypeID|treatmentTypeID2Name:this}}</a>
+														</td>
+														<td width='34%'><a href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses'
+																							 editable-select='o.treatmentStatusCode'>
+																{{o.treatmentStatusCode|treatmentStatusName:this}}</a>
+														</td>
+														<td><a href e-ng-options='y for y in yearOptions' editable-select='o.year'
                                     >{{o.year}}</a>
                                 </td>
-								<td>
-									<a href editable-text='o.price' ng-show="o.price !== null && o.price">
-										${{o.price|formatPrice}}
-									</a>
-								</td>
+                                <td>
+                                    <a href editable-text='o.price' ng-show="o.price !== null && o.price">
+                                        ${{o.price|formatPrice}}
+                                    </a>
+                                </td>
                                 <td align='right'>
                                     <a ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>
                                 </td>

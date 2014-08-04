@@ -675,7 +675,7 @@ td.estimate_multirow_col{
 
 /*highlighting for tree results row - orange*/
 .highlighted-row {
-    background-color: #fb5;
+    background-color: #fb5 !important;
 }
 
 .changed-row {

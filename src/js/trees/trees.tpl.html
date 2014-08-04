@@ -139,6 +139,41 @@
 									</div>	
 								</div>
 							    <!-- END YEAR FILTER SECTION --> 
+								<!-- START OLD YEARS FILTER SECTION -->
+								<div class="filter-container">
+									<div class="filterHeader filter-header">
+										<h3>Old years:</h3>
+									</div>
+									<div class='filterItems filter-block'>
+										<div class="filter-items filter-items-inline">
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[5].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[5].id}}',initData.filters.year[5].selected)">
+													<span class="text">2013</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[6].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[6].id}}',initData.filters.year[6].selected)">
+													<span class="text">2012</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[7].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[7].id}}',initData.filters.year[7].selected)">
+													<span class="text">2011</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							    <!-- END OLD YEARS FILTER SECTION -->
 							</div>
 
 							<div class="collapse-body">
@@ -280,7 +315,7 @@
 														ng-change="onSelectClientTypeID(selected.clientTypeID)"
 														ng-disabled="initData.clientTypes.length === 0">
 															<option class="option" value="">Client Type</option>
-													    	<option class="option" ng-repeat="clientType in initData.clientTypes" value="{{clientType.clientTypeID}}">{{clientType.name}}</option>
+                                                            <option bindonce class="option" ng-repeat="clientType in initData.clientTypes" value="{{clientType.clientTypeID}}" bo-bind="clientType.name"></option>
 													  	</select>
 													</div>
 												</div>
@@ -290,7 +325,7 @@
 															ng-model="selected.clientID"
 															ng-change="onSelectClientID(selected.clientID)" title="TEST">
 													    	<option class="option" value="">Client</option>
-													    	<option class="option" ng-repeat="client in filteredClients" value="{{client.clientID}}">{{client.clientName}}</option>
+													    	<option bindonce class="option" ng-repeat="client in filteredClients" value="{{client.clientID}}" bo-bind="client.clientName"></option>
 													  	</select>
 													</div>
 												</div>
@@ -300,7 +335,7 @@
 															ng-model="selected.siteID"
 															ng-change="onSelectSiteID(selected.siteID)">
 													    	<option class="option" value="">{{ filteredSites.length>0 | ifElse:'Property':'(No Properties)' }}</option>
-													    	<option class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}">{{site.siteName}}</option>
+													    	<option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
 													  	</select>
 													</div>
 												</div>	
@@ -350,30 +385,35 @@
 											</tr>
 										</thead>
 									</table>
-									<div class="tree-list-outer">
+									<div class="tree-list-outer" id="tree-list-container">
 										<table class="tree-list-container">
 											<tbody>
-												<tr ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
+												<tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
 													<td class="td-check">													
-														<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID"> 
+														<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID" id="tree-result-checkbox-{{tree.treeID}}">
 													</td>
 													<td class="td-img">
-														<div tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
-															<img ng-src="{{tree.imgSm}}" data-treeID='{{tree.treeID}}' 
-															ng-click="onTreeImageRollover(tree.treeID);" ng-mouseover="onTreeImageRollover(tree.treeID);" ng-mouseleave="onTreeImageRollout(tree.treeID);"
-															data-imgMed="{{tree.imgMed}}"
-															style="border:2px solid #{{colors.bg[tree.colorID]}}"
-															/>
-														</div>
+                                                        <label for="tree-result-checkbox-{{tree.treeID}}">
+                                                            <div tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
+                                                                <img bo-src="tree.imgSm" data-treeID='{{tree.treeID}}'
+                                                                     ng-click="onTreeImageRollover(tree.treeID);" ng-mouseover="onTreeImageRollover(tree.treeID);" ng-mouseleave="onTreeImageRollout(tree.treeID);"
+                                                                     data-imgMed="{{tree.imgMed}}"
+                                                                     style="border:2px solid #{{colors.bg[tree.colorID]}}"/>
+                                                            </div>
+                                                        </label>
 													</td>
 													<td>
-														<h6>{{tree.commonName}}</h6>
-														<p>{{tree.dbhID|dbhID2Name:this}}</p>
-														<small><span class='recYear {{tree.history|showRecoYear:"css"}}' ng-bind-html="tree.history|showRecoYear"></span>
-														(ID:{{tree.treeID}})</small>
+                                                        <label for="tree-result-checkbox-{{tree.treeID}}">
+                                                            <h6>{{tree.commonName}}</h6>
+                                                            <p>{{tree.dbhID|dbhID2Name:this}}</p>
+                                                            <small><span class='recYear {{tree.history|showRecoYear:"css"}}' ng-bind-html="tree.history|showRecoYear"></span>
+                                                                <span bo-text="'(ID:' + tree.treeID + ')'"></span></small>
+                                                        </label>
 													</td>
-													<td class="td-action">
-														<a href='#/tree_edit/{{tree.treeID}}' bs-tooltip title="View/Edit Details"><i class="fa fa-pencil"></i></a>
+													<td class="td-action" style="padding: 0px;">
+                                                        <label for="tree-result-checkbox-{{tree.treeID}}">
+                                                            <a href='#/tree_edit/{{tree.treeID}}' bs-tooltip title="View/Edit Details" style="padding: 5px;"><i class="fa fa-pencil"></i></a>
+                                                        </label>
 													</td>
 												</tr>
 											</tbody>

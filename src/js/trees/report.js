@@ -253,6 +253,10 @@ var ReportCtrl = app.controller(
                 });
             };
 
+            s.goToEstimatesList = function () {
+                $location.url('/estimates?siteID=' + s.report.siteID);
+            };
+
             // only if in trees state...
             if (s.renderPath[0] === 'trees') {
                 RS.loadRecent();

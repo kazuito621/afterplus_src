@@ -207,7 +207,16 @@ var ReportCtrl = app.controller(
                         }
                         s.setAlert(msg, {type: 'd'});
                     });
+				$timeout(function(){ updateEmailLogs(); },2000);
+				$timeout(function(){ updateEmailLogs(); },4000);
+				$timeout(function(){ updateEmailLogs(); },10000);
             };
+
+			var updateEmailLogs = function(){
+				Api.getEmailLogs(s.emailRpt.reportID).then(function(d){
+					if(d && d[0].senderID) s.report.emailLogs=d;
+				});
+			}
 
             s.addMiscService = function (desc, qty, price) {
                 RS.addMiscService(desc, qty, price);

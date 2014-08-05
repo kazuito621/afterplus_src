@@ -75,6 +75,9 @@ function (Rest, $rootScope, $q, $location ) {
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },
+		getEmailLogs: function( rptID ){
+			return Rest.all('estimate/' + rptID + '/emaillogs').getList();
+		},
 		approveReport: function( rptID ){
 			return Rest.one('estimate',rptID).post('approve');
 		},

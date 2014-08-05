@@ -6,6 +6,7 @@
 app.service('Auth', 
 	['$location', '$timeout', '$rootScope', 'md5', '$q', 'storage', 'Api',
 	function($location, $timeout, $rootScope, md5, $q, storage, Api) {
+        var self = this;
 
 	window.Auth=this;
 	// private properties
@@ -15,13 +16,7 @@ app.service('Auth',
 	// check for stored auth data
 	this.authData = storage.get('authData');
 	if(!this.authData) this.authData=defaultUserData;
-	this.userRoles={
-					public: 	1, 
-					customer:   2,
-					staff:		3,
-					admin:  	5,
-					superadmin: 10
-					};
+	this.userRoles = {};
 
 	/**
 	 * SETTER: 
@@ -76,10 +71,17 @@ app.service('Auth',
 	};
 
 	this.role2id = function(role){
-		var n=this.userRoles[role];
-		if(n) return n;
+        if (!this.userRoles[role]) {
+            return 1;
+        }
+
+        var n = this.userRoles[role].id;
+		if (n) {
+            return n;
+        }
+
 		return 1;
-	}
+	};
 
 	this.getUserRole = function(){
 		if(this.data().role) return this.data().role;
@@ -108,9 +110,11 @@ app.service('Auth',
 
 	var sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); };
 
-
-
-
+    $rootScope.$on('onInitData', function (event, data) {
+        if (data.roles) {
+            self.userRoles = data.roles;
+        }
+    });
 }]);
 
 

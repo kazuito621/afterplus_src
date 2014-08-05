@@ -56,6 +56,13 @@ app.service('Auth',
 
 	// Returns a promise with either a resolve or a reject
 	this.signInCustToken = function (custToken){
+		// if custToken is just a number (reportID), and a user is already signed in,
+		// then just use existing login info
+		if(!isNaN(custToken) && this.isSignedIn()){
+			var def=$q.defer();
+			def.resolve(this.data());
+			return def.promise;
+		}
         return Api.signInCustToken(custToken, this, onDataBackFromSignIn);
 	};
 

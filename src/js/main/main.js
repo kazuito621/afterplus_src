@@ -34,7 +34,9 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		s.renderTplID=s.renderPath[0];
 		if(s.renderTplID=='estimate') s.renderTplID='trees';		
 
-		if(lastRenderedTplID == s.renderTplID) return;
+		// if render template is the same, we can stop, but still
+		// send an event that a nav has occured
+		if(lastRenderedTplID == s.renderTplID) return s.sendEvt('nav', {new:s.renderTplID, old:lastRenderedTplID});
 
 		// lazy load the property template based on the base path
 		// ie. if "#/trees", then load "trees.tpl.html"

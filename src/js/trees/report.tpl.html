@@ -300,7 +300,7 @@
 			     
 			 	<div class="section-container" ng-if="data.mode()=='estimate'">
 			 		<h6 class="section-sub-title">Notes</h6>
-			        <pre>{{report.notes}}</pre>
+			        <span ng-bind-html="report.notes"></span>
 
 					<h2 class="section-mini-title">Definition of Treatments:</h2>
 					<div ng-repeat=" desc in treatmentDescriptions "> 

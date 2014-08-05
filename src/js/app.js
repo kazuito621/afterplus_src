@@ -14,7 +14,7 @@ app.config(['$routeProvider', '$locationProvider',
             .when('/estimate/:rptID', {
                     auth:false
                     ,resolve: {
-                      	deps:['Api', function(Api){  dbg('state resolve');return Api.getPromise(); }]
+                      	deps:['Api', function(Api){  return Api.getPromise(); }]
 						,signin:['Auth', '$route', function(Auth, $route){
 									dbg($route.current.params.rptID)
 									var rptID=$route.current.params.rptID;

@@ -139,8 +139,7 @@
 				</td>
 				<td bo-text="itm.tstamp_sent"></td>
 				<td>
-					<span class='textIconBlock-green' ng-if="itm.tstamp_opened">OPENED</span>
-					<span class='textIconBlock-red' ng-if="itm.result!=1 && !itm.tstamp_opened">SEND FAILED</span>
+					<span ng-class="'emaillogResult '+itm.resultMessage" ng-bind='itm.resultMessage'></span>
 				</td>
 			</tr>
 		</table>

@@ -57,10 +57,10 @@
 						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
 					</div>
 					<div class="col-xs-4 col">
-						<button ng-if="report.approved == 0" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
+						<button ng-if="report.actionButton" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
 								<i class="fa fa-check"></i> Approve Estimate
 						</button>
-						<div ng-if="report.approved == 1" class="img-approve"><img src="img/approved.png"></div>
+						<div ng-if="!report.actionButton" class="img-approve" ng-bind="report.rptStatusText"></div>
 					</div>
 						<!--
 								we need to show a DONE button, if the job is approve,d and the user viewing is a STAFF role

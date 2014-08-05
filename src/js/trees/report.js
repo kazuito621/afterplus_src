@@ -26,15 +26,14 @@ var ReportCtrl = app.controller(
                 disableNativeSpellChecker: false
             };
 
+			
+
             s.getRecentReportTitle = function (report) {
                 var res = '';
-
-                if (report.approved == 1) {
+                if (report.status=='approved') 
                     res += '[APPROVED] ';
-                }
 
                 res += report.name + ' - ' + report.tstamp_updated;
-
                 return res;
             };
 
@@ -71,7 +70,16 @@ var ReportCtrl = app.controller(
                 }
                 //s.report.grandTotal = RS.getGrandTotal(s.report.items);
                 s.groupedItems = ReportService.groupReportItems();
+				updateReportStatusUI();
             });
+
+			var updateReportStatusUI = function(){
+				s.disableApproveButton=false;
+				if(!s.report.status || s.report.status=='estimate' || s.report.status=='change_requested') s.report.actionButton=1;
+				else s.reportActionButton=0;
+			
+				s.report.rptStatusText='[ ' + s.report.status.toUpperCase() + ' ]';
+			}
 
             s.$on('itemsAddedToReport', function () {
                 s.groupedItems = ReportService.groupReportItems();
@@ -208,13 +216,13 @@ var ReportCtrl = app.controller(
                 s.service.price = "";
             };
 
-
             s.approveEstimate = function(){
                 s.disableApproveButton = true;
                 s.setAlert('Processing...', {time: 5});
                 Api.approveReport(s.report.reportID).then(function(data){
-                    s.report.approved = '1';
+                    s.report.status = 'approved';
                     s.disableApproveButton = false;
+					updateReportStatusUI();
                 });
             }
 

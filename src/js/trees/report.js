@@ -21,12 +21,10 @@ var ReportCtrl = app.controller(
             var changedItems = [];
 
             s.editorOptions = {
-                filebrowserBrowseUrl: '/browser/browse.php',
-                filebrowserUploadUrl: '/uploader/upload.php',
+//                filebrowserBrowseUrl: '/browser/browse.php',
+//                filebrowserUploadUrl: '/uploader/upload.php',
                 disableNativeSpellChecker: false
             };
-
-			
 
             s.getRecentReportTitle = function (report) {
                 var res = '';

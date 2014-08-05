@@ -82,7 +82,7 @@
 				<div class="estimate-info">
 					<dl class="small">
 						<dt>Created: </dt>
-						<dd bo-text="report.tstamp_updated"></dd>
+						<dd ng-bind="report.tstamp_updated"></dd>
 					</dl>
 					<h1 class="title" bo-text="'Estimate for ' + report.siteName"></h1>
 					<p class="name">
@@ -95,15 +95,15 @@
 					</p>	
 					<dl>
 						<dt>Estimate ID: </dt>
-						<dd bo-text="report.reportID"></dd>
+						<dd ng-bind="report.reportID"></dd>
 					</dl>
 					<dl>	
 						<dt>Contact: </dt>
-						<dd bo-text="report.contact + ' (' + report.contactPhone + ')'"></dd>
+						<dd ng-bind="report.contact + ' (' + report.contactPhone + ')'"></dd>
 					</dl>
 					<dl>	
 						<dt>Address: </dt>
-						<dd bo-text="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip"></dd>
+						<dd ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip"></dd>
 					</dl>
 				</div>	
 			</div>
@@ -130,16 +130,16 @@
 	</div>	 
 
 	<!-- Email logs -->
-	 <div ng-if="report.emailLogs && data.mode()=='trees'">
+	 <div ng-if="report.emailLogs && report.emailLogs.length && data.mode()=='trees'">
 		Email logs:<BR>
 		<table class='table ng-table-responsive ng-table'>
 			<tr bindonce ng-table ng-repeat="itm in report.emailLogs">
 				<td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
 				&nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}'>link</a>
 				</td>
-				<td bo-text="itm.tstamp_sent"></td>
+				<td bo-text="itm.tstamp_sent || ''"></td>
 				<td>
-					<span ng-class="'emaillogResult '+itm.resultMessage" ng-bind='itm.resultMessage'></span>
+					<span ng-show="itm.resultMessage" ng-class="'emaillogResult '+itm.resultMessage" ng-bind='itm.resultMessage'></span>
 				</td>
 			</tr>
 		</table>
@@ -294,7 +294,7 @@
 
 				<div class="section-container" ng-if="data.mode()=='trees'">
 			   		<h6 class="section-sub-title">Notes</h6>
-			        <textarea ng-model="report.notes" placeholder="Notes" style='width:100%;height:100px;'></textarea>
+			        <textarea ckeditor="editorOptions" ng-model="report.notes" placeholder="Notes" style='width:100%;height:100px;'></textarea>
 			     </div>
 			     
 			 	<div class="section-container" ng-if="data.mode()=='estimate'">

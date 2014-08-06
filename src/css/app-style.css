@@ -432,6 +432,12 @@ header .header-nav {
 }
 
 /* line 219, ../scss/partials/_common.scss */
+.touch-boundry {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+/* line 225, ../scss/partials/_common.scss */
 footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -445,7 +451,7 @@ footer {
   margin-right: 15px;
 }
 
-/* line 233, ../scss/partials/_common.scss */
+/* line 239, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -459,18 +465,18 @@ footer {
   border-bottom: 1px solid #d5d5d5;
   position: relative;
 }
-/* line 243, ../scss/partials/_common.scss */
+/* line 249, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a:hover, .collapse-container .collapse-head a:focus {
   text-decoration: none;
   color: white;
 }
-/* line 249, ../scss/partials/_common.scss */
+/* line 255, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a i {
   position: absolute;
   right: 0;
   top: 9px;
 }
-/* line 258, ../scss/partials/_common.scss */
+/* line 264, ../scss/partials/_common.scss */
 .collapse-container .collapse-body {
   display: none;
 }
@@ -482,7 +488,7 @@ footer {
 
 /* line 10, ../scss/partials/_estimate.scss */
 .action-container {
-  padding: 15px 0;
+  padding: 15px 15px;
   background: white;
   margin: 0;
 }
@@ -631,16 +637,16 @@ footer {
   }
 }
 
-/* line 176, ../scss/partials/_estimate.scss */
+/* line 177, ../scss/partials/_estimate.scss */
 .estimate-container {
   padding: 0;
   margin: 0;
 }
-/* line 183, ../scss/partials/_estimate.scss */
+/* line 184, ../scss/partials/_estimate.scss */
 .estimate-container .row-estimate .col {
   min-height: 100%;
 }
-/* line 188, ../scss/partials/_estimate.scss */
+/* line 189, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary {
   -webkit-print-color-adjust: exact;
   position: relative;
@@ -650,7 +656,7 @@ footer {
   border-radius: 5px 5px 0 0;
   margin-bottom: 15px;
 }
-/* line 200, ../scss/partials/_estimate.scss */
+/* line 201, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -660,7 +666,7 @@ footer {
   margin: 0;
   text-transform: uppercase;
 }
-/* line 207, ../scss/partials/_estimate.scss */
+/* line 208, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .name {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -677,7 +683,7 @@ footer {
 .estimate-container .estimate-summary .estimate-info dl:after {
   clear: both;
 }
-/* line 216, ../scss/partials/_estimate.scss */
+/* line 217, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dt {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -687,7 +693,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 223, ../scss/partials/_estimate.scss */
+/* line 224, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dd {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -696,7 +702,7 @@ footer {
   color: white;
   line-height: 20px;
 }
-/* line 231, ../scss/partials/_estimate.scss */
+/* line 232, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -705,7 +711,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 237, ../scss/partials/_estimate.scss */
+/* line 238, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -713,13 +719,13 @@ footer {
   color: white;
   line-height: 20px;
 }
-/* line 245, ../scss/partials/_estimate.scss */
+/* line 246, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info {
   display: table;
   min-height: 135px;
   width: 100%;
 }
-/* line 251, ../scss/partials/_estimate.scss */
+/* line 252, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .bid {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -732,35 +738,35 @@ footer {
   vertical-align: bottom;
 }
 @media (max-width: 991px) {
-  /* line 245, ../scss/partials/_estimate.scss */
+  /* line 246, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info {
     min-height: 0;
     margin-top: 10px;
   }
-  /* line 265, ../scss/partials/_estimate.scss */
+  /* line 266, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info .bid {
     text-align: left;
   }
 }
-/* line 273, ../scss/partials/_estimate.scss */
+/* line 274, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions {
   margin-bottom: 15px;
 }
-/* line 277, ../scss/partials/_estimate.scss */
+/* line 278, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions button {
   width: 180px;
 }
 
-/* line 284, ../scss/partials/_estimate.scss */
+/* line 285, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 289, ../scss/partials/_estimate.scss */
+/* line 290, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 289, ../scss/partials/_estimate.scss */
+  /* line 290, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -776,12 +782,12 @@ footer {
     clear: both;
   }
 }
-/* line 302, ../scss/partials/_estimate.scss */
+/* line 303, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 302, ../scss/partials/_estimate.scss */
+  /* line 303, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -797,7 +803,7 @@ footer {
     clear: both;
   }
 }
-/* line 315, ../scss/partials/_estimate.scss */
+/* line 316, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-info-trees {
   width: 100%;
   display: block;
@@ -813,57 +819,57 @@ footer {
 .table-container .row-table .col-info-trees:after {
   clear: both;
 }
-/* line 328, ../scss/partials/_estimate.scss */
+/* line 329, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 332, ../scss/partials/_estimate.scss */
+/* line 333, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 332, ../scss/partials/_estimate.scss */
+  /* line 333, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 347, ../scss/partials/_estimate.scss */
+/* line 348, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 353, ../scss/partials/_estimate.scss */
+/* line 354, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
   vertical-align: middle;
 }
-/* line 358, ../scss/partials/_estimate.scss */
+/* line 359, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment {
   width: 300px;
   text-align: left;
 }
-/* line 363, ../scss/partials/_estimate.scss */
+/* line 364, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-bid {
   min-width: 60px;
   text-align: right;
 }
-/* line 369, ../scss/partials/_estimate.scss */
+/* line 370, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
   min-width: 45px;
   text-align: right;
 }
-/* line 375, ../scss/partials/_estimate.scss */
+/* line 376, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment-bid {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
 }
-/* line 385, ../scss/partials/_estimate.scss */
+/* line 386, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 388, ../scss/partials/_estimate.scss */
+/* line 389, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -875,19 +881,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 396, ../scss/partials/_estimate.scss */
+/* line 397, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 401, ../scss/partials/_estimate.scss */
+/* line 402, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 411, ../scss/partials/_estimate.scss */
+/* line 412, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 414, ../scss/partials/_estimate.scss */
+/* line 415, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -898,19 +904,19 @@ footer {
   color: #646665;
   line-height: 20px;
 }
-/* line 422, ../scss/partials/_estimate.scss */
+/* line 423, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 427, ../scss/partials/_estimate.scss */
+/* line 428, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 432, ../scss/partials/_estimate.scss */
+/* line 433, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 437, ../scss/partials/_estimate.scss */
+/* line 438, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
   -webkit-transition: all linear 0.4s;
@@ -919,55 +925,55 @@ footer {
   font-size: 12px;
   margin-right: 5px;
 }
-/* line 444, ../scss/partials/_estimate.scss */
+/* line 445, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
   opacity: 1;
 }
-/* line 449, ../scss/partials/_estimate.scss */
+/* line 450, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:last-child {
   margin-right: 0;
 }
-/* line 454, ../scss/partials/_estimate.scss */
+/* line 455, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-primary {
   color: #333333;
 }
-/* line 459, ../scss/partials/_estimate.scss */
+/* line 460, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-danger {
   color: #f84540;
 }
-/* line 465, ../scss/partials/_estimate.scss */
+/* line 466, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table {
   width: 100%;
   border: none;
 }
-/* line 472, ../scss/partials/_estimate.scss */
+/* line 473, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td {
   padding: 8px;
   border-right: none;
   background: none !important;
   border-bottom: 1px solid #CCCCCC;
 }
-/* line 479, ../scss/partials/_estimate.scss */
+/* line 480, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td:last-child {
   border-right: none;
 }
-/* line 487, ../scss/partials/_estimate.scss */
+/* line 488, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr:last-child td {
   border-bottom: none;
 }
-/* line 498, ../scss/partials/_estimate.scss */
+/* line 499, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 506, ../scss/partials/_estimate.scss */
+/* line 507, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 514, ../scss/partials/_estimate.scss */
+/* line 515, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 523, ../scss/partials/_estimate.scss */
+/* line 524, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -977,7 +983,7 @@ footer {
   text-align: right;
 }
 
-/* line 530, ../scss/partials/_estimate.scss */
+/* line 531, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -985,7 +991,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 532, ../scss/partials/_estimate.scss */
+/* line 533, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -993,7 +999,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 537, ../scss/partials/_estimate.scss */
+/* line 538, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1004,17 +1010,17 @@ footer {
 }
 
 @media print {
-  /* line 548, ../scss/partials/_estimate.scss */
+  /* line 549, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 555, ../scss/partials/_estimate.scss */
+  /* line 556, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid black;
   }
 
-  /* line 563, ../scss/partials/_estimate.scss */
+  /* line 564, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;

@@ -1,0 +1,55 @@
+<div class="action-container" id="action-container" ng-controller="ActionCtrl">
+	<div class="row row-action">
+		<div class="col-sm-2 col">
+			<div class="action-block action-block-1">
+				<a href="#" class="btn btn-lg btn-red">HOME</a>
+			</div>
+		</div>
+		<div class="col-sm-4 col">
+			<div class="action-block action-block-2">
+				<ul class="stats list-unstyled list-inline row">
+					<li class="col-xs-4" ng-click="goToEstimatesList()" style="cursor: pointer;">
+						<div class="stat">
+							<p class="number">4 <span class="supp">2</span></p>
+							<p class="text">Estimates</p>
+						</div>
+					</li>
+					<li class="col-xs-4">
+						<div class="stat">
+							<p class="number">6</p>
+							<p class="text">Properties</p>
+						</div>
+					</li>
+					<li class="col-xs-4">
+						<div class="stat">
+							<p class="number">317</p>
+							<p class="text">Trees</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-6 col">
+			<div class="action-block no-border action-block-3">
+				<div class="row row-xs">
+					<div class="col-xs-4 col">
+						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download</a>
+					</div>
+					<div class="col-xs-4 col" ng-if="report.approved!=1">
+						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
+					</div>
+					<div class="col-xs-4 col">
+						<button ng-if="report.approved == 0" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
+								<i class="fa fa-check"></i> Approve Estimate
+						</button>
+						<div ng-if="report.approved == 1" class="img-approve"><img src="img/approved.png"></div>
+					</div>
+					<div class="col-xs-4 col" ng-if="report.approved==1 && auth.is('staff')">
+						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>  

@@ -14,7 +14,7 @@ app.config(['$routeProvider', '$locationProvider',
             .when('/estimate/:rptID', {
                     auth:false
                     ,resolve: {
-                      	deps:['Api', function(Api){  dbg('state resolve');return Api.getPromise(); }]
+                      	deps:['Api', function(Api){  return Api.getPromise(); }]
 						,signin:['Auth', '$route', function(Auth, $route){
 									dbg($route.current.params.rptID)
 									var rptID=$route.current.params.rptID;
@@ -46,9 +46,7 @@ app.config(['$routeProvider', '$locationProvider',
 					res.data=res.data||{}		//make sure data exists
 					var msg=res.msg||res.message||res.data.msg||res.data.message, type='success'
 					if(res.result != 1){
-						dbg(res,op,'rest err ');
-						console.trace();
-						if(op=='getList' && typeof res != 'Array') res.data=[];
+						if(op=='getList' && typeof res.data != 'Array') res.data=[];
 						// this was erroring sometimes when calling /estimates, and an array was expected back
 						// but nothing came back. this happened quite often, maybe the message is not necessary
 						//if(!msg) msg='Error talking to the server';

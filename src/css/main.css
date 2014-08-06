@@ -183,6 +183,22 @@ section.listing_items{
 	background-color:#429b01;
 	}
 
+.emaillogResult1{
+	}
+
+.emaillogResult{
+	color:#fff;
+	padding: 1px 3px;
+	background-color:#667;
+	}
+
+.emaillogResult.delivered, .emaillogResult.opened{
+	background-color:#429b01;
+	}
+
+.emaillogResult.fail, .emaillogResult.failed, .emaillogResult.drop, .emaillogResult.bounce, .emaillogResult.bounced {
+	background-color:#f33;
+}
 	
 
 section.mainContent{

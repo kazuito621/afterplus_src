@@ -66,43 +66,33 @@ var TreesCtrl = app.controller('TreesCtrl',
                 ,bg:['78ee31','2044df','ce2712','db7e00','646464','6d2dd5','f5f02c','ed79fb','a8621c','487123','751307','dc85ee','9baeec','298d8c','8bf8f7','fdc476','a5a5a5','e27966','6aab09','ad8cd6']
                 ,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
             };
-
             s.TFSdata=TFS.data;
-            if(s.data.mode()=='estimate'){
+
+
+			var loadEstimate = function(){
                 var rptHash=s.renderPath[1];
-                if( rptHash ){
-                    ReportService.loadReport(rptHash, {getTreeDetails:1})
-                        .then(function(data){
-                            if(Auth && Auth.requestedReportID) delete Auth.requestedReportID;
-                            s.report=data;
-                            if(data && data.siteID) s.selected.siteID=data.siteID;
-                            showMappedTrees();
+                if(!rptHash) return;
+				ReportService.loadReport(rptHash, {getTreeDetails:1})
+					.then(function(data){
+						if(Auth && Auth.requestedReportID) delete Auth.requestedReportID;
+						s.report=data;
+						if(data && data.siteID) s.selected.siteID=data.siteID;
+						showMappedTrees();
 
-                            // todo - find a better place for this.... should happen after
-                            // tree map is initialized
-                            setTimeout(function()
-                            {
-                                $('#treeMap_estimate').width($('#treeMap_estimate').width());
-                                $('#treeMap_estimate').affix(
-                                {
-                                    offset: 
-                                    {
-                                        top: $('#treeMap_estimate').offset().top - 120
-                                    }
-                                });
+						// todo - find a better place for this.... should happen after
+						// tree map is initialized
+						setTimeout(function() {
+							$('#treeMap_estimate').width($('#treeMap_estimate').width());
+							$('#treeMap_estimate').affix({offset:{ top: $('#treeMap_estimate').offset().top - 120 }});
+							$('#action-container').affix({offset:{ top: $('#action-container').offset().top }});
+						} , 1000);  
+					});
+			}
 
-                                $('#action-container').affix(
-                                {
-                                    offset: 
-                                    {
-                                        top: $('#action-container').offset().top
-                                    }
-                                });
-
-                            } , 1000);  
-                        });
-                }
-            }
+            if(s.data.mode()=='estimate') loadEstimate();
+            s.$on('nav', function (e, data) {
+				if(data.new == 'trees') loadEstimate();
+            });
 
             if(s.data.mode()=='trees')
             {
@@ -111,12 +101,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                     $('.collapse-container .collapse-head a').click(function(event) {
                         var $collapse_container = $(this).closest('.collapse-container');
                         $collapse_container.find('.collapse-body').slideToggle('slow');
-                        if($(this).find('i').hasClass('fa-angle-double-down'))
-                        {
+                        if($(this).find('i').hasClass('fa-angle-double-down')){
                             $(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
-                        }
-                        else 
-                        {
+                        }else{
                             $(this).find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
                         }
                         return false;
@@ -839,8 +826,6 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.getSiteByID = function(id) {
                 return _.findObj(s.initData.sites, 'siteID', id);
             }
-
-
 
 
             /*

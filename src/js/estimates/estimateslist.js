@@ -10,16 +10,12 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl', ['$scope', '$route',
         });
     };
 
-    var pre_init = function () {
-        init();
-    };
-
     s.goToEstimate = function (reportID) {
         $location.url('/estimate/' + reportID);
     };
 
-    s.$on('$locationChangeSuccess', pre_init);
-    pre_init();
+	init();
+
 }]);
 
 

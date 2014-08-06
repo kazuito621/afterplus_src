@@ -174,7 +174,7 @@ var ReportCtrl = app.controller(
                 s.emailRpt.disableSendBtn = false;
                 s.emailRpt.sendBtnText = 'Send';
 
-                Api.getSiteContacts(s.emailRpt.siteID)
+                Api.getSiteUsers(s.emailRpt.siteID)
                     .then(function (res) {
                         if (!res) {
                             return;

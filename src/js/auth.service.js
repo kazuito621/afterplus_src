@@ -86,14 +86,12 @@ app.service('Auth',
             };
 
             this.role2id = function (role) {
-                if (!this.userRoles[role]) {
-                    return 1;
-                }
+                if( !this.userRoles[role] ) return 1;
 
                 var n = this.userRoles[role].id;
-                if (n) {
-                    return n;
-                }
+                if( n ) return n;
+
+				if( role=='staff' ) return this.role2id('inventory');
 
                 return 1;
             };
@@ -106,10 +104,21 @@ app.service('Auth',
             };
 
             /**
+             * Check if a user is exactly a certain role, with some exceptions
+			 * cust==customer
+			 * staff, can == "inventory" or "sales"
+             */
+            this.is = function (role) {
+				if(role===this.getUserRole()) return true;
+				if(role=='staff' && (this.getUserRole()=='inventory' || this.getUserRole()=='sales')) return true;
+				return false;
+            };
+
+            /**
              * Check if a user "IS" a certain role (or higher)
              * ie. if user is an admin, Auth.is('customer') will return TRUE
              */
-            this.is = function (role) {
+            this.isAtleast = function (role) {
                 var urID = this.role2id(this.getUserRole());
                 var rID = this.role2id(role);
                 if (urID >= rID) {
@@ -117,6 +126,7 @@ app.service('Auth',
                 }
                 return false;
             };
+
 
             this.getLoginName = function () {
                 if (this.isSignedIn()) {

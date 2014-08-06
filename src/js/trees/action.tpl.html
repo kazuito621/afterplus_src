@@ -45,7 +45,7 @@
 						<!-- possible values for status: approved, completed. billed, paid -->
 						<span ng-if="!report.actionButton" ng-class="'big-tag '+report.status" ng-bind='report.status'></span>
 					</div>
-					<div class="col-xs-4 col" ng-if="auth.is('staff')">
+					<div class="col-xs-4 col" ng-if="auth.isAtleast('inventory')">
 						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>
 					</div>
 				</div>

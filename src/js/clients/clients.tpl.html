@@ -29,7 +29,7 @@
                     <td>{{c.contact}} {{c.contactPhone}}</td>
 
                     <td>
-                        <a ng-if="auth.is('staff')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
+                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
                         <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID, $event)" class="fa fa-times _red _size7 hoverDisplay" bs-tooltip title="Delete" style="text-decoration: none;"></a>
                     </td>
 

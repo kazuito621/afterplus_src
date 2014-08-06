@@ -1,7 +1,7 @@
 <div ng-controller="ReportCtrl" class='ReportCtrl div_{{routeParams.stateID}} padding-top-none'>
 
 <!-- LOAD recent estimates list -->
-<div ng-if="data.mode()=='trees'" style="margin-bottom: 15px;">
+<div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
     <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
         <option value="">Recent Estimates</option>
         <option bindonce ng-repeat="r in recentReportList" bo-value="r.reportID" ng-bind="getRecentReportTitle(r)">
@@ -203,19 +203,19 @@
    						
    						<tbody>
                         <tr ng-repeat="item in report.services" class="hoverHotspot">							   	<td data-title="service_desc" colspan="{{ data.mode()=='trees' && '1' || '2' }}">
-									<a href editable-text='item.desc' ng-if='auth.is("staff")'>{{item.desc}}</a>
-									<span ng-if='!auth.is("staff")'>{{item.desc}}</span>
+									<a href editable-text='item.desc' ng-if='auth.isAtleast("inventory")'>{{item.desc}}</a>
+									<span ng-if='!auth.isAtleast("inventory")'>{{item.desc}}</span>
 								</td>
 								<td data-title="service_quantity">
-									<a href editable-text='item.quantity' ng-if='auth.is("staff")'>{{item.quantity}}</a>
-									<span ng-if='!auth.is("staff")'>{{item.quantity}}</span>
+									<a href editable-text='item.quantity' ng-if='auth.isAtleast("inventory")'>{{item.quantity}}</a>
+									<span ng-if='!auth.isAtleast("inventory")'>{{item.quantity}}</span>
 								</td>
 								<td data-title="service_price" class="text-right">
-									<a href editable-text='item.price' ng-if='auth.is("staff")'>{{item.price}}</a>
-									<span ng-if='!auth.is("staff")'>{{item.price}}</span>
+									<a href editable-text='item.price' ng-if='auth.isAtleast("inventory")'>{{item.price}}</a>
+									<span ng-if='!auth.isAtleast("inventory")'>{{item.price}}</span>
 								</td>
 								<td ng-if="data.mode()=='trees'">
-									<div ng-if="auth.is('staff')">
+									<div ng-if="auth.isAtleast('inventory')">
 										<a href ng-click="removeItem(item.$$hashKey,'services')"
 											 class='fa fa-times _red _med hoverDisplay' ></a>
 									</div>

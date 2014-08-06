@@ -265,3 +265,53 @@ footer
 		display: none;
 	}
 }
+
+.big-tag
+{
+	font-size: 30px;
+	font-weight: bold;
+	border: 2px solid transparent;
+	border-radius: 10px;
+	padding: 8px 20px;
+	display: inline-block;
+	margin: auto;
+	margin-top: -5px;
+	display: block;
+	max-width: 200px;
+	text-align: center;
+
+	transform:rotate(5deg);
+	-ms-transform:rotate(5deg);
+	-moz-transform:rotate(5deg);
+	-webkit-transform:rotate(5deg);
+
+	@media(max-width: 500px)
+	{
+		margin-top: 20px;
+	}
+
+
+	&.approved
+	{
+		border-color: #FF0000;
+		color: #FF0000;
+	}
+
+	&.billed
+	{
+		border-color: #58BB1D;
+		color: #58BB1D;
+	}
+
+	&.completed
+	{
+		border-color: #58BB1D;
+		color: #58BB1D;
+	}
+
+	&.paid
+	{
+		border-color: #58BB1D;
+		color: #58BB1D;
+	}
+}

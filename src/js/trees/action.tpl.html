@@ -2,7 +2,7 @@
 	<div class="row row-action">
 		<div class="col-sm-2 col">
 			<div class="action-block action-block-1">
-				<a href="#" class="btn btn-lg btn-red">HOME</a>
+				<a href="#/trees" class="btn btn-lg btn-red">HOME</a>
 			</div>
 		</div>
 		<div class="col-sm-4 col">
@@ -33,7 +33,7 @@
 			<div class="action-block no-border action-block-3">
 				<div class="row row-xs">
 					<div class="col-xs-4 col">
-						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download</a>
+						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
 					</div>
 					<div class="col-xs-4 col" ng-if="report.approved!=1">
 						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
@@ -42,7 +42,7 @@
 						<button ng-if="report.approved == 0" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
 								<i class="fa fa-check"></i> Approve Estimate
 						</button>
-						<div ng-if="report.approved == 1" class="img-approve"><img src="img/approved.png"></div>
+						<div ng-if="report.approved == 1" class="img-approve"><span class="big-tag approved">Approved</span></div>
 					</div>
 					<div class="col-xs-4 col" ng-if="report.approved==1 && auth.is('staff')">
 						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>

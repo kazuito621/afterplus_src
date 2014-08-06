@@ -239,7 +239,12 @@
 						@include font-g(12px , normal , $white-color , 20px);
 					}
 				}
-			}			
+			}	
+
+			@media(max-width: $screen-sm-max)
+			{
+				margin-bottom: 20px;
+			}		
 		}
 
 		.bid-info 
@@ -248,23 +253,45 @@
 			min-height: 135px;
 			width: 100%;
 			
+			.logos 
+			{
+				display: block;
+
+				.logo 
+				{
+					height: 50px;
+					width: auto;
+					display: inline-block;
+
+					img 
+					{
+						height: 60px;
+						width: auto;
+						padding: 3px;
+					}	
+				}
+			}
+
 			.bid 
 			{
 				@include font-g(24px , normal , $orange-color , 30px);
 				margin:0;								
 				text-align: right;
-				display: table-cell;
-				vertical-align: bottom;
+				position: absolute;
+				bottom: 0;
+				right: 15px;
 			}
 
 			@media(max-width: $screen-sm-max)
 			{
 				min-height: 0;
-				margin-top: 10px;
-
+				
 				.bid 
 				{
 					text-align: left;
+					position: relative;
+					bottom: auto;
+					right: auto;
 				}
 			}
 		}

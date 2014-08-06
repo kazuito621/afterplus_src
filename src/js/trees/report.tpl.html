@@ -19,7 +19,7 @@
 <div bindonce="report" class="table_estimate estimate-container report_main mode_{{data.mode()}}" ng-if="report.items.length>0">
 	<div class="estimate-summary">
 		<div class="row row-estimate">
-			<div class="col-md-8 col">
+			<div class="col-md-6 col">
 				<div class="estimate-info">
 					<dl class="small">
 						<dt>Created: </dt>
@@ -48,8 +48,33 @@
 					</dl>
 				</div>	
 			</div>
+			<div class="col-md-2 col">
+				<div class="estimate-info">
+					<p class="name">Sales Representative</p>
+					<dl>
+						<dt>Name: </dt>
+						<dd>John Doe</dd>
+					</dl>
+					<dl>	
+						<dt>Email: </dt>
+						<dd>john@doe.com</dd>
+					</dl>
+					<dl>	
+						<dt>Phone: </dt>
+						<dd>121221245212</dd>
+					</dl>
+				</div>
+			</div>
 			<div class="col-md-4 col">
 				<div class="bid-info">
+					<div class="logos">
+						<span class="logo"><img src="img/logo_tcia.png"></span>
+						<span class="logo"><img src="img/logo_wcisa.png"></span>
+						<span class="logo"><img src="img/logo_ctsp.png"></span>
+						<span class="logo"><img src="img/logo_papa.jpg"></span>
+						<span class="logo"><img src="img/logo_treeworker.jpg"></span>
+						<span class="logo"><img src="img/logo_bcma.jpg"></span>
+					</div>
 					<p class="bid">Total Bid: ${{report.total.grand|formatPrice}}</p>
 				</div>
 			</div>		

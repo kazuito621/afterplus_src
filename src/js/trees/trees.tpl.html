@@ -356,10 +356,12 @@ I would like it to be styled, so that it is all in one line... like this:  "Prop
 											</div>	
 										</div>
 										<div class="col-sm-2" ng-if="auth.isAtleast('inventory')">
-											<span class="lnk">[<a href ng-click='reset()'>RESET</a>] &nbsp; 
-												<span ng-if="selected.siteID>0" style='color:#667;'>siteID: {{selected.siteID}}</span> 
+											<span ng-if="selected.siteID>0" style='color:#667;'>#{{selected.siteID}}</span> 
 											</span>
-											<span class="lnk"><a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" ng-click='existingSiteModalOpen(selected.siteID);'><i class="fa fa-pencil _grey"></i></a></span>
+											<span class="lnk"><a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" bs-tooltip title='Edit Site Details'
+												ng-click='existingSiteModalOpen(selected.siteID);'><i class="fa fa-pencil _grey _size8 hoverHighlight"></i></a></span>
+											&nbsp;
+											<span class="lnk"><a href ng-click='reset()' bs-tooltip title='Reset'><b><i class="fa fa-rotate-left _red _size9 hoverHighlight"></i></b></a> 
 										</div>
 									</div>
 									

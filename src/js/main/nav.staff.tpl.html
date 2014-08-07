@@ -1,7 +1,13 @@
 <nav>
 	<ul>
-		<li><a href="#/trees" title="" class="active"><i class="fa fa-tree"></i><span class="text">Trees</span></a></li>
-		<li><a href="#/sites" title=""><i class="fa fa-home"></i><span class="text">Properties</span></a></li>
-		<li><a href="#/clients" title=""><i class="fa fa-user"></i><span class="text">Clients</span></a></li>
+		<li><a href="#/trees" title="Trees" ng-class="{active: isActiveTab('trees')}">
+            <i class="fa fa-tree"></i><span class="text">Trees</span>
+        </a></li>
+		<li><a href="#/sites" title="Properties" ng-class="{active: isActiveTab('sites')}">
+            <i class="fa fa-home"></i><span class="text">Properties</span>
+        </a></li>
+		<li><a href="#/clients" title="Clients" ng-class="{active: isActiveTab('clients')}">
+            <i class="fa fa-user"></i><span class="text">Clients</span>
+        </a></li>
 	</ul>
 </nav>	

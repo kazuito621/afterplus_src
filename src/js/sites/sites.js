@@ -1,6 +1,6 @@
 var SitesCtrl = app.controller('SitesCtrl',
-    ['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api', '$popover',
-        function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $popover) {
+    ['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth',
+        function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $popover, Auth) {
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites';
@@ -11,6 +11,7 @@ var SitesCtrl = app.controller('SitesCtrl',
             s.items = {};
             s.displayedSites = [];
             s.activePopover = {};
+            s.auth = Auth;
 
             var init = function () {
                 s.displayedSites = s.initData.sites.slice(0, 49);

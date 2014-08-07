@@ -1,6 +1,6 @@
 var ClientsCtrl = app.controller('ClientsCtrl',
-    ['$scope', '$route', '$modal', 'Api', '$popover',
-        function ($scope, $route, $modal, Api, $popover) {
+    ['$scope', '$route', '$modal', 'Api', '$popover', 'Auth',
+        function ($scope, $route, $modal, Api, $popover, Auth) {
             'use strict';
 
             var s = window.cts = $scope;
@@ -12,6 +12,7 @@ var ClientsCtrl = app.controller('ClientsCtrl',
             s.items = {};
             s.displayedClients = [];
             s.activePopover = {};
+            s.auth = Auth;
 
             var init = function () {
                 s.displayedClients = s.initData.clients.slice(0, 49);

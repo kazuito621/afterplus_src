@@ -17,7 +17,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		,isSignedIn: angular.bind(Auth, Auth.isSignedIn)
 		,getLoginName: angular.bind(Auth, Auth.getLoginName)
 		,signOut: angular.bind(Auth, Auth.signOut)
+        ,isAtleast: angular.bind(Auth, Auth.isAtleast)
 	}
+
+    s.isActiveTab = function (name) {
+        var path = $location.path();
+        var current = path.split('/')[1];
+
+        return name === current;
+    };
 
 	// global wrapper for broadcasting, so that each controller doesnt need $rootScope
 	// why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,

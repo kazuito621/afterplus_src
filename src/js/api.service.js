@@ -48,8 +48,8 @@ function (Rest, $rootScope, $q, $location ) {
         getTree: function (treeID) {
             return Rest.one('trees', treeID).get();
         },
-        getSiteContacts: function (siteID) {
-            return Rest.all('site/' + siteID + '/contacts').getList();
+        getSiteUsers: function (siteID) {
+            return Rest.all('site/' + siteID + '/users').getList();
         },
         getReport: function (reportID, opts) {
 			var r=$rootScope.requestedReportID;

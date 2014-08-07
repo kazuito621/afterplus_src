@@ -266,6 +266,16 @@ footer
 	}
 }
 
+
+/** todo ... maybe this should go somewhere else **/
+$sent: #0074D9;
+$draft: #cccccc;
+$completed: #0074D9;
+$needs_approval: #FF4136;
+$paid: #FF4136;
+$approved: #2ECC40;
+$billed: #FF851B;
+
 .big-tag
 {
 	font-size: 30px;
@@ -294,26 +304,51 @@ footer
 
 	&.approved
 	{
-		border-color: #2ECC40;	/* green */
-		color: #2ECC40;
+		border-color: $approved;
+		color: $approved;
 	}
 
 	&.billed
 	{
-		border-color: #FF851B;	/* orange */
-		color: #FF851B;
+		border-color: $billed;
+		color: $billed;
 	}
 
 	&.completed
 	{
+		border-color: $completed;
+		color: $completed;
 		font-size: 26px;
-		border-color: #0074D9;	/* blue */
-		color: #0074D9;
 	}
 
 	&.paid
 	{
-		border-color: #FF4136;	/* red */
-		color: #FF4136;
+		border-color: $paid;
+		color: $paid;
 	}
+
+	&.sent
+	{
+		border-color: $sent;
+		color: $sent;
+	}
+}
+
+
+.small-tag
+{
+	padding:3px 6px;
+	color:#fff;
+	background:#999;
+	text-transform:uppercase;
+	font-size:.8em;
+	letter-spacing:.15em;
+	
+	&.draft{ background:$draft; }
+	&.approved{ background: $approved; }
+	&.needs_approval{ background: $needs_approval; }
+	&.billed{ background: $billed; }
+	&.completed{ background: $completed; }
+	&.paid{ background: $paid; }
+	&.sent{ background: $sent; }
 }

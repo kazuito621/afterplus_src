@@ -481,7 +481,8 @@ footer {
   display: none;
 }
 
-/* line 270, ../scss/partials/_common.scss */
+/** todo ... maybe this should go somewhere else **/
+/* line 280, ../scss/partials/_common.scss */
 .big-tag {
   font-size: 30px;
   font-weight: bold;
@@ -501,35 +502,74 @@ footer {
   -webkit-transform: rotate(5deg);
 }
 @media (max-width: 500px) {
-  /* line 270, ../scss/partials/_common.scss */
+  /* line 280, ../scss/partials/_common.scss */
   .big-tag {
     margin-top: 20px;
   }
 }
-/* line 296, ../scss/partials/_common.scss */
+/* line 306, ../scss/partials/_common.scss */
 .big-tag.approved {
-  border-color: #2ECC40;
-  /* green */
-  color: #2ECC40;
+  border-color: #2ecc40;
+  color: #2ecc40;
 }
-/* line 302, ../scss/partials/_common.scss */
+/* line 312, ../scss/partials/_common.scss */
 .big-tag.billed {
-  border-color: #FF851B;
-  /* orange */
-  color: #FF851B;
+  border-color: #ff851b;
+  color: #ff851b;
 }
-/* line 308, ../scss/partials/_common.scss */
+/* line 318, ../scss/partials/_common.scss */
 .big-tag.completed {
+  border-color: #0074d9;
+  color: #0074d9;
   font-size: 26px;
-  border-color: #0074D9;
-  /* blue */
-  color: #0074D9;
 }
-/* line 315, ../scss/partials/_common.scss */
+/* line 325, ../scss/partials/_common.scss */
 .big-tag.paid {
-  border-color: #FF4136;
-  /* red */
-  color: #FF4136;
+  border-color: #ff4136;
+  color: #ff4136;
+}
+/* line 331, ../scss/partials/_common.scss */
+.big-tag.sent {
+  border-color: #0074d9;
+  color: #0074d9;
+}
+
+/* line 339, ../scss/partials/_common.scss */
+.small-tag {
+  padding: 3px 6px;
+  color: #fff;
+  background: #999;
+  text-transform: uppercase;
+  font-size: .8em;
+  letter-spacing: .15em;
+}
+/* line 347, ../scss/partials/_common.scss */
+.small-tag.draft {
+  background: #cccccc;
+}
+/* line 348, ../scss/partials/_common.scss */
+.small-tag.approved {
+  background: #2ecc40;
+}
+/* line 349, ../scss/partials/_common.scss */
+.small-tag.needs_approval {
+  background: #ff4136;
+}
+/* line 350, ../scss/partials/_common.scss */
+.small-tag.billed {
+  background: #ff851b;
+}
+/* line 351, ../scss/partials/_common.scss */
+.small-tag.completed {
+  background: #0074d9;
+}
+/* line 352, ../scss/partials/_common.scss */
+.small-tag.paid {
+  background: #ff4136;
+}
+/* line 353, ../scss/partials/_common.scss */
+.small-tag.sent {
+  background: #0074d9;
 }
 
 /* line 4, ../scss/partials/_estimate.scss */

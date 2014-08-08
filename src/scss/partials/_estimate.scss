@@ -1,0 +1,599 @@
+.mainContent
+{
+	&.mode_estimate
+	{
+		display: none;
+	}
+}
+
+.action-container
+{
+	padding: 15px 15px;
+	background: $white-color;
+	margin: 0;
+
+	&.affix 
+	{
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		z-index: 999;
+		box-shadow: 0 3px 5px rgba(0 , 0 , 0 , 0.2);
+		padding: 15px;
+
+		@media(max-width: $screen-sm-max)
+		{
+			position: relative;
+			top: 0;
+		}
+	}
+
+	.row-action 
+	{
+		> .col 
+		{
+			// padding-right: 15px;
+			// border-right: 1px solid $black-color;
+
+			&:last-child 
+			{
+				border-right: none;
+			}
+
+			@media(max-width: $screen-xs-max)
+			{
+				border: none;
+			}
+		}
+	}
+
+	.action-block 
+	{
+		@media(max-width: $screen-xs-max)
+		{
+			margin-bottom: 10px;
+		}
+
+		&.no-border
+		{
+			border: none;
+		}
+
+		&.action-block-1
+		{
+			padding: 5px 0;
+		}
+
+		&.action-block-2
+		{
+			padding: 3px 0;
+		}
+
+		&.action-block-3 
+		{
+			padding: 10px 0;
+		}
+
+		.img-approve
+		{
+			position: relative;
+			display: block;
+			width: 100%;
+			img 
+			{
+				height: 80px;
+				width: auto;
+				display: block;
+				position: absolute;
+				left: 5%;
+				top: -25px;
+
+				@media(max-width: $screen-md-max)
+				{
+					height: 50px;
+					top: -10px;
+				}
+
+				@media(max-width: $screen-xs-max)
+				{
+					height: 80px;
+					top: -25px;
+				}
+
+				@media(max-width: 500px)
+				{
+					position: relative;
+					text-align: center;
+					top: 0;
+					margin: auto;
+				}
+			}
+		}
+
+		.stats 
+		{
+			text-align: center;
+
+			.stat 
+			{
+				.number 
+				{
+					@include font-g(40px , normal , $gray-color , 40px);
+					margin: 0;
+					position: relative;
+					display: inline-block;
+
+					.supp 
+					{
+						position: absolute;
+						right: -15px;
+						top: -5px;
+						background: $orange-color;
+						@include border-radius(100px);
+						@include font-g(9px , normal , $white-color , 5px);
+						padding: 5px;
+					}
+				}
+
+				.text 
+				{
+					@include font-g(9px , normal , $black-color , 10px);
+					text-transform: uppercase;
+				}
+			}
+		}
+
+		@media(max-width: $screen-xs-max)
+		{
+			&.action-block-1
+			{
+				text-align: center;
+			}
+		}
+
+		@media(max-width: 500px)
+		{
+			&.action-block-3
+			{
+				.col-xs-4
+				{
+					float: none;
+					clear: both;
+					display: block;
+					width: 100%;				
+				}
+
+				.btn-block 
+				{
+					margin-bottom: 10px;
+				}
+			}
+		}
+	}
+}
+
+.estimate-container
+{
+	padding: 0;
+	margin: 0;
+
+	.row-estimate
+	{
+		.col 
+		{
+			min-height: 100%;
+		}
+	}
+	.estimate-summary
+	{
+		-webkit-print-color-adjust: exact;
+		position: relative;
+		background: $gray-color;
+		color: $white-color;
+		padding: 10px 15px;
+		@include border-radius(5px 5px 0 0);
+		margin-bottom: 15px;
+
+		.estimate-info
+		{
+			.title 
+			{
+				@include font-g(24px , normal , $orange-color , 30px);
+				margin:0;
+				text-transform: uppercase;
+			}
+
+			.name 
+			{
+				@include font-g(18px , normal , $white-color , 24px);
+			}
+
+			dl 
+			{
+				@include clearfix();
+
+				dt 
+				{
+					float: left;
+					@include font-g(12px , normal , $white-color , 20px);
+					margin-right: 5px;
+				}
+
+				dd
+				{
+					float: left;
+					@include font-g(16px , normal , $white-color , 20px);
+				}
+
+				&.small 
+				{
+					dt 
+					{
+						@include font-g(12px , normal , $white-color , 20px);
+						margin-right: 5px;
+					}
+
+					dd
+					{
+						@include font-g(12px , normal , $white-color , 20px);
+					}
+				}
+			}	
+
+			@media(max-width: $screen-sm-max)
+			{
+				margin-bottom: 20px;
+			}		
+		}
+
+		.bid-info 
+		{
+			display: table;
+			min-height: 135px;
+			width: 100%;
+			
+			.logos 
+			{
+				display: block;
+
+				.logo 
+				{
+					height: 50px;
+					width: auto;
+					display: inline-block;
+
+					img 
+					{
+						height: 60px;
+						width: auto;
+						padding: 3px;
+					}	
+				}
+			}
+
+			.bid 
+			{
+				@include font-g(24px , normal , $orange-color , 30px);
+				margin:0;								
+				text-align: right;
+				position: absolute;
+				bottom: 0;
+				right: 15px;
+			}
+
+			@media(max-width: $screen-sm-max)
+			{
+				min-height: 0;
+				
+				.bid 
+				{
+					text-align: left;
+					position: relative;
+					bottom: auto;
+					right: auto;
+				}
+			}
+		}
+	}
+
+	.estimate-actions
+	{
+		margin-bottom: 15px;
+
+		button	
+		{
+			width: 180px;
+		}
+	}
+}
+
+.table-container
+{
+	margin-bottom: 30px;
+	.row-table
+	{
+		.col-md-4
+		{
+			float: right;
+
+			@media(max-width: $screen-sm-max)
+			{
+				@include clearfix();
+				display: block;
+				float: none;
+				width: 100%;
+			}
+		}
+
+		.col-md-8
+		{
+			float: left;
+
+			@media(max-width: $screen-sm-max)
+			{
+				@include clearfix();
+				display: block;
+				float: none;
+				width: 100%;
+			}
+		}
+
+		.col-info-trees 
+		{
+			width: 100%;
+			@include clearfix();
+			display: block;
+			float: none;
+			width: 100%;
+		}
+
+	}
+
+	.map-container
+	{
+		&.mode_estimate
+		{
+			position: relative;
+
+			&.affix 
+			{
+				position: fixed;
+				top: 100px;
+
+				@media(max-width: $screen-sm-max)
+				{
+					position: relative;
+					top: 0;
+					margin-bottom: 15px;
+				}
+			}
+		}
+	}
+
+	.table 
+	{
+		border: 1px solid #acaead;
+
+		tr 
+		{			
+			.td-image, .td-id, .td-name 
+			{
+				vertical-align: middle;
+			}
+
+			.td-treatment 
+			{
+				width: 300px;
+				text-align: left;
+			}
+			.td-bid 
+			{
+				min-width: 60px;
+				text-align: right;
+			}
+
+			.td-action
+			{
+				min-width: 45px;
+				text-align: right;
+			}
+
+			.td-treatment-bid
+			{
+				padding-left: 0;
+				padding-right: 0;
+				vertical-align: middle;
+			}
+		}
+
+		thead 
+		{
+			tr 
+			{				
+				border-color: #acaead;
+				td 
+				{
+					@include font-g(14px , bold , $black-color , 20px);
+					background: #f2f3f5;
+					border: none;
+					border-bottom: 1px solid #acaead;
+					white-space: normal !important;
+
+					&.amount 
+					{
+						text-align: right;
+					}
+
+					&:last-child 
+					{
+						border-right:1px solid #acaead;
+					}
+				}
+			}
+		}
+
+		tbody 
+		{
+			tr 
+			{
+				border-color: #acaead;
+				td 
+				{
+					border: none;
+					border-bottom: 1px solid #acaead;
+					white-space: normal !important;
+
+					@include font-g(14px , normal , #646665 , 20px);
+
+					.light 
+					{
+						color: #a8a8a8;
+					}
+
+					&.amount 
+					{
+						text-align: right;
+					}
+
+					&:last-child 
+					{
+						border-right:1px solid #acaead;
+					}
+
+					.row-action 
+					{
+						opacity: 0.8;
+						@include animate(all);
+						font-size: 12px;
+						margin-right: 5px;
+
+						&:hover, &:focus, &:active 
+						{
+							opacity: 1;
+						}
+
+						&:last-child 
+						{
+							margin-right: 0;
+						}
+
+						.clr-primary
+						{
+							color: $gray-color;
+						}
+
+						.clr-danger
+						{
+							color: $orange-color;
+						}
+					}
+
+					table 
+					{
+						width: 100%;
+						border: none;
+
+						tr 
+						{
+							td 
+							{
+								padding: 8px;
+								border-right: none;
+								background: none !important;
+								border-bottom: 1px solid #CCCCCC;
+
+								&:last-child 
+								{
+									border-right: none;
+								}
+							}
+
+							&:last-child 
+							{
+								td 
+								{
+									border-bottom: none;									
+								}
+							}
+						}
+					}
+				}
+
+				&:nth-child(odd)
+				{
+					td
+					{
+						background: #fafcfb;
+					}
+				}
+
+				&:nth-child(even)
+				{
+					td
+					{
+						background: #f2f3f5;
+					}
+				}
+
+				&:hover, &:focus, &:active
+				{
+					td 
+					{
+						background: #eaeaea;
+					}
+				}
+			}
+		}
+	}
+
+	.total-amount 
+	{
+		@include font-g(24px , normal , $orange-color , 30px);
+		text-align: right;		
+	}
+}
+
+.section-container
+{
+	.section-sub-title
+	{
+		@include font-g(16px , bold , $black-color , 18px);	
+	}
+
+	.section-mini-title 
+	{
+		@include font-g(14px , bold , $black-color , 18px);	
+		margin-top: 10px;		
+	}
+
+	@include font-g(14px , normal , $black-color , 18px);	
+}
+
+@media print 
+{
+	.action-container
+	{
+		display: none;
+	}		
+
+	.estimate-container
+	{
+		.estimate-summary
+		{
+			border: 1px solid $black-color;
+		}
+	}
+
+	.table-container
+	{
+		.map-container
+		{
+			display: block;
+			width: 100% !important;
+			margin: auto;
+			margin-bottom: 20px;
+			text-align: center;
+		}
+	}	
+}

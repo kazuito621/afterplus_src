@@ -19,8 +19,10 @@
     <link rel="stylesheet" href="bower_components/font-awesome-bower/css/font-awesome.css" />
     <!-- endbower -->
     <!-- endbuild -->
+
     <!-- build:css({.tmp,src}) css/main.css -->
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/app-style.css">
     <!-- endbuild -->
   </head>
   <body ng-app="arborPlusApp" ng-controller="MainCtrl">
@@ -58,16 +60,9 @@
 	-->
 
 	<!-- FOOTER -->
-	<div class='footer'>
-		<BR><BR>
-		<hr>
-		<BR>
+	<footer>
 		&copy 2014 Aplus Tree, Inc.
-		<BR>
-		<BR>
-		<BR>
-		<BR>
-	</div>
+	</footer>
 
 
 
@@ -89,7 +84,7 @@
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
 
-    <script src="bower_components/ng-ckeditor/libs/ckeditor/ckeditor.js"></script>
+    <script src="patch/ng-ckeditor/libs/ckeditor/ckeditor.js"></script>
 
     <!-- build:js js/vendor.js -->
     <!-- bower:js -->
@@ -110,6 +105,8 @@
     <script src="bower_components/angularLocalStorage/src/angularLocalStorage.js"></script>
     <script src="bower_components/angular-md5/angular-md5.js"></script>
     <script src="bower_components/ng-ckeditor/ng-ckeditor.js"></script>
+    <script src="bower_components/angular-bindonce/bindonce.js"></script>
+    <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -130,9 +127,10 @@
         <script src="js/trees/report.js"></script>
         <script src="js/trees/report.service.js"></script>
         <script src="js/trees/treefilter.service.js"></script>
+        <script src="js/trees/action.js"></script>
         <script src="js/services.js"></script>
         <script src="js/trees/edit.js"></script>
-        <script src="js/estimateslist/estimateslist.js"></script>
+        <script src="js/estimates/estimateslist.js"></script>
         <!-- endbuild -->
 </body>
 </html>

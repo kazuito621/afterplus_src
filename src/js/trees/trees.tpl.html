@@ -1,282 +1,497 @@
 <main ng-controller="TreesCtrl">
 
+<div ng-include="'js/trees/action.tpl.html'" ng-if="data.mode()=='trees' && auth.is('customer')"></div>
 
+<div class="trees-container" ng-show="data.mode()=='trees'">
+	<div class="trees-container-inner">
+		<div class="row row-nopad">
+			<div class="col-sm-3 col">
+				<div class="filters-container">
+					<section ng-if="data.mode()=='trees'"> 
 
-	<!-- ///// TOP 3 DROP DOWNS  -->
-<nav ng-if="data.mode()=='trees' && auth.is('admin')">
-  	<div class="styled-select">
-   		<select id="select_clientType" class='styled-select' 
-			ng-model="selected.clientTypeID" 
-			ng-change="onSelectClientTypeID(selected.clientTypeID)"
-			ng-disabled="initData.clientTypes.length === 0">
-			<option value="">Client Type</option>
-        	<option ng-repeat="clientType in initData.clientTypes" value="{{clientType.clientTypeID}}">{{clientType.name}}</option>
-      	</select>
-    </div>
-    <div class='styled-select'>
-     	<select  id="select_client" class='styled-select' ng-disabled="clients.length === 0"  
-			ng-model="selected.clientID"
-			ng-change="onSelectClientID(selected.clientID)" title="TEST">
-        	<option value="">Client</option>
-        	<option ng-repeat="client in filteredClients" value="{{client.clientID}}">{{client.clientName}}</option>
-      	</select>
-    </div>
-    <div class='styled-select'>
-      	<select  id="select_site" class='styled-select' ng-disabled="filteredSites.length === 0" 
-			ng-model="selected.siteID"
-			ng-change="onSelectSiteID(selected.siteID)">
-        	<option value="">{{ filteredSites.length>0 | ifElse:'Property':'(No Properties)' }}</option>
-        	<option ng-repeat="site in filteredSites" value="{{site.siteID}}">{{site.siteName}}</option>
-      	</select>
-    </div>
-	<span>[<a href ng-click='reset()'>RESET</a>] &nbsp; 
-		<span ng-if="selected.siteID>0" style='color:#667;'>siteID: {{selected.siteID}}</span> 
-	</span>
-	<span><a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" ng-click='existingSiteModalOpen(selected.siteID);' class="pointer fa fa-pencil _grey"></a></span>
-</nav>
+						<div class="filter-container-title" ng:cloak ng-show="TFSdata.selectedFilters.length>0">
+							{{TFSdata.selectedFilters.length}} Filters Active &nbsp; <span class="lnk-clear"><a href ng-click='clearFilters();'><i class="fa fa-times"></i></a></span>
+						</div>
 
+						<div class="row row-xss">
+							<div class="col-xs-6 col">
 
+<!-- HTODO :: this next block, will only show up in custoemr view, and if they have more than one property...
+I would like it to be styled, so that it is all in one line... like this:  "Property: [ DROPDOWN MENU HERE ]"
+-->
+								<div class='filter-container'  ng-if="auth.is('customer') && initData.sites.length>1">
+									<span style='color:#fff'>Property:</span> <span class='input-group'>
+										<select  id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0" 
+											ng-model="selected.siteID"
+											ng-change="onSelectSiteID(selected.siteID)">
+											<option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
+										</select>
+									</span>
+								</div>	
 
+								<!--FILTER SECTION: SPECIES-->
+								<div class="filter-container">
+							    	<div class="filterHeader filter-header">
+							      		<h3>Species <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.species>0">({{TFSdata.filterTypeCounts.species}})</span></h3>
+							    	</div>
+								    <div class="filter-input">
+								      	<input ng-model='filterSearch.species' type="text" class="styled_input inpt inpt-text" placeholder="Search Species"/>
+										<span class="inpt-clear" ng-if="filterSearch.species.length>0"><a href ng-click="filterSearch.species=''"><i class="fa fa-times"></i></a></span>
+								    </div>
+								    <div class="filterBlock filter-block">
+								    	<div class="filter-items">
+								     		<div class="filterItems filter-item" 
+											ng-repeat="speciesType in initData.filters.species | filterByString:'commonName':filterSearch.species " 
+											ng-if="speciesType.count!=0 || speciesType.count>0">
+												<!-- NOTE: there are 2 ways in which a filter can be hidden...
+														1. if the user is searching for one.. and it doesnt match (filterByString)
+														2. if the tree results list doesnt include any of this particular species 
+																(TreeFilterService will then modify the .hide property
+												-->
+												<label>
+													<input type="checkbox" id="checkBox_filter_species_{{speciesType.speciesID}}" value="{{speciesType.speciesID}}"  
+													ng-model="speciesType.selected"
+													ng-change="onFilterChange('species', speciesType.speciesID, speciesType.selected)">
+													<span class="text">{{speciesType.commonName}} <span class='filterCount' ng-if="speciesType.count>0">({{speciesType.count}})</span></span>
+													<div class="clearfix"></div>
+												</label>
+											</div> <!-- }}} .filterItems -->
+										</div>	
+								    </div>
+								</div> 
+							    <!-- END SPECIES FILTER SECTION --> 
+							</div>
+							<div class="col-xs-6 col">
 
-<div class="clearfloat"></div>
-<section class="nav_listings" ng-if="data.mode()=='trees'"> 
-	<!--begin left hand column-->
-  	<div>
-     	<div class="nav_listings_header pullright centerText width192">Search Results: {{TFSdata.treeResultsCount}} Trees located </div>
-     	<div class="clearfloat"></div>
-    </div>
-    <div class="clearfloat"></div>
-    <div class="listings trees-result-list">
-     	<div class ="listing_items hoverHotspot" ng-repeat="tree in trees" id="tree-result-item-row-{{tree.treeID}}">
-			<div ng-if="tree.hide != true" class='listingRow' ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
-        		<!--<div class="listingHeader"></div>-->
-				<label>
-					<div class='pullright' style='padding:3px'>
-						<a href='#/tree_edit/{{tree.treeID}}' class='fa fa-pencil _med _grey hoverDisplay' bs-tooltip title="View/Edit Details"></a>
+							    <!--FILTER SECTION: TREATMENT TYPE-->
+							    <div class="filter-container">
+									<div class="filterHeader filter-header">
+										<h3>Treatments: <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.treatments>0">({{TFSdata.filterTypeCounts.treatments}})</span></h3>
+									</div>
+									<div class="filter-input">
+										<input ng-model='filterSearch.treatments' type="text" class="styled_input inpt inpt-text" placeholder="Search Treatments" ng-escape="filterSearch.treatments=''"/>
+										<span class="inpt-clear" ng-if="filterSearch.treatments.length>0"><a href ng-click="filterSearch.treatments=''"><i class="fa fa-times"></i></a></span>
+									</div>
+									<div class="filterBlock filter-block">
+										<div class="filter-items">
+											<div class="filterItems filter-item" 
+											ng-repeat="t in initData.filters.treatments | filterByString:'treatmentType':filterSearch.treatments" 
+											ng-if="t.count!=0 || t.count>0">
+		        								<label>
+		        									<input type="checkbox" id="checkBox_filter_treatment_{{t.treatmentTypeID}}" value="{{t.treatmentTypeID}}"
+		        									ng-model="t.selected"
+		        									ng-change="onFilterChange('treatmentType', t.treatmentTypeID, t.selected)">
+													<span class="text">{{t.treatmentType}} <span class='filterCount' ng-if="t.count>0">({{t.count}})</span></span>
+													<div class="clearfix"></div>
+												</label>
+		    								</div>
+		    							</div>	
+		    						</div>
+		    					</div>		
+								<!-- END TREATMENT TYPE FILTER SECTION --> 
+							</div>
+						</div> 	
+
+						<div class="collapse-container">
+							<div class="collapse-head">
+								<a href="#">Filters <i class="fa fa-angle-double-down"></i></a>
+							</div>
+							<div class="collapse-preview">
+								<!-- START YEAR FILTER SECTION --> 
+								<div class="filter-container">
+									<div class="filterHeader filter-header">
+										<h3>Years:</h3>
+									</div>
+									<div class='filterItems filter-block'>
+										<div class="filter-items filter-items-inline">
+
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[0].selected' 
+													ng-change="onFilterChange('year','{{initData.filters.year[0].id}}',initData.filters.year[0].selected)">
+													<span class="text">2014</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>	
+
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[1].selected' 
+													ng-change="onFilterChange('year','{{initData.filters.year[1].id}}',initData.filters.year[1].selected)">
+													<span class="text">2015</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>	
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[2].selected' 
+													ng-change="onFilterChange('year','{{initData.filters.year[2].id}}',initData.filters.year[2].selected)">
+													<span class="text">2016</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>	
+
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[3].selected' 
+													ng-change="onFilterChange('year','{{initData.filters.year[3].id}}',initData.filters.year[3].selected)">
+													<span class="text">2017</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>	
+											
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[4].selected' 
+													ng-change="onFilterChange('year','{{initData.filters.year[4].id}}',initData.filters.year[4].selected)">
+													<span class="text">2018</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>	
+
+										</div>	
+									</div>	
+								</div>
+							    <!-- END YEAR FILTER SECTION --> 
+								<!-- START OLD YEARS FILTER SECTION -->
+								<div class="filter-container">
+									<div class="filterHeader filter-header">
+										<h3>Old years:</h3>
+									</div>
+									<div class='filterItems filter-block'>
+										<div class="filter-items filter-items-inline">
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[5].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[5].id}}',initData.filters.year[5].selected)">
+													<span class="text">2013</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[6].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[6].id}}',initData.filters.year[6].selected)">
+													<span class="text">2012</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+											<div class="filter-item">
+												<label>
+													<input type='checkbox' ng-model='initData.filters.year[7].selected'
+													ng-change="onFilterChange('year','{{initData.filters.year[7].id}}',initData.filters.year[7].selected)">
+													<span class="text">2011</span>
+													<div class="clearfix"></div>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							    <!-- END OLD YEARS FILTER SECTION -->
+							</div>
+
+							<div class="collapse-body">
+
+								<div class="row row-xss">
+									<div class="col-xs-6 col">
+										<!--FILTER SECTION: Building, Hardscape and Powerline -->
+									    <div class="filter-container">
+									    	<div class="filterHeader filter-header">
+												<h3>Hazards:</h3>
+											</div>
+											<div class="filterBlock filter-block">
+												<div class="filter-items">
+													<div class='filterItems filter-item' ng-if="TFSdata.filterTypeCounts.building>0 || TFSdata.filterTypeCounts.building!=0">
+														<label>
+															<input type="checkbox"  value="yes" 
+															ng-model="building.selected" 
+															ng-change="onFilterChange('miscProperty', 'building', building.selected)"> 
+															<span class="text">
+																<i class='fa fa-building _red'></i> Building
+																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.building>0">({{TFSdata.filterTypeCounts.building}})</span>
+															</span>	
+															<div class="clearfix"></div>
+														</label>
+													</div>
+													<div class='filterItems filter-item' ng-if="TFSdata.filterTypeCounts.caDamage>0 || TFSdata.filterTypeCounts.caDamage!=0">
+														<label>
+															<input type="checkbox"  value="potential"  
+															ng-model="caDamage.selected"
+															ng-change="onFilterChange('miscProperty', 'caDamagePotential', caDamage.selected)"> 
+															<span class="text">
+																<i class='fa fa-warning _orange'></i> Hardscape Damage Potential
+																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.caDamage>0">({{TFSdata.filterTypeCounts.caDamage}})</span>
+															</span>
+															<div class="clearfix"></div>
+														</label>
+													</div>
+													<div class='filterItems filter-item' ng-if="TFSdata.filterTypeCounts.caDamage>0 || TFSdata.filterTypeCounts.caDamage!=0">
+														<label>
+															<input type="checkbox"  value="yes" 
+															ng-model="caDamage.selected"
+															ng-change="onFilterChange('miscProperty', 'caDamage', caDamage.selected)"> 
+															<span class="text">
+																<i class='fa fa-warning _red'></i> Hardscape Damage
+																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.caDamage>0">({{TFSdata.filterTypeCounts.caDamage}})</span>
+															</span>	
+															<div class="clearfix"></div>
+														</label>
+													</div>
+													<div class='filterItems filter-item' ng-if="TFSdata.filterTypeCounts.powerline>0 || TFSdata.filterTypeCounts.powerline!=0">
+														<label>
+															<input type="checkbox"  value="yes" 
+															ng-model="powerline.selected"
+															ng-change="onFilterChange('miscProperty', 'powerline', powerline.selected)"> 
+															<span class="text">
+																<i class='fa fa-bolt _red'></i> Powerline
+																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.powerline>0">({{TFSdata.filterTypeCounts.powerline}})</span>
+															</span>	
+															<div class="clearfix"></div>
+														</label>
+													</div>
+												</div>
+											</div>
+											
+										</div>	
+
+										<!-- END Building, Hardscape, POWERLINE FILTER SECTION -->
+
+										<!--FILTER SECTION: SIZE-->
+										<div class="filter-container">
+											<div class="filterHeader filter-header">
+												<h3>Size <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.treatments>0">({{TFSdata.filterTypeCounts.treatments}})</span></h3>
+											</div>
+											<div class="filterBlock filter-block">
+												<div class="filter-items filter-items-inline">
+													<div class="filterItems filter-item" ng-repeat="(idx,size) in initData.filters.dbh" ng-if="size.count!=0 || size.count>0">
+														<label><input type="checkbox" id="checkBox_filter_size_{{size.dbhID}}" value="{{size.dbhID}}"  
+															ng-model="size.selected"
+															ng-change="onFilterChange('dbh', size.dbhID, size.selected)">
+															<span class="text">{{size.diameter}} <span class='filterCount' ng-if="size.count>0">({{size.count}})</span></span>
+															<div class="clearfix"></div>
+														</label>
+														<div ng-if=" $index>0 && $index % 2 == 0" style='clear:both'></div>
+													</div> <!-- }}} ng-repeat -->
+												</div>	
+											</div>
+										</div>	
+				    					<!-- END SIZE FILTER SECTION --> 
+				     
+									</div>
+										
+									<div class="col-xs-6 col">
+
+										<!--FILTER SECTION: HEALTH-->   
+										<div class="filter-container">
+											<div class="filterHeader filter-header">
+												<h3>Health <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.rating>0">({{TFSdata.filterTypeCounts.rating}})</span></h3>
+											</div>
+											<div class="filterBlock filter-block">
+												<div class="filter-items">
+													<div class="filterItems filter-item" ng-repeat="r in initData.filters.ratings" ng-if="r.count!=0 || r.count>0">
+														<label>	<input type="checkbox" id="checkBox_filter_rating_{{r.ratingID}}" value="{{r.ratingID}}" 
+															ng-model="r.selected" 
+															ng-change="onFilterChange('rating', r.ratingID, r.selected)">
+															<span class="text">{{r.ratingID}} - {{r.rating_desc}} <span class='filterCount' ng-if="r.count>0">({{r.count}})</span></span>
+															<div class="clearfix"></div>
+														</label>
+													</div> <!-- }}} ng-repeat -->
+												</div>
+											</div>	
+										</div>
+										<!-- END HEALTH FILTER SECTION -->
+
+				    				</div>
+								</div>
+									
+								
+							</div>
+						</div>
+
+					</section>    	
+				</div>	
+			</div>	
+			<div class="col-sm-9 col">				
+				<div class="row row-nopad">
+					
+					<div class="col-sm-8 col">
+						<div class="content-container">
+
+							<div class="admin-filter-container" ng-if="data.mode()=='trees' && auth.isAtleast('inventory')" >
+								<nav>
+									<div class="row">
+										<div class="col-sm-10">
+											<div class="row">
+												<div class="col-sm-4">
+													<div class="input-group">
+														<select id="select_clientType" class='inpt inpt-select' 
+														ng-model="selected.clientTypeID" 
+														ng-change="onSelectClientTypeID(selected.clientTypeID)"
+														ng-disabled="initData.clientTypes.length === 0">
+															<option class="option" value="">Client Type</option>
+                                                            <option bindonce class="option" ng-repeat="clientType in initData.clientTypes" value="{{clientType.clientTypeID}}" bo-bind="clientType.name"></option>
+													  	</select>
+													</div>
+												</div>
+												<div class="col-sm-4">
+													<div class='input-group'>
+													 	<select  id="select_client" class='inpt inpt-select' ng-disabled="clients.length === 0"  
+															ng-model="selected.clientID"
+															ng-change="onSelectClientID(selected.clientID)" title="TEST">
+													    	<option class="option" value="">Client</option>
+													    	<option bindonce class="option" ng-repeat="client in filteredClients" value="{{client.clientID}}" bo-bind="client.clientName"></option>
+													  	</select>
+													</div>
+												</div>
+												<div class="col-sm-4">
+													<div class='input-group'>
+													  	<select  id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0" 
+															ng-model="selected.siteID"
+															ng-change="onSelectSiteID(selected.siteID)">
+													    	<option class="option" value="">{{ filteredSites.length>0 | ifElse:'Property':'(No Properties)' }}</option>
+													    	<option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
+													  	</select>
+													</div>
+												</div>	
+											</div>	
+										</div>
+										<div class="col-sm-2" ng-if="auth.isAtleast('inventory')">
+											<span ng-if="selected.siteID>0" style='color:#667;'>#{{selected.siteID}}</span> 
+											</span>
+											<span class="lnk"><a href ng-if="selected.siteID>0" ng-controller="SitesCtrl" bs-tooltip title='Edit Site Details'
+												ng-click='existingSiteModalOpen(selected.siteID);'><i class="fa fa-pencil _grey _size8 hoverHighlight"></i></a></span>
+											&nbsp;
+											<span class="lnk"><a href ng-click='reset()' bs-tooltip title='Reset'><b><i class="fa fa-rotate-left _red _size9 hoverHighlight"></i></b></a> 
+										</div>
+									</div>
+									
+								</nav>
+							</div>
+
+							<!-- begin center content area -->
+							<section class="map-container mainContent top-margin-none {{'mode_'+data.mode()}}" ng-class="{{'mode_'+data.mode()}}">
+								<div id='treeDetails' ng:cloak ng-show="data.showTreeDetails && data.mode()=='trees'" ng-include="'js/trees/edit.tpl.html'"></div>
+								<div ng:cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="{{data.mode()}}" class="map"></div>
+							</section>	<!-- }}} mainContent -->
+						</div>	
 					</div>
-        			<div class="pullleft space5">
-						<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID"> 
+
+					<div class="col-sm-4 col">
+						<div class="result-container">
+							<section class="nav_listings" ng-if="data.mode()=='trees'"> 
+
+								<div class="table-responsive">
+									<table class="tree-list-container">
+										<thead>
+											<tr>
+												<td>
+													<div class="btn-group">
+														<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+															<i class="fa fa-check-square-o"></i>
+															<span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu" role="menu">
+															<li><a href ng-click="toggleCheckedTrees(true)">ALL</a></li>
+															<li><a href ng-click="toggleCheckedTrees('thisYear')">ALL {{thisYear}}</a></li>
+															<li><a href ng-click="toggleCheckedTrees(false)">NONE</a></li>
+														</ul>
+													</div>
+												</td>
+												<td colspan="3"><h6>{{selectedTrees.length}} of {{trees.length}} trees selected</h6></td>
+											</tr>
+										</thead>
+									</table>
+									<div class="tree-list-outer" id="tree-list-container">
+										<table class="tree-list-container">
+											<tbody>
+												<tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
+													<td class="td-check">													
+														<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID" id="tree-result-checkbox-{{tree.treeID}}">
+													</td>
+													<td class="td-img">
+                                                        <label for="tree-result-checkbox-{{tree.treeID}}">
+                                                            <div tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
+                                                                <img bo-src="tree.imgSm" data-treeID='{{tree.treeID}}'
+                                                                     ng-click="onTreeImageRollover(tree.treeID);" ng-mouseover="onTreeImageRollover(tree.treeID);" ng-mouseleave="onTreeImageRollout(tree.treeID);"
+                                                                     data-imgMed="{{tree.imgMed}}"
+                                                                     style="border:2px solid #{{colors.bg[tree.colorID]}}"/>
+                                                            </div>
+                                                        </label>
+													</td>
+													<td>
+                                                        <label for="tree-result-checkbox-{{tree.treeID}}">
+                                                            <h6>{{tree.commonName}}</h6>
+                                                            <p>{{tree.dbhID|dbhID2Name:this}}</p>
+                                                            <small><span class='recYear {{tree.history|showRecoYear:"css"}}' ng-bind-html="tree.history|showRecoYear"></span>
+                                                                <span bo-text="'(ID:' + tree.treeID + ')'"></span></small>
+                                                        </label>
+													</td>
+													<td class="td-action" style="padding: 0px;">
+                                                        <label for="tree-result-checkbox-{{tree.treeID}}">
+                                                            <a href='#/tree_edit/{{tree.treeID}}' bs-tooltip title="View/Edit Details" style="padding: 5px;"><i class="fa fa-pencil"></i></a>
+                                                        </label>
+													</td>
+												</tr>
+											</tbody>
+											
+										</table>
+									</div>	
+									<table class="tree-list-container">
+										<tfoot>
+											<tr>
+												<td colspan="4">
+													<button class="btn btn-block btn-red clr-white txt-bold" ng-click="addToEstimate()">Add to Estimate</button>
+												</td>
+											</tr>
+										</tfoot>
+									</table>
+								</div>	
+								
+								<!--
+							  	<div>
+							     	<div class="nav_listings_header pullright centerText width192">Search Results: {{TFSdata.treeResultsCount}} Trees located </div>
+							     	<div class="clearfloat"></div>
+							    </div>
+								-->
+							  	<!--BEGIN LISTING OPTIONS SECTION-->
+							  	<!--
+							   	<div class="pullleft centerText width192 topSpace10">
+							        Select:{{ alert(1) }}
+									
+								</div>
+								-->
+							    
+							    <!--  	 
+								<div class="pullleft topSpace10 width192 centerText">
+							    	<p>{{selectedTrees.length}} of {{trees.length}} trees selected</p>
+							    </div>
+								--> 
+								<!-- ADD TO ESTIMATE button/selectors -->
+								<!--
+								<div class="pullleft width192 topSpace5 space5">
+										<button class="navButton width180 roundedCorners" ng-click="addToEstimate()">Add to Estimate</button>
+									<div style='padding-top:1em; font-size:11pt;'>
+									<label><input type=checkbox ng-model='data.showTreatmentList'> Show Treatments</label>
+									</div>
+								</div>
+								<div class="pullleft width180 space5" ng-cloak ng-show="data.showTreatmentList">
+									<select class="multiList" size="10" multiple ng-model="selected.treatmentCodes">
+										<option ng-repeat="treatment in initData.filters.treatments" value="{{treatment.code}}">{{treatment.treatmentType}}</option>
+									</select>
+								</div> <!-- ng-cloak -->
+								
+							</section>	<!-- }}} listing options and left hand column-->
+						</div>	
 					</div>
-          			<div class="pullleft space5" 
-							tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
-							<img ng-src="{{tree.imgSm}}" data-treeID='{{tree.treeID}}' 
-								ng-mouseover="onTreeImageRollover(tree.treeID);" ng-mouseleave="onTreeImageRollout(tree.treeID);"
-								data-imgMed="{{tree.imgMed}}"
-								width="32px" height="32px" 
-								style="border:2px solid #{{colors.bg[tree.colorID]}}"
-								/>
-					</div>
-          			<div class="pullleft space5" style='width:auto;'>
-            			<h1>{{tree.commonName}}</h1><BR>
-						{{tree.dbhID|dbhID2Name:this}} 
-						<span class='recYear {{tree.history|showRecoYear:"css"}}' ng-bind-html="tree.history|showRecoYear"></span>
-						(ID:{{tree.treeID}})
-          			</div>
-				</label>
-          		<div class="clearfloat"></div>
+
+				</div>
+
 			</div>
-      	</div> <!-- }}} ng-repeat -->
-	</div>
-
-  	<!--BEGIN LISTING OPTIONS SECTION-->
-   	<div class="pullleft centerText width192 topSpace10">
-        Select:{{ alert(1) }}
-		<a href ng-click="toggleCheckedTrees(true)">ALL</a> |
-		<a href ng-click="toggleCheckedTrees('thisYear')">ALL {{thisYear}}</a> | 
-		<a href ng-click="toggleCheckedTrees(false)">NONE</a>
-	</div>
-
-       
-	<div class="pullleft topSpace10 width192 centerText">
-    	<p>{{selectedTrees.length}} of {{trees.length}} trees selected</p>
-    </div>
-
-	<!-- ADD TO ESTIMATE button/selectors -->
-	<div class="pullleft width192 topSpace5 space5">
-			<button class="navButton width180 roundedCorners" ng-click="addToEstimate()">Add to Estimate</button>
-		<div style='padding-top:1em; font-size:11pt;'>
-		<label><input type=checkbox ng-model='data.showTreatmentList'> Show Treatments</label>
 		</div>
 	</div>
-	<div class="pullleft width180 space5" ng-cloak ng-show="data.showTreatmentList">
-		<select class="multiList" size="10" multiple ng-model="selected.treatmentCodes">
-			<option ng-repeat="treatment in initData.filters.treatments" value="{{treatment.code}}">{{treatment.treatmentType}}</option>
-		</select>
-	</div> <!-- ng-cloak -->
-</section>	<!-- }}} listing options and left hand column-->
+</div>
 
-
-<!-- begin center content area -->
-<section class="mainContent" ng-class="{{'mode_'+data.mode()}}">
-	<div id='treeDetails' ng:cloak ng-show="data.showTreeDetails && data.mode()=='trees'" ng-include="'js/trees/edit.tpl.html'"></div>
-	<div ng:cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="{{data.mode()}}"></div>
-</section>	<!-- }}} mainContent -->
-
-
-
-
-<!--begin right hand column-->
-<section class="filters space5" ng-if="data.mode()=='trees'"> 
-	<div ng:cloak ng-show="TFSdata.selectedFilters.length>0" style='background-color:#9AED95; padding:2px 4px;'>
-		{{TFSdata.selectedFilters.length}} Filters Active &nbsp; [<a href ng-click='clearFilters();'>Clear</a>]
-	</div>
-
-
-    <!--FILTER SECTION: SPECIES-->
-    <div class="filterHeader">
-      	<h3>Species <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.species>0">({{TFSdata.filterTypeCounts.species}})</span></h3>
-    </div>
-    <div>
-      	<input ng-model='filterSearch.species' type="text" class="styled_input" placeholder="Search Species"/>
-		<span ng-if="filterSearch.species.length>0">[<a href ng-click="filterSearch.species=''">CLEAR</a>]</span>
-    </div>
-    <div class="filterBlock">
-     	<div class="filterItems" 
-			ng-repeat="speciesType in initData.filters.species | filterByString:'commonName':filterSearch.species " 
-			ng-if="speciesType.count!=0 || speciesType.count>0">
-				<!-- NOTE: there are 2 ways in which a filter can be hidden...
-						1. if the user is searching for one.. and it doesnt match (filterByString)
-						2. if the tree results list doesnt include any of this particular species 
-								(TreeFilterService will then modify the .hide property
-				-->
-				<label>
-				<input type="checkbox" id="checkBox_filter_species_{{speciesType.speciesID}}" value="{{speciesType.speciesID}}"  
-					ng-model="speciesType.selected"
-					ng-change="onFilterChange('species', speciesType.speciesID, speciesType.selected)">
-				{{speciesType.commonName}} <span class='filterCount' ng-if="speciesType.count>0">({{speciesType.count}})</span></label>
-		</div> <!-- }}} .filterItems -->
-    </div>
-    <!-- END SPECIES FILTER SECTION --> 
-    
-    <!--FILTER SECTION: TREATMENT TYPE-->
-    <div class="filterHeader">
-      <h3>Treatments:
-		<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.treatments>0">({{TFSdata.filterTypeCounts.treatments}})</span>
-	  </h3>
-    </div>
-    <div>
-      <input ng-model='filterSearch.treatments' type="text" class="styled_input" placeholder="Search Treatments" ng-escape="filterSearch.treatments=''"/>
-	  <span ng-if="filterSearch.treatments.length>0">[<a href ng-click="filterSearch.treatments=''">CLEAR</a>]</span>
-    </div>
-    <div class="filterBlock">
-	 <div class="filterItems" ng-repeat="t in initData.filters.treatments | filterByString:'treatmentType':filterSearch.treatments"
-	        ng-if="t.count!=0 || t.count>0">
-        <label>
-		<input type="checkbox" id="checkBox_filter_treatment_{{t.treatmentTypeID}}" value="{{t.treatmentTypeID}}"  
-			ng-model="t.selected"
-			ng-change="onFilterChange('treatmentType', t.treatmentTypeID, t.selected)">
-		{{t.treatmentType}} <span class='filterCount' ng-if="t.count>0">({{t.count}})</span></div></label>
-    </div>
-	<div class='filterItems'>
-		<b style='font-size:1.3em;'>Year:</b> &nbsp; 
-				<label><input type='checkbox' ng-model='initData.filters.year[0].selected' 
-					ng-change="onFilterChange('year','{{initData.filters.year[0].id}}',initData.filters.year[0].selected)">
-					This</label> &nbsp; 
-
-				<label><input type='checkbox' ng-model='initData.filters.year[1].selected' 
-					ng-change="onFilterChange('year','{{initData.filters.year[1].id}}',initData.filters.year[1].selected)">
-					Next</label> &nbsp; 
-
-				<label><input type='checkbox' ng-model='initData.filters.year[2].selected' 
-					ng-change="onFilterChange('year','{{initData.filters.year[2].id}}',initData.filters.year[2].selected)">
-					2</label> &nbsp; 
-
-				<label><input type='checkbox' ng-model='initData.filters.year[3].selected' 
-					ng-change="onFilterChange('year','{{initData.filters.year[3].id}}',initData.filters.year[3].selected)">
-					3</label> &nbsp; 
-
-				<label><input type='checkbox' ng-model='initData.filters.year[4].selected' 
-					ng-change="onFilterChange('year','{{initData.filters.year[4].id}}',initData.filters.year[4].selected)">
-					4</label>
-	</div>	
-    <!-- END TREATMENT TYPE FILTER SECTION --> 
- 
-    <!--FILTER SECTION: Building, Hardscape and Powerline -->
-      <div class='filterItems' ng-if="TFSdata.filterTypeCounts.building>0 || TFSdata.filterTypeCounts.building!=0">
-	  	<label><input type="checkbox"  value="yes"  
-                                        ng-model="building.selected"
-                                        ng-change="onFilterChange('miscProperty', 'building', building.selected)"> 
-										<i class='fa fa-building _red _size5'></i> Building
-		<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.building>0">({{TFSdata.filterTypeCounts.building}})</span>
-		</label>
-	</div>
-      <div class='filterItems' ng-if="TFSdata.filterTypeCounts.caDamage>0 || TFSdata.filterTypeCounts.caDamage!=0">
-	  	<label><input type="checkbox"  value="potential"  
-                                        ng-model="caDamage.selected"
-                                        ng-change="onFilterChange('miscProperty', 'caDamagePotential', caDamage.selected)"> 
-										<i class='fa fa-warning _orange _size6'></i> Hardscape Damage Potential
-		<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.caDamage>0">({{TFSdata.filterTypeCounts.caDamage}})</span>
-		</label>
-	</div>
-      <div class='filterItems' ng-if="TFSdata.filterTypeCounts.caDamage>0 || TFSdata.filterTypeCounts.caDamage!=0">
-	  	<label><input type="checkbox"  value="yes"  
-                                        ng-model="caDamage.selected"
-                                        ng-change="onFilterChange('miscProperty', 'caDamage', caDamage.selected)"> 
-										<i class='fa fa-warning _red _size6'></i> Hardscape Damage
-		<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.caDamage>0">({{TFSdata.filterTypeCounts.caDamage}})</span>
-		</label>
-	</div>
-      <div class='filterItems' ng-if="TFSdata.filterTypeCounts.powerline>0 || TFSdata.filterTypeCounts.powerline!=0">
-	  	<label><input type="checkbox"  value="yes"  
-                                        ng-model="powerline.selected"
-                                        ng-change="onFilterChange('miscProperty', 'powerline', powerline.selected)"> 
-										<i class='fa fa-bolt _red _size7'></i> Powerline
-		<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.powerline>0">({{TFSdata.filterTypeCounts.powerline}})</span>
-		</label>
-	</div>
-  <!-- END Building, Hardscape, POWERLINE FILTER SECTION --> 
-
-    <!--FILTER SECTION: SIZE-->
-    <div class="filterHeader">
-      <h3>Size
-		<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.treatments>0">({{TFSdata.filterTypeCounts.treatments}})</span>
-	</h3>
-    </div>
-    <div class="filterBlock">
-      <span class="filterItems" ng-repeat="(idx,size) in initData.filters.dbh"
-			ng-if="size.count!=0 || size.count>0">
-				<label><input type="checkbox" id="checkBox_filter_size_{{size.dbhID}}" value="{{size.dbhID}}"  
-					ng-model="size.selected"
-					ng-change="onFilterChange('dbh', size.dbhID, size.selected)">
-				{{size.diameter}} <span class='filterCount' ng-if="size.count>0">({{size.count}})</span></label> &nbsp;&nbsp;
-				<div ng-if=" $index>0 && $index % 2 == 0" style='clear:both'></div>
-	   </span> <!-- }}} ng-repeat -->
-    </div>
-    <!-- END SIZE FILTER SECTION --> 
-    
-
-    <!--FILTER SECTION: HEALTH-->   
-    <div class="filterHeader">
-      <h3>Health
-		<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.rating>0">({{TFSdata.filterTypeCounts.rating}})</span>
-	  </h3>
-    </div>
-    <div class="filterBlock">
-      <span class="filterItems" ng-repeat="r in initData.filters.ratings"
-			ng-if="r.count!=0 || r.count>0">
-			<label>	
-			<input type="checkbox" id="checkBox_filter_rating_{{r.ratingID}}" value="{{r.ratingID}}"  
-				ng-model="r.selected"
-				ng-change="onFilterChange('rating', r.ratingID, r.selected)">
-			{{r.ratingID}} - {{r.rating_desc}}
-		    <span class='filterCount' ng-if="r.count>0">({{r.count}})</span></label> &nbsp; &nbsp;
-		</span> <!-- }}} ng-repeat -->
-    </div>
-    <!-- END HEALTH FILTER SECTION -->
-    
-
-    <div class="clearfloat"></div>
-  </section>
-  <!--end right hand column-->
-   <!--END FILTER SECTION-->
-  <div class="clearfloat"></div>
- 
-
-	<!-- INCLUDE REPORTS SECTION -->
-    <div class="clearfloat" style='clear:both;height:5px;'></div>
-	<hr>
-	<div ng-include="'js/trees/report.tpl.html'"></div>
-
-
+<div class="clearfix"></div>
+<div ng-include="'js/trees/report.tpl.html'"></div>
 
 </main>

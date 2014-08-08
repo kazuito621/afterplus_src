@@ -286,7 +286,7 @@ module.exports = function (grunt) {
 			//'img/*',
             'fonts/*',
           ]
-        } 
+        }
 /*
 		,{
           expand: true,
@@ -296,6 +296,14 @@ module.exports = function (grunt) {
         }
 */
 		]
+      },
+
+	  /* Copy over unaltered, non-renamed css files for php to use */
+      css_php: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/css',
+        dest: '<%= yeoman.dist %>/css',
+        src: '{,*/}*.css'
       },
 /*
 		// unneeded cuz were just keeping those files in dist(public), 
@@ -408,7 +416,8 @@ module.exports = function (grunt) {
     'uglify',
     'rev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+	'copy:css_php'
   ]);
 
   grunt.registerTask('default', [

@@ -17,7 +17,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		,isSignedIn: angular.bind(Auth, Auth.isSignedIn)
 		,getLoginName: angular.bind(Auth, Auth.getLoginName)
 		,signOut: angular.bind(Auth, Auth.signOut)
+        ,isAtleast: angular.bind(Auth, Auth.isAtleast)
 	}
+
+    s.isActiveTab = function (name) {
+        var path = $location.path();
+        var current = path.split('/')[1];
+
+        return name === current;
+    };
 
 	// global wrapper for broadcasting, so that each controller doesnt need $rootScope
 	// why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,
@@ -34,7 +42,9 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		s.renderTplID=s.renderPath[0];
 		if(s.renderTplID=='estimate') s.renderTplID='trees';		
 
-		if(lastRenderedTplID == s.renderTplID) return;
+		// if render template is the same, we can stop, but still
+		// send an event that a nav has occured
+		if(lastRenderedTplID == s.renderTplID) return s.sendEvt('nav', {new:s.renderTplID, old:lastRenderedTplID});
 
 		// lazy load the property template based on the base path
 		// ie. if "#/trees", then load "trees.tpl.html"
@@ -67,7 +77,10 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		} 
 		dbg("no redir ");
 		s.routeParams=$routeParams;
-       	if($route.current.resolve) render();
+        if ($route.current.resolve) {
+            render();
+            s.currentTab = s.renderPath[0];
+        }
 	});
 
 
@@ -98,7 +111,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
      */
 	var alertCfg={placement:'top', keyboard:true, show:true, type:'info', template:'js/main/alert.tpl.html'}
 	s.setAlert = function(txt, opt) {
-		if(!txt || txt==''){ 
+		if(!txt || txt=='' || txt=='false'){ 
 			return;
 			if( s.alertBox && s.alertBox.hide && _.isFunction(s.alertBox.hide) ){
 				s.alertBox.hide();

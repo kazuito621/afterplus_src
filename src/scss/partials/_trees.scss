@@ -1,0 +1,575 @@
+$tree-min-height: 700px;
+.trees-container
+{
+	.filters-container
+	{
+		background: $gray-color;
+		padding: 20px 15px;
+		min-height: $tree-min-height;
+		margin-bottom: 24px;
+
+		@media(max-width: $screen-sm-max)
+		{
+			min-height: 0;
+		}
+
+		@media(max-width: $screen-xs-max)
+		{
+			margin-bottom: 0;
+		}
+
+		.row-xss
+		{
+			> .col 
+			{
+				@media(min-width: $screen-sm-min)
+				{
+					display: block;
+					float: none;
+					@include clearfix();
+					width: 100%;
+				}
+			}
+		}
+		section 
+		{
+			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		.filter-container-title
+		{
+			padding: 5px;
+			@include border-radius(3px);
+			background: #9AED95;
+			margin-bottom: 10px;
+
+			@include font-g(12px , normal , $gray-color , 20px);
+
+			position: relative;
+
+			.lnk-clear
+			{
+				position: absolute;
+				right: 8px;
+				top: 5px;
+				a 
+				{
+					color: $orange-color;
+
+					&:hover, &:focus 
+					{
+						color: $orange-color;
+					}
+				}
+			}
+		}
+
+		.filter-container
+		{
+			padding: 0;
+			margin-bottom: 20px;
+			padding-left: 10px;
+			padding-right: 10px;
+
+			.filter-header
+			{
+				@include font-g(16px , normal , #d5d5d5 , 20px);
+				text-transform: uppercase;
+				margin-bottom: 10px;
+				padding: 0 5px;
+			}
+
+			.filter-input 
+			{
+				margin-bottom: 8px;
+				position: relative;
+
+				.inpt-clear
+				{
+					position: absolute;
+					right: 8px;
+					top: 5px;
+					z-index: 99;
+					color: #d5d5d5;
+					@include animate(all);
+
+					a 
+					{
+						color: #d5d5d5;
+						font-size: 12px;
+						&:hover
+						{
+							color: #FFF;
+						}
+					}
+
+					&:hover
+					{
+						color: #FFF;
+					}
+				}
+			}
+
+			.inpt
+			{
+				width: 100%;
+				display: block;
+				padding: 5px;
+				@include border-radius(3px);	
+				background: #5c5c5c;
+				color: $white-color;	
+				border: 1px solid #696a6a;
+				margin: 0;
+
+				@include font-g(12px , normal , #d5d5d5 , 16px);		
+			}
+
+			.inpt-select 
+			{
+				option.option 
+				{
+					padding: 5px;
+					background: $light-color;
+					color: $gray-color;
+				}
+			}
+
+			.filter-block
+			{
+				@include border-radius(3px);					
+				overflow: hidden;
+				height: auto;
+				padding: 0;
+
+				.filter-items 
+				{					
+					max-height: 120px;
+					overflow-y: auto;
+					padding: 0;
+
+					.filter-item 
+					{
+						label 
+						{
+							display: block;
+							padding:0 5px;
+							clear: both;
+
+							&:before 
+							{
+								clear: both;
+								float: none;
+							}	
+
+							input 
+							{
+								float: left;
+								display: inline-block;
+								margin: 0;
+								margin-top: 5px;
+								margin-right: 5px;
+							}
+
+							.text
+							{
+								@include font-g(12px , normal , $gray-color , 24px);
+								float: left;
+								display: inline-block;
+
+								i.fa 
+								{
+									width: 20px;
+									text-align: center;
+								}
+							}
+						}
+
+						&:nth-child(odd)
+						{
+							background: #cccccc;
+						}
+
+						&:nth-child(even)
+						{
+							background: #dfdfdf;
+						}
+					}
+
+					&.filter-items-inline
+					{				
+						background: #dfdfdf;
+								
+						.filter-item
+						{
+							float: left;
+							display: inline-block;
+							background: none;
+							margin-right: 10px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.content-container
+	{
+		min-height: $tree-min-height;
+
+		@media(max-width: $screen-sm-max)
+		{
+			min-height: 0;
+		}
+		
+		section 
+		{
+			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		#treeDetails
+		{
+			height: auto;
+		}
+
+		.map-container
+		{
+			min-height: $tree-min-height - 100;
+
+			@media(max-width: $screen-sm-max)
+			{
+				min-height: 0;
+			}
+
+			.map 
+			{
+				min-height: $tree-min-height - 100;				
+				height: auto;
+
+				@media(max-width: $screen-sm-max)
+				{
+					min-height: 0;
+					height: 300px !important;
+				}
+			}
+		}
+	}
+
+	.result-container
+	{		
+		padding: 20px 20px;
+		min-height: $tree-min-height;
+
+		@media(max-width: $screen-sm-max)
+		{
+			min-height: 0;
+		}
+
+		section 
+		{
+			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		.tree-list-outer
+		{
+			max-height: $tree-min-height - 98;
+			overflow-y: auto;
+		}
+
+		table.tree-list-container
+		{
+			width: 100%;
+
+			thead 
+			{
+				tr 
+				{
+					td 
+					{
+						background: #333333;
+						color: $white-color;
+
+						h6 
+						{
+							color: $white-color;
+						}
+						.btn-group
+						{
+							button 
+							{
+								color: $white-color;
+								border: none;
+								background: none;
+								padding-left: 0;
+								padding-right: 0;
+
+								i 
+								{
+									font-size: 14px;
+								}
+							}
+
+							.dropdown-menu
+							{
+								border: 1px solid #6b6c6a;
+								min-width: 90px;
+								left: -5px;
+								margin-top: 5px;
+								overflow: hidden;
+								padding: 0;
+								li 
+								{
+									padding: 0;
+									background: #ffffff;
+
+									a 
+									{
+										padding: 0 5px;
+										@include font-g(12px , normal , $gray-color , 24px);		
+										@include animate(all);
+
+										&:hover, &:focus, &:active 
+										{
+											background: $gray-color;
+											color: $white-color;
+										}
+									}
+
+									&:nth-child(odd)
+									{
+										background: #f3f3f4
+									}
+
+									&:nth-child(even)
+									{
+										background: #ffffff;
+									}
+								}
+								
+							}
+						}
+					}
+				}
+			}
+
+			tbody 
+			{
+				max-height: 200px;
+				overflow-y: auto;
+			}
+			
+			tfoot 
+			{
+				td 
+				{
+					background: none;
+					padding: 0;
+				}
+			}
+
+			tr 
+			{
+				@include animate(all);
+				td 
+				{
+					padding: 5px;
+					border-top: 1px solid #f0f1f1;
+					border-bottom: 1px solid #ffffff;
+					h6 
+					{
+						@include font-g(13px , bold , #3f3f3f , 20px);						
+					}
+
+					p 
+					{
+						@include font-g(12px , normal , #3f3f3f , 16px);							
+					}
+
+					small 
+					{
+						@include font-g(10px , normal , #3f3f3f , 16px);
+					}
+
+					&.td-check
+					{
+						background: #c7c9c9;
+						text-align: center;
+					}	
+
+					&.td-img 
+					{
+						img
+						{
+							width: 40px;
+							height: 50px;
+						}
+					}
+
+					&.td-action
+					{
+						a 
+						{
+							font-size: 18px;
+							color: $white-color;
+							@include animate(all);
+
+							&:hover, &:focus, &:active 
+							{
+								text-decoration: none;
+							}
+						}
+					}
+				}
+
+				&:nth-child(odd)
+				{
+					background: #f3f3f4;
+				}
+
+				&:nth-child(even)
+				{
+					background: #e7eaea;
+				}
+
+				&:hover, &:focus, &:active 
+				{
+					background: #c7c9c9;
+
+					td 
+					{
+						&.td-action
+						{
+							a 
+							{
+								color: $gray-color;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.admin-filter-container
+	{
+		padding: 20px 15px;
+		background: $gray-color;
+
+		.input-group 
+		{
+			display: block;
+			width: 100%;
+
+			.inpt
+			{
+				width: 100%;
+				display: block;
+				padding: 5px;
+				@include border-radius(3px);	
+				background: #5c5c5c;
+				color: $white-color;	
+				border: 1px solid #696a6a;		
+
+				@media(max-width: $screen-xs-max)
+				{
+					margin-bottom: 10px;
+				}
+			}
+
+			.inpt-select 
+			{
+				option.option 
+				{
+					padding: 5px;
+					background: $light-color;
+					color: $gray-color;
+				}
+			}
+		}
+
+		.lnk 
+		{
+			line-height: 30px;
+			@include font-g(10px , normal , $white-color , 30px);
+
+			a 
+			{
+				@include font-g(10px , normal , $white-color , 30px);
+			}
+		}
+	}
+}
+
+.edit-tree-container
+{
+	.image 
+	{
+		padding:5px; 
+		border:1px solid #ccc;
+
+		img 
+		{
+			width: 100%;
+			display: block;
+			height: auto;
+		}
+	}
+
+	.content 
+	{
+		@include font-g(14px , normal , #3f3f3f , 20px);
+		h2 
+		{
+			@include font-g(18px , bold , #3f3f3f , 24px);
+			margin-bottom: 10px;
+			margin-top: 15px;
+		}
+
+		h3
+		{
+			@include font-g(14px , bold , #3f3f3f , 24px);
+			margin-top: 15px;
+		}
+
+		pre 
+		{
+			padding: 5px 10px;
+		}
+
+		dl 
+		{
+			dt 
+			{
+				@include font-g(14px , normal , #3f3f3f , 24px);
+				text-align: left;
+			}
+
+			dd 
+			{
+				@include font-g(14px , normal , #3f3f3f , 24px);
+			}
+		}
+
+		table 
+		{
+			tr 
+			{
+				td, th 
+				{
+					@include font-g(14px , normal , #3f3f3f , 20px);	
+
+					a 
+					{
+						font-size: 12px;
+						line-height: 16px;
+					}	
+				}
+			}
+		}
+	}
+}

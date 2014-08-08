@@ -644,17 +644,22 @@ body {
 }
 
 /* line 18, ../scss/partials/_common.scss */
+.clr-orange {
+  color: #f84540 !important;
+}
+
+/* line 23, ../scss/partials/_common.scss */
 .txt-bold {
   font-weight: bold !important;
 }
 
-/* line 23, ../scss/partials/_common.scss */
+/* line 28, ../scss/partials/_common.scss */
 header {
   background: none;
   background-color: black;
   padding: 0 20px;
 }
-/* line 29, ../scss/partials/_common.scss */
+/* line 34, ../scss/partials/_common.scss */
 header .cnt-logo {
   padding: 15px 0;
   float: left;
@@ -662,7 +667,7 @@ header .cnt-logo {
   margin-right: 100px;
 }
 @media (max-width: 790px) {
-  /* line 29, ../scss/partials/_common.scss */
+  /* line 34, ../scss/partials/_common.scss */
   header .cnt-logo {
     float: none;
     clear: both;
@@ -680,17 +685,17 @@ header .cnt-logo {
     clear: both;
   }
 }
-/* line 46, ../scss/partials/_common.scss */
+/* line 51, ../scss/partials/_common.scss */
 header .cnt-logo img {
   width: 150px;
   height: auto;
 }
-/* line 53, ../scss/partials/_common.scss */
+/* line 58, ../scss/partials/_common.scss */
 header .nav-container {
   float: left;
 }
 @media (max-width: 790px) {
-  /* line 53, ../scss/partials/_common.scss */
+  /* line 58, ../scss/partials/_common.scss */
   header .nav-container {
     float: none;
     clear: both;
@@ -707,23 +712,23 @@ header .nav-container {
     clear: both;
   }
 }
-/* line 67, ../scss/partials/_common.scss */
+/* line 72, ../scss/partials/_common.scss */
 header .nav-container nav ul {
   margin: 0;
   display: block;
 }
 @media (max-width: 790px) {
-  /* line 67, ../scss/partials/_common.scss */
+  /* line 72, ../scss/partials/_common.scss */
   header .nav-container nav ul {
     display: inline-block;
   }
 }
-/* line 77, ../scss/partials/_common.scss */
+/* line 82, ../scss/partials/_common.scss */
 header .nav-container nav ul li {
   float: left;
   padding: 0;
 }
-/* line 81, ../scss/partials/_common.scss */
+/* line 86, ../scss/partials/_common.scss */
 header .nav-container nav ul li a {
   text-align: center;
   display: block;
@@ -733,30 +738,30 @@ header .nav-container nav ul li a {
   transition: all linear 0.4s;
 }
 @media (max-width: 540px) {
-  /* line 81, ../scss/partials/_common.scss */
+  /* line 86, ../scss/partials/_common.scss */
   header .nav-container nav ul li a {
     padding: 14px 20px;
   }
 }
 @media (max-width: 480px) {
-  /* line 81, ../scss/partials/_common.scss */
+  /* line 86, ../scss/partials/_common.scss */
   header .nav-container nav ul li a {
     padding: 15px 15px;
   }
 }
-/* line 97, ../scss/partials/_common.scss */
+/* line 102, ../scss/partials/_common.scss */
 header .nav-container nav ul li a i {
   display: block;
   font-size: 30px;
   color: #adadad;
 }
 @media (max-width: 480px) {
-  /* line 97, ../scss/partials/_common.scss */
+  /* line 102, ../scss/partials/_common.scss */
   header .nav-container nav ul li a i {
     font-size: 18px;
   }
 }
-/* line 109, ../scss/partials/_common.scss */
+/* line 114, ../scss/partials/_common.scss */
 header .nav-container nav ul li a .text {
   display: block;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -768,7 +773,7 @@ header .nav-container nav ul li a .text {
   margin-top: 5px;
 }
 @media (max-width: 480px) {
-  /* line 109, ../scss/partials/_common.scss */
+  /* line 114, ../scss/partials/_common.scss */
   header .nav-container nav ul li a .text {
     font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 12px;
@@ -777,17 +782,17 @@ header .nav-container nav ul li a .text {
     line-height: 18px;
   }
 }
-/* line 123, ../scss/partials/_common.scss */
+/* line 128, ../scss/partials/_common.scss */
 header .nav-container nav ul li a.active, header .nav-container nav ul li a:hover, header .nav-container nav ul li a:focus, header .nav-container nav ul li a:active {
   text-decoration: none;
   background: #333333;
   outline: 0;
 }
-/* line 129, ../scss/partials/_common.scss */
+/* line 134, ../scss/partials/_common.scss */
 header .nav-container nav ul li a.active i, header .nav-container nav ul li a.active .text, header .nav-container nav ul li a:hover i, header .nav-container nav ul li a:hover .text, header .nav-container nav ul li a:focus i, header .nav-container nav ul li a:focus .text, header .nav-container nav ul li a:active i, header .nav-container nav ul li a:active .text {
   color: #f84540;
 }
-/* line 140, ../scss/partials/_common.scss */
+/* line 145, ../scss/partials/_common.scss */
 header .header-nav {
   float: right;
   padding: 15px 0;
@@ -796,7 +801,7 @@ header .header-nav {
   display: inline-block;
 }
 @media (max-width: 1080px) {
-  /* line 140, ../scss/partials/_common.scss */
+  /* line 145, ../scss/partials/_common.scss */
   header .header-nav {
     display: block;
     float: none;
@@ -814,41 +819,41 @@ header .header-nav {
   }
 }
 
-/* line 159, ../scss/partials/_common.scss */
+/* line 164, ../scss/partials/_common.scss */
 .row-xs {
   margin-left: -5px;
   margin-right: -5px;
 }
-/* line 164, ../scss/partials/_common.scss */
+/* line 169, ../scss/partials/_common.scss */
 .row-xs > .col {
   padding-left: 5px;
   padding-right: 5px;
 }
 
-/* line 171, ../scss/partials/_common.scss */
+/* line 176, ../scss/partials/_common.scss */
 .row-nopad {
   margin-left: 0;
   margin-right: 0;
 }
-/* line 176, ../scss/partials/_common.scss */
+/* line 181, ../scss/partials/_common.scss */
 .row-nopad > .col {
   padding-left: 0;
   padding-right: 0;
 }
 
-/* line 183, ../scss/partials/_common.scss */
+/* line 188, ../scss/partials/_common.scss */
 .row-pad20 {
   margin-left: -20px;
   margin-right: -20px;
 }
-/* line 188, ../scss/partials/_common.scss */
+/* line 193, ../scss/partials/_common.scss */
 .row-pad20 > .col {
   padding-left: 20px;
   padding-right: 20px;
 }
 
 @media (max-width: 500px) {
-  /* line 199, ../scss/partials/_common.scss */
+  /* line 204, ../scss/partials/_common.scss */
   .row-xss > .col {
     display: block;
     float: none;
@@ -865,23 +870,23 @@ header .header-nav {
   }
 }
 
-/* line 209, ../scss/partials/_common.scss */
+/* line 214, ../scss/partials/_common.scss */
 .top-margin-none {
   margin-top: 0 !important;
 }
 
-/* line 214, ../scss/partials/_common.scss */
+/* line 219, ../scss/partials/_common.scss */
 .padding-top-none {
   padding-top: 0 !important;
 }
 
-/* line 219, ../scss/partials/_common.scss */
+/* line 224, ../scss/partials/_common.scss */
 .touch-boundry {
   margin-left: -15px;
   margin-right: -15px;
 }
 
-/* line 225, ../scss/partials/_common.scss */
+/* line 230, ../scss/partials/_common.scss */
 footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -895,7 +900,7 @@ footer {
   margin-right: 15px;
 }
 
-/* line 239, ../scss/partials/_common.scss */
+/* line 244, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -909,23 +914,23 @@ footer {
   border-bottom: 1px solid #d5d5d5;
   position: relative;
 }
-/* line 249, ../scss/partials/_common.scss */
+/* line 254, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a:hover, .collapse-container .collapse-head a:focus {
   text-decoration: none;
   color: white;
 }
-/* line 255, ../scss/partials/_common.scss */
+/* line 260, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a i {
   position: absolute;
   right: 0;
   top: 9px;
 }
-/* line 264, ../scss/partials/_common.scss */
+/* line 269, ../scss/partials/_common.scss */
 .collapse-container .collapse-body {
   display: none;
 }
 
-/* line 271, ../scss/partials/_common.scss */
+/* line 276, ../scss/partials/_common.scss */
 .big-tag {
   font-size: 30px;
   font-weight: bold;
@@ -945,39 +950,39 @@ footer {
   -webkit-transform: rotate(5deg);
 }
 @media (max-width: 500px) {
-  /* line 271, ../scss/partials/_common.scss */
+  /* line 276, ../scss/partials/_common.scss */
   .big-tag {
     margin-top: 20px;
   }
 }
-/* line 297, ../scss/partials/_common.scss */
+/* line 302, ../scss/partials/_common.scss */
 .big-tag.approved {
   border-color: #2ecc40;
   color: #2ecc40;
 }
-/* line 303, ../scss/partials/_common.scss */
+/* line 308, ../scss/partials/_common.scss */
 .big-tag.billed {
   border-color: #ff851b;
   color: #ff851b;
 }
-/* line 309, ../scss/partials/_common.scss */
+/* line 314, ../scss/partials/_common.scss */
 .big-tag.completed {
   border-color: #0074d9;
   color: #0074d9;
   font-size: 26px;
 }
-/* line 316, ../scss/partials/_common.scss */
+/* line 321, ../scss/partials/_common.scss */
 .big-tag.paid {
   border-color: #ff4136;
   color: #ff4136;
 }
-/* line 322, ../scss/partials/_common.scss */
+/* line 327, ../scss/partials/_common.scss */
 .big-tag.sent {
   border-color: #0074d9;
   color: #0074d9;
 }
 
-/* line 330, ../scss/partials/_common.scss */
+/* line 335, ../scss/partials/_common.scss */
 .small-tag {
   padding: 3px 6px;
   color: #fff;
@@ -986,31 +991,31 @@ footer {
   font-size: .8em;
   letter-spacing: .15em;
 }
-/* line 338, ../scss/partials/_common.scss */
+/* line 343, ../scss/partials/_common.scss */
 .small-tag.draft {
   background: #cccccc;
 }
-/* line 339, ../scss/partials/_common.scss */
+/* line 344, ../scss/partials/_common.scss */
 .small-tag.approved {
   background: #2ecc40;
 }
-/* line 340, ../scss/partials/_common.scss */
+/* line 345, ../scss/partials/_common.scss */
 .small-tag.needs_approval {
   background: #ff4136;
 }
-/* line 341, ../scss/partials/_common.scss */
+/* line 346, ../scss/partials/_common.scss */
 .small-tag.billed {
   background: #ff851b;
 }
-/* line 342, ../scss/partials/_common.scss */
+/* line 347, ../scss/partials/_common.scss */
 .small-tag.completed {
   background: #0074d9;
 }
-/* line 343, ../scss/partials/_common.scss */
+/* line 348, ../scss/partials/_common.scss */
 .small-tag.paid {
   background: #ff4136;
 }
-/* line 344, ../scss/partials/_common.scss */
+/* line 349, ../scss/partials/_common.scss */
 .small-tag.sent {
   background: #0074d9;
 }
@@ -1175,12 +1180,13 @@ footer {
 .estimate-container {
   padding: 0;
   margin: 0;
+  margin-top: 15px;
 }
-/* line 184, ../scss/partials/_estimate.scss */
+/* line 185, ../scss/partials/_estimate.scss */
 .estimate-container .row-estimate .col {
   min-height: 100%;
 }
-/* line 189, ../scss/partials/_estimate.scss */
+/* line 190, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary {
   -webkit-print-color-adjust: exact;
   position: relative;
@@ -1190,7 +1196,7 @@ footer {
   border-radius: 5px 5px 0 0;
   margin-bottom: 15px;
 }
-/* line 201, ../scss/partials/_estimate.scss */
+/* line 202, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1200,7 +1206,7 @@ footer {
   margin: 0;
   text-transform: uppercase;
 }
-/* line 208, ../scss/partials/_estimate.scss */
+/* line 209, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .name {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -1217,7 +1223,7 @@ footer {
 .estimate-container .estimate-summary .estimate-info dl:after {
   clear: both;
 }
-/* line 217, ../scss/partials/_estimate.scss */
+/* line 218, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dt {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1227,7 +1233,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 224, ../scss/partials/_estimate.scss */
+/* line 225, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dd {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1236,7 +1242,7 @@ footer {
   color: white;
   line-height: 20px;
 }
-/* line 232, ../scss/partials/_estimate.scss */
+/* line 233, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1245,7 +1251,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 238, ../scss/partials/_estimate.scss */
+/* line 239, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1254,34 +1260,34 @@ footer {
   line-height: 20px;
 }
 @media (max-width: 991px) {
-  /* line 199, ../scss/partials/_estimate.scss */
+  /* line 200, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .estimate-info {
     margin-bottom: 20px;
   }
 }
-/* line 251, ../scss/partials/_estimate.scss */
+/* line 252, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info {
   display: table;
   min-height: 135px;
   width: 100%;
 }
-/* line 257, ../scss/partials/_estimate.scss */
+/* line 258, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos {
   display: block;
 }
-/* line 261, ../scss/partials/_estimate.scss */
+/* line 262, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos .logo {
   height: 50px;
   width: auto;
   display: inline-block;
 }
-/* line 267, ../scss/partials/_estimate.scss */
+/* line 268, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos .logo img {
   height: 60px;
   width: auto;
   padding: 3px;
 }
-/* line 276, ../scss/partials/_estimate.scss */
+/* line 277, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .bid {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1295,11 +1301,11 @@ footer {
   right: 15px;
 }
 @media (max-width: 991px) {
-  /* line 251, ../scss/partials/_estimate.scss */
+  /* line 252, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info {
     min-height: 0;
   }
-  /* line 290, ../scss/partials/_estimate.scss */
+  /* line 291, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info .bid {
     text-align: left;
     position: relative;
@@ -1307,25 +1313,25 @@ footer {
     right: auto;
   }
 }
-/* line 301, ../scss/partials/_estimate.scss */
+/* line 302, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions {
   margin-bottom: 15px;
 }
-/* line 305, ../scss/partials/_estimate.scss */
+/* line 306, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions button {
   width: 180px;
 }
 
-/* line 312, ../scss/partials/_estimate.scss */
+/* line 313, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 317, ../scss/partials/_estimate.scss */
+/* line 318, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 317, ../scss/partials/_estimate.scss */
+  /* line 318, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -1341,12 +1347,12 @@ footer {
     clear: both;
   }
 }
-/* line 330, ../scss/partials/_estimate.scss */
+/* line 331, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 330, ../scss/partials/_estimate.scss */
+  /* line 331, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -1362,7 +1368,7 @@ footer {
     clear: both;
   }
 }
-/* line 343, ../scss/partials/_estimate.scss */
+/* line 344, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-info-trees {
   width: 100%;
   display: block;
@@ -1378,57 +1384,57 @@ footer {
 .table-container .row-table .col-info-trees:after {
   clear: both;
 }
-/* line 356, ../scss/partials/_estimate.scss */
+/* line 357, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 360, ../scss/partials/_estimate.scss */
+/* line 361, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 360, ../scss/partials/_estimate.scss */
+  /* line 361, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 375, ../scss/partials/_estimate.scss */
+/* line 376, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 381, ../scss/partials/_estimate.scss */
+/* line 382, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
   vertical-align: middle;
 }
-/* line 386, ../scss/partials/_estimate.scss */
+/* line 387, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment {
   width: 300px;
   text-align: left;
 }
-/* line 391, ../scss/partials/_estimate.scss */
+/* line 392, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-bid {
   min-width: 60px;
   text-align: right;
 }
-/* line 397, ../scss/partials/_estimate.scss */
+/* line 398, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
   min-width: 45px;
   text-align: right;
 }
-/* line 403, ../scss/partials/_estimate.scss */
+/* line 404, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment-bid {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
 }
-/* line 413, ../scss/partials/_estimate.scss */
+/* line 414, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 416, ../scss/partials/_estimate.scss */
+/* line 417, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1440,19 +1446,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 424, ../scss/partials/_estimate.scss */
+/* line 425, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 429, ../scss/partials/_estimate.scss */
+/* line 430, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 439, ../scss/partials/_estimate.scss */
+/* line 440, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 442, ../scss/partials/_estimate.scss */
+/* line 443, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -1463,19 +1469,19 @@ footer {
   color: #646665;
   line-height: 20px;
 }
-/* line 450, ../scss/partials/_estimate.scss */
+/* line 451, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 455, ../scss/partials/_estimate.scss */
+/* line 456, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 460, ../scss/partials/_estimate.scss */
+/* line 461, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 465, ../scss/partials/_estimate.scss */
+/* line 466, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
   -webkit-transition: all linear 0.4s;
@@ -1484,55 +1490,55 @@ footer {
   font-size: 12px;
   margin-right: 5px;
 }
-/* line 472, ../scss/partials/_estimate.scss */
+/* line 473, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
   opacity: 1;
 }
-/* line 477, ../scss/partials/_estimate.scss */
+/* line 478, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:last-child {
   margin-right: 0;
 }
-/* line 482, ../scss/partials/_estimate.scss */
+/* line 483, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-primary {
   color: #333333;
 }
-/* line 487, ../scss/partials/_estimate.scss */
+/* line 488, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-danger {
   color: #f84540;
 }
-/* line 493, ../scss/partials/_estimate.scss */
+/* line 494, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table {
   width: 100%;
   border: none;
 }
-/* line 500, ../scss/partials/_estimate.scss */
+/* line 501, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td {
   padding: 8px;
   border-right: none;
   background: none !important;
   border-bottom: 1px solid #CCCCCC;
 }
-/* line 507, ../scss/partials/_estimate.scss */
+/* line 508, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td:last-child {
   border-right: none;
 }
-/* line 515, ../scss/partials/_estimate.scss */
+/* line 516, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr:last-child td {
   border-bottom: none;
 }
-/* line 526, ../scss/partials/_estimate.scss */
+/* line 527, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 534, ../scss/partials/_estimate.scss */
+/* line 535, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 542, ../scss/partials/_estimate.scss */
+/* line 543, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 551, ../scss/partials/_estimate.scss */
+/* line 552, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1542,7 +1548,7 @@ footer {
   text-align: right;
 }
 
-/* line 558, ../scss/partials/_estimate.scss */
+/* line 559, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1550,7 +1556,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 560, ../scss/partials/_estimate.scss */
+/* line 561, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -1558,7 +1564,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 565, ../scss/partials/_estimate.scss */
+/* line 566, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1569,17 +1575,17 @@ footer {
 }
 
 @media print {
-  /* line 576, ../scss/partials/_estimate.scss */
+  /* line 577, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 583, ../scss/partials/_estimate.scss */
+  /* line 584, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid black;
   }
 
-  /* line 591, ../scss/partials/_estimate.scss */
+  /* line 592, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;

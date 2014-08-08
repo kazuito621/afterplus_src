@@ -48,9 +48,7 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
             });
 
             s.$on('nav', function (e, data) {
-                if (data.new === myStateID) {
-                    init();
-                }
+                if (data.new === myStateID) init();
             });
 
             s.updateTreeName = function () {

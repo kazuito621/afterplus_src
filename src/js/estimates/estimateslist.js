@@ -3,6 +3,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 function ($scope, $route, Api, $location, Auth) {
     'use strict';
     var s = window.ecs = $scope;
+	var myStateID='estimates';
     s.estimates = [];
 
     var init = function () {
@@ -22,6 +23,9 @@ function ($scope, $route, Api, $location, Auth) {
     };
 
 	init();
+	s.$on('nav', function (e, data) {
+		if (data.new === myStateID) init();
+	});
 
 }]);
 

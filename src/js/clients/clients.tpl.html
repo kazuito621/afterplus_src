@@ -17,6 +17,7 @@
 					<th>Name</th>
 					<th>Address</th>
 					<th>Contact Info</th>
+					<th>Sites</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -27,6 +28,7 @@
                     <td>{{c.clientName}}</td>
                     <td>{{c.street}} {{c.city}}, {{c.state}}</td>
                     <td>{{c.contact}} {{c.contactPhone}}</td>
+                    <td><a href='/#sites?clientID={{c.clientID}}' bs-tooltip title='View sites'>{{c.siteCount}}</a></td>
 
                     <td>
                         <a ng-if="auth.isAtleast('inventory')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;

@@ -73,7 +73,7 @@ var ReportCtrl = app.controller(
 
 			var updateReportStatusUI = function(){
 				s.disableApproveButton=false;
-				if(!s.report.status || s.report.status=='estimate' || s.report.status=='change_requested') s.report.actionButton=1;
+				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.reportActionButton=0;
 			
 				if(s.report.status) s.report.rptStatusText='[ ' + s.report.status.toUpperCase() + ' ]';

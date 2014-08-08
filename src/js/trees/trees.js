@@ -354,13 +354,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                         '<div id="bodyContent">'+
                         '<p><strong>SiteID:'+site.siteID+'</strong></p>'+
                         '<p><strong>Client:'+_clientObj.clientName+'</strong></p>'+
-                        '<p><strong>Trees:' + (site.treeCount ? site.treeCount : 0) + '</strong></p>'+
-                        '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
+                        '<p><strong>Trees:' + (site.treeCount ? site.treeCount : 0) + '</strong></p>';
+						if(site.treeCount>0)
+							site.info+='<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
                     site.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
 
                     // add color to site marker
                     setSiteColor(site);
-
                     s.siteLocs.push(site);
                 });
 

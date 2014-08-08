@@ -9,22 +9,22 @@
 			<div class="action-block action-block-2">
 				<ul class="stats list-unstyled list-inline row">
 					<li class="col-xs-4" ng-click="goToEstimatesList()" style="cursor: pointer;" bs-tooltip title='View All Estimates'>
-						<div class="stat">
+						<a href="#/estimates" class="stat">
 							<p class="number">{{initData.stats.reportCount}} <span class="supp" ng-if="initData.stats.reportAlerts" ng-bind="initData.stats.reportAlerts"></span></p>
 							<p class="text">Estimates</p>
-						</div>
+						</a>
 					</li>
 					<li class="col-xs-4" ng-click="goToTrees()" style="cursor: pointer;" bs-tooltip title='View All Properties'>
-						<div class="stat">
+						<a href="#/properties" class="stat">
 							<p class="number" ng-bind="initData.stats.siteCount"></p>
 							<p class="text">Properties</p>
-						</div>
+						</a>
 					</li>
 					<li class="col-xs-4" ng-click="goToTrees()" style="cursor: pointer;" bs-tooltip title='View All Trees'>
-						<div class="stat">
+						<a href="#/trees" class="stat">
 							<p class="number" ng-bind="initData.stats.treeCount"></p>
 							<p class="text">Trees</p>
-						</div>
+						</a>
 					</li>
 				</ul>
 			</div>
@@ -32,13 +32,8 @@
 		<div class="col-sm-6 col" ng-if="data.mode()=='estimate'">
 			<div class="action-block no-border action-block-3">
 				<div class="row row-xs">
-					<!-- hide for now, since the feature is not ready -->
-					<div class="col-xs-4 col" ng-if="1==2">
-						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
-					</div>
-					<!-- hide for now, since the feature is not ready -->
-					<div class="col-xs-4 col" ng-if="1==2 && report.actionButton">
-						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
+					<div class="col-xs-4 col" ng-if="auth.isAtleast('inventory')">
+						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>
 					</div>
 					<div class="col-xs-4 col">
 						<button ng-if="report.actionButton" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
@@ -47,9 +42,16 @@
 						<!-- possible values for status: approved, completed. billed, paid -->
 						<span ng-if="!report.actionButton" ng-class="'big-tag '+report.status" ng-bind='report.status'></span>
 					</div>
-					<div class="col-xs-4 col" ng-if="auth.isAtleast('inventory')">
-						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>
+					
+					<!-- hide for now, since the feature is not ready -->
+					<div class="col-xs-4 col" ng-if="1==2 && report.actionButton">
+						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
 					</div>
+					<!-- hide for now, since the feature is not ready -->
+					<div class="col-xs-4 col" ng-if="1==2">
+						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
+					</div>
+					
 				</div>
 			</div>
 		</div>

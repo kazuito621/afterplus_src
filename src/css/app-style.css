@@ -546,9 +546,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#ee4f3a, #d93f33 50%, #db382f);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEE4F3A', endColorstr='#FFDB382F', GradientType=0);
-  -webkit-transition: background linear 0.4s;
-  -o-transition: background linear 0.4s;
-  transition: background linear 0.4s;
+  -webkit-transition: background linear 0.7s;
+  -o-transition: background linear 0.7s;
+  transition: background linear 0.7s;
 }
 /* line 32, ../scss/partials/_buttons.scss */
 .btn.btn-red:hover, .btn.btn-red:focus, .btn.btn-red:active {
@@ -568,9 +568,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#5596da, #519ae7 50%, #3d80ce);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF5596DA', endColorstr='#FF3D80CE', GradientType=0);
-  -webkit-transition: background linear 0.4s;
-  -o-transition: background linear 0.4s;
-  transition: background linear 0.4s;
+  -webkit-transition: background linear 0.7s;
+  -o-transition: background linear 0.7s;
+  transition: background linear 0.7s;
 }
 /* line 45, ../scss/partials/_buttons.scss */
 .btn.btn-blue:hover, .btn.btn-blue:focus, .btn.btn-blue:active {
@@ -590,9 +590,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#9bc21b, #8fb428 50%, #89a72b);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF9BC21B', endColorstr='#FF89A72B', GradientType=0);
-  -webkit-transition: background linear 0.4s;
-  -o-transition: background linear 0.4s;
-  transition: background linear 0.4s;
+  -webkit-transition: background linear 0.7s;
+  -o-transition: background linear 0.7s;
+  transition: background linear 0.7s;
 }
 /* line 58, ../scss/partials/_buttons.scss */
 .btn.btn-green:hover, .btn.btn-green:focus, .btn.btn-green:active {
@@ -612,9 +612,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#ec983e, #dc842d 50%, #de8c38);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEC983E', endColorstr='#FFDE8C38', GradientType=0);
-  -webkit-transition: background linear 0.4s;
-  -o-transition: background linear 0.4s;
-  transition: background linear 0.4s;
+  -webkit-transition: background linear 0.7s;
+  -o-transition: background linear 0.7s;
+  transition: background linear 0.7s;
 }
 /* line 71, ../scss/partials/_buttons.scss */
 .btn.btn-orange:hover, .btn.btn-orange:focus, .btn.btn-orange:active {
@@ -733,9 +733,9 @@ header .nav-container nav ul li a {
   text-align: center;
   display: block;
   padding: 14px 40px;
-  -webkit-transition: all linear 0.4s;
-  -o-transition: all linear 0.4s;
-  transition: all linear 0.4s;
+  -webkit-transition: all linear 0.7s;
+  -o-transition: all linear 0.7s;
+  transition: all linear 0.7s;
 }
 @media (max-width: 540px) {
   /* line 86, ../scss/partials/_common.scss */
@@ -1030,8 +1030,9 @@ footer {
   padding: 15px 15px;
   background: white;
   margin: 0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
-/* line 16, ../scss/partials/_estimate.scss */
+/* line 17, ../scss/partials/_estimate.scss */
 .action-container.affix {
   position: fixed;
   top: 0;
@@ -1042,51 +1043,61 @@ footer {
   padding: 15px;
 }
 @media (max-width: 991px) {
-  /* line 16, ../scss/partials/_estimate.scss */
+  /* line 17, ../scss/partials/_estimate.scss */
   .action-container.affix {
     position: relative;
     top: 0;
   }
 }
-/* line 40, ../scss/partials/_estimate.scss */
+/* line 41, ../scss/partials/_estimate.scss */
 .action-container .row-action > .col:last-child {
   border-right: none;
 }
 @media (max-width: 767px) {
-  /* line 35, ../scss/partials/_estimate.scss */
+  /* line 36, ../scss/partials/_estimate.scss */
   .action-container .row-action > .col {
     border: none;
   }
 }
 @media (max-width: 767px) {
-  /* line 52, ../scss/partials/_estimate.scss */
+  /* line 53, ../scss/partials/_estimate.scss */
   .action-container .action-block {
     margin-bottom: 10px;
   }
 }
-/* line 59, ../scss/partials/_estimate.scss */
+/* line 60, ../scss/partials/_estimate.scss */
 .action-container .action-block.no-border {
   border: none;
 }
-/* line 64, ../scss/partials/_estimate.scss */
+/* line 65, ../scss/partials/_estimate.scss */
 .action-container .action-block.action-block-1 {
-  padding: 5px 0;
+  padding: 3px 0;
 }
 /* line 69, ../scss/partials/_estimate.scss */
+.action-container .action-block.action-block-1 .btn {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+/* line 76, ../scss/partials/_estimate.scss */
 .action-container .action-block.action-block-2 {
   padding: 3px 0;
 }
-/* line 74, ../scss/partials/_estimate.scss */
+/* line 81, ../scss/partials/_estimate.scss */
 .action-container .action-block.action-block-3 {
-  padding: 10px 0;
+  padding: 19px 0;
+  text-align: right;
 }
-/* line 79, ../scss/partials/_estimate.scss */
+/* line 88, ../scss/partials/_estimate.scss */
+.action-container .action-block.action-block-3 .row > .col {
+  float: right;
+}
+/* line 95, ../scss/partials/_estimate.scss */
 .action-container .action-block .img-approve {
   position: relative;
   display: block;
   width: 100%;
 }
-/* line 84, ../scss/partials/_estimate.scss */
+/* line 100, ../scss/partials/_estimate.scss */
 .action-container .action-block .img-approve img {
   height: 80px;
   width: auto;
@@ -1096,21 +1107,21 @@ footer {
   top: -25px;
 }
 @media (max-width: 1199px) {
-  /* line 84, ../scss/partials/_estimate.scss */
+  /* line 100, ../scss/partials/_estimate.scss */
   .action-container .action-block .img-approve img {
     height: 50px;
     top: -10px;
   }
 }
 @media (max-width: 767px) {
-  /* line 84, ../scss/partials/_estimate.scss */
+  /* line 100, ../scss/partials/_estimate.scss */
   .action-container .action-block .img-approve img {
     height: 80px;
     top: -25px;
   }
 }
 @media (max-width: 500px) {
-  /* line 84, ../scss/partials/_estimate.scss */
+  /* line 100, ../scss/partials/_estimate.scss */
   .action-container .action-block .img-approve img {
     position: relative;
     text-align: center;
@@ -1118,11 +1129,22 @@ footer {
     margin: auto;
   }
 }
-/* line 115, ../scss/partials/_estimate.scss */
+/* line 131, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats {
   text-align: center;
 }
-/* line 121, ../scss/partials/_estimate.scss */
+/* line 135, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats .stat {
+  display: inline-block;
+  margin: auto;
+  padding: 8px 10px;
+  border: 1px solid #aaaaaa;
+  border-radius: 6px;
+  -webkit-transition: all linear 0.7s;
+  -o-transition: all linear 0.7s;
+  transition: all linear 0.7s;
+}
+/* line 144, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .number {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 40px;
@@ -1133,7 +1155,7 @@ footer {
   position: relative;
   display: inline-block;
 }
-/* line 128, ../scss/partials/_estimate.scss */
+/* line 151, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .number .supp {
   position: absolute;
   right: -15px;
@@ -1147,7 +1169,7 @@ footer {
   line-height: 5px;
   padding: 5px;
 }
-/* line 140, ../scss/partials/_estimate.scss */
+/* line 163, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .text {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9px;
@@ -1156,37 +1178,55 @@ footer {
   line-height: 10px;
   text-transform: uppercase;
 }
+/* line 169, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats .stat:hover, .action-container .action-block .stats .stat:focus, .action-container .action-block .stats .stat:active {
+  text-decoration: none;
+  background: #f3f3f4;
+  background-image: -webkit-linear-gradient(#909090, #aaaaaa 50%, #909090);
+  background-image: -o-linear-gradient(#909090, #aaaaaa 50%, #909090);
+  background-image: linear-gradient(#909090, #aaaaaa 50%, #909090);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF909090', endColorstr='#FF909090', GradientType=0);
+}
+/* line 175, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats .stat:hover .number, .action-container .action-block .stats .stat:focus .number, .action-container .action-block .stats .stat:active .number {
+  color: white;
+}
+/* line 180, ../scss/partials/_estimate.scss */
+.action-container .action-block .stats .stat:hover .text, .action-container .action-block .stats .stat:focus .text, .action-container .action-block .stats .stat:active .text {
+  color: white;
+}
 @media (max-width: 767px) {
-  /* line 150, ../scss/partials/_estimate.scss */
+  /* line 190, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-1 {
     text-align: center;
   }
 }
 @media (max-width: 500px) {
-  /* line 160, ../scss/partials/_estimate.scss */
+  /* line 200, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-3 .col-xs-4 {
     float: none;
     clear: both;
     display: block;
     width: 100%;
   }
-  /* line 168, ../scss/partials/_estimate.scss */
+  /* line 208, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-3 .btn-block {
     margin-bottom: 10px;
   }
 }
 
-/* line 177, ../scss/partials/_estimate.scss */
+/* line 217, ../scss/partials/_estimate.scss */
 .estimate-container {
   padding: 0;
   margin: 0;
   margin-top: 15px;
 }
-/* line 185, ../scss/partials/_estimate.scss */
+/* line 225, ../scss/partials/_estimate.scss */
 .estimate-container .row-estimate .col {
   min-height: 100%;
 }
-/* line 190, ../scss/partials/_estimate.scss */
+/* line 230, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary {
   -webkit-print-color-adjust: exact;
   position: relative;
@@ -1196,7 +1236,7 @@ footer {
   border-radius: 5px 5px 0 0;
   margin-bottom: 15px;
 }
-/* line 202, ../scss/partials/_estimate.scss */
+/* line 242, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1206,7 +1246,7 @@ footer {
   margin: 0;
   text-transform: uppercase;
 }
-/* line 209, ../scss/partials/_estimate.scss */
+/* line 249, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .name {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -1223,7 +1263,7 @@ footer {
 .estimate-container .estimate-summary .estimate-info dl:after {
   clear: both;
 }
-/* line 218, ../scss/partials/_estimate.scss */
+/* line 258, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dt {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1233,7 +1273,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 225, ../scss/partials/_estimate.scss */
+/* line 265, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dd {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1242,7 +1282,7 @@ footer {
   color: white;
   line-height: 20px;
 }
-/* line 233, ../scss/partials/_estimate.scss */
+/* line 273, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1251,7 +1291,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 239, ../scss/partials/_estimate.scss */
+/* line 279, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1260,34 +1300,34 @@ footer {
   line-height: 20px;
 }
 @media (max-width: 991px) {
-  /* line 200, ../scss/partials/_estimate.scss */
+  /* line 240, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .estimate-info {
     margin-bottom: 20px;
   }
 }
-/* line 252, ../scss/partials/_estimate.scss */
+/* line 292, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info {
   display: table;
   min-height: 135px;
   width: 100%;
 }
-/* line 258, ../scss/partials/_estimate.scss */
+/* line 298, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos {
   display: block;
 }
-/* line 262, ../scss/partials/_estimate.scss */
+/* line 302, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos .logo {
   height: 50px;
   width: auto;
   display: inline-block;
 }
-/* line 268, ../scss/partials/_estimate.scss */
+/* line 308, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos .logo img {
   height: 60px;
   width: auto;
   padding: 3px;
 }
-/* line 277, ../scss/partials/_estimate.scss */
+/* line 317, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .bid {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1301,11 +1341,11 @@ footer {
   right: 15px;
 }
 @media (max-width: 991px) {
-  /* line 252, ../scss/partials/_estimate.scss */
+  /* line 292, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info {
     min-height: 0;
   }
-  /* line 291, ../scss/partials/_estimate.scss */
+  /* line 331, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info .bid {
     text-align: left;
     position: relative;
@@ -1313,25 +1353,25 @@ footer {
     right: auto;
   }
 }
-/* line 302, ../scss/partials/_estimate.scss */
+/* line 342, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions {
   margin-bottom: 15px;
 }
-/* line 306, ../scss/partials/_estimate.scss */
+/* line 346, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions button {
   width: 180px;
 }
 
-/* line 313, ../scss/partials/_estimate.scss */
+/* line 353, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 318, ../scss/partials/_estimate.scss */
+/* line 358, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 318, ../scss/partials/_estimate.scss */
+  /* line 358, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -1347,12 +1387,12 @@ footer {
     clear: both;
   }
 }
-/* line 331, ../scss/partials/_estimate.scss */
+/* line 371, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 331, ../scss/partials/_estimate.scss */
+  /* line 371, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -1368,7 +1408,7 @@ footer {
     clear: both;
   }
 }
-/* line 344, ../scss/partials/_estimate.scss */
+/* line 384, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-info-trees {
   width: 100%;
   display: block;
@@ -1384,57 +1424,57 @@ footer {
 .table-container .row-table .col-info-trees:after {
   clear: both;
 }
-/* line 357, ../scss/partials/_estimate.scss */
+/* line 397, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 361, ../scss/partials/_estimate.scss */
+/* line 401, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 361, ../scss/partials/_estimate.scss */
+  /* line 401, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 376, ../scss/partials/_estimate.scss */
+/* line 416, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 382, ../scss/partials/_estimate.scss */
+/* line 422, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
   vertical-align: middle;
 }
-/* line 387, ../scss/partials/_estimate.scss */
+/* line 427, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment {
   width: 300px;
   text-align: left;
 }
-/* line 392, ../scss/partials/_estimate.scss */
+/* line 432, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-bid {
   min-width: 60px;
   text-align: right;
 }
-/* line 398, ../scss/partials/_estimate.scss */
+/* line 438, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
   min-width: 45px;
   text-align: right;
 }
-/* line 404, ../scss/partials/_estimate.scss */
+/* line 444, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment-bid {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
 }
-/* line 414, ../scss/partials/_estimate.scss */
+/* line 454, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 417, ../scss/partials/_estimate.scss */
+/* line 457, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1446,19 +1486,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 425, ../scss/partials/_estimate.scss */
+/* line 465, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 430, ../scss/partials/_estimate.scss */
+/* line 470, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 440, ../scss/partials/_estimate.scss */
+/* line 480, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 443, ../scss/partials/_estimate.scss */
+/* line 483, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -1469,76 +1509,76 @@ footer {
   color: #646665;
   line-height: 20px;
 }
-/* line 451, ../scss/partials/_estimate.scss */
+/* line 491, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 456, ../scss/partials/_estimate.scss */
+/* line 496, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 461, ../scss/partials/_estimate.scss */
+/* line 501, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 466, ../scss/partials/_estimate.scss */
+/* line 506, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
-  -webkit-transition: all linear 0.4s;
-  -o-transition: all linear 0.4s;
-  transition: all linear 0.4s;
+  -webkit-transition: all linear 0.7s;
+  -o-transition: all linear 0.7s;
+  transition: all linear 0.7s;
   font-size: 12px;
   margin-right: 5px;
 }
-/* line 473, ../scss/partials/_estimate.scss */
+/* line 513, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
   opacity: 1;
 }
-/* line 478, ../scss/partials/_estimate.scss */
+/* line 518, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:last-child {
   margin-right: 0;
 }
-/* line 483, ../scss/partials/_estimate.scss */
+/* line 523, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-primary {
   color: #333333;
 }
-/* line 488, ../scss/partials/_estimate.scss */
+/* line 528, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-danger {
   color: #f84540;
 }
-/* line 494, ../scss/partials/_estimate.scss */
+/* line 534, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table {
   width: 100%;
   border: none;
 }
-/* line 501, ../scss/partials/_estimate.scss */
+/* line 541, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td {
   padding: 8px;
   border-right: none;
   background: none !important;
   border-bottom: 1px solid #CCCCCC;
 }
-/* line 508, ../scss/partials/_estimate.scss */
+/* line 548, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td:last-child {
   border-right: none;
 }
-/* line 516, ../scss/partials/_estimate.scss */
+/* line 556, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr:last-child td {
   border-bottom: none;
 }
-/* line 527, ../scss/partials/_estimate.scss */
+/* line 567, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 535, ../scss/partials/_estimate.scss */
+/* line 575, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 543, ../scss/partials/_estimate.scss */
+/* line 583, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 552, ../scss/partials/_estimate.scss */
+/* line 592, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1548,7 +1588,7 @@ footer {
   text-align: right;
 }
 
-/* line 559, ../scss/partials/_estimate.scss */
+/* line 599, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1556,7 +1596,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 561, ../scss/partials/_estimate.scss */
+/* line 601, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -1564,7 +1604,7 @@ footer {
   color: black;
   line-height: 18px;
 }
-/* line 566, ../scss/partials/_estimate.scss */
+/* line 606, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1575,17 +1615,17 @@ footer {
 }
 
 @media print {
-  /* line 577, ../scss/partials/_estimate.scss */
+  /* line 617, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 584, ../scss/partials/_estimate.scss */
+  /* line 624, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid black;
   }
 
-  /* line 592, ../scss/partials/_estimate.scss */
+  /* line 632, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;
@@ -1693,9 +1733,9 @@ footer {
   top: 5px;
   z-index: 99;
   color: #d5d5d5;
-  -webkit-transition: all linear 0.4s;
-  -o-transition: all linear 0.4s;
-  transition: all linear 0.4s;
+  -webkit-transition: all linear 0.7s;
+  -o-transition: all linear 0.7s;
+  transition: all linear 0.7s;
 }
 /* line 99, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear a {
@@ -1909,9 +1949,9 @@ footer {
   font-weight: normal;
   color: #333333;
   line-height: 24px;
-  -webkit-transition: all linear 0.4s;
-  -o-transition: all linear 0.4s;
-  transition: all linear 0.4s;
+  -webkit-transition: all linear 0.7s;
+  -o-transition: all linear 0.7s;
+  transition: all linear 0.7s;
 }
 /* line 337, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:hover, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:focus, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:active {
@@ -1938,9 +1978,9 @@ footer {
 }
 /* line 376, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr {
-  -webkit-transition: all linear 0.4s;
-  -o-transition: all linear 0.4s;
-  transition: all linear 0.4s;
+  -webkit-transition: all linear 0.7s;
+  -o-transition: all linear 0.7s;
+  transition: all linear 0.7s;
 }
 /* line 379, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td {
@@ -1986,9 +2026,9 @@ footer {
 .trees-container .result-container table.tree-list-container tr td.td-action a {
   font-size: 18px;
   color: white;
-  -webkit-transition: all linear 0.4s;
-  -o-transition: all linear 0.4s;
-  transition: all linear 0.4s;
+  -webkit-transition: all linear 0.7s;
+  -o-transition: all linear 0.7s;
+  transition: all linear 0.7s;
 }
 /* line 422, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a:hover, .trees-container .result-container table.tree-list-container tr td.td-action a:focus, .trees-container .result-container table.tree-list-container tr td.td-action a:active {

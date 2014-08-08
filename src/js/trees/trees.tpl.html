@@ -16,17 +16,23 @@
 						<div class="row row-xss">
 							<div class="col-xs-6 col">
 
-<!-- HTODO :: this next block, will only show up in custoemr view, and if they have more than one property...
-I would like it to be styled, so that it is all in one line... like this:  "Property: [ DROPDOWN MENU HERE ]"
--->
-								<div class='filter-container'  ng-if="auth.is('customer') && initData.sites.length>1">
-									<span style='color:#fff'>Property:</span> <span class='input-group'>
-										<select  id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0" 
-											ng-model="selected.siteID"
-											ng-change="onSelectSiteID(selected.siteID)">
-											<option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
-										</select>
-									</span>
+								<div class='filter-container' ng-if="auth.is('customer') && initData.sites.length>1"> 
+									<div class="row row-xs row-nopad">
+										<div class="col-xs-5 col">
+											<div class="filter-header">
+												<h3>Property</h3>
+											</div>	
+										</div>
+										<div class="col-xs-7 col">
+											<div class="filter-input">
+												<select  id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0" 
+													ng-model="selected.siteID"
+													ng-change="onSelectSiteID(selected.siteID)">
+													<option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
+												</select>
+											</div>	
+										</div>
+									</div>
 								</div>	
 
 								<!--FILTER SECTION: SPECIES-->

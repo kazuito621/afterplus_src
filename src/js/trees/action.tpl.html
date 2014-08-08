@@ -8,19 +8,19 @@
 		<div class="col-sm-4 col">
 			<div class="action-block action-block-2">
 				<ul class="stats list-unstyled list-inline row">
-					<li class="col-xs-4" ng-click="goToEstimatesList()" style="cursor: pointer;">
+					<li class="col-xs-4" ng-click="goToEstimatesList()" style="cursor: pointer;" bs-tooltip title='View All Estimates'>
 						<div class="stat">
 							<p class="number">{{initData.stats.reportCount}} <span class="supp" ng-if="initData.stats.reportAlerts" ng-bind="initData.stats.reportAlerts"></span></p>
 							<p class="text">Estimates</p>
 						</div>
 					</li>
-					<li class="col-xs-4">
+					<li class="col-xs-4" ng-click="goToTrees()" style="cursor: pointer;" bs-tooltip title='View All Properties'>
 						<div class="stat">
 							<p class="number" ng-bind="initData.stats.siteCount"></p>
 							<p class="text">Properties</p>
 						</div>
 					</li>
-					<li class="col-xs-4">
+					<li class="col-xs-4" ng-click="goToTrees()" style="cursor: pointer;" bs-tooltip title='View All Trees'>
 						<div class="stat">
 							<p class="number" ng-bind="initData.stats.treeCount"></p>
 							<p class="text">Trees</p>

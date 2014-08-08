@@ -12,4 +12,9 @@ var ActionCtrl = app.controller('ActionCtrl', ['$scope', '$location', function (
 										// what the user is allowed to see
 	};
 
+	s.goToTrees = function () {
+		$location.url('/trees');	// adding ?siteID=XXX is not needed, since the API will already filter by
+										// what the user is allowed to see
+	};
+
 }]);

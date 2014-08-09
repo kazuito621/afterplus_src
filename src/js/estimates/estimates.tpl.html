@@ -1,13 +1,21 @@
 <div ng-include="'js/trees/action.tpl.html'" ng-if="Auth.is('customer')"></div>
 <div class='container' ng-controller="EstimatesListCtrl">    
-    <div class='table-responsive' ng-show="estimates.length > 0">
+    <div class='table-responsive' ng-if="estimates.length > 0">
         <table class='table table-striped'>
             <thead>
                 <tr>
-                    <th>Estimate Name</th>
-                    <th>Site Name</th>
-                    <th>Total</th>
-                    <th>Status</th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('name')">
+                        Estimate Name <i ng-class="sh.columnClass('name')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
+                        Site Name <i ng-class="sh.columnClass('siteName')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('total_price')">
+                        Total <i ng-class="sh.columnClass('total_price')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('status')">
+                        Status <i ng-class="sh.columnClass('status')"></i>
+                    </th>
                 </tr>
             </thead>
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">

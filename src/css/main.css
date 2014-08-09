@@ -705,6 +705,10 @@ td.estimate_multirow_col{
     background-color: #EAEAEA;
 }
 
+.clickable-header {
+    cursor: pointer;
+}
+
 /** this messes up the map for some reason
 .ng-hide{
   display: block!important;

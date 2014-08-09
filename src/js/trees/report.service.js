@@ -79,6 +79,10 @@ app.service('ReportService',
 						d.localTreeID=localID++;
 					})
 				}
+
+                that.setGrandTotal();
+                data.total = that.report.total;
+
 				$rootScope.$broadcast('onLoadReport', data);
 
 				// only needed during customer view... but if we're not sure.. then show them anyways

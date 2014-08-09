@@ -108,6 +108,27 @@ var TreesCtrl = app.controller('TreesCtrl',
                         }
                         return false;
                     });
+
+
+                    $('.toggle-check').each(function(index, el) 
+                    {
+                        var $label = $(this).closest('label');
+                        $label.addClass('toggle-label');
+                        $label.find('.text').addClass('btn btn-gray btn-xs');
+
+                        $(this).bind('change' , function()
+                        {
+                            var $label = $(this).closest('label');
+                            if($(this).is(":checked"))
+                            {
+                                $label.find('.text').addClass('active');
+                            }
+                            else 
+                            {
+                                $label.find('.text').removeClass('active');
+                            }
+                        });
+                    }); 
                 } , 2000);
             }
 

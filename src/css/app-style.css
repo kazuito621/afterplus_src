@@ -538,6 +538,24 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
 }
 /* line 26, ../scss/partials/_buttons.scss */
+.btn.btn-gray {
+  background: #F2F3F4;
+  border: 1px solid #999999;
+  background-image: -webkit-linear-gradient(#eeeeee, #cccccc 50%, #eeeeee);
+  background-image: -o-linear-gradient(#eeeeee, #cccccc 50%, #eeeeee);
+  background-image: linear-gradient(#eeeeee, #cccccc 50%, #eeeeee);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFEEEEEE', GradientType=0);
+  -webkit-transition: background linear 0.4s;
+  -o-transition: background linear 0.4s;
+  transition: background linear 0.4s;
+}
+/* line 32, ../scss/partials/_buttons.scss */
+.btn.btn-gray:hover, .btn.btn-gray:focus, .btn.btn-gray:active, .btn.btn-gray.active {
+  background: #bbbbbb;
+  color: white;
+}
+/* line 39, ../scss/partials/_buttons.scss */
 .btn.btn-red {
   background: #f84540;
   border: 1px solid #faaaa9;
@@ -546,11 +564,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#ee4f3a, #d93f33 50%, #db382f);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEE4F3A', endColorstr='#FFDB382F', GradientType=0);
-  -webkit-transition: background linear 0.7s;
-  -o-transition: background linear 0.7s;
-  transition: background linear 0.7s;
+  -webkit-transition: background linear 0.4s;
+  -o-transition: background linear 0.4s;
+  transition: background linear 0.4s;
 }
-/* line 32, ../scss/partials/_buttons.scss */
+/* line 45, ../scss/partials/_buttons.scss */
 .btn.btn-red:hover, .btn.btn-red:focus, .btn.btn-red:active {
   background: #f84540;
   background-image: -webkit-linear-gradient(#ee4f3a, #ee4f3a 50%, #ee4f3a);
@@ -559,7 +577,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEE4F3A', endColorstr='#FFEE4F3A', GradientType=0);
 }
-/* line 39, ../scss/partials/_buttons.scss */
+/* line 52, ../scss/partials/_buttons.scss */
 .btn.btn-blue {
   background: #5099e5;
   border: 1px solid #abd7f4;
@@ -568,11 +586,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#5596da, #519ae7 50%, #3d80ce);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF5596DA', endColorstr='#FF3D80CE', GradientType=0);
-  -webkit-transition: background linear 0.7s;
-  -o-transition: background linear 0.7s;
-  transition: background linear 0.7s;
+  -webkit-transition: background linear 0.4s;
+  -o-transition: background linear 0.4s;
+  transition: background linear 0.4s;
 }
-/* line 45, ../scss/partials/_buttons.scss */
+/* line 58, ../scss/partials/_buttons.scss */
 .btn.btn-blue:hover, .btn.btn-blue:focus, .btn.btn-blue:active {
   background: #5099e5;
   background-image: -webkit-linear-gradient(#5596da, #5596da 50%, #5596da);
@@ -581,7 +599,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF5596DA', endColorstr='#FF5596DA', GradientType=0);
 }
-/* line 52, ../scss/partials/_buttons.scss */
+/* line 65, ../scss/partials/_buttons.scss */
 .btn.btn-green {
   background: #9bc21b;
   border: 1px solid #c2d981;
@@ -590,11 +608,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#9bc21b, #8fb428 50%, #89a72b);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF9BC21B', endColorstr='#FF89A72B', GradientType=0);
-  -webkit-transition: background linear 0.7s;
-  -o-transition: background linear 0.7s;
-  transition: background linear 0.7s;
+  -webkit-transition: background linear 0.4s;
+  -o-transition: background linear 0.4s;
+  transition: background linear 0.4s;
 }
-/* line 58, ../scss/partials/_buttons.scss */
+/* line 71, ../scss/partials/_buttons.scss */
 .btn.btn-green:hover, .btn.btn-green:focus, .btn.btn-green:active {
   background: #5099e5;
   background-image: -webkit-linear-gradient(#9bc21b, #9bc21b 50%, #9bc21b);
@@ -603,7 +621,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF9BC21B', endColorstr='#FF9BC21B', GradientType=0);
 }
-/* line 65, ../scss/partials/_buttons.scss */
+/* line 78, ../scss/partials/_buttons.scss */
 .btn.btn-orange {
   background: #ec983e;
   border: 1px solid #deac65;
@@ -612,11 +630,11 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   background-image: linear-gradient(#ec983e, #dc842d 50%, #de8c38);
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEC983E', endColorstr='#FFDE8C38', GradientType=0);
-  -webkit-transition: background linear 0.7s;
-  -o-transition: background linear 0.7s;
-  transition: background linear 0.7s;
+  -webkit-transition: background linear 0.4s;
+  -o-transition: background linear 0.4s;
+  transition: background linear 0.4s;
 }
-/* line 71, ../scss/partials/_buttons.scss */
+/* line 84, ../scss/partials/_buttons.scss */
 .btn.btn-orange:hover, .btn.btn-orange:focus, .btn.btn-orange:active {
   background: #5099e5;
   background-image: -webkit-linear-gradient(#ec983e, #ec983e 50%, #ec983e);
@@ -733,9 +751,9 @@ header .nav-container nav ul li a {
   text-align: center;
   display: block;
   padding: 14px 40px;
-  -webkit-transition: all linear 0.7s;
-  -o-transition: all linear 0.7s;
-  transition: all linear 0.7s;
+  -webkit-transition: all linear 0.4s;
+  -o-transition: all linear 0.4s;
+  transition: all linear 0.4s;
 }
 @media (max-width: 540px) {
   /* line 86, ../scss/partials/_common.scss */
@@ -1020,6 +1038,18 @@ footer {
   background: #0074d9;
 }
 
+/* line 355, ../scss/partials/_common.scss */
+.toggle-label .toggle-check {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
 /* line 4, ../scss/partials/_estimate.scss */
 .mainContent.mode_estimate {
   display: none;
@@ -1140,9 +1170,9 @@ footer {
   padding: 8px 10px;
   border: 1px solid #aaaaaa;
   border-radius: 6px;
-  -webkit-transition: all linear 0.7s;
-  -o-transition: all linear 0.7s;
-  transition: all linear 0.7s;
+  -webkit-transition: all linear 0.4s;
+  -o-transition: all linear 0.4s;
+  transition: all linear 0.4s;
 }
 /* line 144, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .number {
@@ -1524,9 +1554,9 @@ footer {
 /* line 506, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
-  -webkit-transition: all linear 0.7s;
-  -o-transition: all linear 0.7s;
-  transition: all linear 0.7s;
+  -webkit-transition: all linear 0.4s;
+  -o-transition: all linear 0.4s;
+  transition: all linear 0.4s;
   font-size: 12px;
   margin-right: 5px;
 }
@@ -1733,9 +1763,9 @@ footer {
   top: 5px;
   z-index: 99;
   color: #d5d5d5;
-  -webkit-transition: all linear 0.7s;
-  -o-transition: all linear 0.7s;
-  transition: all linear 0.7s;
+  -webkit-transition: all linear 0.4s;
+  -o-transition: all linear 0.4s;
+  transition: all linear 0.4s;
 }
 /* line 99, ../scss/partials/_trees.scss */
 .trees-container .filters-container .filter-container .filter-input .inpt-clear a {
@@ -1838,84 +1868,114 @@ footer {
   background: none;
   margin-right: 10px;
 }
-/* line 218, ../scss/partials/_trees.scss */
+/* line 214, ../scss/partials/_trees.scss */
+.trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-toggle {
+  padding: 5px;
+  background: none;
+}
+/* line 219, ../scss/partials/_trees.scss */
+.trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-toggle .filter-item {
+  margin: 0;
+}
+/* line 223, ../scss/partials/_trees.scss */
+.trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-toggle .filter-item label {
+  padding: 0;
+}
+/* line 227, ../scss/partials/_trees.scss */
+.trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-toggle .filter-item label .text {
+  border: 1px solid #666;
+  border-radius: 0;
+  border-right: none;
+}
+/* line 239, ../scss/partials/_trees.scss */
+.trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-toggle .filter-item:first-child label .text {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+/* line 252, ../scss/partials/_trees.scss */
+.trees-container .filters-container .filter-container .filter-block .filter-items.filter-items-toggle .filter-item:last-child label .text {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-right: 1px solid #666;
+}
+/* line 267, ../scss/partials/_trees.scss */
 .trees-container .content-container {
   min-height: 700px;
 }
 @media (max-width: 991px) {
-  /* line 218, ../scss/partials/_trees.scss */
+  /* line 267, ../scss/partials/_trees.scss */
   .trees-container .content-container {
     min-height: 0;
   }
 }
-/* line 227, ../scss/partials/_trees.scss */
+/* line 276, ../scss/partials/_trees.scss */
 .trees-container .content-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 234, ../scss/partials/_trees.scss */
+/* line 283, ../scss/partials/_trees.scss */
 .trees-container .content-container #treeDetails {
   height: auto;
 }
-/* line 239, ../scss/partials/_trees.scss */
+/* line 288, ../scss/partials/_trees.scss */
 .trees-container .content-container .map-container {
   min-height: 600px;
 }
 @media (max-width: 991px) {
-  /* line 239, ../scss/partials/_trees.scss */
+  /* line 288, ../scss/partials/_trees.scss */
   .trees-container .content-container .map-container {
     min-height: 0;
   }
 }
-/* line 248, ../scss/partials/_trees.scss */
+/* line 297, ../scss/partials/_trees.scss */
 .trees-container .content-container .map-container .map {
   min-height: 600px;
   height: auto;
 }
 @media (max-width: 991px) {
-  /* line 248, ../scss/partials/_trees.scss */
+  /* line 297, ../scss/partials/_trees.scss */
   .trees-container .content-container .map-container .map {
     min-height: 0;
     height: 300px !important;
   }
 }
-/* line 262, ../scss/partials/_trees.scss */
+/* line 311, ../scss/partials/_trees.scss */
 .trees-container .result-container {
   padding: 20px 20px;
   min-height: 700px;
 }
 @media (max-width: 991px) {
-  /* line 262, ../scss/partials/_trees.scss */
+  /* line 311, ../scss/partials/_trees.scss */
   .trees-container .result-container {
     min-height: 0;
   }
 }
-/* line 272, ../scss/partials/_trees.scss */
+/* line 321, ../scss/partials/_trees.scss */
 .trees-container .result-container section {
   width: 100%;
   margin: 0;
   padding: 0;
 }
-/* line 279, ../scss/partials/_trees.scss */
+/* line 328, ../scss/partials/_trees.scss */
 .trees-container .result-container .tree-list-outer {
   max-height: 602px;
   overflow-y: auto;
 }
-/* line 285, ../scss/partials/_trees.scss */
+/* line 334, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container {
   width: 100%;
 }
-/* line 293, ../scss/partials/_trees.scss */
+/* line 342, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td {
   background: #333333;
   color: white;
 }
-/* line 298, ../scss/partials/_trees.scss */
+/* line 347, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td h6 {
   color: white;
 }
-/* line 304, ../scss/partials/_trees.scss */
+/* line 353, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group button {
   color: white;
   border: none;
@@ -1923,11 +1983,11 @@ footer {
   padding-left: 0;
   padding-right: 0;
 }
-/* line 312, ../scss/partials/_trees.scss */
+/* line 361, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group button i {
   font-size: 14px;
 }
-/* line 318, ../scss/partials/_trees.scss */
+/* line 367, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu {
   border: 1px solid #6b6c6a;
   min-width: 90px;
@@ -1936,12 +1996,12 @@ footer {
   overflow: hidden;
   padding: 0;
 }
-/* line 326, ../scss/partials/_trees.scss */
+/* line 375, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li {
   padding: 0;
   background: #ffffff;
 }
-/* line 331, ../scss/partials/_trees.scss */
+/* line 380, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a {
   padding: 0 5px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1949,46 +2009,46 @@ footer {
   font-weight: normal;
   color: #333333;
   line-height: 24px;
-  -webkit-transition: all linear 0.7s;
-  -o-transition: all linear 0.7s;
-  transition: all linear 0.7s;
+  -webkit-transition: all linear 0.4s;
+  -o-transition: all linear 0.4s;
+  transition: all linear 0.4s;
 }
-/* line 337, ../scss/partials/_trees.scss */
+/* line 386, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:hover, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:focus, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:active {
   background: #333333;
   color: white;
 }
-/* line 344, ../scss/partials/_trees.scss */
+/* line 393, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li:nth-child(odd) {
   background: #f3f3f4;
 }
-/* line 349, ../scss/partials/_trees.scss */
+/* line 398, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li:nth-child(even) {
   background: #ffffff;
 }
-/* line 361, ../scss/partials/_trees.scss */
+/* line 410, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tbody {
   max-height: 200px;
   overflow-y: auto;
 }
-/* line 369, ../scss/partials/_trees.scss */
+/* line 418, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tfoot td {
   background: none;
   padding: 0;
 }
-/* line 376, ../scss/partials/_trees.scss */
+/* line 425, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr {
-  -webkit-transition: all linear 0.7s;
-  -o-transition: all linear 0.7s;
-  transition: all linear 0.7s;
+  -webkit-transition: all linear 0.4s;
+  -o-transition: all linear 0.4s;
+  transition: all linear 0.4s;
 }
-/* line 379, ../scss/partials/_trees.scss */
+/* line 428, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td {
   padding: 5px;
   border-top: 1px solid #f0f1f1;
   border-bottom: 1px solid #ffffff;
 }
-/* line 384, ../scss/partials/_trees.scss */
+/* line 433, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td h6 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
@@ -1996,7 +2056,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 389, ../scss/partials/_trees.scss */
+/* line 438, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td p {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -2004,7 +2064,7 @@ footer {
   color: #3f3f3f;
   line-height: 16px;
 }
-/* line 394, ../scss/partials/_trees.scss */
+/* line 443, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td small {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
@@ -2012,55 +2072,55 @@ footer {
   color: #3f3f3f;
   line-height: 16px;
 }
-/* line 399, ../scss/partials/_trees.scss */
+/* line 448, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-check {
   background: #c7c9c9;
   text-align: center;
 }
-/* line 407, ../scss/partials/_trees.scss */
+/* line 456, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-img img {
   width: 40px;
   height: 50px;
 }
-/* line 416, ../scss/partials/_trees.scss */
+/* line 465, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a {
   font-size: 18px;
   color: white;
-  -webkit-transition: all linear 0.7s;
-  -o-transition: all linear 0.7s;
-  transition: all linear 0.7s;
+  -webkit-transition: all linear 0.4s;
+  -o-transition: all linear 0.4s;
+  transition: all linear 0.4s;
 }
-/* line 422, ../scss/partials/_trees.scss */
+/* line 471, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a:hover, .trees-container .result-container table.tree-list-container tr td.td-action a:focus, .trees-container .result-container table.tree-list-container tr td.td-action a:active {
   text-decoration: none;
 }
-/* line 430, ../scss/partials/_trees.scss */
+/* line 479, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:nth-child(odd) {
   background: #f3f3f4;
 }
-/* line 435, ../scss/partials/_trees.scss */
+/* line 484, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:nth-child(even) {
   background: #e7eaea;
 }
-/* line 440, ../scss/partials/_trees.scss */
+/* line 489, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:hover, .trees-container .result-container table.tree-list-container tr:focus, .trees-container .result-container table.tree-list-container tr:active {
   background: #c7c9c9;
 }
-/* line 448, ../scss/partials/_trees.scss */
+/* line 497, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr:hover td.td-action a, .trees-container .result-container table.tree-list-container tr:focus td.td-action a, .trees-container .result-container table.tree-list-container tr:active td.td-action a {
   color: #333333;
 }
-/* line 459, ../scss/partials/_trees.scss */
+/* line 508, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container {
   padding: 20px 15px;
   background: #333333;
 }
-/* line 464, ../scss/partials/_trees.scss */
+/* line 513, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group {
   display: block;
   width: 100%;
 }
-/* line 469, ../scss/partials/_trees.scss */
+/* line 518, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group .inpt {
   width: 100%;
   display: block;
@@ -2071,18 +2131,18 @@ footer {
   border: 1px solid #696a6a;
 }
 @media (max-width: 767px) {
-  /* line 469, ../scss/partials/_trees.scss */
+  /* line 518, ../scss/partials/_trees.scss */
   .trees-container .admin-filter-container .input-group .inpt {
     margin-bottom: 10px;
   }
 }
-/* line 487, ../scss/partials/_trees.scss */
+/* line 536, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .input-group .inpt-select option.option {
   padding: 5px;
   background: #f3f3f4;
   color: #333333;
 }
-/* line 496, ../scss/partials/_trees.scss */
+/* line 545, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .lnk {
   line-height: 30px;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -2091,7 +2151,7 @@ footer {
   color: white;
   line-height: 30px;
 }
-/* line 501, ../scss/partials/_trees.scss */
+/* line 550, ../scss/partials/_trees.scss */
 .trees-container .admin-filter-container .lnk a {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
@@ -2100,18 +2160,18 @@ footer {
   line-height: 30px;
 }
 
-/* line 511, ../scss/partials/_trees.scss */
+/* line 560, ../scss/partials/_trees.scss */
 .edit-tree-container .image {
   padding: 5px;
   border: 1px solid #ccc;
 }
-/* line 516, ../scss/partials/_trees.scss */
+/* line 565, ../scss/partials/_trees.scss */
 .edit-tree-container .image img {
   width: 100%;
   display: block;
   height: auto;
 }
-/* line 524, ../scss/partials/_trees.scss */
+/* line 573, ../scss/partials/_trees.scss */
 .edit-tree-container .content {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -2119,7 +2179,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 527, ../scss/partials/_trees.scss */
+/* line 576, ../scss/partials/_trees.scss */
 .edit-tree-container .content h2 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -2129,7 +2189,7 @@ footer {
   margin-bottom: 10px;
   margin-top: 15px;
 }
-/* line 534, ../scss/partials/_trees.scss */
+/* line 583, ../scss/partials/_trees.scss */
 .edit-tree-container .content h3 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -2138,11 +2198,11 @@ footer {
   line-height: 24px;
   margin-top: 15px;
 }
-/* line 540, ../scss/partials/_trees.scss */
+/* line 589, ../scss/partials/_trees.scss */
 .edit-tree-container .content pre {
   padding: 5px 10px;
 }
-/* line 547, ../scss/partials/_trees.scss */
+/* line 596, ../scss/partials/_trees.scss */
 .edit-tree-container .content dl dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -2151,7 +2211,7 @@ footer {
   line-height: 24px;
   text-align: left;
 }
-/* line 553, ../scss/partials/_trees.scss */
+/* line 602, ../scss/partials/_trees.scss */
 .edit-tree-container .content dl dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -2159,7 +2219,7 @@ footer {
   color: #3f3f3f;
   line-height: 24px;
 }
-/* line 563, ../scss/partials/_trees.scss */
+/* line 612, ../scss/partials/_trees.scss */
 .edit-tree-container .content table tr td, .edit-tree-container .content table tr th {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -2167,7 +2227,7 @@ footer {
   color: #3f3f3f;
   line-height: 20px;
 }
-/* line 567, ../scss/partials/_trees.scss */
+/* line 616, ../scss/partials/_trees.scss */
 .edit-tree-container .content table tr td a, .edit-tree-container .content table tr th a {
   font-size: 12px;
   line-height: 16px;

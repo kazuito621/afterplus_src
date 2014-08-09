@@ -109,12 +109,12 @@
 										<h3>Years:</h3>
 									</div>
 									<div class='filterItems filter-block'>
-										<div class="filter-items filter-items-inline">
+										<div class="filter-items filter-items-inline filter-items-toggle">
 
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[0].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[0].id}}',initData.filters.year[0].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[0].id}}',initData.filters.year[0].selected)" class="toggle-check">
 													<span class="text">2014</span>
 													<div class="clearfix"></div>
 												</label>
@@ -123,7 +123,7 @@
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[1].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[1].id}}',initData.filters.year[1].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[1].id}}',initData.filters.year[1].selected)" class="toggle-check">
 													<span class="text">2015</span>
 													<div class="clearfix"></div>
 												</label>
@@ -131,7 +131,7 @@
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[2].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[2].id}}',initData.filters.year[2].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[2].id}}',initData.filters.year[2].selected)" class="toggle-check">
 													<span class="text">2016</span>
 													<div class="clearfix"></div>
 												</label>
@@ -140,7 +140,7 @@
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[3].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[3].id}}',initData.filters.year[3].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[3].id}}',initData.filters.year[3].selected)" class="toggle-check">
 													<span class="text">2017</span>
 													<div class="clearfix"></div>
 												</label>
@@ -149,7 +149,7 @@
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[4].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[4].id}}',initData.filters.year[4].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[4].id}}',initData.filters.year[4].selected)" class="toggle-check">
 													<span class="text">2018</span>
 													<div class="clearfix"></div>
 												</label>
@@ -165,11 +165,11 @@
 										<h3>Old years:</h3>
 									</div>
 									<div class='filterItems filter-block'>
-										<div class="filter-items filter-items-inline">
+										<div class="filter-items filter-items-inline filter-items-toggle">
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[5].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[5].id}}',initData.filters.year[5].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[5].id}}',initData.filters.year[5].selected)" class="toggle-check">
 													<span class="text">2013</span>
 													<div class="clearfix"></div>
 												</label>
@@ -177,7 +177,7 @@
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[6].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[6].id}}',initData.filters.year[6].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[6].id}}',initData.filters.year[6].selected)" class="toggle-check">
 													<span class="text">2012</span>
 													<div class="clearfix"></div>
 												</label>
@@ -185,7 +185,7 @@
 											<div class="filter-item">
 												<label>
 													<input type='checkbox' ng-model='initData.filters.year[7].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[7].id}}',initData.filters.year[7].selected)">
+													ng-change="onFilterChange('year','{{initData.filters.year[7].id}}',initData.filters.year[7].selected)" class="toggle-check">
 													<span class="text">2011</span>
 													<div class="clearfix"></div>
 												</label>
@@ -206,12 +206,12 @@
 												<h3>Hazards:</h3>
 											</div>
 											<div class="filterBlock filter-block">
-												<div class="filter-items">
+												<div class="filter-items filter-items-inline filter-items-toggle">
 													<div class='filterItems filter-item' ng-if="TFSdata.filterTypeCounts.building>0 || TFSdata.filterTypeCounts.building!=0">
 														<label>
 															<input type="checkbox"  value="yes" 
 															ng-model="building.selected" 
-															ng-change="onFilterChange('miscProperty', 'building', building.selected)"> 
+															ng-change="onFilterChange('miscProperty', 'building', building.selected)" class="toggle-check"> 
 															<span class="text">
 																<i class='fa fa-building _red'></i> Building
 																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.building>0">({{TFSdata.filterTypeCounts.building}})</span>
@@ -223,7 +223,7 @@
 														<label>
 															<input type="checkbox"  value="potential"  
 															ng-model="caDamage.selected"
-															ng-change="onFilterChange('miscProperty', 'caDamagePotential', caDamage.selected)"> 
+															ng-change="onFilterChange('miscProperty', 'caDamagePotential', caDamage.selected)" class="toggle-check"> 
 															<span class="text">
 																<i class='fa fa-warning _orange'></i> Hardscape Damage Potential
 																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.caDamage>0">({{TFSdata.filterTypeCounts.caDamage}})</span>
@@ -235,7 +235,7 @@
 														<label>
 															<input type="checkbox"  value="yes" 
 															ng-model="caDamage.selected"
-															ng-change="onFilterChange('miscProperty', 'caDamage', caDamage.selected)"> 
+															ng-change="onFilterChange('miscProperty', 'caDamage', caDamage.selected)" class="toggle-check"> 
 															<span class="text">
 																<i class='fa fa-warning _red'></i> Hardscape Damage
 																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.caDamage>0">({{TFSdata.filterTypeCounts.caDamage}})</span>
@@ -247,7 +247,7 @@
 														<label>
 															<input type="checkbox"  value="yes" 
 															ng-model="powerline.selected"
-															ng-change="onFilterChange('miscProperty', 'powerline', powerline.selected)"> 
+															ng-change="onFilterChange('miscProperty', 'powerline', powerline.selected)" class="toggle-check"> 
 															<span class="text">
 																<i class='fa fa-bolt _red'></i> Powerline
 																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.powerline>0">({{TFSdata.filterTypeCounts.powerline}})</span>
@@ -268,11 +268,11 @@
 												<h3>Size <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.treatments>0">({{TFSdata.filterTypeCounts.treatments}})</span></h3>
 											</div>
 											<div class="filterBlock filter-block">
-												<div class="filter-items filter-items-inline">
-													<div class="filterItems filter-item" ng-repeat="(idx,size) in initData.filters.dbh" ng-if="size.count!=0 || size.count>0">
+												<div class="filter-items filter-items-inline filter-items-toggle">
+													<div class="filter-item" ng-repeat="(idx,size) in initData.filters.dbh" ng-if="size.count!=0 || size.count>0">
 														<label><input type="checkbox" id="checkBox_filter_size_{{size.dbhID}}" value="{{size.dbhID}}"  
 															ng-model="size.selected"
-															ng-change="onFilterChange('dbh', size.dbhID, size.selected)">
+															ng-change="onFilterChange('dbh', size.dbhID, size.selected)" class="toggle-check">
 															<span class="text">{{size.diameter}} <span class='filterCount' ng-if="size.count>0">({{size.count}})</span></span>
 															<div class="clearfix"></div>
 														</label>
@@ -293,12 +293,12 @@
 												<h3>Health <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.rating>0">({{TFSdata.filterTypeCounts.rating}})</span></h3>
 											</div>
 											<div class="filterBlock filter-block">
-												<div class="filter-items">
+												<div class="filter-items filter-items-inline filter-items-toggle">
 													<div class="filterItems filter-item" ng-repeat="r in initData.filters.ratings" ng-if="r.count!=0 || r.count>0">
 														<label>	<input type="checkbox" id="checkBox_filter_rating_{{r.ratingID}}" value="{{r.ratingID}}" 
 															ng-model="r.selected" 
-															ng-change="onFilterChange('rating', r.ratingID, r.selected)">
-															<span class="text">{{r.ratingID}} - {{r.rating_desc}} <span class='filterCount' ng-if="r.count>0">({{r.count}})</span></span>
+															ng-change="onFilterChange('rating', r.ratingID, r.selected)" class="toggle-check">
+															<span class="text" bs-tooltip title="{{r.ratingID}} - {{r.rating_desc}}">&nbsp;{{r.ratingID}}  <span class='filterCount' ng-if="r.count>0">({{r.count}})</span>&nbsp;</span>
 															<div class="clearfix"></div>
 														</label>
 													</div> <!-- }}} ng-repeat -->

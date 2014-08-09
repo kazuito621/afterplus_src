@@ -22,6 +22,19 @@
 		display: block;
 	}
 
+	&.btn-gray
+	{
+		background: #F2F3F4;
+		border: 1px solid #999999;
+		@include gradient-vertical-three-colors(#eeeeee , #cccccc , 50% , #eeeeee);
+		@include animate(background);
+		&:hover, &:focus, &:active, &.active
+		{
+			background: #bbbbbb;
+			color: $white-color;
+		}
+	}
+
 	&.btn-red 
 	{
 		background: $orange-color;

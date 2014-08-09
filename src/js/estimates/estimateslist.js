@@ -5,6 +5,7 @@ function ($scope, $route, Api, $location, Auth) {
     var s = window.ecs = $scope;
 	var myStateID='estimates';
     s.estimates = [];
+    s.displayedEstimates = [];
 
     var init = function () {
         var search = $location.search();
@@ -15,7 +16,18 @@ function ($scope, $route, Api, $location, Auth) {
 				});
 			}
             s.estimates = data;
+            s.displayedEstimates = s.estimates.slice(0, 49);
         });
+    };
+
+    s.showMoreEstimates = function () {
+        var count = s.displayedEstimates.length;
+        if (count === s.estimates.length) {
+            return;
+        }
+
+        var addon = s.estimates.slice(count, count + 50);
+        s.displayedEstimates = s.displayedEstimates.concat(addon);
     };
 
     s.goToEstimate = function (reportID) {

@@ -27,7 +27,7 @@ app.factory('SortHelper', function () {
             if (angular.isArray(self.sortCol)) {
                 compare = '';
                 angular.forEach(self.sortCol, function (col) {
-                    compare += col;
+                    compare += item[col];
                 });
                 type = self.columnMap[self.sortCol.join('+')];
             } else {

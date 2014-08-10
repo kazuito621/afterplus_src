@@ -24,10 +24,10 @@
             <tbody infinite-scroll="showMoreSites()" infinite-scroll-distance="3">
                 <tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
                     <td ng-bind="s.siteID"></td>
-                    <td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
+                    <td><a href="#/trees?siteID={{s.siteID}}">{{s.siteName}}</a></td>
                     <td>{{s.city}}, {{s.state}}</td>
                     <td>{{s.treeCount}}</td>
-                    <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
+                    <td><a href='#/estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
                     <td>
                         <a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
                         <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size7 hoverDisplay" bs-tooltip title="Delete" style="text-decoration: none;"></a>

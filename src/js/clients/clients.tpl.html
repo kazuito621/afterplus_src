@@ -8,16 +8,26 @@
     style="max-width: 100%; width: auto;"
 	data-animation="am-fade-and-scale" >New Client</button>
 
-	<div class='table-responsive'>
+	<div class='table-responsive' ng-if="displayedClients.length > 0">
 		<h1>Clients</h1>
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Address</th>
-					<th>Contact Info</th>
-					<th>Sites</th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('clientID')" style="min-width: 50px;">
+                        ID <i ng-class="sh.columnClass('clientID')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('clientName')">
+                        Name <i ng-class="sh.columnClass('clientName')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn(['street', 'city', 'state'])">
+                        Address <i ng-class="sh.columnClass(['street', 'city', 'state'])"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn(['contact', 'contactPhone'])">
+                        Contact Info <i ng-class="sh.columnClass(['contact', 'contactPhone'])"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('siteCount')" style="min-width: 70px;">
+                        Sites <i ng-class="sh.columnClass('siteCount')"></i>
+                    </th>
 					<th></th>
 				</tr>
 			</thead>

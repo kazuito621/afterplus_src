@@ -8,16 +8,26 @@
         style="max-width: 100%; width: auto;"
 		data-animation="am-fade-and-scale" >New Property</button>
 
-	<div class='table-responsive'>
+	<div class='table-responsive' ng-if="displayedSites.length > 0">
 		<h1>Properties</h1>
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>City</th>
-					<th>Trees</th>
-					<th>Estimates</th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
+                        ID <i ng-class="sh.columnClass('siteID')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
+                        Name <i ng-class="sh.columnClass('siteName')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
+                        City <i ng-class="sh.columnClass(['city', 'state'])"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
+                        Trees <i ng-class="sh.columnClass('treeCount')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
+                        Estimates <i ng-class="sh.columnClass('reportCount')"></i>
+                    </th>
 					<th ng-if="auth.is('admin')"></th>
 				</tr>
 			</thead>

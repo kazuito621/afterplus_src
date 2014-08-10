@@ -22,8 +22,18 @@ app.factory('SortHelper', function () {
         };
 
         this.sortFunction = function (item) {
-            var compare = item[self.sortCol] || '';
-            var type = self.columnMap[self.sortCol];
+            var compare, type;
+
+            if (angular.isArray(self.sortCol)) {
+                compare = '';
+                angular.forEach(self.sortCol, function (col) {
+                    compare += col;
+                });
+                type = self.columnMap[self.sortCol.join('+')];
+            } else {
+                compare = item[self.sortCol] || '';
+                type = self.columnMap[self.sortCol];
+            }
 
             if (type === undefined) {
                 compare = compare.toLowerCase();
@@ -44,7 +54,7 @@ app.factory('SortHelper', function () {
         };
 
         this.sortByColumn = function (col) {
-            if (self.sortCol === col) {
+            if (angular.equals(self.sortCol, col)) {
                 if (self.sortDir === 'asc') {
                     self.sortDir = 'desc';
                 } else {
@@ -59,7 +69,7 @@ app.factory('SortHelper', function () {
         };
 
         this.columnClass = function (col) {
-            if (self.sortCol !== col) {
+            if (!angular.equals(self.sortCol, col)) {
                 return 'fa fa-sort';
             }
 

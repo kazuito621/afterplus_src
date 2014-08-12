@@ -1,8 +1,8 @@
 <div ng-controller='EditTreeCtrl' class="treeEditBox edit-tree-container">
 
-    <div class="row" bindonce="tree">
+    <div class="row">
         <div class="col-md-6">
-            <div class="image"><img bo-src="tree.imgMed + tree_cachebuster"/></div>
+            <div class="image"><img ng-src="{{tree.imgMed + tree_cachebuster}}"/></div>
         </div>
         <div class="col-md-6">
             <div class="content">
@@ -16,8 +16,8 @@
                         {{ tree.commonName || '(not specified)' }}
                     </span>
                 </h2>
-                <span bo-text="tree.speciesID|speciesID2Name:'bot':this"></span><br>
-                <span bo-text="'(treeID:' + treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
+                <span ng-bind="tree.speciesID|speciesID2Name:'bot':this"></span><br>
+                <span ng-bind="'(treeID:' + treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
                 
                 <dl class="dl-horizontal">
                     <dt>Diameter:</dt>

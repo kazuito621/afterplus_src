@@ -307,6 +307,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if( treeID!=s.treeDetailsID ) return;
                 s.data.showTreeDetails=false;
                 s.data.showMap=true;
+                s.sendEvt('onTreeResultImageRollout');
             }
 
             //ng-mouseover="onTreeImageRollover(tree.treeID,true);" ng-mouseleave="onTreeImageRollover(tree.treeID,false);"

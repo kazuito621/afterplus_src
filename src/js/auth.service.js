@@ -9,6 +9,8 @@ app.service('Auth',
             'use strict';
             var self = this;
 
+            this.initialized = false;
+
             var sendEvt = function (id, obj) {
                 $rootScope.$broadcast(id, obj);
             };
@@ -121,6 +123,7 @@ app.service('Auth',
             this.isAtleast = function (role) {
                 var urID = this.role2id(this.getUserRole());
                 var rID = this.role2id(role);
+//                console.log(role, urID, rID, urID >= rID);
                 if (urID >= rID) {
                     return true;
                 }
@@ -138,9 +141,14 @@ app.service('Auth',
                 return 'Not logged in';
             };
 
+            this.isInitialized = function () {
+                return self.initialized;
+            };
+
             $rootScope.$on('onInitData', function (event, data) {
                 if (data.roles) {
                     self.userRoles = data.roles;
+                    self.initialized = true;
                 }
             });
         }]);

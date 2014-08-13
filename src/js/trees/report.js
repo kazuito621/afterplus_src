@@ -9,11 +9,9 @@ var ReportCtrl = app.controller(
             var myStateID = 'trees'; //this is trees because its embedded in trees controller
             var RS = ReportService;
             s.whoami = 'ReportCtrl';
-//            s.recentReportList; // I don't understand the purpose of this so I commented it. Nikita.
             s.rdata = { recentReportID: ''};
+			s.report = {};
             s.service = {};
-//            s.service.desc;
-//            s.service.price;
             s.emailRpt = {};
             s.groupedItems = [];
             s.estimateTreatmentCodes = [];
@@ -52,6 +50,7 @@ var ReportCtrl = app.controller(
             s.$watch('rdata.recentReportID', function (ID) {
                 // todo -- if changes were made, but not saved to the report, we should probably
                 // ask them if they want to save
+                s.setAlert('Loading',{type:'ok',time:5});
                 RS.loadReport(ID);
             });
 
@@ -98,6 +97,10 @@ var ReportCtrl = app.controller(
                 }
 
                 return '';
+            };
+
+            s.onTreatmentUpdate = function () {
+                s.report.items = ReportService.ungroupReportItems();
             };
 
             // After an item in the report has been edited via x-editable

@@ -1,8 +1,8 @@
 <div ng-controller='EditTreeCtrl' class="treeEditBox edit-tree-container">
 
-    <div class="row" bindonce="tree">
+    <div class="row">
         <div class="col-md-6">
-            <div class="image"><img bo-src="tree.imgMed + tree_cachebuster"/></div>
+            <div class="image"><img ng-src="{{tree.imgMed + tree_cachebuster}}"/></div>
         </div>
         <div class="col-md-6">
             <div class="content">
@@ -16,8 +16,8 @@
                         {{ tree.commonName || '(not specified)' }}
                     </span>
                 </h2>
-                <span bo-text="tree.speciesID|speciesID2Name:'bot':this"></span><br>
-                <span bo-text="'(treeID:' + treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
+                <span ng-bind="tree.speciesID|speciesID2Name:'bot':this"></span><br>
+                <span ng-bind="'(treeID:' + treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
                 
                 <dl class="dl-horizontal">
                     <dt>Diameter:</dt>
@@ -87,34 +87,45 @@
                             </tr>
                         <thead>
                         <tbody>
-												<tr id="treeHistoryItem" ng-repeat="o in tree.history" class="hoverHotspot">
-														<td width='44%'><a href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments'
-																							 editable-select='o.treatmentTypeID'>
-																{{o.treatmentTypeID|treatmentTypeID2Name:this}}</a>
-														</td>
-														<td width='34%'><a href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses'
-																							 editable-select='o.treatmentStatusCode'>
-																{{o.treatmentStatusCode|treatmentStatusName:this}}</a>
-														</td>
-														<td><a href e-ng-options='y for y in yearOptions' editable-select='o.year'
-                                    >{{o.year}}</a>
-                                </td>
-                                <td>
-                                    <a href editable-text='o.price' ng-show="o.price !== null && o.price">
-                                        ${{o.price|formatPrice}}
-                                    </a>
-                                </td>
-                                <td align='right'>
-                                    <a ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>
-                                </td>
-                                <td></td> <!-- todo: add a note icon, if there is a note, and rollover to show it -->
+                            <tr id="treeHistoryItem" ng-repeat="o in tree.history" class="hoverHotspot">
+                                    <td width='44%'>
+                                        <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.treatmentTypeID|treatmentTypeID2Name:this"></span>
+                                        <a ng-if="auth.isAtleast('inventory')" href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments' editable-select='o.treatmentTypeID'>
+                                            {{o.treatmentTypeID|treatmentTypeID2Name:this}}
+                                        </a>
+                                    </td>
+                                    <td width='34%'>
+                                        <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.treatmentStatusCode|treatmentStatusName:this"></span>
+                                        <a ng-if="auth.isAtleast('inventory')" href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses' editable-select='o.treatmentStatusCode'>
+                                            {{o.treatmentStatusCode|treatmentStatusName:this}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.year"></span>
+                                        <a ng-if="auth.isAtleast('inventory')" href e-ng-options='y for y in yearOptions' editable-select='o.year'>
+                                            {{o.year}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span ng-if="!auth.isAtleast('inventory')" ng-show="o.price !== null && o.price">
+                                            ${{o.price|formatPrice}}
+                                        </span>
+                                        <a ng-if="auth.isAtleast('inventory')" href editable-text='o.price' ng-show="o.price !== null && o.price">
+                                            ${{o.price|formatPrice}}
+                                        </a>
+                                    </td>
+                                    <td align='right'>
+                                        <a ng-if="auth.isAtleast('inventory')" ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>
+                                    </td>
+                                    <td></td> <!-- todo: add a note icon, if there is a note, and rollover to show it -->
                             </tr>
                         </tbody> 
                     </table>
                 </div>
 
                 <div ng-if="tree.mode!='rollover'" class=''>
-            		<button class='navButton' ng-click="save();">Save</button> &nbsp;<a ng-click="onCancel()" bs-tooltip title="Hotkey: Press Escape to cancel">Cancel</a> 
+            		<button class='navButton' ng-click="save();">Save</button>
+                    &nbsp;<a ng-click="onCancel()" bs-tooltip title="Hotkey: Press Escape to cancel">Cancel</a>
                 </div>
 
             </div>

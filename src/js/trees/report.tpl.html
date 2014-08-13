@@ -27,7 +27,7 @@
 						<dt>Created: </dt>
 						<dd ng-bind="report.tstamp_updated"></dd>
 					</dl>
-					<h1 class="title" bo-text="'Estimate for ' + report.siteName"></h1>
+					<h1 class="title" ng-text="'Estimate for ' + report.siteName"></h1>
 					<p class="name">
 						<span ng-if="data.mode()=='trees'">
 							<a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
@@ -44,32 +44,30 @@
 						<dt>Contact: </dt>
 						<dd ng-bind="report.contact + ' ' + report.contactPhone"></dd>
 					</dl>
+					<dl>
+						<dt>Client: </dt>
+						<dd ng-bind='report.clientName'></dd>
+					</dl>
 					<dl>	
 						<dt>Address: </dt>
 						<dd ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip"></dd>
 					</dl>
 				</div>	
 			</div>
-			<!-- todo - put this back in when we get assignments right-
-			<div class="col-md-2 col">
+			<div class="col-md-2 col" ng-if='report.sales_userID>0'>
 				<div class="estimate-info">
-					<p class="name">Sales Rep</p>
+					<p class="name clr-orange">Sales Rep</p>
 					<dl>
 						<dt>Name: </dt>
-						<dd>John Doe</dd>
+						<dd ng-text="report.sales_fname + ' ' + report.sales_lname"></dd>
 					</dl>
 					<dl>	
 						<dt>Email: </dt>
-						<dd>john@doe.com</dd>
+						<dd ng-bind='report.sales_email'></dd>
 					</dl>
 					<dl>	
 						<dt>Phone: </dt>
-						<dd>121221245212</dd>
-					</dl>
-					<p class="name clr-orange">Client Information</p>
-					<dl>
-						<dt>Name: </dt>
-						<dd>Some name goes here{{s.report.clientName}}</dd>
+						<dd ng-bind='report.sales_phone'></dd>
 					</dl>
 				</div>
 			</div>

@@ -100,6 +100,10 @@ var ReportCtrl = app.controller(
                 return '';
             };
 
+            s.onTreatmentUpdate = function () {
+                s.report.items = ReportService.ungroupReportItems();
+            };
+
             // After an item in the report has been edited via x-editable
             // sometimes the adjusted DOM throws the scroll out of position,
             // One way to fix is record scroll and go back there...

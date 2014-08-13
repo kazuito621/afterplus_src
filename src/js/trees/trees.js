@@ -328,6 +328,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if( treeID!=s.treeDetailsID ) return;
                 s.data.showTreeDetails=false;
                 s.data.showMap=true;
+                s.sendEvt('onTreeResultImageRollout');
             }
 
             //ng-mouseover="onTreeImageRollover(tree.treeID,true);" ng-mouseleave="onTreeImageRollover(tree.treeID,false);"
@@ -340,7 +341,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var deferred=$q.defer();
 
                 google.load("maps", "3", {other_params:'sensor=false', callback:function(){
-                    var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122),mapTypeId:'hybrid'};
+                    var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122), mapTypeId:'hybrid', panControl:false };
                     var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
                     gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
                     google.maps.event.addListener(gMap, 'click', function() {

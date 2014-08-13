@@ -1,10 +1,16 @@
 var SitesCtrl = app.controller('SitesCtrl',
-    ['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth',
-        function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $popover, Auth) {
+    ['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper',
+        function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper) {
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites';
             var siteDeletePopover, sitesList;
+            var self = this;
+            var columnMap = {
+                siteID: 'number',
+                treeCount: 'number',
+                reportCount: 'number'
+            };
             s.mode = '';
             s.type = 'site';
             s.newSite = {clientID: ''};
@@ -22,6 +28,8 @@ var SitesCtrl = app.controller('SitesCtrl',
 						if(s.clientID==search.clientID) sitesList.push(s);
 					});
 				}else sitesList = s.initData.sites;
+
+                self.sh = SortHelper.sh(s.initData.sites, '', columnMap);
                 s.displayedSites = sitesList.slice(0, 49);
             };
 
@@ -37,6 +45,16 @@ var SitesCtrl = app.controller('SitesCtrl',
                     placement: 'left',
                     trigger: 'focus'
                 });
+            };
+
+            s.sh = {
+                sortByColumn: function (col) {
+                    s.initData.sites = self.sh.sortByColumn(col);
+                    s.displayedSites = s.initData.sites.slice(0, s.displayedSites.length);
+                },
+                columnClass: function (col) {
+                    return self.sh.columnClass(col);
+                }
             };
 
             s.showMoreSites = function () {

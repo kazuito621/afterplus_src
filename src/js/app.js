@@ -105,11 +105,11 @@ function dbg(){
 		var lastArg = arguments[arguments.length-1];
 		if( typeof lastArg  == 'string') {
 			loopLen -= 1
-			console.log( lastArg + ' ------------' )
+			console.error( lastArg + ' ------------' )
 		}
 	}
 	for( var i=0; i<loopLen; i++) {
-		console.log( arguments[i] )
+		console.error( arguments[i] )
 	}
 }
 

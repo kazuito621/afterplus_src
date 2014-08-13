@@ -4,7 +4,9 @@
 <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
     <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
         <option value="">Recent Estimates</option>
-        <option bindonce ng-repeat="r in recentReportList" bo-value="r.reportID" ng-bind="getRecentReportTitle(r)">
+		<!-- todo-bindonce - was removed from here: "bindonce bo-value="r.reportID"" ... repalce this back
+			if we can get the rebinder working -->
+        <option bindonce bo-value="r.reportID" ng-repeat="r in recentReportList" ng-bind="getRecentReportTitle(r)">
         </option>
     </select>
     <BR><BR>
@@ -48,9 +50,10 @@
 					</dl>
 				</div>	
 			</div>
+			<!-- todo - put this back in when we get assignments right-
 			<div class="col-md-2 col">
 				<div class="estimate-info">
-					<p class="name clr-orange">Sales Representative</p>
+					<p class="name">Sales Rep</p>
 					<dl>
 						<dt>Name: </dt>
 						<dd>John Doe</dd>
@@ -70,6 +73,7 @@
 					</dl>
 				</div>
 			</div>
+			-->
 			<div class="col-md-4 col">
 				<div class="bid-info">
 					<div class="logos">
@@ -137,7 +141,10 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr bindonce ng-repeat="item in groupedItems" ng-if="report.items.length>0"
+							<!-- todo-bindonce - i removed it from below... cuz it broke editing of values... 
+								if we can get rebind to work, then we need to rebind if the user is an admin (and they want to edit)
+								and leave bindonce if the user is a customer t-->
+							<tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
 								ng-init="itemIndex = $index"
 								ng-class="rowHighlightClass(item)"
 								ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.treeID}}">
@@ -165,6 +172,7 @@
 												<a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
 												   editable-select="treatment.treatmentTypeCode"
 												   onshow="onShowEditItem(item.$$hashKey)"
+                                                   onaftersave="onTreatmentUpdate()"
 												   onhide="onHideEditItem()">
 													{{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
 												</a>
@@ -174,7 +182,7 @@
                                                 </span>
                                             </td>
 											<td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_price" class="td-bid">
-												&#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()">{{treatment.price|formatPrice}}</a>
+												&#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()" onaftersave="onTreatmentUpdate()">{{treatment.price|formatPrice}}</a>
 											</td>
                                             <td ng-if="auth.is('customer')">
                                                 <span ng-bind="treatment.price|formatPrice"></span>

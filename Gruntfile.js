@@ -283,6 +283,7 @@ module.exports = function (grunt) {
             //'img/{,*/}*.{webp}',
             'img/{,*/}*',
 			'js/{,*/}/*.html',
+            'patch/**/*',
 			//'img/*',
             'fonts/*',
           ]

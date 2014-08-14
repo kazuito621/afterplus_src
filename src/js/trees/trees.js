@@ -549,9 +549,23 @@ var TreesCtrl = app.controller('TreesCtrl',
                     setIconColor(itm);
                     set2.push(itm)
                 });
+				set2=filterOutIconDups(set2);
                 if(set2.length>0) addMarkers(set2,'singleSite');
                 else s.setAlert('No tree results, or trees do not have GPS locations',{type:'d',time:5});
             },1000);
+
+			// When tree icons are grouped in estimate, there will be duplicates... always take the lower locatTreeID number
+			var filterOutIconDups = function(icons){
+				var treeIDs=[];
+				var out=[];
+				_.each(icons, function(i){
+					if(treeIDs.indexOf(i.treeID)==-1){
+						out.push(i);
+						treeIDs.push(i.treeID);
+					}
+				});
+				return out;
+			}
 
 
             //Define function to get tree marker iconType/color by speciesID

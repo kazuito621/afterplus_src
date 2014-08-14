@@ -286,7 +286,6 @@ app.service('ReportService',
 	},1000);
 
         this.groupReportItems = function () {
-//                console.log('about to group report items', that.report.items);
             var items = angular.copy(that.report.items);
             var res = [];
             var keys = [];
@@ -310,11 +309,7 @@ app.service('ReportService',
                     res.push(i);
                 }
             });
-
-//                console.log('after grouping', res);
-//                console.log('report items initial after grouping', that.report.items);
             that.groupedItems = res;
-
             return res;
         };
 

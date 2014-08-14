@@ -16,6 +16,9 @@
                     <th class="clickable-header" ng-click="sh.sortByColumn('status')">
                         Status <i ng-class="sh.columnClass('status')"></i>
                     </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
+                        Updated <i ng-class="sh.columnClass('tstamp_updated')"></i>
+                    </th>
                 </tr>
             </thead>
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
@@ -24,6 +27,7 @@
                     <td ng-bind="e.siteName"></td>
                     <td>$ {{e.total_price}}</td>
                     <td><span ng-bind='e.status' ng-class='"small-tag "+e.status'><span></td>
+                    <td>{{e.tstamp_updated | formatDate}}</td>
                 </tr>
             </tbody>
         </table>

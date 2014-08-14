@@ -21,13 +21,16 @@
                         Name <i ng-class="sh.columnClass('siteName')"></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
-                        City <i ng-class="sh.columnClass(['city', 'state'])"></i>
+                        Location <i ng-class="sh.columnClass(['city', 'state'])"></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
                         Trees <i ng-class="sh.columnClass('treeCount')"></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
                         Estimates <i ng-class="sh.columnClass('reportCount')"></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
+                        Last Activity <i ng-class="sh.columnClass('tstamp_lastContact')"></i>
                     </th>
 					<th ng-if="auth.is('admin')"></th>
 				</tr>
@@ -39,6 +42,7 @@
                     <td>{{s.city}}, {{s.state}}</td>
                     <td>{{s.treeCount}}</td>
                     <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
+                    <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
                     <td>
                         <span ng-if="auth.isAtleast('inventory')">
                             <i site-edit-modal clients="initData.clients" site-id="s.siteID" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="cursor: pointer;"></i> &nbsp;

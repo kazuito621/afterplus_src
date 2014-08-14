@@ -66,6 +66,21 @@ angular.module('arborPlusFilters', [])
 		}
 	})
 
+	.filter('formatDate', function(){
+		return function(input) {  
+			if(!input) return '';
+			input=input+' +00';
+			return moment(input).utc().format('MMM D, YYYY h:mma');
+		};  
+	})
+
+	.filter('formatDateFromNow', function(){
+		return function(input) {  
+			if(!input) return '';
+			return moment(input).utc().fromNow();
+		};  
+	})
+
 	.filter('speciesID2Name', function() {
         return function(ID, opt, scope) {
 			if(!ID) return '';

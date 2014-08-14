@@ -3,10 +3,11 @@
 	<button type="button"
 		ng:cloak
 		data-placement="center"
-		ng-click="newSiteModalOpen()"
 		class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
         style="max-width: 100%; width: auto;"
-		data-animation="am-fade-and-scale" >New Property</button>
+        site-edit-modal
+        clients="initData.clients"
+		data-animation="am-fade-and-scale">New Property</button>
 
 	<div class='table-responsive' ng-if="displayedSites.length > 0">
 		<h1>Properties</h1>
@@ -39,7 +40,10 @@
                     <td>{{s.treeCount}}</td>
                     <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
                     <td>
-                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
+                        <span ng-if="auth.isAtleast('inventory')">
+                            <i site-edit-modal clients="initData.clients" site-id="s.siteID" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="cursor: pointer;"></i> &nbsp;
+                        </span>
+
                         <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size7 hoverDisplay" bs-tooltip title="Delete" style="text-decoration: none;"></a>
                     </td>
                 </tr>

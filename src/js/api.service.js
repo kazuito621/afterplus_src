@@ -131,6 +131,23 @@ function (Rest, $rootScope, $q, $location ) {
         },
         removeSiteById: function (id) {
             return Rest.one('site', id).remove();
+        },
+        // Users lookup
+        usersLookUp: function (params) {
+            var query = '?';
+            var tmp = [];
+
+            if (params.email && params.email[params.email.length -1] !== '*') {
+                params.email += '*';
+            }
+
+            angular.forEach(params, function (value, key) {
+                tmp.push(key + '=' + value);
+            });
+
+            query += tmp.join('&');
+
+            return Rest.all('user' + query).getList();
         }
     };
 

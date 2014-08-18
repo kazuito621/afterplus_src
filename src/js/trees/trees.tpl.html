@@ -449,6 +449,21 @@
 													<button class="btn btn-block btn-red clr-white txt-bold" ng-click="addToEstimate()">Add to Estimate</button>
 												</td>
 											</tr>
+                                            <tr>
+                                                <td colspan="4">
+                                                    <label>
+                                                        <input type=checkbox ng-model='data.showTreatmentList'>
+                                                        Show Treatments
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                            <tr ng-cloak ng-show="data.showTreatmentList">
+                                                <td colspan="4">
+                                                    <select class="multiList" size="10" multiple ng-model="selected.treatmentCodes">
+                                                        <option ng-repeat="treatment in initData.filters.treatments" value="{{treatment.code}}">{{treatment.treatmentType}}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
 										</tfoot>
 									</table>
 								</div>	

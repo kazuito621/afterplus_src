@@ -26,11 +26,49 @@
                             <input type="text" placeholder="City" ng-model="site.city" size="40"><br>
                             <input type="text" placeholder="State" ng-model="site.state" size="40"><br>
                             <input type="text" placeholder="Zip" ng-model="site.zip" size="40"><br>
-                            <input type="text" placeholder="Contact Name" ng-model="site.contact" size="40"><br>
-                            <input type="text" placeholder="Phone" ng-model="site.contactPhone" size="40"><br>
-                            <input type="text" placeholder="Email" ng-model="site.contactEmail" size="40"><br>
-                            <input type="text" placeholder="Regional Manager" ng-model="site.regionalMgr" size="40"><br>
-                            <input type="text" placeholder="Regional Email" ng-model="site.regionalEmail" size="40"><br>
+
+                            <div class="containter" style="margin-top: 10px;">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        Site contacts
+                                    </div>
+                                    <div class="col-sm-3 col-offset-1">
+                                        <a ng-click="showAddNewSiteContact = true" href>
+                                            [ADD NEW]
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div ng-repeat="c in site.contacts" style="margin-top: 10px;" ng-show="site.contacts.length > 0">
+                                    <div class="col-sm-8">
+                                        {{c.email}}
+                                    </div>
+                                    <div class="col-sm-3 col-offset-1">
+                                        edit / delete
+                                    </div>
+                                </div>
+
+                                <div class="row" ng-show="showAddNewSiteContact === true" style="margin-top: 10px;">
+                                    <div class="col-sm-4">
+                                        <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newContact.email" user-auto-complete="userSelect" bs-typeahead>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input type="text" placeholder="First name" required style="width: 100%;" ng-model="newContact.firstName">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input type="text" placeholder="Last name" required style="width: 100%;" ng-model="newContact.lastName">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button ng-click="addNewSiteContact()">ADD</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--<input type="text" placeholder="Contact Name" ng-model="site.contact" size="40"><br>-->
+                            <!--<input type="text" placeholder="Phone" ng-model="site.contactPhone" size="40"><br>-->
+                            <!--<input type="text" placeholder="Email" ng-model="site.contactEmail" size="40"><br>-->
+                            <!--<input type="text" placeholder="Regional Manager" ng-model="site.regionalMgr" size="40"><br>-->
+                            <!--<input type="text" placeholder="Regional Email" ng-model="site.regionalEmail" size="40"><br>-->
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">

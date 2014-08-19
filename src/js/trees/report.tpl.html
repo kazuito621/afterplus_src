@@ -24,8 +24,9 @@
 			<div class="col-md-6 col">
 				<div class="estimate-info">
 					<dl class="small">
-						<dt>Created: </dt>
-						<dd ng-bind="report.tstamp_updated"></dd>
+						<dt>Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
+								Estimate ID: <span ng-bind="report.reportID"></span>
+						</dt>
 					</dl>
 					<h1 class="title" ng-text="'Estimate for ' + report.siteName"></h1>
 					<p class="name">
@@ -36,10 +37,6 @@
 							{{report.name}}
 						</span>
 					</p>	
-					<dl>
-						<dt>Estimate ID: </dt>
-						<dd ng-bind="report.reportID"></dd>
-					</dl>
 					<dl>	
 						<dt>Contact: </dt>
 						<dd ng-bind="report.contact + ' ' + report.contactPhone"></dd>
@@ -47,6 +44,10 @@
 					<dl>
 						<dt>Client: </dt>
 						<dd ng-bind='report.clientName'></dd>
+					</dl>
+					<dl>
+						<dt>Property: </dt>
+						<dd ng-bind="report.siteName"></dd>
 					</dl>
 					<dl>	
 						<dt>Address: </dt>

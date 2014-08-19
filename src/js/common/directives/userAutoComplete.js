@@ -4,11 +4,20 @@ app.directive('userAutoComplete', function (Api) {
     var linker = function (scope, el, attrs) {
         var autocompleteData = [];
         var callback = scope.$parent[attrs.userAutoComplete] || angular.noop;
+        var roles = attrs.userRoles;
 
         scope.emailLookup = function (email) {
-            if (!email || email.length < 1) { return []; }
+            if (!email || email.length < 2) { return []; }
 
-            return Api.usersLookUp({ email: email }).then(function (data) {
+            var params = {
+                email: email
+            };
+
+            if (roles) {
+                params.role = roles;
+            }
+
+            return Api.usersLookUp(params).then(function (data) {
                 autocompleteData = data;
                 return data;
             });

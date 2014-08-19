@@ -142,7 +142,7 @@ function (Rest, $rootScope, $q, $location ) {
             }
 
             angular.forEach(params, function (value, key) {
-                tmp.push(key + '=' + value);
+                tmp.push(key + '=' + encodeURIComponent(value));
             });
 
             query += tmp.join('&');

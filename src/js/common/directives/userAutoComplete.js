@@ -17,7 +17,7 @@ app.directive('userAutoComplete', function (Api) {
                 params.role = roles;
             }
 
-            return Api.usersLookUp(params).then(function (data) {
+            return Api.user.lookUp(params).then(function (data) {
                 autocompleteData = data;
                 return data;
             });

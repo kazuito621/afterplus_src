@@ -48,8 +48,14 @@ function (Rest, $rootScope, $q, $location ) {
         getTree: function (treeID) {
             return Rest.one('trees', treeID).get();
         },
-        getSiteUsers: function (siteID) {
-            return Rest.all('site/' + siteID + '/users').getList();
+        getSiteUsers: function (siteID, roles) {
+            var params = {};
+
+            if (roles) {
+                params.role = roles;
+            }
+
+            return Rest.all('site/' + siteID + '/users').getList(params);
         },
         getReport: function (reportID, opts) {
 			var r=$rootScope.requestedReportID;
@@ -132,26 +138,40 @@ function (Rest, $rootScope, $q, $location ) {
         removeSiteById: function (id) {
             return Rest.one('site', id).remove();
         },
-        // Users lookup
-        usersLookUp: function (params) {
-            var query = '?';
-            var tmp = [];
+        // User / Site relationship
+        userSite: {
+            assign: function (siteId, user) {
+//                POST /site/456/users
+//                JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer'}
+//                RETURNS: ARRAY of user Obj: [{userID:INT, ...},{userID:INT, ...}]
+//                (this would be useful when creating new users, and you need their userID)
 
-            if (params.email && params.email[params.email.length -1] !== '*') {
-                params.email += '*';
+//                POST /site/456/users
+//                JSON BODY: {userID:123, role:'sales'}
+                return Rest.one('site', siteId).users(user);
+            },
+
+            unassign: function (siteId, userId) {
+//                POST /site/123/user/999/unassign
+                return Rest.one('site', siteId).one('user', userId).unassign();
             }
-
-            angular.forEach(params, function (value, key) {
-                tmp.push(key + '=' + encodeURIComponent(value));
-            });
-
-            query += tmp.join('&');
-
-            return Rest.all('user' + query).getList();
+        },
+        // Users
+        user: {
+            get: function (params) {
+                return Rest.one('user').get(params);
+            },
+            remove: function (id) {
+                return Rest.one('user', id).remove();
+            },
+            lookUp: function (params) {
+                if (params.email && params.email[params.email.length -1] !== '*') {
+                    params.email += '*';
+                }
+                return Rest.all('user').getList(params);
+            }
         }
     };
-
-
 }]);
 
 

@@ -4,8 +4,10 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api) {
     var linker = function (scope, el) {
         var modal;
         var newSite = {clientID: ''};
+        var newContact = {};
 
         scope.mode = '';
+        scope.newContact = angular.copy(newContact);
 
         scope.openModal = function (id) {
             if (!modal) {
@@ -48,6 +50,11 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api) {
             }
 
             modal.hide();
+        };
+
+        scope.userSelect = function (user) {
+            scope.newContact.firstName = user.fName;
+            scope.newContact.lastName = user.lName;
         };
 
         var init = function () {

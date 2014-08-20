@@ -5,6 +5,7 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $w
         var modal;
         var newSite = {clientID: ''};
         var newContact = { role: 'customer'};
+        var newRep = { role: 'sales'};
 
         var separateUsers = function (users) {
             var res = { contacts: [], reps: []};
@@ -22,6 +23,7 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $w
 
         scope.mode = '';
         scope.newContact = angular.copy(newContact);
+        scope.newRep = angular.copy(newRep);
 
         scope.openModal = function (id) {
             if (!modal) {
@@ -38,8 +40,6 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $w
                         var separatedUsers = separateUsers(data);
                         scope.contacts = separatedUsers.contacts;
                         scope.reps = separatedUsers.reps;
-
-                        console.log('Edit site', scope.site);
                     });
                 });
             } else {
@@ -71,10 +71,14 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $w
             modal.hide();
         };
 
-        scope.userSelect = function (user) {
+        scope.contactSelect = function (user) {
             scope.newContact.fName = user.fName;
             scope.newContact.lName = user.lName;
             scope.newContact.userID = user.userID;
+        };
+
+        scope.repSelect = function (user) {
+            scope.newRep = angular.copy(user);
         };
 
         scope.addNewSiteContact = function (event) {
@@ -94,8 +98,36 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $w
             }
 
             console.log('Add new site contact', user);
-            Api.userSite.assign(scope.siteId, scope.newContact).then(function () {
+            Api.userSite.assign(scope.siteId, user).then(function (data) {
+                if (data[0]) {
+                    scope.contacts.push(data[0]);
+                }
                 scope.newContact = angular.copy(newContact);
+            });
+        };
+
+        scope.addNewSiteRep = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            scope.showAddNewSiteRep = false;
+
+            var tmp = angular.copy(scope.newRep);
+            var user = { role: tmp.role, email: tmp.email };
+
+            if (!tmp.userID) {
+                user.fName = tmp.fName;
+                user.lName = tmp.lName;
+            } else {
+                user.userID = tmp.userID;
+            }
+
+            console.log('Add new site rep', user);
+            Api.userSite.assign(scope.siteId, user).then(function (data) {
+                if (data[0]) {
+                    scope.reps.push(data[0]);
+                }
+                scope.newRep = angular.copy(newRep);
             });
         };
 

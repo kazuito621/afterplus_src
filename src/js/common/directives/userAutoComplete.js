@@ -4,10 +4,7 @@ app.directive('userAutoComplete', function (Api) {
     var linker = function (scope, el, attrs) {
         var autocompleteData = [];
         var callback = scope.$parent[attrs.userAutoComplete] || angular.noop;
-        var roles = attrs.userRoles;
-        var ignore = attrs.userIgnore;
         var ignoreList = [];
-
         var makeIgnoreList = function (data) {
             return _.pluck(data, 'email');
         };
@@ -19,12 +16,12 @@ app.directive('userAutoComplete', function (Api) {
                 email: email
             };
 
-            if (roles) {
-                params.role = roles;
+            if (attrs.userRoles) {
+                params.role = attrs.userRoles;
             }
 
-            if (ignore) {
-                ignoreList = makeIgnoreList(scope.$parent[ignore]);
+            if (attrs.userIgnore) {
+                ignoreList = makeIgnoreList(scope.$parent[attrs.userIgnore]);
             }
 
             return Api.user.lookUp(params).then(function (data) {
@@ -47,6 +44,7 @@ app.directive('userAutoComplete', function (Api) {
         replace: false,
         transclude: false,
         priority: 500,
+        scope: true,
         compile: function (el, attrs) {
             var options = "user.email as user.email for user in emailLookup($viewValue)";
             attrs.$set('ngOptions', options);

@@ -5,6 +5,12 @@ app.directive('userAutoComplete', function (Api) {
         var autocompleteData = [];
         var callback = scope.$parent[attrs.userAutoComplete] || angular.noop;
         var roles = attrs.userRoles;
+        var ignore = attrs.userIgnore;
+        var ignoreList = [];
+
+        var makeIgnoreList = function (data) {
+            return _.pluck(data, 'email');
+        };
 
         scope.emailLookup = function (email) {
             if (!email || email.length < 2) { return []; }
@@ -17,9 +23,17 @@ app.directive('userAutoComplete', function (Api) {
                 params.role = roles;
             }
 
+            if (ignore) {
+                ignoreList = makeIgnoreList(scope.$parent[ignore]);
+            }
+
             return Api.user.lookUp(params).then(function (data) {
-                autocompleteData = data;
-                return data;
+                var res = _.filter(data, function (item) {
+                    return ignoreList.indexOf(item.email) === -1;
+                });
+
+                autocompleteData = res;
+                return res;
             });
         };
 

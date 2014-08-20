@@ -148,12 +148,12 @@ function (Rest, $rootScope, $q, $location ) {
 
 //                POST /site/456/users
 //                JSON BODY: {userID:123, role:'sales'}
-                return Rest.one('site', siteId).users(user);
+                return Rest.one('site', siteId).post('users', user);
             },
 
             unassign: function (siteId, userId) {
 //                POST /site/123/user/999/unassign
-                return Rest.one('site', siteId).one('user', userId).unassign();
+                return Rest.one('site', siteId).one('user', userId).post('unassign');
             }
         },
         // Users

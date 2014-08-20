@@ -26,12 +26,12 @@
                         Trees <i ng-class="sh.columnClass('treeCount')"></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
-                        Estimates <i ng-class="sh.columnClass('reportCount')"></i>
+                        Est <i ng-class="sh.columnClass('reportCount')"></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
-                        Last Activity <i ng-class="sh.columnClass('tstamp_lastContact')"></i>
+                        Activity <i ng-class="sh.columnClass('tstamp_lastContact')"></i>
                     </th>
-					<th ng-if="auth.is('admin')"></th>
+					<th ng-if="auth.isAtleast('inventory')"></th>
 				</tr>
 			</thead>
             <tbody infinite-scroll="showMoreSites()" infinite-scroll-distance="3">
@@ -43,8 +43,12 @@
                     <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
                     <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
                     <td>
-                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
-                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size7 hoverDisplay" bs-tooltip title="Delete" style="text-decoration: none;"></a>
+                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" 
+								ng-class="(s.userCustCount<1 || s.userStaffCount<1) ? 'fa fa-frown-o _red _size6' : 'fa fa-pencil _grey _size6 hoverDisplay'" 
+								bs-tooltip ng-attr-title="{{ (s.userCustCount<1 || s.userStaffCount<1) ? 'Property has no users assigned!' : 'Edit'}}" 
+								style="text-decoration: none; cursor:pointer; cursor: hand;"></a> &nbsp;
+                        <a ng-if="auth.isAtleast('inventory')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size6 hoverDisplay" 
+								bs-tooltip title="Delete" style="text-decoration: none; cursor:pointer; cursor: hand;"></a>
                     </td>
                 </tr>
             </tbody>

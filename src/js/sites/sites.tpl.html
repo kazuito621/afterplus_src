@@ -14,22 +14,22 @@
 			<thead>
 				<tr>
                     <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
-                        ID <i ng-class="sh.columnClass('siteID')"></i>
+                        ID <i ng-class="sh.columnClass('siteID')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
-                        Name <i ng-class="sh.columnClass('siteName')"></i>
+                        Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
-                        Location <i ng-class="sh.columnClass(['city', 'state'])"></i>
+                        Location <i ng-class="sh.columnClass(['city', 'state'])" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
-                        Trees <i ng-class="sh.columnClass('treeCount')"></i>
+                        <i class='fa fa-tree'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
-                        Est <i ng-class="sh.columnClass('reportCount')"></i>
+                        <i class='fa fa-file-text-o'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
-                        Activity <i ng-class="sh.columnClass('tstamp_lastContact')"></i>
+                        Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
                     </th>
 					<th ng-if="auth.isAtleast('inventory')"></th>
 				</tr>

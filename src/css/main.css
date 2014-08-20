@@ -708,9 +708,13 @@ td.estimate_multirow_col{
     cursor: pointer;
 }
 
-/** this messes up the map for some reason
+/* this messes up the map for some reason
 .ng-hide{
   display: block!important;
   visibility:hidden; 
   }
   */
+
+.hand{
+	cursor:pointer; cursor:hand;
+	}

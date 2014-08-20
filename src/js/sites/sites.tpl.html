@@ -22,15 +22,16 @@
                     <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
                         Location <i ng-class="sh.columnClass(['city', 'state'])" class='silver'></i>
                     </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
-                        <i class='fa fa-tree'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
-                        <i class='fa fa-file-text-o'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
-                    </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
                         Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
                     </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
+                        <i class='fa fa-tree' bs-tooltip title='Total Tree Count'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
+                    </th>
+					<th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
+						<i class='fa fa-file-text-o'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
+					</th>
+                    <th><!-- stats --></th>
 					<th ng-if="auth.isAtleast('inventory')"></th>
 				</tr>
 			</thead>
@@ -39,9 +40,13 @@
                     <td ng-bind="s.siteID"></td>
                     <td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
                     <td>{{s.city}}, {{s.state}}</td>
+                    <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
                     <td>{{s.treeCount}}</td>
                     <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
-                    <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
+					<td>
+						<a ng-if="s.userCustCount>0" ng-click='editUsers(s.siteID)' class='fa fa-user olive hand' bs-tooltip title='Edit Customer Contact'></a>
+						<a ng-if="s.userStaffCount>0" ng-click='editUsers(s.siteID)' class='fa fa-user red hand' bs-tooltip title='Edit Staff Contact'></a>
+					</td>
                     <td>
                         <a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" 
 								ng-class="(s.userCustCount<1 || s.userStaffCount<1) ? 'fa fa-frown-o _red _size6' : 'fa fa-pencil _grey _size6 hoverDisplay'" 

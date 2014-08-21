@@ -1,6 +1,6 @@
 var SitesCtrl = app.controller('SitesCtrl',
-    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper',
-        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper) {
+    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q',
+        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q) {
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites';
@@ -11,6 +11,7 @@ var SitesCtrl = app.controller('SitesCtrl',
                 treeCount: 'number',
                 reportCount: 'number'
             };
+            var sites;
             s.mode = '';
             s.type = 'site';
             s.items = {};
@@ -19,17 +20,26 @@ var SitesCtrl = app.controller('SitesCtrl',
             s.auth = Auth;
 
             var init = function () {
-				// allow them to nav to /#sites?clientID=XXX and filter
-        		var search = $location.search();
-				if(search.clientID){
-					sitesList=[];
-					_.each(s.initData.sites, function(s){
-						if(s.clientID==search.clientID) sitesList.push(s);
-					});
-				}else sitesList = s.initData.sites;
+                // pull the list of sites. were are not using initData.sites, because we need a list
+                // that has user assignments as well
+                Api.getSiteList().then(function(siteData){
+                    sites=siteData
+                    // allow them to nav to /#sites?clientID=XXX and filter
+                    var search = $location.search();
+                    if(search.clientID){
+                        sitesList=[];
+                        _.each(sites, function(s){
+                            if(s.clientID==search.clientID) sitesList.push(s);
+                        });
+                    }else sitesList = sites;
 
-                self.sh = SortHelper.sh(s.initData.sites, '', columnMap);
-                s.displayedSites = sitesList.slice(0, 49);
+                    self.sh = SortHelper.sh(sites, '', columnMap);
+                    s.displayedSites = sitesList.slice(0, 49);
+                });
+            };
+            
+            var refreshSites = function () {
+                init();
             };
 
             var siteDeletePopoverFactory = function (el) {
@@ -45,8 +55,8 @@ var SitesCtrl = app.controller('SitesCtrl',
 
             s.sh = {
                 sortByColumn: function (col) {
-                    s.initData.sites = self.sh.sortByColumn(col);
-                    s.displayedSites = s.initData.sites.slice(0, s.displayedSites.length);
+                    sites = self.sh.sortByColumn(col);
+                    s.displayedSites = sites.slice(0, s.displayedSites.length);
                 },
                 columnClass: function (col) {
                     return self.sh.columnClass(col);
@@ -55,7 +65,7 @@ var SitesCtrl = app.controller('SitesCtrl',
 
             s.showMoreSites = function () {
                 var count = s.displayedSites.length;
-                if (s.initData === undefined || s.initData.sites === undefined || count === sitesList.length )
+                if (s.initData === undefined || sites === undefined || count === sitesList.length )
                     return;
 
                 var addon = sitesList.slice(count, count + 50);
@@ -63,15 +73,17 @@ var SitesCtrl = app.controller('SitesCtrl',
             };
 
             s.select = function (siteID) {
-				// todo... this should navigate to /#trees?siteID=XXX  but that functionality at trees does not work yet
+                // todo... this should navigate to /#trees?siteID=XXX  but that functionality at trees does not work yet
                 return;
                 $location.url('/trees?siteID='+siteID);
             };
 
             s.deleteCurrentItem = function () {
                 Api.removeSiteById(s.activePopover.siteID).then(function () {
+                    refreshSites();
                     Api.refreshInitData();
                 });
+                refreshSites();
                 Api.refreshInitData();
                 siteDeletePopover.hide();
                 delete s.activePopover.siteID;
@@ -95,9 +107,9 @@ var SitesCtrl = app.controller('SitesCtrl',
                 s.type = 'site';
             };
 
-			init();
-			s.$on('nav', function (e, data) {
-				if (data.new === myStateID) init();
-			});
+            init();
+            s.$on('nav', function (e, data) {
+                if (data.new === myStateID) init();
+            });
 
         }]);

@@ -25,12 +25,6 @@ Use this test account:
 
 
 
-
-History
--------
-This project was broken up from a larger repository, and now only contains the javascript/html frontend portion of the project.
-
-
 Contributing
 -------------
 Please create a new branch for each new feature you are working on.
@@ -47,4 +41,9 @@ For example:
   - Move the trello car to the "done" list
   - Note the hours it took to complete at the bottom of the Trello card description
  
+
+
+History
+-------
+This project was broken up from a larger repository, and now only contains the javascript/html frontend portion of the project.
 

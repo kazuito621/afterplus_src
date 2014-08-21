@@ -6,6 +6,7 @@
             class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
             style="max-width: 100%; width: auto;"
             site-edit-modal
+            on-save="refreshSites"
             clients="initData.clients"
             data-animation="am-fade-and-scale">New Property</button>
 
@@ -45,7 +46,7 @@
                 <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
                 <td>
                         <span ng-if="auth.isAtleast('inventory')">
-                            <i site-edit-modal clients="initData.clients" site-id="s.siteID"
+                            <i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
                                ng-class="(s.userCustCount<1 || s.userStaffCount<1) ? 'fa fa-frown-o _red _size6' : 'fa fa-pencil _grey _size6 hoverDisplay'"
                                ng-attr-title="{{ (s.userCustCount<1 || s.userStaffCount<1) ? 'Property has no users assigned!' : 'Edit'}}"
                                bs-tooltip style="cursor: pointer;"></i> &nbsp;

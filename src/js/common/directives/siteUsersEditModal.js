@@ -1,7 +1,7 @@
 app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Api, $window, $timeout) {
     'use strict';
 
-    var linker = function (scope, el) {
+    var linker = function (scope, el, attrs) {
         var modal;
         var newContact = { role: 'customer'};
         var newRep = { role: 'sales'};
@@ -22,26 +22,25 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             return res;
         };
 
-        scope.mode = '';
         scope.newContact = angular.copy(newContact);
         scope.newRep = angular.copy(newRep);
 
         scope.openModal = function (id) {
+            if (!id) {
+                console.log('Trying to open site users modal without site id provided');
+                return;
+            }
+
             if (!modal) {
                 modal = $modal({scope: scope, template: '/js/common/directives/templates/siteUsersEditModal.tpl.html', show: false});
 //                modal = $modal({scope: scope, template: 'js/common/directives/templates/siteUsersEditModal.tpl.html', show: false}); // DEV
             }
 
-            if (id) {
-                scope.mode = 'edit';
-                Api.getSiteUsers(id).then(function (data) {
-                    var separatedUsers = separateUsers(data);
-                    scope.contacts = separatedUsers.contacts;
-                    scope.reps = separatedUsers.reps;
-                });
-            } else {
-                scope.mode = 'new';
-            }
+            Api.getSiteUsers(id).then(function (data) {
+                var separatedUsers = separateUsers(data);
+                scope.contacts = separatedUsers.contacts;
+                scope.reps = separatedUsers.reps;
+            });
 
             modal.$promise.then(function () {
                 modal.show();
@@ -127,19 +126,31 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             }
         };
 
+        var saveSiteCallback = function (site, modal) {
+            modal.show();
+            return;
+            console.log('Save site callback', site);
+            if (site) {
+                scope.site = site;
+            }
+
+            $timeout(function () {
+                scope.openModal(scope.site.siteID);
+            }, 200);
+        };
+
         var init = function () {
             el.on('click', function (event) {
                 event.preventDefault();
 
-//                if (angular.isFunction(scope.beforeOpen)) {
-//                    scope.beforeOpen().then(function () {
-//                        $timeout(function () {
-//                            scope.openModal(scope.site.siteID);
-//                        }, 100);
-//                    });
-//                } else {
+                var funcName = attrs.beforeOpen;
+                var func = scope.$parent[funcName];
+
+                if (funcName && angular.isFunction(func)) {
+                    func(saveSiteCallback, true);
+                } else {
                     scope.openModal(scope.site.siteID);
-//                }
+                }
             });
         };
 
@@ -151,8 +162,7 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
         replace: false,
         transclude: false,
         scope: {
-            site: '=',
-            beforeOpen: '&'
+            site: '='
         },
         compile: function () {
             return linker;

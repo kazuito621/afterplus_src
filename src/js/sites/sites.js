@@ -42,6 +42,10 @@ var SitesCtrl = app.controller('SitesCtrl',
                 init();
             };
 
+            s.refreshSites = function () {
+                init();
+            };
+
             var siteDeletePopoverFactory = function (el) {
                 return $popover(el, {
                     scope: $scope,

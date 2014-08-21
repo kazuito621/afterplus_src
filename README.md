@@ -32,6 +32,7 @@ Branch names should follow this pattern:
       <yourName>/##_<featureName>
 
 For example:
+
       tim/01_adding_invite_button
 	  tim/02_bugfix_image_rotation
 

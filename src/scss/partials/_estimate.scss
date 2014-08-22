@@ -11,6 +11,7 @@
 	padding: 15px 15px;
 	background: $white-color;
 	margin: 0;
+	box-shadow: 0 1px 5px rgba(0 , 0 , 0 , 0.2);
 
 	&.affix 
 	{
@@ -62,7 +63,13 @@
 
 		&.action-block-1
 		{
-			padding: 5px 0;
+			padding: 3px 0;
+
+			.btn 
+			{
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
 		}
 
 		&.action-block-2
@@ -72,7 +79,16 @@
 
 		&.action-block-3 
 		{
-			padding: 10px 0;
+			padding: 19px 0;
+			text-align: right;
+
+			.row 
+			{
+				> .col 
+				{
+					float: right;
+				}
+			}
 		}
 
 		.img-approve
@@ -117,6 +133,13 @@
 
 			.stat 
 			{
+				display: inline-block;
+				margin: auto;
+				padding: 8px 10px;
+				border: 1px solid $light-gray-color;
+				border-radius: 6px;
+				@include animate(all);				
+
 				.number 
 				{
 					@include font-g(40px , normal , $gray-color , 40px);
@@ -140,6 +163,23 @@
 				{
 					@include font-g(9px , normal , $black-color , 10px);
 					text-transform: uppercase;
+				}
+
+				&:hover, &:focus, &:active 
+				{
+					text-decoration: none;	
+					background: $light-color;
+					@include gradient-vertical-three-colors(darken($light-gray-color , 10%) , $light-gray-color , 50% , darken($light-gray-color , 10%));				
+
+					.number 
+					{
+						color: $white-color;
+					}
+
+					.text 
+					{
+						color: $white-color;
+					}
 				}
 			}
 		}
@@ -177,6 +217,7 @@
 {
 	padding: 0;
 	margin: 0;
+	margin-top: 15px;
 
 	.row-estimate
 	{

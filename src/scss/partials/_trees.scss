@@ -147,7 +147,7 @@ $tree-min-height: 700px;
 				{					
 					max-height: 120px;
 					overflow-y: auto;
-					padding: 0;
+					padding: 0;					
 
 					.filter-item 
 					{
@@ -196,7 +196,7 @@ $tree-min-height: 700px;
 							background: #dfdfdf;
 						}
 					}
-
+					
 					&.filter-items-inline
 					{				
 						background: #dfdfdf;
@@ -208,6 +208,55 @@ $tree-min-height: 700px;
 							background: none;
 							margin-right: 10px;
 						}
+					}
+
+					&.filter-items-toggle
+					{
+						padding: 5px;
+						background: none;
+
+						.filter-item 
+						{
+							margin: 0;		
+
+							label 
+							{
+								padding: 0;
+
+								.text 
+								{
+									border: 1px solid #666;
+									border-radius: 0;
+									border-right: none;
+								}
+							}
+
+							&:first-child 
+							{
+								label 
+								{
+									.text 
+									{
+										border-top-left-radius: 5px;
+										border-bottom-left-radius: 5px;
+									}
+								}
+							}
+
+
+							&:last-child 
+							{
+								label 
+								{
+									.text 
+									{
+										border-top-right-radius: 5px;
+										border-bottom-right-radius: 5px;
+										border-right: 1px solid #666;
+									}
+								}
+							}
+						}						
 					}
 				}
 			}

@@ -24,10 +24,11 @@
 			<div class="col-md-6 col">
 				<div class="estimate-info">
 					<dl class="small">
-						<dt>Created: </dt>
-						<dd ng-bind="report.tstamp_updated"></dd>
+						<dt>Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
+								Estimate ID: <span ng-bind="report.reportID"></span>
+						</dt>
 					</dl>
-					<h1 class="title" bo-text="'Estimate for ' + report.siteName"></h1>
+					<h1 class="title" ng-text="'Estimate for ' + report.siteName"></h1>
 					<p class="name">
 						<span ng-if="data.mode()=='trees'">
 							<a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
@@ -36,13 +37,17 @@
 							{{report.name}}
 						</span>
 					</p>	
-					<dl>
-						<dt>Estimate ID: </dt>
-						<dd ng-bind="report.reportID"></dd>
-					</dl>
 					<dl>	
 						<dt>Contact: </dt>
 						<dd ng-bind="report.contact + ' ' + report.contactPhone"></dd>
+					</dl>
+					<dl>
+						<dt>Client: </dt>
+						<dd ng-bind='report.clientName'></dd>
+					</dl>
+					<dl>
+						<dt>Property: </dt>
+						<dd ng-bind="report.siteName"></dd>
 					</dl>
 					<dl>	
 						<dt>Address: </dt>
@@ -50,25 +55,23 @@
 					</dl>
 				</div>	
 			</div>
-			<!-- todo - put this back in when we get assignments right-
-			<div class="col-md-2 col">
+			<div class="col-md-2 col" ng-if='report.sales_userID>0'>
 				<div class="estimate-info">
-					<p class="name">Sales Rep</p>
+					<p class="name clr-orange">Sales Rep</p>
 					<dl>
 						<dt>Name: </dt>
-						<dd>John Doe</dd>
+						<dd ng-text="report.sales_fname + ' ' + report.sales_lname"></dd>
 					</dl>
 					<dl>	
 						<dt>Email: </dt>
-						<dd>john@doe.com</dd>
+						<dd ng-bind='report.sales_email'></dd>
 					</dl>
 					<dl>	
 						<dt>Phone: </dt>
-						<dd>121221245212</dd>
+						<dd ng-bind='report.sales_phone'></dd>
 					</dl>
 				</div>
 			</div>
-			-->
 			<div class="col-md-4 col">
 				<div class="bid-info">
 					<div class="logos">
@@ -96,6 +99,8 @@
 				>Send</button>
 		<a ng-if='report.reportLink' href='{{report.reportLink}}' target='_cust_view'
 			onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> 
+		(<a ng-if='report.reportLink' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF</a>)
+			
 		<div class="clearfix"></div>
 	</div>	 
 

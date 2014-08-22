@@ -23,6 +23,7 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
             // added throttle, because on fist load, it might fire twice, once from init() on load,
             // and once from the $on(nav) event above
             var init = _.throttle(function (treeID, mode) {
+				initTreeData();
                 // todo -- editmode should be controlled by user privilege
                 if (!mode) {
                     mode = 'edit';
@@ -41,11 +42,21 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
                         s.tree = data;
                         s.tree.mode = mode;
                     });
-            }, 1500);
+            }, 700);
+
+			var initTreeData = function(){
+				s.tree={};
+				s.tree.img=s.tree.imgSm=s.tree.imgMed='/img/blank.gif';
+			}
 
             s.$on('onTreeResultImageRollover', function (evt, treeID) {
                 init(treeID, 'rollover');
             });
+
+            s.$on('onTreeResultImageRollout', function (evt) {
+				initTreeData();
+            });
+
 
             s.$on('nav', function (e, data) {
                 if (data.new === myStateID) init();

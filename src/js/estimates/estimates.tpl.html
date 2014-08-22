@@ -1,21 +1,33 @@
 <div ng-include="'js/trees/action.tpl.html'" ng-if="Auth.is('customer')"></div>
 <div class='container' ng-controller="EstimatesListCtrl">    
-    <div class='table-responsive' ng-show="estimates.length > 0">
+    <div class='table-responsive' ng-if="estimates.length > 0">
         <table class='table table-striped'>
             <thead>
                 <tr>
-                    <th>Estimate Name</th>
-                    <th>Site Name</th>
-                    <th>Total</th>
-                    <th>Status</th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('name')">
+                        Estimate Name <i ng-class="sh.columnClass('name')" class='silver'></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
+                        Site Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('total_price')">
+                        Total <i ng-class="sh.columnClass('total_price')" class='silver'></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('status')">
+                        Status <i ng-class="sh.columnClass('status')" class='silver'></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
+                        Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
+                    </th>
                 </tr>
             </thead>
-            <tbody>
-                <tr ng-repeat="e in estimates">
+            <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
+                <tr ng-repeat="e in displayedEstimates">
                     <td><a href="#/estimate/{{e.reportID}}" ng-bind="e.name" ng-click="goToEstimate(e.reportID)"></a></td>
                     <td ng-bind="e.siteName"></td>
                     <td>$ {{e.total_price}}</td>
                     <td><span ng-bind='e.status' ng-class='"small-tag "+e.status'><span></td>
+                    <td>{{e.tstamp_updated | formatDate}}</td>
                 </tr>
             </tbody>
         </table>

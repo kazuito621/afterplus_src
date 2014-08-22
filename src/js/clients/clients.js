@@ -1,11 +1,16 @@
 var ClientsCtrl = app.controller('ClientsCtrl',
-    ['$scope', '$route', '$modal', 'Api', '$popover', 'Auth',
-        function ($scope, $route, $modal, Api, $popover, Auth) {
+    ['$scope', '$route', '$modal', 'Api', '$popover', 'Auth', 'SortHelper',
+        function ($scope, $route, $modal, Api, $popover, Auth, SortHelper) {
             'use strict';
 
             var s = window.cts = $scope;
             var myStateID = 'clients';
             var clientDeletePopover;
+            var self = this;
+            var columnMap = {
+                clientID: 'number',
+                siteCount: 'number'
+            }
             s.mode = '';
             s.type = 'client';
             s.newClient = {};
@@ -15,14 +20,8 @@ var ClientsCtrl = app.controller('ClientsCtrl',
             s.auth = Auth;
 
             var init = function () {
+                self.sh = SortHelper.sh(s.initData.clients, '', columnMap);
                 s.displayedClients = s.initData.clients.slice(0, 49);
-                return; // use this method only if you need to get more data than what initData provides...
-            };
-
-            var pre_init = function () {
-                if ($route.current.params.stateID === myStateID) {
-                    init();
-                }
             };
 
             // Pre-fetch an external template populated with a custom scope
@@ -37,6 +36,16 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                     placement: 'left',
                     trigger: 'focus'
                 });
+            };
+
+            s.sh = {
+                sortByColumn: function (col) {
+                    s.initData.clients = self.sh.sortByColumn(col);
+                    s.displayedClients = s.initData.clients.slice(0, s.displayedClients.length);
+                },
+                columnClass: function (col) {
+                    return self.sh.columnClass(col);
+                }
             };
 
             //s.Rclient.push() .. to push new data...
@@ -137,6 +146,12 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 s.type = 'client';
             };
 
-            s.$on('$locationChangeSuccess', pre_init);
-            pre_init();
+            init();
+
+            s.$on('nav', function (e, data) {
+//                if ($route.current.params.stateID === myStateID) {
+                if (data.new === myStateID) {
+                    init();
+                }
+            });
         }]);

@@ -4,6 +4,8 @@ var MainCtrl = app.controller('MainCtrl',
 ['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 
 function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
 	var s = window.mcs = $scope;
+    var staffOnly = ['sites', 'clients', 'estimates'];
+
 	s.routeParams={};
 	s.appData={};
 	s.whoami='MainCtrl'
@@ -195,7 +197,39 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		_prevent=val;
 		if(val) _preventUrl=$location.absUrl();
 	}
+
+    var getPath = function (url) {
+        return url.split('#')[1].split('/')[1];
+    };
+
+    var permissionsCheck = function(loc) {
+        // Deny access to clients, sites and estimates for customers
+        var oldPath = getPath(loc.oldUrl);
+        var newPath = getPath(loc.newUrl);
+
+        if (!Auth.isInitialized()) {
+            s.locationData = loc;
+            return;
+        }
+
+        if (!Auth.isAtleast('inventory') && staffOnly.indexOf(newPath) !== -1) {
+            console.log('Not enough permissions to view this page');
+            event.preventDefault();
+            if (oldPath === newPath) { // opened by direct link?
+                $location.path('/trees');
+            } else {
+                $location.path('/' + oldPath);
+            }
+        }
+    };
+
+    s.$on('onInitData', function () {
+        permissionsCheck(s.locationData);
+    });
+
 	s.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+        permissionsCheck({event: event, newUrl: newUrl, oldUrl: oldUrl});
+
 		return;
 		// Allow navigation if our old url wasn't where we prevented navigation from
 		if (_preventUrl != oldUrl || _preventUrl == null) {

@@ -29,14 +29,14 @@
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
-                        <span ng-if="site.siteID">
+                        <span ng-show="site.siteID">
                             <input type="submit" value="UPDATE" class='btn btn-primary'>
                             <button type="button" class="btn btn-info" site-users-edit-modal site="site">
                                 EDIT USERS
                             </button>
                         </span>
 
-                        <span ng-if="!site.siteID">
+                        <span ng-show="!site.siteID">
                             <input type="submit" value="SAVE" class='btn btn-primary'>
                             <button type="button" class='btn btn-info' site-users-edit-modal before-open="saveSite" site="site">
                                 SAVE AND ADD USERS

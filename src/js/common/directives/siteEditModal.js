@@ -5,8 +5,6 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
         var modal;
         var newSite = {clientID: ''};
 
-        window.ses = scope;
-
         scope.onSave = function () {
             var funcName = attrs.onSave;
             var func = scope.$parent[funcName];
@@ -36,14 +34,11 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
 
         scope.saveSite = function (cb, nohide) {
             if (!scope.site.clientID) {
-                return scope.setAlert('Choose a client for the new property', {type: 'd'});
+                return scope.$parent.setAlert('Choose a client for the new property', {type: 'd'});
             }
-
-            var site = angular.copy(scope.site);
 
             if (scope.site.siteID) {
                 scope.site.post().then(function () {
-//                    Api.refreshInitData();
                     scope.onSave();
                 });
                 // Update all other sites models, eg. the sites dropdown on the trees report
@@ -53,18 +48,17 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
                     console.log('New site created', data);
 
                     scope.site = data;
+                    scope.siteId = data.siteID;
 
                     modal.hide();
 
                     if (cb) {
                         scope.openModal(data.siteID);
+                        $timeout(function () {
+                            cb(data);
+                        }, 250);
                     }
 
-//                    $timeout(function () {
-//                        cb(data, modal);
-//                    }, 250);
-
-//                    Api.refreshInitData();
                     scope.onSave();
                 });
             }

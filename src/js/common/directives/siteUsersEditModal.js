@@ -124,17 +124,13 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             }
         };
 
-        var saveSiteCallback = function (site, modal) {
-            modal.show();
-            return;
+        var saveSiteCallback = function (site) {
             console.log('Save site callback', site);
-            if (site) {
-                scope.site = site;
-            }
 
             $timeout(function () {
-                scope.openModal(scope.site.siteID);
-            }, 200);
+                console.log('Opening sues modal with id:', site.siteID);
+                scope.openModal(site.siteID);
+            }, 500);
         };
 
         var init = function () {

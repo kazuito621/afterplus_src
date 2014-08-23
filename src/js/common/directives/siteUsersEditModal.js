@@ -54,9 +54,7 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
         };
 
         scope.contactSelect = function (user) {
-            scope.newContact.fName = user.fName;
-            scope.newContact.lName = user.lName;
-            scope.newContact.userID = user.userID;
+            scope.newContact = angular.copy(user);
         };
 
         scope.repSelect = function (user) {
@@ -70,7 +68,7 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             scope.showAddNewSiteContact = false;
 
             var tmp = angular.copy(scope.newContact);
-            var user = { role: tmp.role };
+            var user = { role: tmp.role, email: tmp.email };
 
             if (!tmp.userID) {
                 user.fName = tmp.fName;

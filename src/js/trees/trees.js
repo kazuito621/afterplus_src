@@ -5,8 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope',
-        function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope) {
+    ['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$location',
+        function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $location) {
 
 
             // local and scoped vars
@@ -219,6 +219,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
             s.onSelectSiteID = function(id){
+                console.log('On select site id', id);
                 if(id && id>0){
                     var siteObj = s.getSiteByID(id);
                     s.selected.clientID = siteObj.clientID;
@@ -928,7 +929,26 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             });
 
+            var onUserNav = function () {
+                if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
+//                    var siteID = parseInt($location.search().siteID, 10);
+                    var siteID = $location.search().siteID;
+                    if (siteID) {
+                        console.log('Showing site', siteID);
+                        s.selected.siteID = siteID
+                        s.onSelectSiteID(siteID);
+                        return;
+                    }
 
+                    var reportID = $location.search().reportID;
+                    if (reportID) {
+                        console.log('Showing report', reportID);
+                    }
+                }
+            };
+
+            s.$on('$locationChangeSuccess', onUserNav);
+            onUserNav();
         }]);	// }}} TreesCtrl
 
 

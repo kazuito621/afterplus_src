@@ -1,6 +1,6 @@
 var SitesCtrl = app.controller('SitesCtrl',
-    ['$scope', '$route', '$modal', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q',
-        function ($scope, $route, $modal, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q) {
+    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q',
+        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q) {
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites';
@@ -11,41 +11,40 @@ var SitesCtrl = app.controller('SitesCtrl',
                 treeCount: 'number',
                 reportCount: 'number'
             };
-			var sites;
+            var sites;
             s.mode = '';
             s.type = 'site';
-            s.newSite = {clientID: ''};
             s.items = {};
             s.displayedSites = [];
             s.activePopover = {};
             s.auth = Auth;
 
-
             var init = function () {
-				// pull the list of sites. were are not using initData.sites, because we need a list
-				// that has user assignments as well
-				Api.getSiteList().then(function(siteData){
-					sites=siteData
-					// allow them to nav to /#sites?clientID=XXX and filter
-					var search = $location.search();
-					if(search.clientID){
-						sitesList=[];
-						_.each(sites, function(s){
-							if(s.clientID==search.clientID) sitesList.push(s);
-						});
-					}else sitesList = sites;
+                // pull the list of sites. were are not using initData.sites, because we need a list
+                // that has user assignments as well
+                Api.getSiteList().then(function(siteData){
+                    sites=siteData
+                    // allow them to nav to /#sites?clientID=XXX and filter
+                    var search = $location.search();
+                    if(search.clientID){
+                        sitesList=[];
+                        _.each(sites, function(s){
+                            if(s.clientID==search.clientID) sitesList.push(s);
+                        });
+                    }else sitesList = sites;
 
-					self.sh = SortHelper.sh(sites, '', columnMap);
-					s.displayedSites = sitesList.slice(0, 49);
-				});
+                    self.sh = SortHelper.sh(sites, '', columnMap);
+                    s.displayedSites = sitesList.slice(0, 49);
+                });
+            };
+            
+            var refreshSites = function () {
+                init();
             };
 
-			var refreshSites = function(){
-				init();
-			}
-
-            // Pre-fetch an external template populated with a custom scope
-            var siteEditModal = $modal({scope: $scope, template: '/js/sites/edit.tpl.html', show: false});
+            s.refreshSites = function () {
+                init();
+            };
 
             var siteDeletePopoverFactory = function (el) {
                 return $popover(el, {
@@ -78,49 +77,9 @@ var SitesCtrl = app.controller('SitesCtrl',
             };
 
             s.select = function (siteID) {
-				// todo... this should navigate to /#trees?siteID=XXX  but that functionality at trees does not work yet
+                // todo... this should navigate to /#trees?siteID=XXX  but that functionality at trees does not work yet
                 return;
                 $location.url('/trees?siteID='+siteID);
-            };
-
-            s.saveNewSite = function () {
-                if (!s.newSite.clientID) {
-                    return s.setAlert('Choose a client for the new property', {type: 'd'});
-                }
-
-                Api.saveNewSite(s.newSite).then(function (data) {});
-                siteEditModal.hide();
-				refreshSites();
-                Api.refreshInitData();
-            };
-
-            s.saveExistingSite = function () {
-                var obj = s.site;
-
-                obj.post().then(function () {
-                    refreshSites();
-                    Api.refreshInitData();
-                });
-                // Update all other sites models, eg. the sites dropdown on the trees report
-                SiteModelUpdateService.updateSiteModels(obj);
-                siteEditModal.hide();
-            };
-
-            s.newSiteModalOpen = function (siteID) {
-                s.site = {};
-                s.newSite = {clientID: ''};
-                s.mode = 'new';
-                siteEditModal.show();
-            };
-
-            s.existingSiteModalOpen = function (siteID) {
-                s.site = {};
-                Api.updateSite(siteID)
-                    .then(function (data) {
-                        s.site = data;
-                    });
-                s.mode = 'edit';
-                siteEditModal.show();
             };
 
             s.deleteCurrentItem = function () {
@@ -152,9 +111,9 @@ var SitesCtrl = app.controller('SitesCtrl',
                 s.type = 'site';
             };
 
-			init();
-			s.$on('nav', function (e, data) {
-				if (data.new === myStateID) init();
-			});
+            init();
+            s.$on('nav', function (e, data) {
+                if (data.new === myStateID) init();
+            });
 
         }]);

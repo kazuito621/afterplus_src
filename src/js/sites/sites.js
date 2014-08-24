@@ -84,10 +84,10 @@ var SitesCtrl = app.controller('SitesCtrl',
 
             s.deleteCurrentItem = function () {
                 Api.removeSiteById(s.activePopover.siteID).then(function () {
-                    refreshSites();
+                   	s.refreshSites();
                     Api.refreshInitData();
                 });
-                refreshSites();
+                s.refreshSites();
                 Api.refreshInitData();
                 siteDeletePopover.hide();
                 delete s.activePopover.siteID;

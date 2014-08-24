@@ -3,8 +3,8 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
 
     var linker = function (scope, el, attrs) {
         var modal;
-        var newContact = { role: 'customer'};
-        var newRep = { role: 'sales'};
+        var newContact = { role: 'customer', email:''};
+        var newRep = { role: 'sales', email:''};
 
         window.sues = scope;
 
@@ -53,6 +53,18 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             modal.hide();
         };
 
+		scope.showAddForm = function(type){
+			if(type=='rep'){
+				scope.showAddNewSiteRep = true;
+				var css='input#newRepEmail';
+			}else{
+				scope.showAddNewSiteContact = true;
+				var css='input#newContactEmail';
+			}
+			setTimeout(function(){
+				$(css).focus();
+			},100);
+		}
         scope.contactSelect = function (user) {
             scope.newContact = angular.copy(user);
         };
@@ -63,9 +75,8 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
         };
 
         scope.addNewSiteContact = function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
+			event.preventDefault();
+			event.stopPropagation();
             scope.showAddNewSiteContact = false;
 
             var tmp = angular.copy(scope.newContact);
@@ -118,15 +129,17 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             if ($window.confirm('User ' + email + ' will be unassigned. Please confirm.')) {
                 Api.userSite.unassign(scope.site.siteID, userID);
 
-				if(type=='cust') scope.site.userCustCount--;
-				else scope.site.userStaffCount--;
-
-				scope.reps = _.filter(scope.reps, function (rep) {
-					return rep.userID !== userID;
-				});
-				scope.contacts = _.filter(scope.contacts, function (contact) {
-					return contact.userID !== userID;
-				});
+				if(type=='customer'){
+					scope.site.userCustCount--;
+					scope.contacts = _.filter(scope.contacts, function (contact) {
+						return contact.userID !== userID;
+					});
+				}else{
+					scope.site.userStaffCount--;
+					scope.reps = _.filter(scope.reps, function (rep) {
+						return rep.userID !== userID;
+					});
+				}
             }
         };
 

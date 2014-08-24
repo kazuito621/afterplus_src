@@ -22,9 +22,10 @@
                                         Site contacts
                                     </div>
                                     <div class="col-sm-3 col-offset-1">
-                                        <a ng-click="$parent.showAddNewSiteContact = true" href>
-                                            [ADD NEW]
-                                        </a>
+										<button type="button" class="btn btn-primary pull-right"
+											ng-click="showAddForm('customer')" >
+												<i class='fa fa-plus white'></i> New
+										</button>
                                     </div>
                                 </div>
                                 <div class="row" ng-repeat="c in contacts" style="margin-top: 10px;" ng-show="contacts.length > 0">
@@ -32,12 +33,14 @@
                                         {{c.email}}
                                     </div>
                                     <div class="col-sm-3 col-offset-1">
-                                        <a ng-click="unassign(c.userID, c.email, 'cust')" class="fa fa-times _red _size4" bs-tooltip title="Remove assignment" style="text-decoration: none;"></a>
+                                        <a ng-click="unassign(c.userID, c.email, 'customer')" class="fa fa-times _red _size4" bs-tooltip title="Remove assignment" style="text-decoration: none;"></a>
                                     </div>
                                 </div>
                                 <div class="row" ng-show="$parent.showAddNewSiteContact === true" style="margin-top: 10px;">
+									<form ng-submit="addNewSiteContact($event)">
                                     <div class="col-sm-4">
-                                        <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newContact.email" user-auto-complete="contactSelect" user-roles="customer" user-ignore="contacts" bs-typeahead>
+                                        <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newContact.email" id='newContactEmail'
+												user-auto-complete="contactSelect" user-roles="customer" user-ignore="contacts" bs-typeahead>
                                     </div>
                                     <div class="col-sm-3">
                                         <input type="text" placeholder="First name" required style="width: 100%;" ng-model="newContact.fName">
@@ -48,16 +51,20 @@
                                     <div class="col-sm-2">
                                         <button ng-click="addNewSiteContact($event)">Add</button>
                                     </div>
+									</form>
                                 </div>
+
+								<hr> <!-- ================================================================== -->
 
                                 <div class="row" style="margin-top: 12px;">
                                     <div class="col-sm-8" style="font-weight: bold;">
                                         AplusTree Reps
                                     </div>
                                     <div class="col-sm-3 col-offset-1">
-                                        <a ng-click="$parent.showAddNewSiteRep = true" href>
-                                            [ADD NEW]
-                                        </a>
+										<button type="button" class="btn btn-primary pullright"
+											ng-click="showAddForm('rep')" >
+												<i class='fa fa-plus white'></i> New
+										</button>
                                     </div>
                                 </div>
                                 <div class="row" ng-repeat="r in reps" style="margin-top: 10px;" ng-show="reps.length > 0">
@@ -65,12 +72,14 @@
                                         {{r.email}} - {{r.role}}
                                     </div>
                                     <div class="col-sm-3 col-offset-1">
-                                        <a ng-click="unassign(r.userID, r.email, 'staff')" class="fa fa-times _red _size4" bs-tooltip title="Remove assignment" style="text-decoration: none;"></a>
+                                        <a ng-click="unassign(r.userID, r.email, 'staff')" class="fa fa-times _red _size4 hand" bs-tooltip 
+												title="Remove assignment" style="text-decoration: none; "></a>
                                     </div>
                                 </div>
                                 <div class="row" ng-show="$parent.showAddNewSiteRep === true" style="margin-top: 10px;">
+									<form ng-submit="addNewRepContact($event)">
                                     <div class="col-sm-3">
-                                        <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newRep.email" 
+                                        <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newRep.email" id='newRepEmail'
 												user-auto-complete="repSelect" user-roles="sales,inventory,admin" user-ignore="reps" bs-typeahead>
                                     </div>
                                     <div class="col-sm-2">
@@ -89,6 +98,7 @@
                                     <div class="col-sm-2">
                                         <button ng-click="addNewSiteRep($event);">Add</button>
                                     </div>
+									</form>
                                 </div>
                             </div>
                         </div>

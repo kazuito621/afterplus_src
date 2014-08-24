@@ -143,7 +143,11 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
                 if (funcName && angular.isFunction(func)) {
                     func(saveSiteCallback, true);
                 } else {
-                    scope.openModal(scope.site.siteID);
+				//	if(scope.site && scope.site.siteID)
+                    	scope.openModal(scope.site.siteID);
+				//	else if(scope.siteId) 
+                  //  	scope.openModal(scope.siteID);
+				//	else console.debug('Error in siteUserEditModal - no site or siteID found');
                 }
             });
         };

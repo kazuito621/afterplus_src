@@ -50,10 +50,16 @@
 					<a ng-if="s.userStaffCount>0" ng-click='editUsers(s.siteID)' class='fa fa-user red hand' bs-tooltip title='Edit Staff Contact'></a>
 				</td>
 				<td>
-					<a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" 
-							ng-class="(s.userCustCount<1 || s.userStaffCount<1) ? 'fa fa-frown-o _red _size6' : 'fa fa-pencil _grey _size6 hoverDisplay'" 
-							bs-tooltip ng-attr-title="{{ (s.userCustCount<1 || s.userStaffCount<1) ? 'Property has no users assigned!' : 'Edit'}}" 
-							style="text-decoration: none; cursor:pointer; cursor: hand;"></a> &nbsp;
+					<span ng-if="auth.isAtleast('inventory') && (s.userCustCount<1 || s.userStaffCount<1)">
+						<i site-users-edit-modal site="s" site-id="s.siteID" on-save="refreshSite""
+						   class="fa fa-frown-o _red _size6"
+						   title="Property is missing client contacts or company sales reps!"
+						   bs-tooltip style="cursor: pointer;"></i> &nbsp;
+					</span>
+					<span ng-if="auth.isAtleast('inventory') && s.userCustCount>0 && s.userStaffCount>0">
+						<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
+						   class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;
+					</span>
 					<a ng-if="auth.isAtleast('inventory')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size6 hoverDisplay" 
 							bs-tooltip title="Delete" style="text-decoration: none; cursor:pointer; cursor: hand;"></a>
 				</td>

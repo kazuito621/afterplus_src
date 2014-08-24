@@ -10,7 +10,7 @@ app.directive('userAutoComplete', function (Api) {
         };
 
         scope.emailLookup = function (email) {
-            if (!email || email.length < 2) { return []; }
+            if (!email || email.length < 1) { return []; }
 
             var params = {
                 email: email

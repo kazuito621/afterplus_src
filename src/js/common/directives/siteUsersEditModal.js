@@ -58,6 +58,7 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
         };
 
         scope.repSelect = function (user) {
+			if(user.role=='admin') user.role='sales';
             scope.newRep = angular.copy(user);
         };
 

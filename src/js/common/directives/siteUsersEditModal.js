@@ -14,7 +14,7 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             angular.forEach(users, function (user) {
                 if (user.role === 'customer') {
                     res.contacts.push(user);
-                } else if (user.role === 'sales' || user.role === 'inventory') {
+                } else {
                     res.reps.push(user);
                 }
             });
@@ -81,6 +81,7 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             Api.userSite.assign(scope.site.siteID, user).then(function (data) {
                 if (data[0]) {
                     scope.contacts.push(data[0]);
+					scope.site.userCustCount++;
                 }
                 scope.newContact = angular.copy(newContact);
             });
@@ -106,21 +107,25 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             Api.userSite.assign(scope.site.siteID, user).then(function (data) {
                 if (data[0]) {
                     scope.reps.push(data[0]);
+					scope.site.userStaffCount++;
                 }
                 scope.newRep = angular.copy(newRep);
             });
         };
 
-        scope.unassign = function (userID, email) {
+        scope.unassign = function (userID, email, type) {
             if ($window.confirm('User ' + email + ' will be unassigned. Please confirm.')) {
                 Api.userSite.unassign(scope.site.siteID, userID);
-                scope.contacts = _.filter(scope.contacts, function (contact) {
-                    return contact.userID !== userID;
-                });
 
-                scope.reps = _.filter(scope.reps, function (rep) {
-                    return rep.userID !== userID;
-                });
+				if(type=='cust') scope.site.userCustCount--;
+				else scope.site.userStaffCount--;
+
+				scope.reps = _.filter(scope.reps, function (rep) {
+					return rep.userID !== userID;
+				});
+				scope.contacts = _.filter(scope.contacts, function (contact) {
+					return contact.userID !== userID;
+				});
             }
         };
 

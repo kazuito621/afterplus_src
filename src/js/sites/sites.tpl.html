@@ -1,63 +1,73 @@
 <div class='container' ng-controller="SitesCtrl">
 
-	<button type="button"
-		ng:cloak
-		data-placement="center"
-		ng-click="newSiteModalOpen()"
-		class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
-        style="max-width: 100%; width: auto;"
-		data-animation="am-fade-and-scale" >New Property</button>
+    <button type="button"
+            ng:cloak
+            data-placement="center"
+            class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+            style="max-width: 100%; width: auto;"
+            site-edit-modal
+            on-save="refreshSites"
+            clients="initData.clients"
+            data-animation="am-fade-and-scale">New Property</button>
 
-	<div class='table-responsive' ng-if="displayedSites.length > 0">
-		<h1>Properties</h1>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
+    <div class='table-responsive' ng-if="displayedSites.length > 0">
+        <h1>Properties</h1>
+        <table class='table table-striped'>
+            <thead>
+            <tr>
+                <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
                         ID <i ng-class="sh.columnClass('siteID')" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
                         Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
                         Location <i ng-class="sh.columnClass(['city', 'state'])" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
-                        Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
-                        <i class='fa fa-tree' bs-tooltip title='Total Tree Count'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
-                    </th>
-					<th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
-						<i class='fa fa-file-text-o'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
-					</th>
-                    <th><!-- stats --></th>
-					<th ng-if="auth.isAtleast('inventory')"></th>
-				</tr>
-			</thead>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
+					Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
+					<i class='fa fa-tree' bs-tooltip title='Total Tree Count'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
+					<i class='fa fa-file-text-o'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
+				</th>
+				<th><!-- stats --></th>
+				<th ng-if="auth.isAtleast('inventory')"></th>
+            </tr>
+            </thead>
             <tbody infinite-scroll="showMoreSites()" infinite-scroll-distance="3">
-                <tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
-                    <td ng-bind="s.siteID"></td>
-                    <td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
-                    <td>{{s.city}}, {{s.state}}</td>
-                    <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
-                    <td>{{s.treeCount}}</td>
-                    <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
-					<td>
-						<a ng-if="s.userCustCount>0" ng-click='editUsers(s.siteID)' class='fa fa-user olive hand' bs-tooltip title='Edit Customer Contact'></a>
-						<a ng-if="s.userStaffCount>0" ng-click='editUsers(s.siteID)' class='fa fa-user red hand' bs-tooltip title='Edit Staff Contact'></a>
-					</td>
-                    <td>
-                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" 
-								ng-class="(s.userCustCount<1 || s.userStaffCount<1) ? 'fa fa-frown-o _red _size6' : 'fa fa-pencil _grey _size6 hoverDisplay'" 
-								bs-tooltip ng-attr-title="{{ (s.userCustCount<1 || s.userStaffCount<1) ? 'Property has no users assigned!' : 'Edit'}}" 
-								style="text-decoration: none; cursor:pointer; cursor: hand;"></a> &nbsp;
-                        <a ng-if="auth.isAtleast('inventory')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size6 hoverDisplay" 
-								bs-tooltip title="Delete" style="text-decoration: none; cursor:pointer; cursor: hand;"></a>
-                    </td>
-                </tr>
+			<tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
+				<td ng-bind="s.siteID"></td>
+				<td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
+				<td>{{s.city}}, {{s.state}}</td>
+				<td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
+				<td>{{s.treeCount}}</td>
+				<td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
+				<td>
+					<a ng-if="s.userCustCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s" 
+						class='fa fa-user olive hand' bs-tooltip title='A CUSTOMER contact exists. Click to edit.'></a>
+					<a ng-if="s.userStaffCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s" 
+						class='fa fa-user red hand' bs-tooltip title='A STAFF contact exists. Click to edit.'></a>
+				</td>
+				<td ng-if="auth.isAtleast('inventory')">
+					<span ng-if="s.userCustCount<1 || s.userStaffCount<1">
+						<i site-users-edit-modal site="s" on-save="refreshSite""
+						   class="fa fa-frown-o _red _size6"
+						   title="Property is missing client contacts or company sales reps!"
+						   bs-tooltip style="cursor: pointer;"></i> &nbsp;
+					</span>
+					<span>
+						<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
+						   class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;
+					</span>
+					<a ng-if="auth.isAtleast('inventory')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size6 hoverDisplay" 
+							bs-tooltip title="Delete" style="text-decoration: none; cursor:pointer; cursor: hand;"></a>
+				</td>
+			</tr>
             </tbody>
-		</table>
-	</div>
+        </table>
+    </div>
 
 </div>

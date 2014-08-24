@@ -82,12 +82,9 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             var tmp = angular.copy(scope.newContact);
             var user = { role: tmp.role, email: tmp.email };
 
-            if (!tmp.userID) {
-                user.fName = tmp.fName;
-                user.lName = tmp.lName;
-            } else {
-                user.userID = tmp.userID;
-            }
+			user.fName = tmp.fName;
+			user.lName = tmp.lName;
+            if (tmp.userID) user.userID = tmp.userID;
 
             console.log('Add new site contact', user);
             Api.userSite.assign(scope.site.siteID, user).then(function (data) {
@@ -108,12 +105,9 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             var tmp = angular.copy(scope.newRep);
             var user = { role: tmp.role, email: tmp.email };
 
-            if (!tmp.userID) {
-                user.fName = tmp.fName;
-                user.lName = tmp.lName;
-            } else {
-                user.userID = tmp.userID;
-            }
+			user.fName = tmp.fName;
+			user.lName = tmp.lName;
+            if (tmp.userID) user.userID = tmp.userID;
 
             console.log('Add new site rep', user);
             Api.userSite.assign(scope.site.siteID, user).then(function (data) {

@@ -1,4 +1,6 @@
-app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $timeout) {
+app.directive('siteEditModal', 
+	['$modal', 'SiteModelUpdateService', 'Api', '$timeout',
+	function ($modal, SiteModelUpdateService, Api, $timeout) {
     'use strict';
 
     var linker = function (scope, el, attrs) {
@@ -90,4 +92,4 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
             return linker;
         }
     };
-});
+}]);

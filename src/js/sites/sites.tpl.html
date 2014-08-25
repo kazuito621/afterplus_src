@@ -9,9 +9,12 @@
             on-save="refreshSites"
             clients="initData.clients"
             data-animation="am-fade-and-scale">New Property</button>
+	<br>
+	<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
+	<a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''" class='fa fa-times _red _size5 hand'></a>
+	<span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
 
     <div class='table-responsive' ng-if="displayedSites.length > 0">
-        <h1>Properties</h1>
         <table class='table table-striped'>
             <thead>
             <tr>
@@ -22,19 +25,19 @@
                     Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
                 </th>
                 <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
-                    Location <i ng-class="sh.columnClass(['city', 'state'])" class='silver'></i>
-                </th>
-                <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
-                    Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
-                </th>
-                <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
-                    <i class='fa fa-tree' bs-tooltip title='Total Tree Count'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
-                </th>
-                <th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
-                    <i class='fa fa-file-text-o'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
-                </th>
-                <th><!-- stats --></th>
-                <th ng-if="auth.isAtleast('inventory')"></th>
+                        Location <i ng-class="sh.columnClass(['city', 'state'])" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
+					Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
+					<i class='fa fa-tree' bs-tooltip title='Total Tree Count'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
+					<i class='fa fa-file-text-o' bs-tooltip title='Total Estimate Count'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
+				</th>
+				<th><!-- stats --></th>
+				<th ng-if="auth.isAtleast('inventory')"></th>
             </tr>
             </thead>
 

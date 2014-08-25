@@ -1,4 +1,6 @@
-app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $timeout) {
+app.directive('siteEditModal', 
+	['$modal', 'SiteModelUpdateService', 'Api', '$timeout',
+	function ($modal, SiteModelUpdateService, Api, $timeout) {
     'use strict';
 
     var linker = function (scope, el, attrs) {
@@ -16,7 +18,7 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
 
         scope.openModal = function (id) {
             if (!modal) {
-                modal = $modal({scope: scope, template: '/js/common/directives/templates/siteEditModal.tpl.html', show: false});
+                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
             }
 
             scope.site = angular.copy(newSite);
@@ -90,4 +92,4 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
             return linker;
         }
     };
-});
+}]);

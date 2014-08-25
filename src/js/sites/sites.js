@@ -76,12 +76,6 @@ var SitesCtrl = app.controller('SitesCtrl',
                 s.displayedSites = s.displayedSites.concat(addon);
             };
 
-            s.select = function (siteID) {
-                // todo... this should navigate to /#trees?siteID=XXX  but that functionality at trees does not work yet
-                return;
-                $location.url('/trees?siteID='+siteID);
-            };
-
             s.deleteCurrentItem = function () {
                 Api.removeSiteById(s.activePopover.siteID).then(function () {
                     refreshSites();

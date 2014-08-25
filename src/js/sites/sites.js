@@ -50,21 +50,25 @@ var SitesCtrl = app.controller('SitesCtrl',
 				s.displayedSites=sitesList.slice(0,49);
 			};
 
-			var setFilter = function(key, value){
-				if(key){
-					if(value) filters[key]=value.toLowerCase();
-					else delete filters[key];
+			// @param filterObj OBJ - ie. {siteName:'abc'}
+			var setFilter = function(filterObj){
+				if(filterObj){
+					_.each(filterObj, function(val, key){
+						if(!isNaN(val)) filterObj[key]=val.toLowerCase();
+					});
+					filters=filterObj;
 				}
 
 				var fsize=_.objSize(filters);
+				if(!fsize) return clearFilter();
 				var out=[];
 
 				// todo fix this. its broken
 				_.each(sites, function(s){
 					_.each(filters, function(val, key){
 						if(val){
-							if(val.substr(-2).toLowerCase()=='id'){
-								if(s[key]==val) out.push(s);
+							if(key.substr(-2).toLowerCase()=='id'){
+								if(s[key]===val) out.push(s);
 							}else{
 								if(s[key].toLowerCase().indexOf(val)>=0) out.push(s);
 							}
@@ -74,6 +78,20 @@ var SitesCtrl = app.controller('SitesCtrl',
 				sitesList=out;
 				s.displayedSites = sitesList.slice(0,49);
 			};
+
+			// when search box is changed, then update the filters, but
+			// add delay so we dont over work the browser.
+            s.$watch('data.filterTextEntry', function(txt, old) {
+				if(filterTextTimeout) $timeout.cancel(filterTextTimeout);
+				filterTextTimeout = $timeout(function(){
+					if(txt=='' || !txt) clearFilter();
+					// if search entry is a number, search by siteID and name 
+					else if(!isNaN(txt)) setFilter({siteID: txt, siteName:txt});
+					// if just letters, then search by name and city
+					else setFilter({siteName: txt, city:txt});
+				},500);
+            });
+
 
             var siteDeletePopoverFactory = function (el) {
                 return $popover(el, {
@@ -110,15 +128,6 @@ var SitesCtrl = app.controller('SitesCtrl',
                 return;
                 $location.url('/trees?siteID='+siteID);
             };
-
-            s.$watch('data.filterTextEntry', function(txt, old) {
-				if(filterTextTimeout) $timeout.cancel(filterTextTimeout);
-				filterTextTimeout = $timeout(function(){
-					if(txt=='' || !txt) clearFilter();
-					else if(!isNaN(txt)) setFilter('siteID', txt);
-					else setFilter('siteName', txt);
-				},500);
-            });
 
             s.deleteCurrentItem = function () {
                 Api.removeSiteById(s.activePopover.siteID).then(function () {

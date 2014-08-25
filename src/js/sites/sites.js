@@ -3,39 +3,48 @@ var SitesCtrl = app.controller('SitesCtrl',
         function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q, $timeout) {
             'use strict';
             var s = window.scs = $scope;
-            var myStateID = 'sites';
-            var siteDeletePopover, sitesList;
-            var self = this;
-            var columnMap = {
-                siteID: 'number',
-                treeCount: 'number',
-                reportCount: 'number'
-            };
-            var sites, filterTextTimeout, filters={};
+            var myStateID = 'sites'
+				,siteDeletePopover
+				,sites				// array of original site array that comes from api/server
+				,sitesFiltered		// filtered list of sites... which s.displayedSites uses as its source
+				,filters = {}
+				,filterTextTimeout
+				,self = this
+            	,columnMap = {
+					siteID: 'number',
+					treeCount: 'number',
+					reportCount: 'number'
+				};
             s.mode = '';
             s.type = 'site';
             s.items = {};
             s.displayedSites = [];
             s.activePopover = {};
             s.auth = Auth;
-			s.data={filterText:''};
+			s.data={filterText:''
+					,getSiteCount:function(){ if(sitesFiltered && sitesFiltered.length) return sitesFiltered.length; }
+				};
 
             var init = function () {
                 // pull the list of sites. were are not using initData.sites, because we need a list
                 // that has user assignments as well
                 Api.getSiteList().then(function(siteData){
+
                     sites=siteData
                     // allow them to nav to /#sites?clientID=XXX and filter
                     var search = $location.search();
                     if(search.clientID){
-                        sitesList=[];
+					dbg('doing search clientID');
+                        sitesFiltered=[];
                         _.each(sites, function(s){
-                            if(s.clientID==search.clientID) sitesList.push(s);
+                            if(s.clientID==search.clientID) sitesFiltered.push(s);
                         });
-                    }else sitesList = sites;
+                    }else sitesFiltered = sites;
 
                     self.sh = SortHelper.sh(sites, '', columnMap);
-                    s.displayedSites = sitesList.slice(0, 49);
+                    s.displayedSites = sitesFiltered.slice(0, 49);
+
+
                 });
             };
             
@@ -46,8 +55,8 @@ var SitesCtrl = app.controller('SitesCtrl',
 			var clearFilter = function(){
 				if(!filters || !(_.objSize(filters)>0)) return;
 				filters={};
-				sitesList=sites;
-				s.displayedSites=sitesList.slice(0,49);
+				sitesFiltered=sites;
+				s.displayedSites=sitesFiltered.slice(0,49);
 			};
 
 			// @param filterObj OBJ - ie. {siteName:'abc'}
@@ -81,8 +90,8 @@ var SitesCtrl = app.controller('SitesCtrl',
 						}
 					});
 				});
-				sitesList=out;
-				s.displayedSites = sitesList.slice(0,49);
+				sitesFiltered=out;
+				s.displayedSites = sitesFiltered.slice(0,49);
 			};
 
 			// when search box is changed, then update the filters, but
@@ -122,10 +131,10 @@ var SitesCtrl = app.controller('SitesCtrl',
 
             s.showMoreSites = function () {
                 var count = s.displayedSites.length;
-                if (s.initData === undefined || sites === undefined || count === sitesList.length )
+                if (s.initData === undefined || sites === undefined || count === sitesFiltered.length )
                     return;
 
-                var addon = sitesList.slice(count, count + 50);
+                var addon = sitesFiltered.slice(count, count + 50);
                 s.displayedSites = s.displayedSites.concat(addon);
             };
 

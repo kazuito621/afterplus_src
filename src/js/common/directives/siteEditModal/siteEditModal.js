@@ -16,7 +16,7 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
 
         scope.openModal = function (id) {
             if (!modal) {
-                modal = $modal({scope: scope, template: '/js/common/directives/templates/siteEditModal.tpl.html', show: false});
+                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
             }
 
             scope.site = angular.copy(newSite);

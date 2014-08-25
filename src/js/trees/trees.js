@@ -179,6 +179,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var siteID = $location.search().siteID;
                     if (siteID) {
                         showSite(siteID);
+                        ReportService.getBlankReport();
                         return;
                     }
                 }

@@ -9,9 +9,10 @@
             on-save="refreshSites"
             clients="initData.clients"
             data-animation="am-fade-and-scale">New Property</button>
+	<br>
+	<input type='text' ng-model='data.filterTextEntry' size=30 placeholder='Search'>
 
     <div class='table-responsive' ng-if="displayedSites.length > 0">
-        <h1>Properties</h1>
         <table class='table table-striped'>
             <thead>
             <tr>

@@ -240,4 +240,3 @@ if (!String.prototype.format) {
   };
 }
 
-

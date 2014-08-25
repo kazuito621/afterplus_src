@@ -1,6 +1,6 @@
 var SitesCtrl = app.controller('SitesCtrl',
-    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q',
-        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q) {
+    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q', '$timeout',
+        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q, $timeout) {
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites';
@@ -11,13 +11,14 @@ var SitesCtrl = app.controller('SitesCtrl',
                 treeCount: 'number',
                 reportCount: 'number'
             };
-            var sites;
+            var sites, filterTextTimeout, filters={};
             s.mode = '';
             s.type = 'site';
             s.items = {};
             s.displayedSites = [];
             s.activePopover = {};
             s.auth = Auth;
+			s.data={filterText:''};
 
             var init = function () {
                 // pull the list of sites. were are not using initData.sites, because we need a list
@@ -38,13 +39,41 @@ var SitesCtrl = app.controller('SitesCtrl',
                 });
             };
             
-            var refreshSites = function () {
-                init();
-            };
-
             s.refreshSites = function () {
                 init();
             };
+	
+			var clearFilter = function(){
+				if(!filters || !(_.objSize(filters)>0)) return;
+				filters={};
+				sitesList=sites;
+				s.displayedSites=sitesList.slice(0,49);
+			};
+
+			var setFilter = function(key, value){
+				if(key){
+					if(value) filters[key]=value.toLowerCase();
+					else delete filters[key];
+				}
+
+				var fsize=_.objSize(filters);
+				var out=[];
+
+				// todo fix this. its broken
+				_.each(sites, function(s){
+					_.each(filters, function(val, key){
+						if(val){
+							if(val.substr(-2).toLowerCase()=='id'){
+								if(s[key]==val) out.push(s);
+							}else{
+								if(s[key].toLowerCase().indexOf(val)>=0) out.push(s);
+							}
+						}
+					});
+				});
+				sitesList=out;
+				s.displayedSites = sitesList.slice(0,49);
+			};
 
             var siteDeletePopoverFactory = function (el) {
                 return $popover(el, {
@@ -81,6 +110,15 @@ var SitesCtrl = app.controller('SitesCtrl',
                 return;
                 $location.url('/trees?siteID='+siteID);
             };
+
+            s.$watch('data.filterTextEntry', function(txt, old) {
+				if(filterTextTimeout) $timeout.cancel(filterTextTimeout);
+				filterTextTimeout = $timeout(function(){
+					if(txt=='' || !txt) clearFilter();
+					else if(!isNaN(txt)) setFilter('siteID', txt);
+					else setFilter('siteName', txt);
+				},500);
+            });
 
             s.deleteCurrentItem = function () {
                 Api.removeSiteById(s.activePopover.siteID).then(function () {

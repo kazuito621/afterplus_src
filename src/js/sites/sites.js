@@ -68,9 +68,15 @@ var SitesCtrl = app.controller('SitesCtrl',
 					_.each(filters, function(val, key){
 						if(val){
 							if(key.substr(-2).toLowerCase()=='id'){
-								if(s[key]===val) out.push(s);
+								if(s[key]===val){
+									out.push(s);
+									return false;
+								}
 							}else{
-								if(s[key].toLowerCase().indexOf(val)>=0) out.push(s);
+								if(s[key].toLowerCase().indexOf(val)>=0) {
+									out.push(s);
+									return false;
+									}
 							}
 						}
 					});

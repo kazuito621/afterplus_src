@@ -68,6 +68,10 @@ var TreesCtrl = app.controller('TreesCtrl',
             };
             s.TFSdata=TFS.data;
 
+//            s.$watch('selected', function (newVal, oldVal) {
+//                console.log('Selected changed\n', oldVal, newVal);
+//            }, true);
+
 
 			var loadEstimate = function(){
                 var rptHash=s.renderPath[1];
@@ -96,6 +100,11 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             if(s.data.mode()=='trees')
             {
+//                if ($location.search().siteID) {
+//                    console.log('Setting selected.siteID to', $location.search().siteID);
+//                    s.selected.siteID = $location.search().siteID;
+//                }
+
                 setTimeout(function()
                 {
                     $('.collapse-container .collapse-head a').click(function(event) {
@@ -152,6 +161,16 @@ var TreesCtrl = app.controller('TreesCtrl',
             $timeout(function(){
                 storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]}});
                 s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
+
+                if ($location.search().siteID) {
+//                    console.log('Setting selected.siteID to', $location.search().siteID);
+                    s.selected.siteID = $location.search().siteID;
+                    s.selected.clientTypeID = '';
+                    s.selected.clientID = '';
+//                    s.onSelectSiteIDFromMap(s.selected.siteID);
+                    s.onSelectSiteID(s.selected.siteID);
+                }
+
                 if( !s.selected.siteID && s.data.mode()!='estimate') showMappedSites();
             },1);
 
@@ -338,27 +357,45 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
             // ------------------------------------------------------ GOOGLE MAPS
-            var initMap = function(){
+            var initMap = _.throttle(function(){
                 var deferred=$q.defer();
 
-                google.load("maps", "3", {other_params:'sensor=false', callback:function(){
-                    var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122), mapTypeId:'hybrid', panControl:false };
-                    var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
-                    gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
-                    google.maps.event.addListener(gMap, 'click', function() {
-                        dbg(s,'click');
-                        if(infowindow && infowindow.setMap) infowindow.setMap(null);
-                    });
-                    deferred.resolve();
-                }});
+                google.load(
+                    "maps",
+                    "3",
+                    {
+                        other_params:'sensor=false',
+                        callback:
+                            function(){
+                                var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122), mapTypeId:'hybrid', panControl:false };
+                                var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
+                                gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
+                                google.maps.event.addListener(gMap, 'click', function() {
+                                    dbg(s,'click');
+                                    if(infowindow && infowindow.setMap) infowindow.setMap(null);
+                                });
+
+                                $timeout(function () {
+//                                    console.log('Google map initialized in initMap function');
+                                    deferred.resolve();
+                                }, 1000);
+                            }
+                    }
+                );
                 return deferred.promise;
-            };
+            }, 2000);
 
             var showMappedSites = _.throttle(function() {
+//                console.log('Show mapped sites');
+
                 var a, l, siteLoc, noLoc=0, numSpecies
                 if(enableMap==false || !s.filteredSites || !s.filteredSites.length) return;
                 if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
-                    return initMap().then(function(){ showMappedSites(); })
+//                    console.log('Map not inialized yet in showMappedSites');
+                    return initMap().then(function(){
+//                        console.log('Map initialized in showMappedSites')
+                        showMappedSites();
+                    });
                 }
 
                 s.siteLocs = [];
@@ -418,6 +455,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             var addMarkers = function(arr,addType) {
+//                console.log('In add markers');
                 if(enableMap==false) return;
                 //empty singleSite marker array
                 markers_singleSite = [];
@@ -492,7 +530,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }else{
                     gMap.setMapTypeId(google.maps.MapTypeId.HYBRID);
                 }
-            }
+
+//                console.log('End of add markers function');
+            };
 
             var showInfo = function(num,e){
                 console.log("info: "+num);
@@ -514,7 +554,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function(treeSet){
-                if(!gMap) return initMap().then(function(){ showMappedTrees(treeSet); });
+//                console.log('Show mapped trees', gMap, '\n', treeSet);
+                if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
+//                    console.log('Map not yet ininialized in showMappedTrees');
+                    return initMap().then(function(){
+//                        console.log('Map initialized in showMappedTrees');
+                        showMappedTrees(treeSet);
+                    });
+                }
+
                 if(s.data.mode()=='estimate' && s.report && s.report.items) treeSet=s.report.items;
                 clearMarkers();
                 var set2=[],ratingD,o;
@@ -922,10 +970,14 @@ var TreesCtrl = app.controller('TreesCtrl',
              */
 
             s.$on('onInitData', function (e,data) {
-                console.log('On init data in trees');
+//                console.log('On init data in trees');
 
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
-                    initMap().then(function(){ showMappedSites(); })
+//                    console.log('Map not initialized in $onInitData event')
+                    initMap().then(function(){
+//                        console.log('Map initialized in $onInitData event');
+                        showMappedSites();
+                    })
                 }
             });
 
@@ -947,8 +999,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             };
 
-            s.$on('$locationChangeSuccess', onUserNav);
-            onUserNav();
+            s.$on('$routeChangeSuccess', onUserNav);
+//            onUserNav();
         }]);	// }}} TreesCtrl
 
 

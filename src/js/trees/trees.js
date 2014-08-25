@@ -100,11 +100,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             if(s.data.mode()=='trees')
             {
-//                if ($location.search().siteID) {
-//                    console.log('Setting selected.siteID to', $location.search().siteID);
-//                    s.selected.siteID = $location.search().siteID;
-//                }
-
                 setTimeout(function()
                 {
                     $('.collapse-container .collapse-head a').click(function(event) {
@@ -155,6 +150,40 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             TFS.init(s.initData);
 
+            var showSite = function (id) {
+                console.log('Showing site', id);
+                s.selected.siteID = id;
+                s.selected.clientTypeID = '';
+                s.selected.clientID = '';
+                s.onSelectSiteID(id);
+            };
+
+            var showReport = function (id) {
+                console.log('Showing report', id);
+                ReportService.loadReport(id).then(function (report) {
+                    console.log('Report with id %s loaded', id);
+                    console.log(report);
+                    console.log('About to show site %s for report', report.siteID);
+                    showSite(report.siteID);
+                });
+            };
+
+            var onUserNav = function () {
+                if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
+                    var reportID = $location.search().reportID;
+                    if (reportID) {
+                        showReport(reportID);
+                        return;
+                    }
+
+                    var siteID = $location.search().siteID;
+                    if (siteID) {
+                        showSite(siteID);
+                        return;
+                    }
+                }
+            };
+
             // bind variabels to local storage, so that stuff is remembered	
             // then start showing sites on a map... BUT if a site is already selected,
             // instead show trees... which will happen automatically based on $watch
@@ -162,14 +191,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]}});
                 s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
 
-                if ($location.search().siteID) {
-//                    console.log('Setting selected.siteID to', $location.search().siteID);
-                    s.selected.siteID = $location.search().siteID;
-                    s.selected.clientTypeID = '';
-                    s.selected.clientID = '';
-//                    s.onSelectSiteIDFromMap(s.selected.siteID);
-                    s.onSelectSiteID(s.selected.siteID);
-                }
+                onUserNav();
 
                 if( !s.selected.siteID && s.data.mode()!='estimate') showMappedSites();
             },1);
@@ -981,26 +1003,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             });
 
-            var onUserNav = function () {
-                if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
-//                    var siteID = parseInt($location.search().siteID, 10);
-                    var siteID = $location.search().siteID;
-                    if (siteID) {
-                        console.log('Showing site', siteID);
-                        s.selected.siteID = siteID
-                        s.onSelectSiteID(siteID);
-                        return;
-                    }
-
-                    var reportID = $location.search().reportID;
-                    if (reportID) {
-                        console.log('Showing report', reportID);
-                    }
-                }
-            };
-
             s.$on('$routeChangeSuccess', onUserNav);
-//            onUserNav();
         }]);	// }}} TreesCtrl
 
 

@@ -5,8 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope',
-        function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope) {
+    ['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal',
+        function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal) {
 
 
             // local and scoped vars
@@ -681,20 +681,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             // ------------------------------------------------------ ESTIMATE RELATED STUFF
 
-            // Add selected trees to the estimate.. 
+            // Add selected trees to the estimate..
             // IF data.showTreatmentList && currentTreatmentCodes is selected, then use those (pass them in)
             // BUT if they are not, then the ReportService will assume the "next recommended treatment"
-            s.addToEstimate = function (){
-                // get an array of selected treeID's
-                var added,msg,trees=[];
-                _.each(s.trees, function(t){
-                    if(s.selectedTrees.indexOf(t.treeID)>=0)
-                        trees.push(t);
-                });
+            s.addToEstimate = function(trees, tc){
+                var msg = [];
 
-                if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
-                var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
-                added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
+                var added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
                 $rootScope.$broadcast('itemsAddedToReport');
 
                 if(added==-1)
@@ -718,6 +711,47 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
                 s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
             }
+
+            s.validateAndAddToEstimate = function (){
+                // get an array of selected treeID's
+                var trees=[];
+                _.each(s.trees, function(t){
+                    if(s.selectedTrees.indexOf(t.treeID)>=0)
+                        trees.push(t);
+                });
+
+                if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
+                var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
+
+                var isNewReportNeeded = ReportService.checkIfNewReportNeeded(trees);
+                if (isNewReportNeeded == 1) { //refresh report with prompt
+                    return $modal({scope: s, template: 'js/common/directives/templates/newEstimatePromptModal.tpl.html', show: true});
+                }
+                if (isNewReportNeeded == 0){ //refresh report without prompt
+                    ReportService.getBlankReport();
+                }
+                return s.addToEstimate(trees, tc);
+            }
+
+            s.createNewReportAndAddToEstimate = function(){
+                ReportService.getBlankReport();
+
+                var trees=[];
+                _.each(s.trees, function(t){
+                    if(s.selectedTrees.indexOf(t.treeID)>=0)
+                        trees.push(t);
+                });
+
+                if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
+                var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
+
+                s.addToEstimate(trees, tc);
+            }
+
+            s.leaveOldReport = function(){
+                s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
+            }
+
 
 
             //MULTI SELECT CODE

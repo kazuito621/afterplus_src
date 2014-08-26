@@ -1,0 +1,25 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div>
+                <form class="form-inline" ng-submit="saveSite()">
+                    <div class='panel panel-default bottomMargin0'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Create a new estimate?</h3>
+                        </div>
+                        <div class='panel-body'>
+                            <span>You have an estimate open already.</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer topMargin0">
+                        <span>
+                            <input type="submit" value="YES" class='btn btn-primary' ng-click="createNewReportAndAddToEstimate(); $hide();">
+                            <input type="submit" value="NO" class='btn btn-primary' ng-click="leaveOldReport(); $hide();">
+                        </span>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

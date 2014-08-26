@@ -11,21 +11,25 @@
                 <form class="form-inline" ng-submit="saveSite()">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-heading'>
-                            <h3 class='panel-title'>Edit Property</h3>
+                            <h3 class='panel-title'>Edit Property: {{site.siteName}}</h3>
                         </div>
-                        <div class='panel-body'>
-                            <select class='styled-select' ng-model="site.clientID">
+                        <div class='panel-body' style='line-height:1.5em;'>
+                            Client: <select class='styled-select' ng-model="site.clientID">
                                 <option value="">Client</option>
                                 <option ng-repeat="client in clients" value="{{client.clientID}}">
                                     {{client.clientName}}
                                 </option>
-                            </select>
-                            (choose a client this property belongs to)<br>
-                            <input type="text" placeholder="Property Name" ng-model="site.siteName" required size="40" auto-focus><br>
-                            <input type="text" placeholder="Address" ng-model="site.street" size="40"><br>
-                            <input type="text" placeholder="City" ng-model="site.city" size="40"><br>
-                            <input type="text" placeholder="State" ng-model="site.state" size="40"><br>
-                            <input type="text" placeholder="Zip" ng-model="site.zip" size="40"><br>
+                            </select><br>
+                            <div class='silver'>Name:</div>
+							<div><input type="text" ng-model="site.siteName" required size="40" auto-focus></div>
+                            <div class='silver'>Address:</div>
+                            <div><input type="text" ng-model="site.street" size="50"></div>
+                            <div class='silver'>City:</div>
+                            <div><input type="text" ng-model="site.city" size="50"></div>
+                            <div class='silver'>State:</div>
+                            <div><input type="text" ng-model="site.state" size="10"></div>
+                            <div class='silver'>Zip:</div>
+                            <div><input type="text" ng-model="site.zip" size="20"></div>
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">

@@ -8,20 +8,20 @@
             </div>
 
             <div>
-                <form class="form-inline" ng-submit="saveSite()">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-heading'>
-                            <h3 class='panel-title'>Edit Property: {{site.siteName}}</h3>
+                            <h3 class='panel-title'>Property - {{site.siteName}}</h3>
                         </div>
                         <div class='panel-body' style='line-height:1.5em;'>
-                            Client: <select class='styled-select' ng-model="site.clientID">
-                                <option value="">Client</option>
-                                <option ng-repeat="client in clients" value="{{client.clientID}}">
-                                    {{client.clientName}}
-                                </option>
-                            </select><br>
+							<div>
+                            	<button class="btn btn-default" ng-model="site.clientID" ng-options="c.clientID as c.clientName for c in clients" 
+									bs-select placeholder="Choose a client">
+									Client <span class="caret"></span>
+								</button>
+                            </div>
+                			<form class="form-inline" ng-submit="saveSite()">
                             <div class='silver'>Name:</div>
-							<div><input type="text" ng-model="site.siteName" required size="40" auto-focus></div>
+							<div><input type="text" ng-model="site.siteName" size="40"></div>
                             <div class='silver'>Address:</div>
                             <div><input type="text" ng-model="site.street" size="50"></div>
                             <div class='silver'>City:</div>
@@ -30,6 +30,8 @@
                             <div><input type="text" ng-model="site.state" size="10"></div>
                             <div class='silver'>Zip:</div>
                             <div><input type="text" ng-model="site.zip" size="20"></div>
+							<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+                			</form>
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
@@ -41,15 +43,14 @@
                         </span>
 
                         <span ng-show="!site.siteID">
-                            <input type="submit" value="SAVE" class='btn btn-primary'>
-                            <button type="button" class='btn btn-info' site-users-edit-modal before-open="saveSite" site="site">
+                            <button type="button" class='btn btn-primary' site-users-edit-modal before-open="saveSite" site="site">
                                 SAVE AND ADD USERS
                             </button>
+                            <input type="submit" value="SAVE" class='btn btn-primary'>
                         </span>
 
                         <button type="button" class="btn btn-default" ng-click="hide()">CLOSE</button>
                     </div>
-                </form>
             </div>
         </div>
     </div>

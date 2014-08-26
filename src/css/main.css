@@ -314,9 +314,11 @@ section.mainContent.mode_estimate{
 
 
 .mapWindowContainer {
+	line-height: 1.4em;
 	/*width:350px;*/
 	/*height:320px;*/
 }
+
 .mwcImg {
 	max-width:100%;
 	/*height:auto;*/

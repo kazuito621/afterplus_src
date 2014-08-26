@@ -113,7 +113,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         return false;
                     });
 
-
                     $('.toggle-check').each(function(index, el) 
                     {
                         var $label = $(this).closest('label');

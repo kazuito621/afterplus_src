@@ -407,10 +407,11 @@ var TreesCtrl = app.controller('TreesCtrl',
             var showMappedSites = _.throttle(function() {
 
                 var a, l, siteLoc, noLoc=0, numSpecies, gMapID=''
+               	var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
                 if(enableMap==false || !s.filteredSites || !s.filteredSites.length) return;
 
 				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
-                if(gMapID !== 'treeMap'){
+                if(gMapID !== map_id){
                     return initMap().then(function(){
                         showMappedSites();
                     });
@@ -574,8 +575,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             var showMappedTrees = _.throttle(function(treeSet){
 
 				var gMapID='';
+               	var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
 				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
-                if(gMapID !== 'treeMap'){
+                if(gMapID !== map_id){
                     return initMap().then(function(){
                         showMappedTrees(treeSet);
                     });

@@ -8,6 +8,7 @@
             </div>
 
             <div>
+           		<form class="form-inline" ng-submit="saveSite()">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-heading'>
                             <h3 class='panel-title'>Property - {{site.siteName}}</h3>
@@ -15,13 +16,12 @@
                         <div class='panel-body' style='line-height:1.5em;'>
 							<div>
                             	<button class="btn btn-default" ng-model="site.clientID" ng-options="c.clientID as c.clientName for c in clients" 
-									bs-select placeholder="Choose a client">
+									bs-select placeholder="Which client owns this property?" onclick="return false;" required>
 									Client <span class="caret"></span>
 								</button>
                             </div>
-                			<form class="form-inline" ng-submit="saveSite()">
                             <div class='silver'>Name:</div>
-							<div><input type="text" ng-model="site.siteName" size="40"></div>
+							<div><input type="text" ng-model="site.siteName" size="40" required></div>
                             <div class='silver'>Address:</div>
                             <div><input type="text" ng-model="site.street" size="50"></div>
                             <div class='silver'>City:</div>
@@ -30,8 +30,9 @@
                             <div><input type="text" ng-model="site.state" size="10"></div>
                             <div class='silver'>Zip:</div>
                             <div><input type="text" ng-model="site.zip" size="20"></div>
+
+							<!-- this is here so user can hit ENTER to submit form -->
 							<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
-                			</form>
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
@@ -51,6 +52,7 @@
 
                         <button type="button" class="btn btn-default" ng-click="hide()">CLOSE</button>
                     </div>
+                </form>
             </div>
         </div>
     </div>

@@ -31,6 +31,8 @@ app.directive('siteEditModal',
 
             modal.$promise.then(function () {
                 modal.show();
+				// setup ESCAPE key
+				$(document).keyup(hideOnEscape);
             });
         };
 
@@ -69,6 +71,15 @@ app.directive('siteEditModal',
                 modal.hide();
             }
         };
+
+		scope.hide = function(){
+			if(this.hide) $(document).unbind('keyup', hideOnEscape);
+			modal.hide();
+		}	
+
+		var hideOnEscape = function(e){
+			if(e.keyCode === 27) scope.hide();
+		};
 
         var init = function () {
             el.on('click', function (event) {

@@ -36,7 +36,9 @@
 				<th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
 					<i class='fa fa-file-text-o' bs-tooltip title='Total Estimate Count'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
 				</th>
-				<th><!-- stats --></th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('userCount')">
+					<i class='fa fa-user silver'></i> <i ng-class="sh.columnClass('userCount')" class='silver'></i>
+				</th>
 				<th ng-if="auth.isAtleast('inventory')"></th>
             </tr>
             </thead>

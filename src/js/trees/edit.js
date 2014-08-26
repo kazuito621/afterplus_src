@@ -42,6 +42,9 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
                         s.tree = data;
                         s.tree.mode = mode;
                     });
+
+				// setup ESCAPE key
+            	$(document).keyup(cancelOnEscape);
             }, 700);
 
 			var initTreeData = function(){
@@ -101,18 +104,17 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
             };
 
             s.onCancel = function () {
-                $location.path('/trees');
-                s.$apply();
+				$(document).unbind('keyup', cancelOnEscape);
+                $location.url('/trees');
             };
+
+			var cancelOnEscape = function(e){
+				if(e.keyCode===27) s.onCancel();
+			};
 
             init();
 
-            $(document).keyup(function (e) {
-                var location = $location.path().split('/');
-                if (e.keyCode === 27 && typeof s.onCancel === 'function' && location[1] === 'tree_edit') {
-                    s.onCancel();
-                }
-            });
+			
 
         }]);
 

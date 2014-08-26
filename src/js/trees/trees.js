@@ -399,7 +399,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 });
 
                                 $timeout(function () {
-//                                    console.log('Google map initialized in initMap function');
                                     deferred.resolve();
                                 }, 1000);
                             }
@@ -409,14 +408,13 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function() {
-//                console.log('Show mapped sites');
 
-                var a, l, siteLoc, noLoc=0, numSpecies
+                var a, l, siteLoc, noLoc=0, numSpecies, gMapID=''
                 if(enableMap==false || !s.filteredSites || !s.filteredSites.length) return;
-                if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
-//                    console.log('Map not inialized yet in showMappedSites');
+
+				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
+                if(gMapID !== 'treeMap'){
                     return initMap().then(function(){
-//                        console.log('Map initialized in showMappedSites')
                         showMappedSites();
                     });
                 }
@@ -577,7 +575,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function(treeSet){
-                if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
+
+				var gMapID='';
+				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
+                if(gMapID !== 'treeMap'){
                     return initMap().then(function(){
                         showMappedTrees(treeSet);
                     });

@@ -147,6 +147,7 @@
 							<tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
 								ng-init="itemIndex = $index"
 								ng-class="rowHighlightClass(item)"
+								class='hoverHotspot'
 								ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.treeID}}">
 				                <td data-title="listing_image" class="td-image">
 									<img bo-src='item.imgSm + tree_cachebuster' class='item_thumb'
@@ -190,10 +191,10 @@
 
 											<td data-title="listing_options" class="td-action">
 												<a href='#/tree_edit/{{item.treeID}}' class='row-action' ng-if="auth.isAtleast('inventory')">
-                                                    <i class="fa fa-pencil clr-primary"></i>
+                                                    <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
                                                 </a>
 												<a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action' ng-if="auth.is('admin')">
-                                                    <i class="fa fa-times clr-danger"></i>
+                                                    <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
                                                 </a>
 											</td>
 										</tr>

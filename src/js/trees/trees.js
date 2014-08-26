@@ -21,7 +21,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 showTreeDetails:false
                 ,showMap:true			// not needed now? since new routing technique
                 ,showTreatmentList:false
-                ,currentTreatmentCodes:[]		// array of treatment codes user selected in multi-box
+                ,overrideTreatmentCodes:[]		// array of treatment codes user selected in multi-box
                 // for adding trees to the estimate
                 ,mode:function(){ return s.renderPath[0]; }					// either "trees" or "estimate"
             };
@@ -29,7 +29,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.TFSdata;	//holds tree results count, etc. Remember, always put scope data into an object
             // or it will pass by value, not reference
             s.filterSearch={species:'', treatments:''};
-            s.selected={clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]};
+            s.selected={clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[]};
             s.filteredClients=[];	// all/filtered list of clients based on selected Client Type
             s.filteredSites=[];				// all/filtered list of sites based on selected client
             s.trees = [];			// result set of trees based on site selected
@@ -189,11 +189,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             // then start showing sites on a map... BUT if a site is already selected,
             // instead show trees... which will happen automatically based on $watch
             $timeout(function(){
-                storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]}});
-                s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
-
+                storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[]}});
+                s.selected.treatmentIDs=[]; 
                 onUserNav();
-
                 if( !s.selected.siteID && s.data.mode()!='estimate') showMappedSites();
             },1);
 
@@ -755,8 +753,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             // ------------------------------------------------------ ESTIMATE RELATED STUFF
 
             // Add selected trees to the estimate.. 
-            // IF data.showTreatmentList && currentTreatmentCodes is selected, then use those (pass them in)
-            // BUT if they are not, then the ReportService will assume the "next recommended treatment"
+            // And pass in data.overrideTreatmentCodes (which overrides the recommended)
             s.addToEstimate = function (){
                 // get an array of selected treeID's
                 var added,msg,trees=[];
@@ -766,19 +763,18 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
 
                 if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
-                var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
-                added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
+                added=ReportService.addItems(trees, s.data.overrideTreatmentCodes, s.TFSdata.selectedFilters);
                 $rootScope.$broadcast('itemsAddedToReport');
 
                 if(added==-1)
                     return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
                 if(added.length==trees.length){
-                    s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
+                    s.data.overrideTreatmentCodes=[];			// clear out "force treatment" box after use
                     s.setAlert('{0} item(s) added to estimate'.format(added.length),{type:'ok'})
                     return s.toggleCheckedTrees(false);
                 }
                 if(added.length < trees.length){
-                    if(s.data.currentTreatmentCodes)
+                    if(s.data.overrideTreatmentCodes.length)
                         msg=(added.length) ? 'Err 47 - Some trees were not added to estimate' : 'Err 48 - No trees added to estimate';
                     else{
                         if( added.length )
@@ -789,23 +785,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                     s.setAlert(msg,{type:'d', time:10});
                     s.toggleCheckedTrees(added);
                 }
-                s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
+                s.data.overridetreatmentCodes=[];			// clear out "force treatment" box after use
             }
 
-
-            //MULTI SELECT CODE
-            s.$watch('selected.treatmentCodes', function(nowSelected){
-                s.data.currentTreatmentCodes = [];
-                if( ! nowSelected ){
-                    // here we've initialized selected already
-                    // but sometimes that's not the case
-                    // then we get null or undefined
-                    return;
-                }
-                angular.forEach(nowSelected, function(val){
-                    s.data.currentTreatmentCodes.push(val);
-                });
-            });
 
 
 

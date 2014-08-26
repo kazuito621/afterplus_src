@@ -207,7 +207,8 @@ app.service('ReportService',
 				});
 			});
 		}
-		return addedTreeIDs;
+
+		return _.uniq(addedTreeIDs);
 	}
 
 

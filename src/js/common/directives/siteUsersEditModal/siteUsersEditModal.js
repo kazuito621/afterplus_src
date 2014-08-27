@@ -1,4 +1,6 @@
-app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Api, $window, $timeout) {
+app.directive('siteUsersEditModal', 
+	['$modal', 'SiteModelUpdateService', 'Api', '$window', '$timeout',
+	function ($modal, SiteModelUpdateService, Api, $window, $timeout) {
     'use strict';
 
     var linker = function (scope, el, attrs) {
@@ -32,8 +34,7 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             }
 
             if (!modal) {
-                modal = $modal({scope: scope, template: '/js/common/directives/templates/siteUsersEditModal.tpl.html', show: false});
-//                modal = $modal({scope: scope, template: 'js/common/directives/templates/siteUsersEditModal.tpl.html', show: false}); // DEV
+                modal = $modal({scope: scope, template: '/js/common/directives/siteUsersEditModal/siteUsersEditModal.tpl.html', show: false});
             }
 
             Api.getSiteUsers(id).then(function (data) {
@@ -44,6 +45,8 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
 
             modal.$promise.then(function () {
                 modal.show();
+				// setup ESCAPE key
+				$(document).keyup(hideOnEscape);
             });
         };
 
@@ -146,6 +149,15 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             }, 500);
         };
 
+		scope.hide = function(){
+			$(document).unbind('keyup', hideOnEscape);
+			modal.hide();
+		}	
+
+		var hideOnEscape = function(e){
+			if(e.keyCode === 27) scope.hide();
+		};
+
         var init = function () {
             el.on('click', function (event) {
                 event.preventDefault();
@@ -179,4 +191,4 @@ app.directive('siteUsersEditModal', function ($modal, SiteModelUpdateService, Ap
             return linker;
         }
     };
-});
+}]);

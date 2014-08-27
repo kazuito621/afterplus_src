@@ -5,9 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal',
-        function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal) {
-
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal', '$location',
+        function ($scope, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
 
             // local and scoped vars
             var s = window.tcs = $scope
@@ -21,7 +20,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 showTreeDetails:false
                 ,showMap:true			// not needed now? since new routing technique
                 ,showTreatmentList:false
-                ,currentTreatmentCodes:[]		// array of treatment codes user selected in multi-box
+                ,overrideTreatmentCodes:[]		// array of treatment codes user selected in multi-box
                 // for adding trees to the estimate
                 ,mode:function(){ return s.renderPath[0]; }					// either "trees" or "estimate"
             };
@@ -29,7 +28,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.TFSdata;	//holds tree results count, etc. Remember, always put scope data into an object
             // or it will pass by value, not reference
             s.filterSearch={species:'', treatments:''};
-            s.selected={clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]};
+            s.selected={clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[]};
             s.filteredClients=[];	// all/filtered list of clients based on selected Client Type
             s.filteredSites=[];				// all/filtered list of sites based on selected client
             s.trees = [];			// result set of trees based on site selected
@@ -67,6 +66,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                 ,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
             };
             s.TFSdata=TFS.data;
+
+//            s.$watch('selected', function (newVal, oldVal) {
+//                console.log('Selected changed\n', oldVal, newVal);
+//            }, true);
 
 
 			var loadEstimate = function(){
@@ -109,7 +112,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         return false;
                     });
 
-
                     $('.toggle-check').each(function(index, el) 
                     {
                         var $label = $(this).closest('label');
@@ -146,12 +148,48 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             TFS.init(s.initData);
 
+            var showSite = function (id) {
+                console.log('Showing site', id);
+                s.selected.siteID = id;
+                s.selected.clientTypeID = '';
+                s.selected.clientID = '';
+                s.onSelectSiteID(id);
+            };
+
+            var showReport = function (id) {
+                console.log('Showing report', id);
+                ReportService.loadReport(id).then(function (report) {
+                    console.log('Report with id %s loaded', id);
+                    console.log(report);
+                    console.log('About to show site %s for report', report.siteID);
+                    showSite(report.siteID);
+                });
+            };
+
+            var onUserNav = function () {
+                if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
+                    var reportID = $location.search().reportID;
+                    if (reportID) {
+                        showReport(reportID);
+                        return;
+                    }
+
+                    var siteID = $location.search().siteID;
+                    if (siteID) {
+                        showSite(siteID);
+                        ReportService.getBlankReport();
+                        return;
+                    }
+                }
+            };
+
             // bind variabels to local storage, so that stuff is remembered	
             // then start showing sites on a map... BUT if a site is already selected,
             // instead show trees... which will happen automatically based on $watch
             $timeout(function(){
-                storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]}});
-                s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
+                storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[]}});
+                s.selected.treatmentIDs=[]; 
+                onUserNav();
                 if( !s.selected.siteID && s.data.mode()!='estimate') showMappedSites();
             },1);
 
@@ -219,6 +257,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
             s.onSelectSiteID = function(id){
+                console.log('On select site id', id);
                 if(id && id>0){
                     var siteObj = s.getSiteByID(id);
                     s.selected.clientID = siteObj.clientID;
@@ -337,27 +376,44 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
             // ------------------------------------------------------ GOOGLE MAPS
-            var initMap = function(){
+            var initMap = _.throttle(function(){
                 var deferred=$q.defer();
 
-                google.load("maps", "3", {other_params:'sensor=false', callback:function(){
-                    var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122), mapTypeId:'hybrid', panControl:false };
-                    var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
-                    gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
-                    google.maps.event.addListener(gMap, 'click', function() {
-                        dbg(s,'click');
-                        if(infowindow && infowindow.setMap) infowindow.setMap(null);
-                    });
-                    deferred.resolve();
-                }});
+                google.load(
+                    "maps",
+                    "3",
+                    {
+                        other_params:'sensor=false',
+                        callback:
+                            function(){
+                                var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122), mapTypeId:'hybrid', panControl:false };
+                                var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
+                                gMap = new google.maps.Map($('#'+map_id)[0], myOptions);
+                                google.maps.event.addListener(gMap, 'click', function() {
+                                    dbg(s,'click');
+                                    if(infowindow && infowindow.setMap) infowindow.setMap(null);
+                                });
+
+                                $timeout(function () {
+                                    deferred.resolve();
+                                }, 1000);
+                            }
+                    }
+                );
                 return deferred.promise;
-            };
+            }, 2000);
 
             var showMappedSites = _.throttle(function() {
-                var a, l, siteLoc, noLoc=0, numSpecies
+
+                var a, l, siteLoc, noLoc=0, numSpecies, gMapID=''
+               	var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
                 if(enableMap==false || !s.filteredSites || !s.filteredSites.length) return;
-                if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
-                    return initMap().then(function(){ showMappedSites(); })
+
+				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
+                if(gMapID !== map_id){
+                    return initMap().then(function(){
+                        showMappedSites();
+                    });
                 }
 
                 s.siteLocs = [];
@@ -417,6 +473,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             var addMarkers = function(arr,addType) {
+//                console.log('In add markers');
                 if(enableMap==false) return;
                 //empty singleSite marker array
                 markers_singleSite = [];
@@ -491,7 +548,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }else{
                     gMap.setMapTypeId(google.maps.MapTypeId.HYBRID);
                 }
-            }
+
+//                console.log('End of add markers function');
+            };
 
             var showInfo = function(num,e){
                 console.log("info: "+num);
@@ -513,7 +572,16 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function(treeSet){
-                if(!gMap) return initMap().then(function(){ showMappedTrees(treeSet); });
+
+				var gMapID='';
+               	var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
+				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
+                if(gMapID !== map_id){
+                    return initMap().then(function(){
+                        showMappedTrees(treeSet);
+                    });
+                }
+
                 if(s.data.mode()=='estimate' && s.report && s.report.items) treeSet=s.report.items;
                 clearMarkers();
                 var set2=[],ratingD,o;
@@ -524,16 +592,17 @@ var TreesCtrl = app.controller('TreesCtrl',
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
                         ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
                         o= '<div class="mapWindowContainer">'
-                            +'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
                             +'<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgMed)
-                            +'<div class="mwcBody">{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
+                            +'<div class="mwcBody">'
+							+'<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
+							+'{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
                                 itm.treeID, $filter('dbhID2Name')(itm.dbhID,s));
                         if(itm.ratingID) o+= '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID,ratingD);
                         o+='<div>';
-                        if(itm.caDamage=='yes') o+='<i class="fa fa-warning _red _size7" title="Hardscape damage"></i> ';
-                        if(itm.caDamage=='potential') o+='<i class="fa fa-warning _grey _size7" title="Hardscape damage"></i> ';
-                        if(itm.powerline=='yes') o+='<i class="fa fa-bolt _red _size7" title="Powerline nearby"></i> ';
-                        if(itm.building=='yes') o+='<i class="fa fa-building _red _size7" title="Building nearby"></i> ';
+                        if(itm.caDamage=='yes') o+='<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        if(itm.caDamage=='potential') o+='<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        if(itm.powerline=='yes') o+='<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
+                        if(itm.building=='yes') o+='<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
                         // todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
                         // then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
                         // similar to the items in the tree results list. ... ie
@@ -541,7 +610,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         // .... or ...textIconBlock-grey
                         //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
                         if (s.data.mode() === 'trees') {
-                            o += '</div><a href="#/tree_edit/' + itm.treeID + '">Edit Tree</a><BR></div>';
+                            o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+            				//o += '</div><BR>'
+							 // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
                         }
 
                         itm.info = o;
@@ -681,24 +752,29 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             // ------------------------------------------------------ ESTIMATE RELATED STUFF
 
-            // Add selected trees to the estimate..
-            // IF data.showTreatmentList && currentTreatmentCodes is selected, then use those (pass them in)
-            // BUT if they are not, then the ReportService will assume the "next recommended treatment"
-            s.addToEstimate = function(trees, tc){
-                var msg = [];
+            // Add selected trees to the estimate.. 
+            // And pass in data.overrideTreatmentCodes (which overrides the recommended)
+            s.addToEstimate = function (){
+                // get an array of selected treeID's
+                var added,msg,trees=[];
+                _.each(s.trees, function(t){
+                    if(s.selectedTrees.indexOf(t.treeID)>=0)
+                        trees.push(t);
+                });
 
-                var added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
+                if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
+                added=ReportService.addItems(trees, s.data.overrideTreatmentCodes, s.TFSdata.selectedFilters);
                 $rootScope.$broadcast('itemsAddedToReport');
 
                 if(added==-1)
                     return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
                 if(added.length==trees.length){
-                    s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
+                    s.data.overrideTreatmentCodes=[];			// clear out "force treatment" box after use
                     s.setAlert('{0} item(s) added to estimate'.format(added.length),{type:'ok'})
                     return s.toggleCheckedTrees(false);
                 }
                 if(added.length < trees.length){
-                    if(s.data.currentTreatmentCodes)
+                    if(s.data.overrideTreatmentCodes.length)
                         msg=(added.length) ? 'Err 47 - Some trees were not added to estimate' : 'Err 48 - No trees added to estimate';
                     else{
                         if( added.length )
@@ -709,7 +785,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     s.setAlert(msg,{type:'d', time:10});
                     s.toggleCheckedTrees(added);
                 }
-                s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
+                s.data.overridetreatmentCodes=[];			// clear out "force treatment" box after use
             }
 
             s.validateAndAddToEstimate = function (){
@@ -753,20 +829,6 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
 
-
-            //MULTI SELECT CODE
-            s.$watch('selected.treatmentCodes', function(nowSelected){
-                s.data.currentTreatmentCodes = [];
-                if( ! nowSelected ){
-                    // here we've initialized selected already
-                    // but sometimes that's not the case
-                    // then we get null or undefined
-                    return;
-                }
-                angular.forEach(nowSelected, function(val){
-                    s.data.currentTreatmentCodes.push(val);
-                });
-            });
 
 
 
@@ -955,14 +1017,18 @@ var TreesCtrl = app.controller('TreesCtrl',
              */
 
             s.$on('onInitData', function (e,data) {
-                console.log('On init data in trees');
+//                console.log('On init data in trees');
 
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
-                    initMap().then(function(){ showMappedSites(); })
+//                    console.log('Map not initialized in $onInitData event')
+                    initMap().then(function(){
+//                        console.log('Map initialized in $onInitData event');
+                        showMappedSites();
+                    })
                 }
             });
 
-
+            s.$on('$routeChangeSuccess', onUserNav);
         }]);	// }}} TreesCtrl
 
 

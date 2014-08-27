@@ -387,7 +387,7 @@
 							<section class="nav_listings" ng-if="data.mode()=='trees'"> 
 
 								<div class="table-responsive">
-									<table class="tree-list-container">
+									<table class="tree-list-container" ng-if="auth.isAtleast('inventory')">
 										<thead>
 											<tr>
 												<td>
@@ -410,9 +410,11 @@
 									<div class="tree-list-outer" id="tree-list-container">
 										<table class="tree-list-container">
 											<tbody>
-												<tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
+												<tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" 
+														ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
 													<td class="td-check">													
-														<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID" id="tree-result-checkbox-{{tree.treeID}}">
+														<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID" 
+															id="tree-result-checkbox-{{tree.treeID}}">
 													</td>
 													<td class="td-img">
                                                         <label for="tree-result-checkbox-{{tree.treeID}}">
@@ -442,7 +444,25 @@
 											
 										</table>
 									</div>	
-									<table class="tree-list-container">
+									<table class="tree-list-container" ng-if="auth.isAtleast('inventory') && trees.length">
+										<thead>
+											<tr>
+												<td>
+													<div class="btn-group">
+														<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+															<i class="fa fa-check-square-o"></i>
+															<span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu" role="menu">
+															<li><a href ng-click="toggleCheckedTrees(true)">ALL</a></li>
+															<li><a href ng-click="toggleCheckedTrees('thisYear')">ALL {{thisYear}}</a></li>
+															<li><a href ng-click="toggleCheckedTrees(false)">NONE</a></li>
+														</ul>
+													</div>
+												</td>
+												<td colspan="3"><h6>{{selectedTrees.length}} of {{trees.length}} trees selected</h6></td>
+											</tr>
+										</thead>
 										<tfoot>
 											<tr>
 												<td colspan="4">
@@ -451,17 +471,13 @@
 											</tr>
                                             <tr>
                                                 <td colspan="4">
-                                                    <label>
-                                                        <input type=checkbox ng-model='data.showTreatmentList'>
-                                                        Show Treatments
-                                                    </label>
-                                                </td>
-                                            </tr>
-                                            <tr ng-cloak ng-show="data.showTreatmentList">
-                                                <td colspan="4">
-                                                    <select class="multiList" size="10" multiple ng-model="selected.treatmentCodes">
-                                                        <option ng-repeat="treatment in initData.filters.treatments" value="{{treatment.code}}">{{treatment.treatmentType}}</option>
-                                                    </select>
+													<button class="btn btn-default" ng-model="data.overrideTreatmentCodes" multiple max-length=0 all-none-buttons=1
+															ng-options="t.code as t.treatmentType for t in initData.filters.treatments" 
+															bs-select placeholder="Override Recommended Treatment" onclick="return false;">
+														Treatments <span class="caret"></span>
+													</button>
+													<a ng-if="data.overrideTreatmentCodes.length" class='fa fa-times _red _size8 hand' style='padding-left:.2em;'
+															ng-click='data.overrideTreatmentCodes=[]'></a>
                                                 </td>
                                             </tr>
 										</tfoot>

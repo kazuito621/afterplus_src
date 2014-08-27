@@ -42,15 +42,15 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
-            s.filters.year=[
+            s.filters.years=[
                 {id:moment().format('YYYY'), desc:'This year'},
                 {id:moment().add('year',1).format('YYYY'), desc:'Next yr'},
                 {id:moment().add('year',2).format('YYYY'), desc:'2yr'},
                 {id:moment().add('year',3).format('YYYY'), desc:'3yr'},
                 {id:moment().add('year',4).format('YYYY'), desc:'4yr'},
-                {id:moment().add('year',-1).format('YYYY'), desc:'Prev year'}, // index: 5
-                {id:moment().add('year',-2).format('YYYY'), desc:'Year -2'},
-                {id:moment().add('year',-3).format('YYYY'), desc:'Year -3'}
+                {id:moment().add('year',-1).format('YYYY'), desc:'Prev year', old: 'yes'},
+                {id:moment().add('year',-2).format('YYYY'), desc:'Year -2', old: 'yes'},
+                {id:moment().add('year',-3).format('YYYY'), desc:'Year -3', old: 'yes'}
             ];
             s.treatmentTypes = s.initData.filters.treatments;
             ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
@@ -320,6 +320,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             });
 
+            // When year in filter dropdown is changed
+            // If a specific site is selected, then filter the trees by passing onto TFS
+            // Else, we are now filtering the sites, not the trees
+            s.onSelectYear = function(id) {
+                TFS.onChange('year', id, id>0);//if id<=0, means that no year selected in dropdown => filter will be removed
+                if(!s.trees || !s.trees.length || s.trees.length<1) getFilteredSiteIDs();
+            };
 
             // Anytime any filter checkbox is changed
             // If a specific site is selected, then filter the trees by passing onto TFS

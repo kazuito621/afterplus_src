@@ -315,7 +315,14 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		this.data.lastFilterCount=selectedFilters.length;
 		var sf=selectedFilters;
 		if( value ){ 	//if ON, then add
-			sf.push({type:type, id:id})
+            //note, year filter is implemented with dropdown(single), not checkboxes list(multiple) as others
+            //so if sf already contains 'year' filter, we need to delete old one first
+            if (type=='year'){ //remove old year filter, before adding new one
+                for( var i=sf.length-1; i>=0; i-- ){
+                    if( sf[i].type=='year') sf.splice(i,1);
+                }
+            }
+            sf.push({type:type, id:id});
 		}else{			//else, REMOVE it from array, check for duplicates
 			// note, when looping an array and removing, items you must start from the end, not beginning
 			for( var i=sf.length-1; i>=0; i-- ){

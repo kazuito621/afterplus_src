@@ -14,7 +14,8 @@
                             <h3 class='panel-title'>Edit Property</h3>
                         </div>
                         <div class='panel-body'>
-                            <select class='styled-select' ng-model="site.clientID">
+                            <select class='styled-select' ng-model="site.clientID"
+                                    ng-change="copyAddressFromClientToNewSite(site.clientID)">
                                 <option value="">Client</option>
                                 <option ng-repeat="client in clients" value="{{client.clientID}}">
                                     {{client.clientName}}

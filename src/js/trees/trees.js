@@ -21,7 +21,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 showTreeDetails:false
                 ,showMap:true			// not needed now? since new routing technique
                 ,showTreatmentList:false
-                ,currentTreatmentCodes:[]		// array of treatment codes user selected in multi-box
+                ,overrideTreatmentCodes:[]		// array of treatment codes user selected in multi-box
                 // for adding trees to the estimate
                 ,mode:function(){ return s.renderPath[0]; }					// either "trees" or "estimate"
             };
@@ -29,7 +29,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.TFSdata;	//holds tree results count, etc. Remember, always put scope data into an object
             // or it will pass by value, not reference
             s.filterSearch={species:'', treatments:''};
-            s.selected={clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]};
+            s.selected={clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[]};
             s.filteredClients=[];	// all/filtered list of clients based on selected Client Type
             s.filteredSites=[];				// all/filtered list of sites based on selected client
             s.trees = [];			// result set of trees based on site selected
@@ -113,7 +113,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         return false;
                     });
 
-
                     $('.toggle-check').each(function(index, el) 
                     {
                         var $label = $(this).closest('label');
@@ -189,11 +188,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             // then start showing sites on a map... BUT if a site is already selected,
             // instead show trees... which will happen automatically based on $watch
             $timeout(function(){
-                storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[], treatmentCodes:[]}});
-                s.selected.treatmentIDs=[]; s.selected.treatmentCodes=[];
-
+                storage.bind(s, 'selected', {defaultValue:{clientTypeID:'', clientID:'', siteID:'', treatmentIDs:[]}});
+                s.selected.treatmentIDs=[]; 
                 onUserNav();
-
                 if( !s.selected.siteID && s.data.mode()!='estimate') showMappedSites();
             },1);
 
@@ -399,7 +396,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 });
 
                                 $timeout(function () {
-//                                    console.log('Google map initialized in initMap function');
                                     deferred.resolve();
                                 }, 1000);
                             }
@@ -409,14 +405,14 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function() {
-//                console.log('Show mapped sites');
 
-                var a, l, siteLoc, noLoc=0, numSpecies
+                var a, l, siteLoc, noLoc=0, numSpecies, gMapID=''
+               	var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
                 if(enableMap==false || !s.filteredSites || !s.filteredSites.length) return;
-                if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
-//                    console.log('Map not inialized yet in showMappedSites');
+
+				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
+                if(gMapID !== map_id){
                     return initMap().then(function(){
-//                        console.log('Map initialized in showMappedSites')
                         showMappedSites();
                     });
                 }
@@ -577,11 +573,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function(treeSet){
-//                console.log('Show mapped trees', gMap, '\n', treeSet);
-                if(!gMap || !gMap.j || gMap.j.id !== 'treeMap') {
-//                    console.log('Map not yet ininialized in showMappedTrees');
+
+				var gMapID='';
+               	var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
+				if(gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID=gMap.getDiv().id;
+                if(gMapID !== map_id){
                     return initMap().then(function(){
-//                        console.log('Map initialized in showMappedTrees');
                         showMappedTrees(treeSet);
                     });
                 }
@@ -596,16 +593,17 @@ var TreesCtrl = app.controller('TreesCtrl',
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
                         ratingD = (itm.ratingID>0) ? s.ratingTypes[itm.ratingID-1].rating_desc : '';
                         o= '<div class="mapWindowContainer">'
-                            +'<h1 id="firstHeading" class="firstHeading">{0}</h1>'.format(itm.commonName)
                             +'<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgMed)
-                            +'<div class="mwcBody">{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
+                            +'<div class="mwcBody">'
+							+'<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
+							+'{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
                                 itm.treeID, $filter('dbhID2Name')(itm.dbhID,s));
                         if(itm.ratingID) o+= '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID,ratingD);
                         o+='<div>';
-                        if(itm.caDamage=='yes') o+='<i class="fa fa-warning _red _size7" title="Hardscape damage"></i> ';
-                        if(itm.caDamage=='potential') o+='<i class="fa fa-warning _grey _size7" title="Hardscape damage"></i> ';
-                        if(itm.powerline=='yes') o+='<i class="fa fa-bolt _red _size7" title="Powerline nearby"></i> ';
-                        if(itm.building=='yes') o+='<i class="fa fa-building _red _size7" title="Building nearby"></i> ';
+                        if(itm.caDamage=='yes') o+='<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        if(itm.caDamage=='potential') o+='<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        if(itm.powerline=='yes') o+='<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
+                        if(itm.building=='yes') o+='<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
                         // todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
                         // then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
                         // similar to the items in the tree results list. ... ie
@@ -613,7 +611,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         // .... or ...textIconBlock-grey
                         //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
                         if (s.data.mode() === 'trees') {
-                            o += '</div><a href="#/tree_edit/' + itm.treeID + '">Edit Tree</a><BR></div>';
+                            o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+            				//o += '</div><BR>'
+							 // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
                         }
 
                         itm.info = o;
@@ -754,8 +754,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             // ------------------------------------------------------ ESTIMATE RELATED STUFF
 
             // Add selected trees to the estimate.. 
-            // IF data.showTreatmentList && currentTreatmentCodes is selected, then use those (pass them in)
-            // BUT if they are not, then the ReportService will assume the "next recommended treatment"
+            // And pass in data.overrideTreatmentCodes (which overrides the recommended)
             s.addToEstimate = function (){
                 // get an array of selected treeID's
                 var added,msg,trees=[];
@@ -765,19 +764,18 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
 
                 if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
-                var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
-                added=ReportService.addItems(trees, tc, s.TFSdata.selectedFilters);
+                added=ReportService.addItems(trees, s.data.overrideTreatmentCodes, s.TFSdata.selectedFilters);
                 $rootScope.$broadcast('itemsAddedToReport');
 
                 if(added==-1)
                     return s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
                 if(added.length==trees.length){
-                    s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
+                    s.data.overrideTreatmentCodes=[];			// clear out "force treatment" box after use
                     s.setAlert('{0} item(s) added to estimate'.format(added.length),{type:'ok'})
                     return s.toggleCheckedTrees(false);
                 }
                 if(added.length < trees.length){
-                    if(s.data.currentTreatmentCodes)
+                    if(s.data.overrideTreatmentCodes.length)
                         msg=(added.length) ? 'Err 47 - Some trees were not added to estimate' : 'Err 48 - No trees added to estimate';
                     else{
                         if( added.length )
@@ -788,23 +786,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                     s.setAlert(msg,{type:'d', time:10});
                     s.toggleCheckedTrees(added);
                 }
-                s.selected.treatmentCodes=[];			// clear out "force treatment" box after use
+                s.data.overridetreatmentCodes=[];			// clear out "force treatment" box after use
             }
 
-
-            //MULTI SELECT CODE
-            s.$watch('selected.treatmentCodes', function(nowSelected){
-                s.data.currentTreatmentCodes = [];
-                if( ! nowSelected ){
-                    // here we've initialized selected already
-                    // but sometimes that's not the case
-                    // then we get null or undefined
-                    return;
-                }
-                angular.forEach(nowSelected, function(val){
-                    s.data.currentTreatmentCodes.push(val);
-                });
-            });
 
 
 

@@ -297,6 +297,7 @@
 			.logos 
 			{
 				display: block;
+				text-align: right;
 
 				.logo 
 				{
@@ -306,7 +307,7 @@
 
 					img 
 					{
-						height: 60px;
+						height: 100px;
 						width: auto;
 						padding: 3px;
 					}	
@@ -609,6 +610,29 @@
 	}
 
 	@include font-g(14px , normal , $black-color , 18px);	
+}
+
+.logo-container
+{
+	display: block;
+
+	border-top: 1px solid #BBB;
+	margin-top: 20px;
+	padding-top: 15px;
+
+	.logo 
+	{
+		height: 50px;
+		width: auto;
+		display: inline-block;
+
+		img 
+		{
+			height: 85px;
+			width: auto;
+			padding: 3px;
+		}	
+	}
 }
 
 @media print 

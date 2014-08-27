@@ -14,26 +14,50 @@
 							<h3 class='panel-title'>New Client</h3>
 						</div>
 						<div class='panel-body'>
-							<select class='styled-select' ng-model="newClient.clientTypeID" >
-								<option value="">Client Type</option>
-								<option ng-repeat="ct in initData.clientTypes" value="{{ct.clientTypeID}}">{{ct.name}}</option>
-							</select> (choose a client type for this property)<br>
-							<input type="text" placeholder="Client Name" ng-model="newClient.clientName" required size="40" auto-focus><br>
-							<input type="text" placeholder="Address" ng-model="newClient.street" size="40"><br>
-							<input type="text" placeholder="City" ng-model="newClient.city" size="40"><br>
-							<input type="text" placeholder="State" ng-model="newClient.state" size="40"><br>
-							<input type="text" placeholder="Zip" ng-model="newClient.zip" size="40"><br>
-							<input type="text" placeholder="Contact" ng-model="newClient.contact" size="40"><br>
-							<input type="text" placeholder="Phone" ng-model="newClient.contactPhone" size="40"><br>
-							<input type="text" placeholder="Email Address" ng-model="newClient.contactEmail" size="40"><br>
+
+							<div>
+                            	<button class="btn btn-default" ng-model="newClient.clientTypeID" ng-options="c.clientTypeID as c.name for c in initData.clientTypes" 
+									bs-select placeholder="What type of client is this?" onclick="return false;">
+									Client Type <span class="caret"></span>
+								</button>
+                            </div>
+
+
+                            <div class='silver'>Name:</div>
+							<div><input type="text" ng-model="newClient.clientName" required size="40"></div>
+
+							<div class='silver'>Address:</div>
+							<div><input type="text" ng-model="newClient.street" size="40"><div>
+
+							<div class='silver'>City:</div>
+							<div><input type="text" ng-model="newClient.city" size="40"></div>
+
+							<div class='silver'>State:</div>
+							<div><input type="text" ng-model="newClient.state" size="10"></div>
+
+							<div class='silver'>Zip:</div>
+							<div><input type="text" ng-model="newClient.zip" size="20"></div>
+
+							<div class='silver'>Contact Name:</div>
+							<div><input type="text" ng-model="newClient.contact" size="40"></div>
+
+							<div class='silver'>Contact Phone:</div>
+							<div><input type="text" ng-model="newClient.contactPhone" size="40"></div>
+
+							<div class='silver'>Contact Email:</div>
+							<div><input type="text" ng-model="newClient.contactEmail" size="40"></div>
+
+							<!-- this is here so user can hit ENTER to submit form -->
+							<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
 						</div>
 					</div>
 					<div class="modal-footer topMargin0">
 						<input type="submit" value="SAVE" class='btn btn-primary'>
 						<button type="button" class="btn btn-default " ng-click="$hide()">CLOSE</button>
 					</div>
-				</form>
 			</div>
+			</form>
 
 			<div ng-if="mode=='edit'">
 				<form class="form-inline" ng-submit="saveExistingClient()">

@@ -3,29 +3,36 @@
         <div class="modal-content">
 
             <div class="modal-header" ng-show="title">
-                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <button type="button" class="close" ng-click="hide()">&times;</button>
                 <h4 class="modal-title" ng-bind="title"></h4>
             </div>
 
             <div>
-                <form class="form-inline" ng-submit="saveSite()">
+           		<form class="form-inline" ng-submit="saveSite()">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-heading'>
-                            <h3 class='panel-title'>Edit Property</h3>
+                            <h3 class='panel-title'>Property - {{site.siteName}}</h3>
                         </div>
-                        <div class='panel-body'>
-                            <select class='styled-select' ng-model="site.clientID">
-                                <option value="">Client</option>
-                                <option ng-repeat="client in clients" value="{{client.clientID}}">
-                                    {{client.clientName}}
-                                </option>
-                            </select>
-                            (choose a client this property belongs to)<br>
-                            <input type="text" placeholder="Property Name" ng-model="site.siteName" required size="40" auto-focus><br>
-                            <input type="text" placeholder="Address" ng-model="site.street" size="40"><br>
-                            <input type="text" placeholder="City" ng-model="site.city" size="40"><br>
-                            <input type="text" placeholder="State" ng-model="site.state" size="40"><br>
-                            <input type="text" placeholder="Zip" ng-model="site.zip" size="40"><br>
+                        <div class='panel-body' style='line-height:1.5em;'>
+							<div>
+                            	<button class="btn btn-default" ng-model="site.clientID" ng-options="c.clientID as c.clientName for c in clients" 
+									bs-select placeholder="Which client owns this property?" onclick="return false;" required>
+									Client <span class="caret"></span>
+								</button>
+                            </div>
+                            <div class='silver'>Name:</div>
+							<div><input type="text" ng-model="site.siteName" size="40" required></div>
+                            <div class='silver'>Address:</div>
+                            <div><input type="text" ng-model="site.street" size="50"></div>
+                            <div class='silver'>City:</div>
+                            <div><input type="text" ng-model="site.city" size="50"></div>
+                            <div class='silver'>State:</div>
+                            <div><input type="text" ng-model="site.state" size="10"></div>
+                            <div class='silver'>Zip:</div>
+                            <div><input type="text" ng-model="site.zip" size="20"></div>
+
+							<!-- this is here so user can hit ENTER to submit form -->
+							<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
@@ -37,13 +44,13 @@
                         </span>
 
                         <span ng-show="!site.siteID">
-                            <input type="submit" value="SAVE" class='btn btn-primary'>
-                            <button type="button" class='btn btn-info' site-users-edit-modal before-open="saveSite" site="site">
+                            <button type="button" class='btn btn-primary' site-users-edit-modal before-open="saveSite" site="site">
                                 SAVE AND ADD USERS
                             </button>
+                            <input type="submit" value="SAVE" class='btn btn-primary'>
                         </span>
 
-                        <button type="button" class="btn btn-default" ng-click="$hide()">CLOSE</button>
+                        <button type="button" class="btn btn-default" ng-click="hide()">CLOSE</button>
                     </div>
                 </form>
             </div>

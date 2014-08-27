@@ -154,6 +154,10 @@ function (Rest, $rootScope, $q, $location ) {
                 return Rest.one('site', siteId).post('users', user);
             },
 
+            assignMulti: function (user) {
+                return Rest.one('site').one('multi').post('users', user);
+            },
+
             unassign: function (siteId, userId) {
 //                POST /site/123/user/999/unassign
                 return Rest.one('site', siteId).one('user', userId).post('unassign');

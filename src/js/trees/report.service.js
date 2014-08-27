@@ -154,7 +154,6 @@ app.service('ReportService',
         if (this.report.siteID && this.siteID && this.report.siteID!=this.siteID && this.report.items.length == 0){
             return 0;
         }
-
         return -1;
     }
 

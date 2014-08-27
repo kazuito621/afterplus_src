@@ -763,6 +763,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
 
                 if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
+
+
+				// this is to combat a bug in which even a seemingly blank estimate, still gave an error: "You are mixing trees from different sites"
+                var isNewReportNeeded = ReportService.checkIfNewReportNeeded(trees);
+                if (isNewReportNeeded == 1) { //refresh report with prompt
+                    return $modal({scope: s, template: 'js/common/directives/templates/newEstimatePromptModal.tpl.html', show: true});
+                }else if (isNewReportNeeded === 0){
+                    ReportService.getBlankReport();
+                }
+
                 added=ReportService.addItems(trees, s.data.overrideTreatmentCodes, s.TFSdata.selectedFilters);
                 $rootScope.$broadcast('itemsAddedToReport');
 
@@ -788,40 +798,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.data.overridetreatmentCodes=[];			// clear out "force treatment" box after use
             }
 
-            s.validateAndAddToEstimate = function (){
-                // get an array of selected treeID's
-                var trees=[];
-                _.each(s.trees, function(t){
-                    if(s.selectedTrees.indexOf(t.treeID)>=0)
-                        trees.push(t);
-                });
-
-                if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
-                var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
-
-                var isNewReportNeeded = ReportService.checkIfNewReportNeeded(trees);
-                if (isNewReportNeeded == 1) { //refresh report with prompt
-                    return $modal({scope: s, template: 'js/common/directives/templates/newEstimatePromptModal.tpl.html', show: true});
-                }
-                if (isNewReportNeeded == 0){ //refresh report without prompt
-                    ReportService.getBlankReport();
-                }
-                return s.addToEstimate(trees, tc);
-            }
-
+			// click handler for modal "Are you sure you want to create new estiamte"
+			// which pops up when user tries mixing trees from 2 sites into one estimate
             s.createNewReportAndAddToEstimate = function(){
                 ReportService.getBlankReport();
-
-                var trees=[];
-                _.each(s.trees, function(t){
-                    if(s.selectedTrees.indexOf(t.treeID)>=0)
-                        trees.push(t);
-                });
-
-                if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
-                var tc = (s.data.showTreatmentList) ? s.data.currentTreatmentCodes : null;
-
-                s.addToEstimate(trees, tc);
+                s.addToEstimate();
             }
 
             s.leaveOldReport = function(){

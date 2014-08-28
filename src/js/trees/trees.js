@@ -301,6 +301,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             // This also may be triggered when site dropdown is selected (via getTreeListings())
             s.$on('onTreeFilterUpdate', function(evt, trees){
                 s.trees=trees;
+                s.filterSelectedTrees(); // when filtering, selected trees should also be updated
                 s.colors.speciesCount=[];
                 s.colors.assignment=[];
                 s.colors.nextColorID=0;
@@ -320,7 +321,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             });
 
-
             // When year in filter dropdown is changed...
             s.onSelectYear = function(id) {
 				_.each(s.filters.years, function(y){
@@ -333,7 +333,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 				});
 				if(id===false) s.filters.year=null;								// if id is null (ie. user canceled the filter
             };
-
 
             // Anytime any filter checkbox is changed
             // If a specific site is selected, then filter the trees by passing onto TFS
@@ -700,6 +699,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             // ----------------------------------------------------- EVENTS for Tree Results List
 
+            // I think we need to rename this method to toogleSelectedTrees. In all other places this collection called selectedTrees.
             // toggle checkboxes of trees
             // @param opt 1. TRUE == check all
             //			  2. FALSE == uncheck all
@@ -722,6 +722,24 @@ var TreesCtrl = app.controller('TreesCtrl',
                     }
                 }
             };
+
+            //when user adds/removes filter, we should update selected trees(trees to be added to report)
+            //if the tree was checked and does not satisfy new filter, we should uncheck it
+            s.filterSelectedTrees = function(){
+                var updatedSelectedTrees = [];
+                _.each(s.trees, function(t){
+                    if(s.selectedTrees.indexOf(t.treeID)>=0){
+                        //check if tree satisfies current filters
+                        if (TFS._isTreeInFilter(t)){
+                            updatedSelectedTrees.push(t.treeID);
+                        }
+                    }
+                });
+                _.trunc(s.selectedTrees);
+                _.each(updatedSelectedTrees, function(ust){
+                    s.selectedTrees.push(ust);
+                });
+            }
 
             var animateMarker = function (marker, animationType) {
                 if(!google.maps || !google.maps.Animation) return;

@@ -1,4 +1,6 @@
-app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $timeout) {
+app.directive('siteEditModal', 
+	['$modal', 'SiteModelUpdateService', 'Api', '$timeout',
+	function ($modal, SiteModelUpdateService, Api, $timeout) {
     'use strict';
 
     var linker = function (scope, el, attrs) {
@@ -37,7 +39,7 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
 
         scope.openModal = function (id) {
             if (!modal) {
-                modal = $modal({scope: scope, template: '/js/common/directives/templates/siteEditModal.tpl.html', show: false});
+                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
             }
 
             scope.site = angular.copy(newSite);
@@ -50,6 +52,8 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
 
             modal.$promise.then(function () {
                 modal.show();
+				// setup ESCAPE key
+				$(document).keyup(hideOnEscape);
             });
         };
 
@@ -89,6 +93,15 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
             }
         };
 
+		scope.hide = function(){
+			if(this.hide) $(document).unbind('keyup', hideOnEscape);
+			modal.hide();
+		}	
+
+		var hideOnEscape = function(e){
+			if(e.keyCode === 27) scope.hide();
+		};
+
         var init = function () {
             el.on('click', function (event) {
                 event.preventDefault();
@@ -112,4 +125,4 @@ app.directive('siteEditModal', function ($modal, SiteModelUpdateService, Api, $t
             return linker;
         }
     };
-});
+}]);

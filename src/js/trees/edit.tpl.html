@@ -115,9 +115,8 @@
                                         </a>
                                     </td>
                                     <td align='right'>
-                                        <a ng-if="auth.isAtleast('inventory')" ng:cloak ng-show="showEdit" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size4' ></a>
+                                        <a ng-if="auth.isAtleast('inventory')" ng:cloak ng-show="auth.isAtleast('inventory')" href ng-click="removeTreeRec(o.treeHistoryID,o.$$hashKey)" class='fa fa-times _red _size5' ></a>
                                     </td>
-                                    <td></td> <!-- todo: add a note icon, if there is a note, and rollover to show it -->
                             </tr>
                         </tbody> 
                     </table>
@@ -125,7 +124,7 @@
 
                 <div ng-if="tree.mode!='rollover'" class=''>
             		<button class='navButton' ng-click="save();">Save</button>
-                    &nbsp;<a ng-click="onCancel()" bs-tooltip title="Hotkey: Press Escape to cancel">Cancel</a>
+                    &nbsp;<a ng-click="onCancel()" bs-tooltip class='hand' title="Hotkey: Press Escape to cancel">Cancel</a>
                 </div>
 
             </div>

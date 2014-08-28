@@ -45,10 +45,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper) {
         s.displayedEstimates = s.displayedEstimates.concat(addon);
     };
 
-    s.goToEstimate = function (reportID) {
-        $location.url('/estimate/' + reportID);
-    };
-
 	init();
 	s.$on('nav', function (e, data) {
 		if (data.new === myStateID) init();

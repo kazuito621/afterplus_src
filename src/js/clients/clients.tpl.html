@@ -41,8 +41,10 @@
                     <td><a href='/#sites?clientID={{c.clientID}}' bs-tooltip title='View sites'>{{c.siteCount}}</a></td>
 
                     <td>
-                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
-                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID, $event)" class="fa fa-times _red _size7 hoverDisplay" bs-tooltip title="Delete" style="text-decoration: none;"></a>
+                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hand hoverDisplay" 
+								bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
+                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID, $event)" class="fa fa-times _red _size7 hand hoverDisplay" 
+								bs-tooltip title="Delete" style="text-decoration: none;"></a>
                     </td>
 
                 </tr>

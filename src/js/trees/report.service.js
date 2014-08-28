@@ -142,6 +142,21 @@ app.service('ReportService',
   	}
 
 
+
+    // If current site != report.site and active report already contains some trees => we need to reinit report
+    // @return - if need to reinit + show prompt 1
+    //         - if need to reinit + no prompt 0
+    //         - if no reinit needed -1
+    this.checkIfNewReportNeeded = function(trees){
+        if(this.report.siteID && this.siteID && this.report.siteID!=this.siteID && this.report.items.length > 0){
+            return 1;
+        }
+        if (this.report.siteID && this.siteID && this.report.siteID!=this.siteID && this.report.items.length == 0){
+            return 0;
+        }
+        return -1;
+    }
+
 	// if treatment codes exist, then use them,
 	// else, use what is recommended for the tree 
 	//		(but only the first year that is listed...
@@ -207,7 +222,8 @@ app.service('ReportService',
 				});
 			});
 		}
-		return addedTreeIDs;
+
+		return _.uniq(addedTreeIDs);
 	}
 
 

@@ -3,7 +3,7 @@
         <div class="modal-content">
 
             <div class="modal-header" ng-show="title">
-                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <button type="button" class="close" ng-click="hide()">&times;</button>
                 <h4 class="modal-title" ng-bind="title"></h4>
             </div>
 
@@ -11,21 +11,14 @@
                 <form class="form-inline">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-heading'>
-                            <h3 class='panel-title'>Edit users</h3>
+                            <h3 class='panel-title'>Edit users for {{site.siteName}}</h3>
                         </div>
                         <div class='panel-body'>
                             <div class="containter">
-                                <h4>Edit users for {{site.siteName}}</h4>
 
                                 <div class="row" style="margin-top: 12px;">
                                     <div class="col-sm-8" style="font-weight: bold;">
-                                        Site contacts
-                                    </div>
-                                    <div class="col-sm-3 col-offset-1">
-										<button type="button" class="btn btn-primary pull-right"
-											ng-click="showAddForm('customer')" >
-												<i class='fa fa-plus white'></i> New
-										</button>
+                                        Property contacts for {{site.siteName}}
                                     </div>
                                 </div>
                                 <div class="row" ng-repeat="c in contacts" style="margin-top: 10px;" ng-show="contacts.length > 0">
@@ -36,7 +29,7 @@
                                         <a ng-click="unassign(c.userID, c.email, 'customer')" class="fa fa-times _red _size4" bs-tooltip title="Remove assignment" style="text-decoration: none;"></a>
                                     </div>
                                 </div>
-                                <div class="row" ng-show="$parent.showAddNewSiteContact === true" style="margin-top: 10px;">
+                                <div class="row" style="margin-top: 10px;">
 									<form ng-submit="addNewSiteContact($event)">
                                     <div class="col-sm-4">
                                         <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newContact.email" id='newContactEmail'
@@ -60,12 +53,6 @@
                                     <div class="col-sm-8" style="font-weight: bold;">
                                         AplusTree Reps
                                     </div>
-                                    <div class="col-sm-3 col-offset-1">
-										<button type="button" class="btn btn-primary pullright"
-											ng-click="showAddForm('rep')" >
-												<i class='fa fa-plus white'></i> New
-										</button>
-                                    </div>
                                 </div>
                                 <div class="row" ng-repeat="r in reps" style="margin-top: 10px;" ng-show="reps.length > 0">
                                     <div class="col-sm-8">
@@ -76,7 +63,7 @@
 												title="Remove assignment" style="text-decoration: none; "></a>
                                     </div>
                                 </div>
-                                <div class="row" ng-show="$parent.showAddNewSiteRep === true" style="margin-top: 10px;">
+                                <div class="row" style="margin-top: 10px;">
 									<form ng-submit="addNewRepContact($event)">
                                     <div class="col-sm-3">
                                         <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newRep.email" id='newRepEmail'

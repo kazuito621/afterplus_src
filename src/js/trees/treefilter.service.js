@@ -207,7 +207,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		}
 
 		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);	
-	}, 1200);
+	}, 700, {leading:false});
 
 
 	this.clearFilters = function(clearTrees){
@@ -248,7 +248,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		var filterCounts={};			//ie. {'species':3, 'dbg':1}
 		var satisfiedFilterCounts={};
 		var totalFilterTypes=0, totalSatisfiedFilterTypes=0, yearFilterOk, treatmentFilterOk;
-                var buildingFilter, buildingFilter, caDamageFilter, powerlineFilter;
+                var buildingFilter, buildingFilter, caDamageFilter, powerlineFilter, nonePropFilter;
                  
 
 		// loop through each filter, and see if it applies to the tree
@@ -262,8 +262,11 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
             yearFilterOk=treatmentFilterOk=false
 
             // building, hardscape damage, and powerline flags
-            buildingFilter=caDamageFilter=powerlineFilter=false;
+            buildingFilter=caDamageFilter=powerlineFilter=nonePropFilter=false;
 
+            if(filter.type == "miscProperty"){
+            	nonePropFilter = (tree.caDamage == 'yes')?true:false;
+            }
             if(filter.type == 'caDamage'){
                 caDamageFilter = (tree.caDamage == 'yes')?true:false;
             }
@@ -286,7 +289,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 			// now evaluate the tree against this particular filter
   			var idName=filter.type + "ID"; 		//ie. "species" + "ID" = "speciesID"
-			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter ||  yearFilterOk || treatmentFilterOk ){
+			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || nonePropFilter ||  yearFilterOk || treatmentFilterOk ){
 				// if we havent recored this as a "satisfied filter", then do so...
 				if( !satisfiedFilterCounts[filter.type] ){
 					totalSatisfiedFilterTypes++;
@@ -312,7 +315,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		this.data.lastFilterCount=selectedFilters.length;
 		var sf=selectedFilters;
 		if( value ){ 	//if ON, then add
-			sf.push({type:type, id:id})
+            sf.push({type:type, id:id});
 		}else{			//else, REMOVE it from array, check for duplicates
 			// note, when looping an array and removing, items you must start from the end, not beginning
 			for( var i=sf.length-1; i>=0; i-- ){

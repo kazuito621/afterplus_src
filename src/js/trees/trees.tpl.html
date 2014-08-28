@@ -106,94 +106,20 @@
 								<!-- START YEAR FILTER SECTION --> 
 								<div class="filter-container">
 									<div class="filterHeader filter-header">
-										<h3>Years:</h3>
-									</div>
-									<div class='filterItems filter-block'>
-										<div class="filter-items filter-items-inline filter-items-toggle">
+										<h3>By Year: &nbsp; 
+													<button class="btn btn-default" ng-model="filters.year" placeholder="All Years"
+															ng-disabled="!filters.years.length"
+															ng-change="onSelectYear(filters.year)"
+															ng-options="y.id as y.desc for y in filters.years"
+															bs-select onclick="return false;">
+														Action <span class="caret"></span>
+													</button> 
+													<a ng:cloak ng-show="filters.year" href ng-click="onSelectYear(false)" class='fa fa-times _red _size4' ></a>
 
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[0].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[0].id}}',initData.filters.year[0].selected)" class="toggle-check">
-													<span class="text">2014</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[1].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[1].id}}',initData.filters.year[1].selected)" class="toggle-check">
-													<span class="text">2015</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[2].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[2].id}}',initData.filters.year[2].selected)" class="toggle-check">
-													<span class="text">2016</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[3].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[3].id}}',initData.filters.year[3].selected)" class="toggle-check">
-													<span class="text">2017</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-											
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[4].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[4].id}}',initData.filters.year[4].selected)" class="toggle-check">
-													<span class="text">2018</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-
-										</div>	
-									</div>	
-								</div>
-							    <!-- END YEAR FILTER SECTION --> 
-								<!-- START OLD YEARS FILTER SECTION -->
-								<div class="filter-container">
-									<div class="filterHeader filter-header">
-										<h3>Old years:</h3>
-									</div>
-									<div class='filterItems filter-block'>
-										<div class="filter-items filter-items-inline filter-items-toggle">
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[5].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[5].id}}',initData.filters.year[5].selected)" class="toggle-check">
-													<span class="text">2013</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[6].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[6].id}}',initData.filters.year[6].selected)" class="toggle-check">
-													<span class="text">2012</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[7].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[7].id}}',initData.filters.year[7].selected)" class="toggle-check">
-													<span class="text">2011</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>
-										</div>
+										</h3>
 									</div>
 								</div>
-							    <!-- END OLD YEARS FILTER SECTION -->
+							    <!-- END YEAR FILTER SECTION -->
 							</div>
 
 							<div class="collapse-body">
@@ -330,7 +256,7 @@
 											<div class="row">
 												<div class="col-sm-4">
 													<div class="input-group">
-														<select id="select_clientType" class='inpt inpt-select' 
+														<select id="select_clientType" class='inpt inpt-select'
 														ng-model="selected.clientTypeID" 
 														ng-change="onSelectClientTypeID(selected.clientTypeID)"
 														ng-disabled="initData.clientTypes.length === 0">
@@ -387,7 +313,7 @@
 							<section class="nav_listings" ng-if="data.mode()=='trees'"> 
 
 								<div class="table-responsive">
-									<table class="tree-list-container">
+									<table class="tree-list-container" ng-if="auth.isAtleast('inventory')">
 										<thead>
 											<tr>
 												<td>
@@ -410,9 +336,11 @@
 									<div class="tree-list-outer" id="tree-list-container">
 										<table class="tree-list-container">
 											<tbody>
-												<tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
+												<tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" 
+														ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
 													<td class="td-check">													
-														<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID" id="tree-result-checkbox-{{tree.treeID}}">
+														<input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID" 
+															id="tree-result-checkbox-{{tree.treeID}}">
 													</td>
 													<td class="td-img">
                                                         <label for="tree-result-checkbox-{{tree.treeID}}">
@@ -442,7 +370,25 @@
 											
 										</table>
 									</div>	
-									<table class="tree-list-container">
+									<table class="tree-list-container" ng-if="auth.isAtleast('inventory') && trees.length">
+										<thead>
+											<tr>
+												<td>
+													<div class="btn-group">
+														<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+															<i class="fa fa-check-square-o"></i>
+															<span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu" role="menu">
+															<li><a href ng-click="toggleCheckedTrees(true)">ALL</a></li>
+															<li><a href ng-click="toggleCheckedTrees('thisYear')">ALL {{thisYear}}</a></li>
+															<li><a href ng-click="toggleCheckedTrees(false)">NONE</a></li>
+														</ul>
+													</div>
+												</td>
+												<td colspan="3"><h6>{{selectedTrees.length}} of {{trees.length}} trees selected</h6></td>
+											</tr>
+										</thead>
 										<tfoot>
 											<tr>
 												<td colspan="4">
@@ -451,17 +397,13 @@
 											</tr>
                                             <tr>
                                                 <td colspan="4">
-                                                    <label>
-                                                        <input type=checkbox ng-model='data.showTreatmentList'>
-                                                        Show Treatments
-                                                    </label>
-                                                </td>
-                                            </tr>
-                                            <tr ng-cloak ng-show="data.showTreatmentList">
-                                                <td colspan="4">
-                                                    <select class="multiList" size="10" multiple ng-model="selected.treatmentCodes">
-                                                        <option ng-repeat="treatment in initData.filters.treatments" value="{{treatment.code}}">{{treatment.treatmentType}}</option>
-                                                    </select>
+													<button class="btn btn-default" ng-model="data.overrideTreatmentCodes" multiple max-length=0 all-none-buttons=1
+															ng-options="t.code as t.treatmentType for t in initData.filters.treatments" 
+															bs-select placeholder="Override Recommended Treatment" onclick="return false;">
+														Treatments <span class="caret"></span>
+													</button>
+													<a ng-if="data.overrideTreatmentCodes.length" class='fa fa-times _red _size8 hand' style='padding-left:.2em;'
+															ng-click='data.overrideTreatmentCodes=[]'></a>
                                                 </td>
                                             </tr>
 										</tfoot>

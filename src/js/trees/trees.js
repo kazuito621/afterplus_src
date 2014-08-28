@@ -43,15 +43,15 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
             s.filters.years=[
+                {id:moment().add('year',-2).format('YYYY'), desc:'2 years ago', old: 'yes'},
+                {id:moment().add('year',-1).format('YYYY'), desc:'1 year ago', old: 'yes'},
                 {id:moment().format('YYYY'), desc:'This year'},
-                {id:moment().add('year',1).format('YYYY'), desc:'Next yr'},
-                {id:moment().add('year',2).format('YYYY'), desc:'2yr'},
-                {id:moment().add('year',3).format('YYYY'), desc:'3yr'},
-                {id:moment().add('year',4).format('YYYY'), desc:'4yr'},
-                {id:moment().add('year',-1).format('YYYY'), desc:'Prev year', old: 'yes'},
-                {id:moment().add('year',-2).format('YYYY'), desc:'Year -2', old: 'yes'},
-                {id:moment().add('year',-3).format('YYYY'), desc:'Year -3', old: 'yes'}
+                {id:moment().add('year',1).format('YYYY'), desc:'Next year'},
+                {id:moment().add('year',2).format('YYYY'), desc:'+2 years'},
+                {id:moment().add('year',3).format('YYYY'), desc:'+3 years'},
+                {id:moment().add('year',4).format('YYYY'), desc:'+4 years'},
             ];
+			_.each(s.filters.years, function(f){ f.desc=f.id + ' - ' + f.desc; });
             s.treatmentTypes = s.initData.filters.treatments;
             ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 
@@ -320,13 +320,20 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             });
 
-            // When year in filter dropdown is changed
-            // If a specific site is selected, then filter the trees by passing onto TFS
-            // Else, we are now filtering the sites, not the trees
+
+            // When year in filter dropdown is changed...
             s.onSelectYear = function(id) {
-                TFS.onChange('year', id, id>0);//if id<=0, means that no year selected in dropdown => filter will be removed
-                if(!s.trees || !s.trees.length || s.trees.length<1) getFilteredSiteIDs();
+				_.each(s.filters.years, function(y){
+					if(y.selected) s.onFilterChange('year', y.id, false);		// turn off the previously selected year
+					y.selected=false;											// turn off every year, just in case
+					if(y.id===id){ 												// turn ON the matching year passed in
+						y.selected=true;
+						s.onFilterChange('year', id, true);
+					}
+				});
+				if(id===false) s.filters.year=null;								// if id is null (ie. user canceled the filter
             };
+
 
             // Anytime any filter checkbox is changed
             // If a specific site is selected, then filter the trees by passing onto TFS
@@ -338,6 +345,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.clearFilters = function(){
                 TFS.clearFilters();
+				s.onSelectYear(false);
                 if(!s.trees || !s.trees.length || s.trees.length<1){
                     //s.filteredSites=angular.copy(s.initData.sites); 
                     s.filteredSites=s.initData.sites;		//-- fixed a dropdown ng-model issue

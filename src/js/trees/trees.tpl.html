@@ -106,24 +106,18 @@
 								<!-- START YEAR FILTER SECTION --> 
 								<div class="filter-container">
 									<div class="filterHeader filter-header">
-										<h3>Years:</h3>
+										<h3>By Year: &nbsp; 
+													<button class="btn btn-default" ng-model="filters.year" placeholder="All Years"
+															ng-disabled="!filters.years.length"
+															ng-change="onSelectYear(filters.year)"
+															ng-options="y.id as y.desc for y in filters.years"
+															bs-select onclick="return false;">
+														Action <span class="caret"></span>
+													</button> 
+													<a ng:cloak ng-show="filters.year" href ng-click="onSelectYear(false)" class='fa fa-times _red _size4' ></a>
+
+										</h3>
 									</div>
-									<div class='filterItems filter-block'>
-										<div class="filter-items filter-items-inline filter-items-toggle">
-
-                                                <div class="input-group">
-                                                    <select id="select_year" class='inpt inpt-select'
-                                                            ng-model="filters.year"
-                                                            ng-change="onSelectYear(filters.year)"
-                                                            ng-disabled="filters.years.length === 0">
-                                                        <option class="option" value="">Year</option>
-                                                        <option class="option" ng-repeat="year in filters.years"
-                                                                value="{{year.id}}" ng-class="{'old-year-filter-option' : year.old=='yes'}">{{year.id}}</option>
-                                                    </select>
-                                                </div>
-
-										</div>	
-									</div>	
 								</div>
 							    <!-- END YEAR FILTER SECTION -->
 							</div>

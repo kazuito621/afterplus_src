@@ -43,7 +43,10 @@ app.factory('SortHelper', function () {
             return compare;
         };
 
-        this.makeSort = function () {
+        this.makeSort = function (data) {
+            if (data) {
+                self.data = data;
+            }
             var tmp = _.sortBy(self.data, self.sortFunction);
             if (self.sortDir === 'desc') {
                 tmp.reverse();

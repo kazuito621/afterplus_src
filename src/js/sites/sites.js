@@ -1,7 +1,7 @@
 /*global dbg*/
 var SitesCtrl = app.controller('SitesCtrl',
-    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q', '$timeout',
-        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q, $timeout) {
+    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q', '$timeout', 'FilterHelper',
+        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q, $timeout, FilterHelper) {
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites',
@@ -28,32 +28,34 @@ var SitesCtrl = app.controller('SitesCtrl',
                     if (sitesFiltered && sitesFiltered.length) {
                         return sitesFiltered.length;
                     }
+                    return 0;
                 }
             };
+
+            this.fh = FilterHelper.fh();
 
             var init = function () {
                 // pull the list of sites. were are not using initData.sites, because we need a list
                 // that has user assignments as well
                 Api.getSiteList().then(function (siteData) {
-
-                    sites = siteData;
                     // allow them to nav to /#sites?clientID=XXX and filter
                     var search = $location.search();
                     if (search.clientID) {
                         dbg('doing search clientID');
                         sitesFiltered = [];
-                        _.each(sites, function (s) {
+                        _.each(siteData, function (s) {
                             if (s.clientID === search.clientID) {
                                 sitesFiltered.push(s);
                             }
+                            sites = angular.copy(sitesFiltered);
                         });
                     } else {
-                        sitesFiltered = sites;
+                        sitesFiltered = siteData;
+                        sites = siteData;
                     }
 
                     self.sh = SortHelper.sh(sitesFiltered, '', columnMap);
                     s.displayedSites = sitesFiltered.slice(0, 49);
-
 
                 });
             };
@@ -63,48 +65,16 @@ var SitesCtrl = app.controller('SitesCtrl',
             };
 
             var clearFilter = function () {
-                if (!filters || !(_.objSize(filters) > 0)) { return; }
+                if (!filters || (_.objSize(filters) === 0)) { return; }
                 filters = {};
                 sitesFiltered = sites;
+                s.sh.applySort();
                 s.displayedSites = sitesFiltered.slice(0, 49);
             };
 
-            // @param filterObj OBJ - ie. {siteName:'abc'}
-            var setFilter = function (filterObj) {
-                if (filterObj) {
-                    _.each(filterObj, function (val, key) {
-                        if (!isNaN(val)) {
-                            filterObj[key] = val.toLowerCase();
-                        }
-                    });
-                    filters = filterObj;
-                }
-
-                var fsize = _.objSize(filters);
-                if (!fsize) {
-                    return clearFilter();
-                }
-                var out = [];
-
-                // todo fix this. its broken
-                _.each(sites, function (s) {
-                    _.each(filters, function (val, key) {
-                        if (val) {
-                            if (key.substr(-2).toLowerCase() === 'id') {
-                                if (s[key] === val) {
-                                    out.push(s);
-                                    return false;
-                                }
-                            } else {
-                                if (s[key].toLowerCase().indexOf(val) >= 0) {
-                                    out.push(s);
-                                    return false;
-                                }
-                            }
-                        }
-                    });
-                });
-                sitesFiltered = out;
+            var applyFilter = function () {
+                sitesFiltered = self.fh.applyFilter(sites, filters);
+                s.sh.applySort();
                 s.displayedSites = sitesFiltered.slice(0, 49);
             };
 
@@ -113,14 +83,16 @@ var SitesCtrl = app.controller('SitesCtrl',
             s.$watch('data.filterTextEntry', function (txt, old) {
                 if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
                 filterTextTimeout = $timeout(function () {
-                    if (txt === '' || !txt) { clearFilter(); }
-                    else if (!isNaN(txt)) {
+                    if (txt === '' || !txt) {
+                        clearFilter();
+                    } else if (!isNaN(txt)) {
                         // if search entry is a number, search by siteID and name
-                        setFilter({siteID: txt, siteName: txt});
-                    }
-                    else {
+                        filters = {siteID: txt, siteName: txt};
+                        applyFilter();
+                    } else {
                         // if just letters, then search by name and city
-                        setFilter({siteName: txt, city: txt});
+                        filters = {siteName: txt, city: txt};
+                        applyFilter();
                     }
                 }, 500);
             });
@@ -139,21 +111,22 @@ var SitesCtrl = app.controller('SitesCtrl',
 
             s.sh = {
                 sortByColumn: function (col) {
-                    sites = self.sh.sortByColumn(col);
-                    s.displayedSites = sites.slice(0, s.displayedSites.length);
+                    applyFilter();
+                    sitesFiltered = self.sh.sortByColumn(col);
+                    s.displayedSites = sitesFiltered.slice(0, 49);
                 },
                 columnClass: function (col) {
                     return self.sh.columnClass(col);
+                },
+                applySort: function () {
+                    sitesFiltered = self.sh.makeSort(sitesFiltered);
                 }
             };
 
             s.showMoreSites = function () {
-                var count = s.displayedSites.length;
-                if (s.initData === undefined || sites === undefined || count === sitesFiltered.length)
-                    return;
+                if (s.initData === undefined || sites === undefined || count === sitesFiltered.length) { return; }
 
-                var addon = sitesFiltered.slice(count, count + 50);
-//                s.displayedSites = s.displayedSites.concat(addon);
+                var count = s.displayedSites.length;
                 s.displayedSites = sitesFiltered.slice(0, count + 50);
             };
 
@@ -188,7 +161,7 @@ var SitesCtrl = app.controller('SitesCtrl',
 
             init();
             s.$on('nav', function (e, data) {
-                if (data.new === myStateID) init();
+                if (data.new === myStateID) { init(); }
             });
 
         }]);

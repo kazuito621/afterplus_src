@@ -722,3 +722,8 @@ td.estimate_multirow_col{
 .hand{
 	cursor:pointer; cursor:hand;
 	}
+
+/*to color old years options in years-filter*/
+.old-year-filter-option {
+    background-color: #cccccc !important;
+}

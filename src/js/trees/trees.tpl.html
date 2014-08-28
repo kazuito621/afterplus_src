@@ -106,94 +106,20 @@
 								<!-- START YEAR FILTER SECTION --> 
 								<div class="filter-container">
 									<div class="filterHeader filter-header">
-										<h3>Years:</h3>
-									</div>
-									<div class='filterItems filter-block'>
-										<div class="filter-items filter-items-inline filter-items-toggle">
+										<h3>By Year: &nbsp; 
+													<button class="btn btn-default" ng-model="filters.year" placeholder="All Years"
+															ng-disabled="!filters.years.length"
+															ng-change="onSelectYear(filters.year)"
+															ng-options="y.id as y.desc for y in filters.years"
+															bs-select onclick="return false;">
+														Action <span class="caret"></span>
+													</button> 
+													<a ng:cloak ng-show="filters.year" href ng-click="onSelectYear(false)" class='fa fa-times _red _size4' ></a>
 
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[0].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[0].id}}',initData.filters.year[0].selected)" class="toggle-check">
-													<span class="text">2014</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[1].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[1].id}}',initData.filters.year[1].selected)" class="toggle-check">
-													<span class="text">2015</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[2].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[2].id}}',initData.filters.year[2].selected)" class="toggle-check">
-													<span class="text">2016</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[3].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[3].id}}',initData.filters.year[3].selected)" class="toggle-check">
-													<span class="text">2017</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-											
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[4].selected' 
-													ng-change="onFilterChange('year','{{initData.filters.year[4].id}}',initData.filters.year[4].selected)" class="toggle-check">
-													<span class="text">2018</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>	
-
-										</div>	
-									</div>	
-								</div>
-							    <!-- END YEAR FILTER SECTION --> 
-								<!-- START OLD YEARS FILTER SECTION -->
-								<div class="filter-container">
-									<div class="filterHeader filter-header">
-										<h3>Old years:</h3>
-									</div>
-									<div class='filterItems filter-block'>
-										<div class="filter-items filter-items-inline filter-items-toggle">
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[5].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[5].id}}',initData.filters.year[5].selected)" class="toggle-check">
-													<span class="text">2013</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[6].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[6].id}}',initData.filters.year[6].selected)" class="toggle-check">
-													<span class="text">2012</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>
-											<div class="filter-item">
-												<label>
-													<input type='checkbox' ng-model='initData.filters.year[7].selected'
-													ng-change="onFilterChange('year','{{initData.filters.year[7].id}}',initData.filters.year[7].selected)" class="toggle-check">
-													<span class="text">2011</span>
-													<div class="clearfix"></div>
-												</label>
-											</div>
-										</div>
+										</h3>
 									</div>
 								</div>
-							    <!-- END OLD YEARS FILTER SECTION -->
+							    <!-- END YEAR FILTER SECTION -->
 							</div>
 
 							<div class="collapse-body">
@@ -330,7 +256,7 @@
 											<div class="row">
 												<div class="col-sm-4">
 													<div class="input-group">
-														<select id="select_clientType" class='inpt inpt-select' 
+														<select id="select_clientType" class='inpt inpt-select'
 														ng-model="selected.clientTypeID" 
 														ng-change="onSelectClientTypeID(selected.clientTypeID)"
 														ng-disabled="initData.clientTypes.length === 0">

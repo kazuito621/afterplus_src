@@ -5,9 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$route', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$location',
-        function ($scope, $route, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $location) {
-
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal', '$location',
+        function ($scope, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
 
             // local and scoped vars
             var s = window.tcs = $scope
@@ -43,16 +42,16 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
-            s.filters.year=[
+            s.filters.years=[
+                {id:moment().add('year',-2).format('YYYY'), desc:'2 years ago', old: 'yes'},
+                {id:moment().add('year',-1).format('YYYY'), desc:'1 year ago', old: 'yes'},
                 {id:moment().format('YYYY'), desc:'This year'},
-                {id:moment().add('year',1).format('YYYY'), desc:'Next yr'},
-                {id:moment().add('year',2).format('YYYY'), desc:'2yr'},
-                {id:moment().add('year',3).format('YYYY'), desc:'3yr'},
-                {id:moment().add('year',4).format('YYYY'), desc:'4yr'},
-                {id:moment().add('year',-1).format('YYYY'), desc:'Prev year'}, // index: 5
-                {id:moment().add('year',-2).format('YYYY'), desc:'Year -2'},
-                {id:moment().add('year',-3).format('YYYY'), desc:'Year -3'}
+                {id:moment().add('year',1).format('YYYY'), desc:'Next year'},
+                {id:moment().add('year',2).format('YYYY'), desc:'+2 years'},
+                {id:moment().add('year',3).format('YYYY'), desc:'+3 years'},
+                {id:moment().add('year',4).format('YYYY'), desc:'+4 years'},
             ];
+			_.each(s.filters.years, function(f){ f.desc=f.id + ' - ' + f.desc; });
             s.treatmentTypes = s.initData.filters.treatments;
             ReportService.setTreatmentPrices(s.initData.filters.treatmentPrices);
 
@@ -322,6 +321,20 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
 
+            // When year in filter dropdown is changed...
+            s.onSelectYear = function(id) {
+				_.each(s.filters.years, function(y){
+					if(y.selected) s.onFilterChange('year', y.id, false);		// turn off the previously selected year
+					y.selected=false;											// turn off every year, just in case
+					if(y.id===id){ 												// turn ON the matching year passed in
+						y.selected=true;
+						s.onFilterChange('year', id, true);
+					}
+				});
+				if(id===false) s.filters.year=null;								// if id is null (ie. user canceled the filter
+            };
+
+
             // Anytime any filter checkbox is changed
             // If a specific site is selected, then filter the trees by passing onto TFS
             // Else, we are now filtering the sites, not the trees
@@ -332,6 +345,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.clearFilters = function(){
                 TFS.clearFilters();
+				s.onSelectYear(false);
                 if(!s.trees || !s.trees.length || s.trees.length<1){
                     //s.filteredSites=angular.copy(s.initData.sites); 
                     s.filteredSites=s.initData.sites;		//-- fixed a dropdown ng-model issue
@@ -764,6 +778,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
 
                 if(trees.length==0) return s.setAlert('No Trees Selected',{type:'d'})
+
+
+				// this is to combat a bug in which even a seemingly blank estimate, still gave an error: "You are mixing trees from different sites"
+                var isNewReportNeeded = ReportService.checkIfNewReportNeeded(trees);
+                if (isNewReportNeeded == 1) { //refresh report with prompt
+                    return $modal({scope: s, template: 'js/common/directives/templates/newEstimatePromptModal.tpl.html', show: true});
+                }else if (isNewReportNeeded === 0){
+                    ReportService.getBlankReport();
+                }
+
                 added=ReportService.addItems(trees, s.data.overrideTreatmentCodes, s.TFSdata.selectedFilters);
                 $rootScope.$broadcast('itemsAddedToReport');
 
@@ -788,6 +812,18 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
                 s.data.overridetreatmentCodes=[];			// clear out "force treatment" box after use
             }
+
+			// click handler for modal "Are you sure you want to create new estiamte"
+			// which pops up when user tries mixing trees from 2 sites into one estimate
+            s.createNewReportAndAddToEstimate = function(){
+                ReportService.getBlankReport();
+                s.addToEstimate();
+            }
+
+            s.leaveOldReport = function(){
+                s.setAlert('Stop: You are mixing trees from different sites on the same estimate',{type:'d',time:9});
+            }
+
 
 
 

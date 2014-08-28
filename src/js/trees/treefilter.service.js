@@ -207,7 +207,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		}
 
 		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);	
-	}, 1200);
+	}, 700, {leading:false});
 
 
 	this.clearFilters = function(clearTrees){
@@ -315,7 +315,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		this.data.lastFilterCount=selectedFilters.length;
 		var sf=selectedFilters;
 		if( value ){ 	//if ON, then add
-			sf.push({type:type, id:id})
+            sf.push({type:type, id:id});
 		}else{			//else, REMOVE it from array, check for duplicates
 			// note, when looping an array and removing, items you must start from the end, not beginning
 			for( var i=sf.length-1; i>=0; i-- ){

@@ -19,6 +19,17 @@
         <table class='table table-striped'>
             <thead>
             <tr>
+                <th class="td-check clickable-header text-center">
+                    <div class="btn-group text-left btn-check-uncheck">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-check-square-o"></i> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" class="check-all"><i class="fa fa-check-square-o"></i></a></li>
+                            <li><a href="#" class="check-none"><i class="fa fa-square-o"></i></a></li>
+                        </ul>
+                    </div>
+                </th>
                 <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
                     ID <i ng-class="sh.columnClass('siteID')" class='silver'></i>
                 </th>
@@ -47,6 +58,7 @@
 
             <tbody infinite-scroll="showMoreSites()" infinite-scroll-distance="3">
             <tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
+                <td class="td-check text-center"><input type="checkbox" ></td>
                 <td ng-bind="s.siteID"></td>
                 <td><a href='/#trees?siteID={{s.siteID}}'>{{s.siteName}}</a></td>
                 <td>{{s.city}}, {{s.state}}</td>
@@ -61,7 +73,7 @@
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
 					<span ng-if="s.userCustCount<1 || s.userStaffCount<1">
-						<i site-users-edit-modal site="s" on-save="refreshSite""
+						<i site-users-edit-modal site="s" on-save="refreshSite"
 						   class="fa fa-frown-o _red _size6"
 						   title="Property is missing client contacts or company sales reps!"
 						   bs-tooltip style="cursor: pointer;"></i> &nbsp;
@@ -78,4 +90,12 @@
         </table>
     </div>
 
+</div>
+
+<div class="action-float-bar">
+    <div class="container">
+        <div class="action-float-bar-inner">
+            <a href="#">Assign Users</a>
+        </div>
+    </div>    
 </div>

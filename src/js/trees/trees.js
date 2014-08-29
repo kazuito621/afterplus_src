@@ -304,6 +304,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.colors.speciesCount=[];
                 s.colors.assignment=[];
                 s.colors.nextColorID=0;
+				s.safeApply();	// this is needed because of _throttle being used in tree filter service
                 showMappedTrees(s.trees);
             });
 

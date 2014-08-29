@@ -207,7 +207,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		}
 
 		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);	
-	}, 700, {leading:false});
+	} , 500, {leading:false});
 
 
 	this.clearFilters = function(clearTrees){

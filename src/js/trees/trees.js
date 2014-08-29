@@ -724,22 +724,14 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             };
 
-            //when user adds/removes filter, we should update selected trees(trees to be added to report)
-            //if the tree was checked and does not satisfy new filter, we should uncheck it
+            // when user adds/removes filter, we should remove selected trees that dont satisfy that filter
             s.filterSelectedTrees = function(){
-                var updatedSelectedTrees = [];
-                _.each(s.trees, function(t){
-                    if(s.selectedTrees.indexOf(t.treeID)>=0){
-                        //check if tree satisfies current filters
-                        if (TFS._isTreeInFilter(t)){
-                            updatedSelectedTrees.push(t.treeID);
-                        }
-                    }
-                });
-                _.trunc(s.selectedTrees);
-                _.each(updatedSelectedTrees, function(ust){
-                    s.selectedTrees.push(ust);
-                });
+				var selected2=[];
+				_.each(s.selectedTrees, function(treeID){
+		             var t = _.findObj(s.trees, 'treeID', treeID);
+					if( !t.hide ) selected2.push(treeID);
+				});
+				s.selectedTrees=selected2;
             }
 
             var animateMarker = function (marker, animationType) {

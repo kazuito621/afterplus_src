@@ -1,4 +1,4 @@
-<main ng-controller="TreesCtrl">
+<main ng-controller="TreesCtrl as TreesCtrl">
 
 <div ng-include="'js/trees/action.tpl.html'" ng-if="data.mode()=='trees' && auth.is('customer')"></div>
 

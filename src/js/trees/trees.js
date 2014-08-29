@@ -8,6 +8,7 @@ var TreesCtrl = app.controller('TreesCtrl',
     ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal', '$location',
         function ($scope, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
 
+            var self = this;
             // local and scoped vars
             var s = window.tcs = $scope
                 ,myStateID='trees'
@@ -747,7 +748,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             };
 
-            var findMarker = function (id) {
+            this.findMarker = function (id) {
                 return _.find(markers_singleSite, function (marker) {
                     return marker.treeID === id;
                 })
@@ -761,7 +762,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             };
 
             s.onTreeResultMouseOver = function (tree) {
-                var marker = findMarker(tree.treeID);
+                var marker = self.findMarker(tree.treeID);
                 if (!hoveredItem.animationCompleted) {
                     animateMarker(marker, 'BOUNCE');
                 }
@@ -770,7 +771,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             };
 
             s.onTreeResultMouseLeave = function (tree) {
-                var marker = findMarker(tree.treeID);
+                var marker = self.findMarker(tree.treeID);
                 animateMarker(marker, null);
                 tree.showEdit = null;
                 hoveredItem.animationCompleted = false;

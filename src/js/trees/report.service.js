@@ -215,7 +215,14 @@ app.service('ReportService',
 
 					recoYearUsed=th.year;							// record the year used 
 					tree.treatmentTypeCode=th.treatmentTypeCode;
-					tree.price=that.getTreatmentPrice(tree.treatmentTypeCode, tree.dbhID);
+
+                    //if there is a recommended price for this treatment, then use it
+                    if (th.price){
+                        tree.price = th.price;
+                    }
+                    else{
+					    tree.price=that.getTreatmentPrice(tree.treatmentTypeCode, tree.dbhID);
+                    }
 					if(!tree.reportItemID) tree.reportItemID=nextItemID++;
 					that.report.items.unshift(tree);
 					addedTreeIDs.push(tree.treeID);
@@ -229,7 +236,7 @@ app.service('ReportService',
 
 	//Define function to get specific treatment price by ID
 	this.getTreatmentPrice = function(treatmentTypeCode, dbhID){
-		var found = _.find(this.treatmentPrices, function(itm){
+        var found = _.find(this.treatmentPrices, function(itm){
 				if(itm.dbhID==dbhID && itm.treatmentTypeCode==treatmentTypeCode) return true;
 			});
 		if(found) return found.price;

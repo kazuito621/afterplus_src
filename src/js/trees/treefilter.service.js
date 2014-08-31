@@ -229,7 +229,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		});
 		this.data.lastFilterCount=selectedFilters.length;
 		selectedFilters.splice(0, selectedFilters.length);
-		this.filterTheFilters2(true);
+		this.filterTheFilters2(clearTrees);
 		if(!clearTrees) this.filterTrees();
 	}
 

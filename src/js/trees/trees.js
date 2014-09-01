@@ -399,7 +399,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     "maps",
                     "3",
                     {
-                        other_params:'sensor=false',
+                        other_params:'sensor=false&libraries=places',
                         callback:
                             function(){
                                 var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122), mapTypeId:'hybrid', panControl:false };
@@ -408,6 +408,59 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 google.maps.event.addListener(gMap, 'click', function() {
                                     dbg(s,'click');
                                     if(infowindow && infowindow.setMap) infowindow.setMap(null);
+                                });
+
+                                // Create the search box and link it to the UI element.
+                                var googleSearchbox = document.getElementById('googleSearchbox');
+                                gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(googleSearchbox);
+                                var searchBox = new google.maps.places.SearchBox((googleSearchbox));
+                                var searchMarkers = [];
+
+                                // Listen for the event fired when the user selects an item from the
+                                // pick list. Retrieve the matching places for that item.
+                                google.maps.event.addListener(searchBox, 'places_changed', function() {
+                                    var places = searchBox.getPlaces();
+
+                                    if (places.length == 0) {
+                                        return;
+                                    }
+                                    for (var i = 0, marker; marker = searchMarkers[i]; i++) {
+                                        marker.setMap(null);
+                                    }
+
+                                    // For each place, get the icon, place name, and location.
+                                    searchMarkers = [];
+                                    var bounds = new google.maps.LatLngBounds();
+                                    for (var i = 0, place; place = places[i]; i++) {
+                                        var image = {
+                                            url: place.icon,
+                                            size: new google.maps.Size(71, 71),
+                                            origin: new google.maps.Point(0, 0),
+                                            anchor: new google.maps.Point(17, 34),
+                                            scaledSize: new google.maps.Size(25, 25)
+                                        };
+
+                                        // Create a marker for each place.
+                                        var searchMarker = new google.maps.Marker({
+                                            map: gMap,
+                                            icon: image,
+                                            title: place.name,
+                                            position: place.geometry.location
+                                        });
+
+                                        searchMarkers.push(searchMarker);
+
+                                        bounds.extend(place.geometry.location);
+                                    }
+
+                                    gMap.fitBounds(bounds);
+                                });
+
+                                // Bias the SearchBox results towards places that are within the bounds of the
+                                // current map's viewport.
+                                google.maps.event.addListener(gMap, 'bounds_changed', function() {
+                                    var bounds = gMap.getBounds();
+                                    searchBox.setBounds(bounds);
                                 });
 
                                 $timeout(function () {

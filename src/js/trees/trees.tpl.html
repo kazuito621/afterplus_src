@@ -303,6 +303,7 @@
 							<!-- begin center content area -->
 							<section class="map-container mainContent top-margin-none {{'mode_'+data.mode()}}" ng-class="{{'mode_'+data.mode()}}">
 								<div id='treeDetails' ng:cloak ng-show="data.showTreeDetails && data.mode()=='trees'" ng-include="'js/trees/edit.tpl.html'"></div>
+                                <input id="googleSearchbox" class="controls" type="text" placeholder="Search Box">
 								<div ng:cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="{{data.mode()}}" class="map"></div>
 							</section>	<!-- }}} mainContent -->
 						</div>	

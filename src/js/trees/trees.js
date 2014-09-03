@@ -345,7 +345,8 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             s.clearFilters = function(){
-                TFS.clearFilters();
+                TFS.clearFilters(false);
+                //TFS.filterTheFilters();
 				s.onSelectYear(false);
                 if(!s.trees || !s.trees.length || s.trees.length<1){
                     //s.filteredSites=angular.copy(s.initData.sites); 

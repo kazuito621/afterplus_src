@@ -20,15 +20,7 @@
             <thead>
             <tr>
                 <th class="td-check clickable-header text-center">
-                    <div class="btn-group text-left btn-check-uncheck">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-check-square-o"></i> <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" class="check-all"><i class="fa fa-check-square-o"></i></a></li>
-                            <li><a href="#" class="check-none"><i class="fa fa-square-o"></i></a></li>
-                        </ul>
-                    </div>
+                    <input type="checkbox" ng-model="allSites.selected">
                 </th>
                 <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
                     ID <i ng-class="sh.columnClass('siteID')" class='silver'></i>

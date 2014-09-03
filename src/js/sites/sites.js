@@ -56,30 +56,6 @@ var SitesCtrl = app.controller('SitesCtrl',
 
                     self.sh = SortHelper.sh(sitesFiltered, '', columnMap);
                     s.displayedSites = sitesFiltered.slice(0, 49);
-
-                    setTimeout(function()
-                    {
-                        $('.btn-check-uncheck .check-all').click(function(index, el)
-                        {
-                            var $table  = $(this).closest('table');
-                            $table.find('td.td-check input').each(function(index, el)
-                            {
-                                $(this).attr('checked' , 'checked').change();
-                            });
-                            return false;
-                        });
-
-                        $('.btn-check-uncheck .check-none').click(function(index, el)
-                        {
-                            var $table  = $(this).closest('table');
-                            $table.find('td.td-check input').each(function(index, el)
-                            {
-                                $(this).removeAttr('checked').change();
-                            });
-                            return false;
-                        });
-
-                    } , 2000);
                 });
             };
 

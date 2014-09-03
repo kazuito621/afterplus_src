@@ -86,6 +86,7 @@
     <div class="action-float-bar" ng-show="allSites.selectedIds.length > 0">
         <div class="container">
             <div class="action-float-bar-inner">
+				<i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp; 
                 <a href="#" ng-if="auth.isAtleast('inventory')" ng:cloak site-users-multi-edit-modal
                    on-save="refreshSites()" clients="initData.clients" sites="initData.sites" pre-selected="allSites.selectedIds">
                     Assign Users

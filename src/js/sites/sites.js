@@ -22,6 +22,14 @@ var SitesCtrl = app.controller('SitesCtrl',
             s.displayedSites = [];
             s.activePopover = {};
             s.auth = Auth;
+            s.allSites = {
+                selected: false,
+                selectedIds: [],
+                getSelected: function () {
+                    console.log('Get selected', this.selectedIds);
+                    return this.selectedIds;
+                }
+            };
             s.data = {
                 filterText: '',
                 getSiteCount: function () {
@@ -156,6 +164,34 @@ var SitesCtrl = app.controller('SitesCtrl',
                 }
 
                 s.type = 'site';
+            };
+
+            s.isSiteSelected = function (id) {
+                return s.allSites.selectedIds.indexOf(id) > -1;
+            };
+
+            s.toggleSiteSelection = function (id) {
+                var index = s.allSites.selectedIds.indexOf(id);
+                if (index > -1) {
+                    s.allSites.selectedIds.splice(index, 1);
+                    s.allSites.selected = false;
+                } else {
+                    s.allSites.selectedIds.push(id);
+                    if (s.allSites.selectedIds.length === sitesFiltered.length) {
+                        s.allSites.selected = true;
+                    }
+                }
+            };
+
+            s.toggleAllSitesSelection = function (newVal) {
+                newVal = newVal || !s.allSites.selected;
+                if (!newVal) {
+                    s.allSites.selected = false;
+                    s.allSites.selectedIds = [];
+                } else {
+                    s.allSites.selected = true;
+                    s.allSites.selectedIds = _.pluck(sitesFiltered, 'siteID');
+                }
             };
 
             init();

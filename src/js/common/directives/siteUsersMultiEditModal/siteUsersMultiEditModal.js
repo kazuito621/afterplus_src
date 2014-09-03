@@ -22,6 +22,7 @@ app.directive('siteUsersMultiEditModal',
                 scope.openModal = function () {
                     if (!modal) {
                         modal = $modal({scope: scope, template: '/js/common/directives/siteUsersMultiEditModal/siteUsersMultiEditModal.tpl.html', show: false});
+//                        modal = $modal({scope: scope, template: 'js/common/directives/siteUsersMultiEditModal/siteUsersMultiEditModal.tpl.html', show: false}); // DEV
                     }
 
                     modal.$promise.then(function () {
@@ -147,6 +148,12 @@ app.directive('siteUsersMultiEditModal',
 
                 var init = function () {
                     el.on('click', function (event) {
+                        if (scope.preSelected && scope.preSelected.length) {
+                            scope.selectedSites = _.filter(scope.sites, function (site) {
+                                return scope.preSelected.indexOf(site.siteID) > -1;
+                            });
+                        }
+
                         event.preventDefault();
                         scope.openModal();
                     });
@@ -162,7 +169,8 @@ app.directive('siteUsersMultiEditModal',
                 scope: {
                     onSave: '&',
                     clients: '=',
-                    sites: '='
+                    sites: '=',
+                    preSelected: '='
                 },
                 compile: function () {
                     return linker;

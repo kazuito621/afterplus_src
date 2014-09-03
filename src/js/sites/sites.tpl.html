@@ -1,17 +1,5 @@
 <div class='container' ng-controller="SitesCtrl">
     <button type="button"
-            ng-if="auth.isAtleast('inventory')"
-            ng:cloak
-            data-placement="center"
-            class="btn btn-lg btn-info pull-right topMargin5 bottomMargin5"
-            style="max-width: 100%; width: auto; margin-left: 20px;"
-            site-users-multi-edit-modal
-            on-save="refreshSites"
-            clients="initData.clients"
-            sites="initData.sites"
-            data-animation="am-fade-and-scale">Multi-site assignment</button>
-
-    <button type="button"
             ng:cloak
             data-placement="center"
             class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
@@ -30,8 +18,8 @@
         <table class='table table-striped'>
             <thead>
             <tr>
-                <th class="td-check clickable-header text-center">
-                    <input type="checkbox" ng-model="allSites.selected">
+                <th class="td-check clickable-header text-center" ng-if="auth.isAtleast('inventory')">
+                    <input type="checkbox" ng-checked="allSites.selected" ng-click="toggleAllSitesSelection()">
                 </th>
                 <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
                     ID <i ng-class="sh.columnClass('siteID')" class='silver'></i>
@@ -61,7 +49,9 @@
 
             <tbody infinite-scroll="showMoreSites()" infinite-scroll-distance="3">
             <tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
-                <td class="td-check text-center"><input type="checkbox" ></td>
+                <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
+                    <input type="checkbox" ng-checked="isSiteSelected(s.siteID)" ng-click="toggleSiteSelection(s.siteID)">
+                </td>
                 <td ng-bind="s.siteID"></td>
                 <td><a href='/#trees?siteID={{s.siteID}}'>{{s.siteName}}</a></td>
                 <td>{{s.city}}, {{s.state}}</td>
@@ -93,12 +83,14 @@
         </table>
     </div>
 
-</div>
-
-<div class="action-float-bar">
-    <div class="container">
-        <div class="action-float-bar-inner">
-            <a href="#">Assign Users</a>
+    <div class="action-float-bar">
+        <div class="container">
+            <div class="action-float-bar-inner">
+                <a href="#" ng-if="auth.isAtleast('inventory')" ng:cloak site-users-multi-edit-modal
+                   on-save="refreshSites()" clients="initData.clients" sites="initData.sites" pre-selected="allSites.selectedIds">
+                    Assign Users
+                </a>
+            </div>
         </div>
-    </div>    
+    </div>
 </div>

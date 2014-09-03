@@ -31,6 +31,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 
 
 	s.data = {
+	//@@todo - this doesnt bind propertly to radio buttons
+		statusFilters:'',
 		filterText: '',
 		getCount: function () {
 			if (estFiltered && estFiltered.length) {
@@ -62,7 +64,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			return self.sh.columnClass(col);
 		},
 		applySort: function () {
-			estFiltered = self.sh.makeSort(estFiltered);
+
+		//@@todo - we git a bug here when radio buttons are used
+			//estFiltered = self.sh.makeSort(estFiltered);
 		}
 	};
 
@@ -112,6 +116,15 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	});
 
 
+	s.$watch('data.statusFilters', function(filt){
+	dbg(2);
+		if(filt.sent) filters.status='sent';
+		else if(filt.approved) filters.status='approved';
+		else if(filt.completed) filters.status='completed';
+		else delete filters.status;
+		dbg(filters);
+		applyFilter();
+	});
 
 
 	init();

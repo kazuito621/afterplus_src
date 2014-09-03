@@ -83,7 +83,7 @@
         </table>
     </div>
 
-    <div class="action-float-bar">
+    <div class="action-float-bar" ng-show="allSites.selectedIds.length > 0">
         <div class="container">
             <div class="action-float-bar-inner">
                 <a href="#" ng-if="auth.isAtleast('inventory')" ng:cloak site-users-multi-edit-modal

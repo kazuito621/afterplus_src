@@ -223,6 +223,26 @@ _.mixin({
 		}
 		return size;
 	}
+    //deep copy object->object
+    ,deepCopy : function(destination, source) {
+        //$.extend()
+        for (var property in source) {
+            if (typeof source[property] === "object" && source[property] !== null) {
+                //console.info(property + ' obj');
+                if (source[property] instanceof Array){
+                    destination[property] = [];
+                }
+                else{
+                    destination[property] = {};
+                }
+                _.deepCopy(destination[property], source[property]);
+            } else {
+                destination[property] = source[property];
+                //console.info(property + ' not obj');
+            }
+        }
+        return destination;
+    }
 });
 		
 	

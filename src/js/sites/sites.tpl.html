@@ -1,4 +1,15 @@
 <div class='container' ng-controller="SitesCtrl">
+    <button type="button"
+            ng-if="auth.isAtleast('inventory')"
+            ng:cloak
+            data-placement="center"
+            class="btn btn-lg btn-info pull-right topMargin5 bottomMargin5"
+            style="max-width: 100%; width: auto; margin-left: 20px;"
+            site-users-multi-edit-modal
+            on-save="refreshSites"
+            clients="initData.clients"
+            sites="initData.sites"
+            data-animation="am-fade-and-scale">Multi-site assignment</button>
 
     <button type="button"
             ng:cloak

@@ -2253,3 +2253,17 @@ footer {
   font-size: 12px;
   line-height: 16px;
 }
+
+/* line 2, ../scss/partials/_sites.scss */
+.action-float-bar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+/* line 10, ../scss/partials/_sites.scss */
+.action-float-bar .action-float-bar-inner {
+  background: #f3f3f4;
+  padding: 15px 15px;
+  box-shadow: 0 0px 9px rgba(0, 0, 0, 0.5);
+}

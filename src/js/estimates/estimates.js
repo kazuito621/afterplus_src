@@ -1,15 +1,19 @@
 var EstimatesListCtrl = app.controller('EstimatesListCtrl', 
-['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper',
-function ($scope, $route, Api, $location, Auth, SortHelper) {
+['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
+function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
     'use strict';
     var s = window.ecs = $scope;
-	var myStateID='estimates';
-    var self = this;
-    s.estimates = [];
+	var myStateID='estimates',
+		estimates=[],  		// array of original estimates
+		estFiltered=[],  		// filtered list of estimates sites... which s.displayedSites uses as its source
+		filters = {},
+		filterTextTimeout,
+		self = this,
+    	columnMap = {
+        	'total_price': 'number'
+    	};
     s.displayedEstimates = [];
-    var columnMap = {
-        'total_price': 'number'
-    };
+  	this.fh = FilterHelper.fh();
 
     var init = function () {
         var search = $location.search();
@@ -19,31 +23,96 @@ function ($scope, $route, Api, $location, Auth, SortHelper) {
 					if(d.status=='sent') d.status='needs_approval';
 				});
 			}
-            s.estimates = data;
-            self.sh = SortHelper.sh(s.estimates, '', columnMap);
-            s.displayedEstimates = s.estimates.slice(0, 49);
+            estimates = estFiltered = data;
+            self.sh = SortHelper.sh(estimates, '', columnMap);
+            s.displayedEstimates = estFiltered.slice(0, 49);
         });
     };
 
+
+	s.data = {
+		filterText: '',
+		getCount: function () {
+			if (estFiltered && estFiltered.length) {
+				return estFiltered.length;
+			}
+			return 0;
+		}
+	};
+
+
+
     s.sh = {
         sortByColumn: function (col) {
-            s.estimates = self.sh.sortByColumn(col);
-            s.displayedEstimates = s.estimates.slice(0, s.displayedEstimates.length);
+            estimates = self.sh.sortByColumn(col);
+            s.displayedEstimates = estimates.slice(0, s.displayedEstimates.length);
         },
         columnClass: function (col) {
             return self.sh.columnClass(col);
         }
     };
 
+	s.sh = {
+		sortByColumn: function (col) {
+			applyFilter();
+			estFiltered = self.sh.sortByColumn(col);
+			s.displayedEstimates = estFiltered.slice(0, 49);
+		},
+		columnClass: function (col) {
+			return self.sh.columnClass(col);
+		},
+		applySort: function () {
+			estFiltered = self.sh.makeSort(estFiltered);
+		}
+	};
+
+
     s.showMoreEstimates = function () {
         var count = s.displayedEstimates.length;
-        if (count === s.estimates.length) {
+        if (count === estimates.length) {
             return;
         }
 
-        var addon = s.estimates.slice(count, count + 50);
+        var addon = estimates.slice(count, count + 50);
         s.displayedEstimates = s.displayedEstimates.concat(addon);
     };
+
+
+	var clearFilter = function () {
+		if (!filters || (_.objSize(filters) === 0)) { return; }
+		filters = {};
+		estFiltered = estimates;
+		s.sh.applySort();
+		s.displayedEstimates = estFiltered.slice(0, 49);
+	};
+
+	var applyFilter = function () {
+		estFiltered = self.fh.applyFilter(estimates, filters);
+		s.sh.applySort();
+		s.displayedEstimates = estFiltered.slice(0, 49);
+	};
+
+	// when search box is changed, then update the filters, but
+	// add delay so we dont over work the browser.
+	s.$watch('data.filterTextEntry', function (txt, old) {
+		if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
+		filterTextTimeout = $timeout(function () {
+			if (txt === '' || !txt) {
+				clearFilter();
+			} else if (!isNaN(txt)) {
+				// if search entry is a number, search by siteID and name
+				filters = {reportID: txt, name: txt, siteName:txt};
+				applyFilter();
+			} else {
+				// if just letters, then search by name and city
+				filters = {siteName: txt, name: txt};
+				applyFilter();
+			}
+		}, 500);
+	});
+
+
+
 
 	init();
 	s.$on('nav', function (e, data) {

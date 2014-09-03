@@ -9,15 +9,19 @@ app.factory('FilterHelper', function () {
 
             _.each(filter, function (val, key) {
                 if (val) {
-                    if (key.substr(-2).toLowerCase() === 'id') { // filtering *ID as numbers
-                        if (item[key] === val) {
-                            res = true;
-                            return true;
-                        }
-                    } else if (item[key].toLowerCase().search(val.toLowerCase()) > -1) {
-                        res = true;
-                        return true;
-                    }
+					try{
+						if (key.substr(-2).toLowerCase() === 'id') { // filtering *ID as numbers
+							if (item[key] === val) {
+								res = true;
+								return true;
+							}
+						} else if (item[key].toLowerCase().search(val.toLowerCase()) > -1) {
+							res = true;
+							return true;
+						}
+					}catch(e){
+						return false;
+					}
                 }
             });
 

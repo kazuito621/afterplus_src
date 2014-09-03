@@ -11,6 +11,9 @@
         <table class='table table-striped'>
             <thead>
                 <tr>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('reportID')">
+                        ID <i ng-class="sh.columnClass('name')" class='silver'></i>
+                    </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('name')">
                         Estimate Name <i ng-class="sh.columnClass('name')" class='silver'></i>
                     </th>
@@ -32,6 +35,7 @@
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
                 <tr ng-repeat="e in displayedEstimates">
+                    <td ng-bind="e.reportID"></td>
                     <td><a href="#/trees?reportID={{e.reportID}}" ng-bind="e.name"></a></td>
                     <td ng-bind="e.siteName"></td>
                     <td>$ {{e.total_price}}</td>

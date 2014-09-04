@@ -330,6 +330,26 @@ footer
 	}
 }
 
+.clr-approved {
+	background-color: $approved !important;
+	color: #fff !important;
+}
+.clr-draft {
+	background-color: $draft !important;
+	color: #fff !important;
+	}
+.clr-sent {
+	background-color: $sent !important;
+	color: #fff !important;
+	}
+.clr-completed {
+	background-color: $completed !important;
+	color: #fff !important;
+	}
+.clr-paid {
+	background-color: $paid !important;
+	color: #fff !important;
+	}
 
 .small-tag
 {

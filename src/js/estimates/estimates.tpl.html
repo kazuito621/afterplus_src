@@ -51,7 +51,13 @@
                     <td ng-bind="e.siteName_short" title="{{e.siteName}}"></td>
                     <td ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
                     <td>$ {{e.total_price}}</td>
-                    <td><span ng-bind='e.status' ng-class='"small-tag "+e.status'><span></td>
+                    <td>
+						<button class="btn btn-default" ng-class="'clr-'+e.status" ng-model="e.status" ng-change="setReportStatus(e,this)"
+								placeholder="{{e.status}}"
+								ng-options="s.id as s.txt for s in data.statuses(e.status)"
+								bs-select onclick="return false;">
+						</button> 
+					</td>
                     <td>{{e.tstamp_updated | formatDate}}</td>
                 </tr>
             </tbody>

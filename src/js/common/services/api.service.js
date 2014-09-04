@@ -81,6 +81,9 @@ function (Rest, $rootScope, $q, $location ) {
             dbg(reportObj, "save rep ");
             return Rest.all('estimate').post(reportObj);
         },
+		setReportStatus: function(rptID, status){
+			return Rest.one('estimate',rptID).post(status);
+		},
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },

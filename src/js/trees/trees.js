@@ -230,17 +230,20 @@ var TreesCtrl = app.controller('TreesCtrl',
             // 		1. filter the clients dropdown, and set selected.clientID = null
             //		2. filter the sites dropdown, and set selected.siteID = null
             //		3. Update the map with Sites
+            //      4. Reset all filters
             s.onSelectClientTypeID = function() {
                 filterClients();
                 filterSitesByClients();
                 s.selected.clientID=s.selected.siteID='';
                 showMappedSites();
+                TFS.clearFilters(true);
             };
 
             // when user selects clientID:
             //		1. filter the sites dropdown and set selected.siteID = null 
             //		2. set selected.clientTypeID to corresponding value
             //		3. Update the map with Sites
+            //      4. Reset all filters
             s.onSelectClientID = function(id){
                 if(id && id>0){
                     filterSitesByClients();
@@ -248,6 +251,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var clientObj = s.getClientByID(s.selected.clientID);
                     s.selected.clientTypeID=clientObj.clientTypeID;
                     showMappedSites();
+                    TFS.clearFilters(true);
                 }else{					//else, go back to showing clientType
                     s.onSelectClientTypeID();
                 }

@@ -213,6 +213,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 	this.clearFilters = function(clearTrees){
 		if(clearTrees && this.trees && this.trees.length){
 			this.trees.splice(0,this.trees.length);
+            this.data.filterTypeCounts={species:0, dbh:0, rating:0, treatments:0, caDamage:0, building:0, powerline:0};
 			this.data.treeResultsCount=0
 		}
 		// clear the checkbox models

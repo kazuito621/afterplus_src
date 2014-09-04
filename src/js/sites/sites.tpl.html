@@ -1,54 +1,97 @@
 <div class='container' ng-controller="SitesCtrl">
+    <button type="button"
+            ng:cloak
+            data-placement="center"
+            class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+            style="max-width: 100%; width: auto;"
+            site-edit-modal
+            on-save="refreshSites"
+            clients="initData.clients"
+            mode="new"
+            data-animation="am-fade-and-scale">New Property</button>
+	<br>
+	<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
+	<a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''" class='fa fa-times _red _size5 hand'></a>
+	<span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
 
-	<button type="button"
-		ng:cloak
-		data-placement="center"
-		ng-click="newSiteModalOpen()"
-		class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
-        style="max-width: 100%; width: auto;"
-		data-animation="am-fade-and-scale" >New Property</button>
+    <div class='table-responsive' ng-if="displayedSites.length > 0">
+        <table class='table table-striped'>
+            <thead>
+            <tr>
+                <th class="td-check clickable-header text-center" ng-if="auth.isAtleast('inventory')">
+                    <input type="checkbox" ng-checked="allSites.selected" ng-click="toggleAllSitesSelection()">
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
+                    ID <i ng-class="sh.columnClass('siteID')" class='silver'></i>
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
+                    Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
+                        Location <i ng-class="sh.columnClass(['city', 'state'])" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
+					Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
+					<i class='fa fa-tree' bs-tooltip title='Total Tree Count'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
+					<i class='fa fa-file-text-o' bs-tooltip title='Total Estimate Count'></i> <i ng-class="sh.columnClass('reportCount')" class='silver'></i>
+				</th>
+				<th class="clickable-header" ng-click="sh.sortByColumn('userCount')">
+					<i class='fa fa-user silver'></i> <i ng-class="sh.columnClass('userCount')" class='silver'></i>
+				</th>
+				<th ng-if="auth.isAtleast('inventory')"></th>
+            </tr>
+            </thead>
 
-	<div class='table-responsive' ng-if="displayedSites.length > 0">
-		<h1>Properties</h1>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('siteID')">
-                        ID <i ng-class="sh.columnClass('siteID')"></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
-                        Name <i ng-class="sh.columnClass('siteName')"></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
-                        Location <i ng-class="sh.columnClass(['city', 'state'])"></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
-                        Trees <i ng-class="sh.columnClass('treeCount')"></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('reportCount')">
-                        Estimates <i ng-class="sh.columnClass('reportCount')"></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
-                        Last Activity <i ng-class="sh.columnClass('tstamp_lastContact')"></i>
-                    </th>
-					<th ng-if="auth.is('admin')"></th>
-				</tr>
-			</thead>
+
             <tbody infinite-scroll="showMoreSites()" infinite-scroll-distance="3">
-                <tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
-                    <td ng-bind="s.siteID"></td>
-                    <td><a href ng-click='select(s.siteID)'>{{s.siteName}}</a></td>
-                    <td>{{s.city}}, {{s.state}}</td>
-                    <td>{{s.treeCount}}</td>
-                    <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
-                    <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
-                    <td>
-                        <a ng-if="auth.isAtleast('inventory')" ng-click="existingSiteModalOpen(s.siteID)" class="fa fa-pencil _size7 _grey hoverDisplay" bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
-                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size7 hoverDisplay" bs-tooltip title="Delete" style="text-decoration: none;"></a>
-                    </td>
-                </tr>
+            <tr ng-repeat="s in displayedSites" ng-class="{active : isSelected(s.siteID)}" class='hoverHotspot'>
+                <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
+                    <input type="checkbox" ng-checked="isSiteSelected(s.siteID)" ng-click="toggleSiteSelection(s.siteID)">
+                </td>
+                <td ng-bind="s.siteID"></td>
+                <td><a href='/#trees?siteID={{s.siteID}}'>{{s.siteName}}</a></td>
+                <td>{{s.city}}, {{s.state}}</td>
+                <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
+                <td>{{s.treeCount}}</td>
+                <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
+                <td>
+                    <a ng-if="s.userCustCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
+                       class='fa fa-user olive hand' bs-tooltip title='A CUSTOMER contact exists. Click to edit.'></a>
+                    <a ng-if="s.userStaffCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
+                       class='fa fa-user red hand' bs-tooltip title='A STAFF contact exists. Click to edit.'></a>
+                </td>
+                <td ng-if="auth.isAtleast('inventory')">
+					<span ng-if="s.userCustCount<1 || s.userStaffCount<1">
+						<i site-users-edit-modal site="s" on-save="refreshSite"
+						   class="fa fa-frown-o _red _size6"
+						   title="Property is missing client contacts or company sales reps!"
+						   bs-tooltip style="cursor: pointer;"></i> &nbsp;
+					</span>
+					<span>
+						<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
+                           class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;
+					</span>
+                    <a ng-if="auth.isAtleast('inventory')" ng-click="queueOrDequeueItemForDelete(s.siteID, $event)" class="fa fa-times _red _size6 hoverDisplay"
+                       bs-tooltip title="Delete" style="text-decoration: none; cursor:pointer; cursor: hand;"></a>
+                </td>
+            </tr>
             </tbody>
-		</table>
-	</div>
+        </table>
+    </div>
 
+    <div class="action-float-bar" ng-show="allSites.selectedIds.length > 0">
+        <div class="container">
+            <div class="action-float-bar-inner">
+				<i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp; 
+                <a href="#" ng-if="auth.isAtleast('inventory')" ng:cloak site-users-multi-edit-modal
+                   on-save="refreshSites()" clients="initData.clients" sites="initData.sites" pre-selected="allSites.selectedIds">
+                    Assign Users
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

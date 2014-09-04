@@ -314,9 +314,11 @@ section.mainContent.mode_estimate{
 
 
 .mapWindowContainer {
+	line-height: 1.4em;
 	/*width:350px;*/
 	/*height:320px;*/
 }
+
 .mwcImg {
 	max-width:100%;
 	/*height:auto;*/
@@ -668,7 +670,9 @@ td.estimate_multirow_col{
   filter: alpha(opacity=100); /* For IE8 and earlier */
   }
 .hoverDisplay{
-  display: block !importnat;
+	/* this was misspelled, so not in use anyways... when i spelled it correctly, some formatting got messed up, so just ignore for now
+	display: block !importnat;
+	*/
   opacity: 0.08;
   filter: alpha(opacity=8); /* For IE8 and earlier */
   }
@@ -708,9 +712,18 @@ td.estimate_multirow_col{
     cursor: pointer;
 }
 
-/** this messes up the map for some reason
+/* this messes up the map for some reason
 .ng-hide{
   display: block!important;
   visibility:hidden; 
   }
   */
+
+.hand{
+	cursor:pointer; cursor:hand;
+	}
+
+/*to color old years options in years-filter*/
+.old-year-filter-option {
+    background-color: #cccccc !important;
+}

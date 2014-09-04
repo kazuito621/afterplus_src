@@ -1,4 +1,4 @@
-<div ng-controller="ReportCtrl" class='ReportCtrl div_{{routeParams.stateID}} padding-top-none'>
+<div ng-controller="ReportCtrl as ReportCtrl" class='ReportCtrl div_{{routeParams.stateID}} padding-top-none'>
 
 <!-- LOAD recent estimates list -->
 <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
@@ -24,8 +24,9 @@
 			<div class="col-md-6 col">
 				<div class="estimate-info">
 					<dl class="small">
-						<dt>Created: </dt>
-						<dd ng-bind="report.tstamp_updated"></dd>
+						<dt>Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
+								Estimate ID: <span ng-bind="report.reportID"></span>
+						</dt>
 					</dl>
 					<h1 class="title" ng-text="'Estimate for ' + report.siteName"></h1>
 					<p class="name">
@@ -36,10 +37,6 @@
 							{{report.name}}
 						</span>
 					</p>	
-					<dl>
-						<dt>Estimate ID: </dt>
-						<dd ng-bind="report.reportID"></dd>
-					</dl>
 					<dl>	
 						<dt>Contact: </dt>
 						<dd ng-bind="report.contact + ' ' + report.contactPhone"></dd>
@@ -47,6 +44,10 @@
 					<dl>
 						<dt>Client: </dt>
 						<dd ng-bind='report.clientName'></dd>
+					</dl>
+					<dl>
+						<dt>Property: </dt>
+						<dd ng-bind="report.siteName"></dd>
 					</dl>
 					<dl>	
 						<dt>Address: </dt>
@@ -75,11 +76,6 @@
 				<div class="bid-info">
 					<div class="logos">
 						<span class="logo"><img src="img/logo_tcia.png"></span>
-						<span class="logo"><img src="img/logo_wcisa.png"></span>
-						<span class="logo"><img src="img/logo_ctsp.png"></span>
-						<span class="logo"><img src="img/logo_papa.jpg"></span>
-						<span class="logo"><img src="img/logo_treeworker.jpg"></span>
-						<span class="logo"><img src="img/logo_bcma.jpg"></span>
 					</div>
 					<p class="bid">Total Bid: ${{report.total.grand|formatPrice}}</p>
 				</div>
@@ -98,6 +94,8 @@
 				>Send</button>
 		<a ng-if='report.reportLink' href='{{report.reportLink}}' target='_cust_view'
 			onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> 
+		(<a ng-if='report.reportLink' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF</a>)
+			
 		<div class="clearfix"></div>
 	</div>	 
 
@@ -144,7 +142,10 @@
 							<tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
 								ng-init="itemIndex = $index"
 								ng-class="rowHighlightClass(item)"
-								ng-mouseover="hover=true" ng-mouseleave="hover=false" id="rpt_item_{{item.treeID}}">
+								class='hoverHotspot'
+								ng-mouseover="hover=true;onItemRollOver(TreesCtrl.findMarker(item.treeID))"
+                                ng-mouseleave="hover=false;onItemRollOut(TreesCtrl.findMarker(item.treeID))"
+                                id="rpt_item_{{item.treeID}}">
 				                <td data-title="listing_image" class="td-image">
 									<img bo-src='item.imgSm + tree_cachebuster' class='item_thumb'
 										data-placement="right"
@@ -187,10 +188,10 @@
 
 											<td data-title="listing_options" class="td-action">
 												<a href='#/tree_edit/{{item.treeID}}' class='row-action' ng-if="auth.isAtleast('inventory')">
-                                                    <i class="fa fa-pencil clr-primary"></i>
+                                                    <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
                                                 </a>
 												<a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action' ng-if="auth.is('admin')">
-                                                    <i class="fa fa-times clr-danger"></i>
+                                                    <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
                                                 </a>
 											</td>
 										</tr>
@@ -279,12 +280,12 @@
 					Total: &#36;{{report.total.grand|formatPrice}}
 				</div>
 
-				<div class="section-container" ng-if="data.mode()=='trees'">
+				<div class="section-container" ng-if="data.mode()=='trees' && auth.isAtleast('inventory')">
 			   		<h6 class="section-sub-title">Notes</h6>
 			        <textarea ckeditor="editorOptions" ng-model="report.notes" placeholder="Notes" style='width:100%;height:100px;'></textarea>
 			     </div>
 			     
-			 	<div class="section-container" ng-if="data.mode()=='estimate'">
+			 	<div class="section-container" ng-if="data.mode()!='trees' || !auth.isAtleast('inventory')">
 			 		<h6 class="section-sub-title">Notes</h6>
 			        <span ng-bind-html="report.notes"></span>
 
@@ -292,6 +293,14 @@
 					<div ng-repeat=" desc in treatmentDescriptions "> 
 						<p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
 					</div>
+			   	</div>
+
+			   	<div class="logo-container">
+		   			<span class="logo"><img src="img/logo_wcisa.png"></span>
+					<span class="logo"><img src="img/logo_ctsp.png"></span>
+					<span class="logo"><img src="img/logo_papa.jpg"></span>
+					<span class="logo"><img src="img/logo_treeworker.jpg"></span>
+					<span class="logo"><img src="img/logo_bcma.jpg"></span>
 			   	</div>
 			   	
    			</div>

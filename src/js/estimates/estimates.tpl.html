@@ -1,30 +1,47 @@
 <div ng-include="'js/trees/action.tpl.html'" ng-if="Auth.is('customer')"></div>
 <div class='container' ng-controller="EstimatesListCtrl">    
-    <div class='table-responsive' ng-if="estimates.length > 0">
+
+	<br>
+	<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
+	<a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''" class='fa fa-times _red _size5 hand'></a>
+	<span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
+	<BR><BR>
+
+    <div class='table-responsive' ng-if="displayedEstimates.length > 0">
         <table class='table table-striped'>
             <thead>
                 <tr>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('reportID')">
+                        ID <i ng-class="sh.columnClass('name')" class='silver'></i>
+                    </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('name')">
-                        Estimate Name <i ng-class="sh.columnClass('name')"></i>
+                        Estimate Name <i ng-class="sh.columnClass('name')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
-                        Site Name <i ng-class="sh.columnClass('siteName')"></i>
+                        Site Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
+                    </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('sales_email')">
+                        Sales Rep <i ng-class="sh.columnClass('sales_email')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('total_price')">
-                        Total <i ng-class="sh.columnClass('total_price')"></i>
+                        Total <i ng-class="sh.columnClass('total_price')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('status')">
-                        Status <i ng-class="sh.columnClass('status')"></i>
+                        Status <i ng-class="sh.columnClass('status')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
-                        Updated <i ng-class="sh.columnClass('tstamp_updated')"></i>
+                        Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
                     </th>
                 </tr>
             </thead>
+
+
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
                 <tr ng-repeat="e in displayedEstimates">
-                    <td><a href="#/estimate/{{e.reportID}}" ng-bind="e.name" ng-click="goToEstimate(e.reportID)"></a></td>
-                    <td ng-bind="e.siteName"></td>
+                    <td ng-bind="e.reportID"></td>
+                    <td><a href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a></td>
+                    <td ng-bind="e.siteName_short" title="{{e.siteName}}"></td>
+                    <td ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
                     <td>$ {{e.total_price}}</td>
                     <td><span ng-bind='e.status' ng-class='"small-tag "+e.status'><span></td>
                     <td>{{e.tstamp_updated | formatDate}}</td>

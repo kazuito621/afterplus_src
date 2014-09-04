@@ -48,8 +48,8 @@
 						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
 					</div>
 					<!-- hide for now, since the feature is not ready -->
-					<div class="col-xs-4 col" ng-if="1==2">
-						<a href="#" class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
+					<div class="col-xs-4 col" ng-if="report.token">
+						<a href="/go/estimate/pdf/{{report.token}}" target=_new class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
 					</div>
 					
 				</div>

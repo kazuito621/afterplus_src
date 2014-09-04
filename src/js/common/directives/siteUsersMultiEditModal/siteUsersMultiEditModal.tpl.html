@@ -1,0 +1,140 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header" ng-show="title">
+                <button type="button" class="close" ng-click="$parent.closeModal()">&times;</button>
+                <h4 class="modal-title" ng-bind="title"></h4>
+            </div>
+
+            <div>
+                <form class="form-inline">
+                    <div class='panel panel-default bottomMargin0'>
+                        <div class='panel-heading'>
+                            <h3 class='panel-title'>Edit users</h3>
+                        </div>
+                        <div class='panel-body'>
+                            <div class="containter">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4 ng-show="selectedSites.length" style="font-weight: bold;">
+                                            Edit users for:
+                                        </h4>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-primary pull-right"
+                                                ng-click="showAddForm('site')" >
+                                            <i class='fa fa-plus white'></i> More Sites
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row" ng-show="selectedSites.length" style="margin-top: 10px; margin-bottom: 10px;">
+                                    <div class="col-sm-12">
+                                        <span class="label label-primary" ng-repeat="s in selectedSites" style="display: inline-block; margin: 3px; padding: 5px; font-size: 14px; cursor: pointer;" ng-click="deselect(s, $index)">
+                                            {{s.siteName}}
+                                            <i class="fa fa-times-circle-o"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="row" ng-show="$parent.showAddNewSite === true" style="margin-top: 10px;">
+                                    <form ng-submit="addNewSite($event)">
+                                        <div class="col-sm-10">
+                                            <input type="text" required placeholder="Site name" style="width: 100%;" ng-model="newSite.name" id='newSiteName' sites-auto-complete sites="sites" callback="siteSelect" bs-typeahead>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button ng-click="addNewSite($event)">Add</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div ng-show="selectedSites.length">
+                                    <div class="row" style="margin-top: 12px;">
+                                        <div class="col-sm-8" style="font-weight: bold;">
+                                            Site contacts
+                                        </div>
+                                        <div class="col-sm-3 col-offset-1">
+                                            <button type="button" class="btn btn-primary pull-right"
+                                                    ng-click="showAddForm('customer')" >
+                                                <i class='fa fa-plus white'></i> New
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-repeat="c in contacts" style="margin-top: 10px;" ng-show="contacts.length > 0">
+                                        <div class="col-sm-12">
+                                            {{c.email}}
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-show="$parent.showAddNewSiteContact === true" style="margin-top: 10px;">
+                                        <form ng-submit="addNewSiteContact($event)">
+                                            <div class="col-sm-4">
+                                                <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newContact.email" id='newContactEmail'
+                                                       user-auto-complete="contactSelect" user-roles="customer" user-ignore="contacts" bs-typeahead>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" placeholder="First name" required style="width: 100%;" ng-model="newContact.fName">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input type="text" placeholder="Last name" required style="width: 100%;" ng-model="newContact.lName">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button ng-click="addNewSiteContact($event)">Add</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <hr> <!-- ================================================================== -->
+
+                                    <div class="row" style="margin-top: 12px;">
+                                        <div class="col-sm-8" style="font-weight: bold;">
+                                            AplusTree Reps
+                                        </div>
+                                        <div class="col-sm-3 col-offset-1">
+                                            <button type="button" class="btn btn-primary pullright"
+                                                    ng-click="showAddForm('rep')" >
+                                                <i class='fa fa-plus white'></i> New
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-repeat="r in reps" style="margin-top: 10px;" ng-show="reps.length > 0">
+                                        <div class="col-sm-12">
+                                            {{r.email}} - {{r.role}}
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-show="$parent.showAddNewSiteRep === true" style="margin-top: 10px;">
+                                        <form ng-submit="addNewRepContact($event)">
+                                            <div class="col-sm-3">
+                                                <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newRep.email" id='newRepEmail'
+                                                       user-auto-complete="repSelect" user-roles="sales,inventory,admin" user-ignore="reps" bs-typeahead>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="text" placeholder="First name" required style="width: 100%;" ng-model="newRep.fName">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="text" placeholder="Last name" required style="width: 100%;" ng-model="newRep.lName">
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <select ng-model="newRep.role" required>
+                                                    <option disabled value="">Role</option>
+                                                    <option value="sales">Sales</option>
+                                                    <option value="inventory">Inventory</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button ng-click="addNewSiteRep($event);">Add</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer topMargin0">
+                        <button type="button" class="btn btn-default" ng-click="$parent.closeModal();">CLOSE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

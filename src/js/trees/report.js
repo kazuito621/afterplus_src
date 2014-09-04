@@ -269,6 +269,37 @@ var ReportCtrl = app.controller(
                 });
             };
 
+            var animateMarker = function (marker, animationType) {
+                if(!google.maps || !google.maps.Animation) { return; }
+                var animation = google.maps.Animation[animationType];
+
+                if (animationType === null) {
+                    animation = null;
+                }
+
+                if (marker) {
+                    marker.setAnimation(animation);
+                }
+            };
+
+            // Handles animation of google map tree pins...
+            // When user rolls over a tree result, the pin drops
+            var hoveredItem = {
+                animationCompleted: false
+            };
+
+            s.onItemRollOver = function (marker) {
+                if (!hoveredItem.animationCompleted) {
+                    animateMarker(marker, 'BOUNCE');
+                }
+                hoveredItem.animationCompleted = true;
+            };
+
+            s.onItemRollOut = function (marker) {
+                animateMarker(marker, null);
+                hoveredItem.animationCompleted = false;
+            };
+
             // only if in trees state...
             if (s.renderPath[0] === 'trees') {
                 RS.loadRecent();

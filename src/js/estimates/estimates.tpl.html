@@ -20,6 +20,9 @@
                     <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
                         Site Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
                     </th>
+                    <th class="clickable-header" ng-click="sh.sortByColumn('sales_email')">
+                        Sales Rep <i ng-class="sh.columnClass('sales_email')" class='silver'></i>
+                    </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('total_price')">
                         Total <i ng-class="sh.columnClass('total_price')" class='silver'></i>
                     </th>
@@ -36,8 +39,9 @@
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
                 <tr ng-repeat="e in displayedEstimates">
                     <td ng-bind="e.reportID"></td>
-                    <td><a href="#/trees?reportID={{e.reportID}}" ng-bind="e.name"></a></td>
-                    <td ng-bind="e.siteName"></td>
+                    <td><a href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a></td>
+                    <td ng-bind="e.siteName_short" title="{{e.siteName}}"></td>
+                    <td ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
                     <td>$ {{e.total_price}}</td>
                     <td><span ng-bind='e.status' ng-class='"small-tag "+e.status'><span></td>
                     <td>{{e.tstamp_updated | formatDate}}</td>

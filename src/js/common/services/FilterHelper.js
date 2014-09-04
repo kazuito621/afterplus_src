@@ -6,7 +6,6 @@ app.factory('FilterHelper', function () {
 
         this.matchFilter = function (item, filter) { // returns true if item matches ANY of the filter conditions
             var res = false;
-
             _.each(filter, function (val, key) {
                 if (val) {
 					try{
@@ -19,9 +18,7 @@ app.factory('FilterHelper', function () {
 							res = true;
 							return true;
 						}
-					}catch(e){
-						return false;
-					}
+					}catch(e){}
                 }
             });
 

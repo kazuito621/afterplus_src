@@ -18,11 +18,19 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     var init = function () {
         var search = $location.search();
         Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
-			if(Auth.is('customer')){
-				_.each(data, function(d){
-					if(d.status=='sent') d.status='needs_approval';
-				});
-			}
+			var isCust=Auth.is('customer');
+			_.each(data, function(d){
+				if(isCust && d.status=='sent') d.status='needs_approval';
+
+				if(d.siteName && d.siteName.length>40) d.siteName_short=d.siteName.substr(0,40)+'...';
+				else d.siteName_short=d.siteName
+
+				if(d.name && d.name.length>40) d.name_short=d.name.substr(0,40)+'...';
+				else d.name_short=d.name
+
+				d.sales_email_short=d.sales_email;
+				if(d.sales_email_short) d.sales_email_short=d.sales_email.split('@')[0];
+			});
             estimates = estFiltered = data;
             self.sh = SortHelper.sh(estimates, '', columnMap);
             s.displayedEstimates = estFiltered.slice(0, 49);
@@ -104,8 +112,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				filters = {reportID: txt, name: txt, siteName:txt};
 				applyFilter();
 			} else {
-				// if just letters, then search by name and city
-				filters = {siteName: txt, name: txt};
+				// if just letters, then search by name and city, and sales person
+				filters = {siteName: txt, name:txt, sales_email:txt, status:txt};
 				applyFilter();
 			}
 		}, 500);

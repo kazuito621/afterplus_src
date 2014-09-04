@@ -2,10 +2,11 @@
 <div class='container' ng-controller="EstimatesListCtrl">    
 
 	<div class='pull-right topMargin5'>
-		<div class="btn-group" ng-model="data.statusFilters" bs-checkbox-group>
-		 	<label class="btn btn-default"><input type="radio" value="sent"> Sent</label>
-		    <label class="btn btn-default"><input type="radio" value="approved"> Approved</label>
-			<label class="btn btn-default"><input type="radio" value="completed"> Completed</label>
+		<div class="btn-group" bs-checkbox-group>
+		 	<label ng-click="setStatusFilter('all')" class="btn btn-default"><input type="radio"></input> All</label>
+		 	<label ng-click="setStatusFilter('sent')" class="btn btn-default"><input type="radio"></input> Sent</label>
+		    <label ng-click="setStatusFilter('approved')" class="btn btn-default"><input type="radio"></input> Approved</label>
+			<label ng-click="setStatusFilter('completed')" class="btn btn-default"><input type="radio"></input> Completed</label>
 		</div>
 	</div>
 	<br>

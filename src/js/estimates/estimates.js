@@ -37,10 +37,14 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         });
     };
 
+	s.setStatusFilter=function(status){
+		if(status && status!='all') filters.status=status;
+		else delete filters.status;
+		applyFilter();
+	}
+
 
 	s.data = {
-	//@@todo - this doesnt bind propertly to radio buttons
-		statusFilters:'',
 		filterText: '',
 		getCount: function () {
 			if (estFiltered && estFiltered.length) {
@@ -121,17 +125,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				applyFilter();
 			}
 		}, 500);
-	});
-
-
-	s.$watch('data.statusFilters', function(filt){
-	dbg(2);
-		if(filt.sent) filters.status='sent';
-		else if(filt.approved) filters.status='approved';
-		else if(filt.completed) filters.status='completed';
-		else delete filters.status;
-		dbg(filters);
-		applyFilter();
 	});
 
 

@@ -194,6 +194,27 @@ var SitesCtrl = app.controller('SitesCtrl',
                 }
             };
 
+            s.assignSelf = function (role, event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (s.allSites.selectedIds.length === 0) { return; }
+
+                var authData = Auth.data();
+                var user = {
+                    role: role,
+                    fName: authData.fName,
+                    lName: authData.lName,
+                    userID: authData.userID,
+                    siteIDs: s.allSites.selectedIds
+                };
+
+                Api.userSite.assignMulti(user).then(function () {
+                    s.setAlert('You were successfully assigned as ' + role + ' to the selected sites', { type: 'success'});
+                    init();
+                });
+            };
+
             init();
             s.$on('nav', function (e, data) {
                 if (data.new === myStateID) { init(); }

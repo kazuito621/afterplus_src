@@ -414,6 +414,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 var googleSearchbox = document.getElementById('googleSearchbox');
                                 gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(googleSearchbox);
                                 var searchBox = new google.maps.places.SearchBox((googleSearchbox));
+
+                              //  angular.element(googleSearchbox).attr('clear-input', '');
                                 var searchMarkers = [];
 
                                 // Listen for the event fired when the user selects an item from the

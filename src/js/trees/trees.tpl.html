@@ -86,7 +86,7 @@
 		        								<label>
 		        									<input type="checkbox" id="checkBox_filter_treatment_{{t.treatmentTypeID}}" value="{{t.treatmentTypeID}}"
 		        									ng-model="t.selected"
-		        									ng-change="onFilterChange('treatmentType', t.treatmentTypeID, t.selected)">
+		        									ng-change="onFilterChange('treatments', t.treatmentTypeID, t.selected)">
 													<span class="text">{{t.treatmentType}} <span class='filterCount' ng-if="t.count>0">({{t.count}})</span></span>
 													<div class="clearfix"></div>
 												</label>

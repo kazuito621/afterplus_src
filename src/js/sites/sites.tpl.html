@@ -91,6 +91,12 @@
                    on-save="refreshSites()" clients="initData.clients" sites="initData.sites" pre-selected="allSites.selectedIds">
                     Assign Users
                 </a>
+                <a href="#" ng:cloak ng-click="assignSelf('sales', $event)" style="margin-left: 50px;">
+                    Assign Myself as Sales
+                </a>
+                <a href="#" ng:cloak ng-click="assignSelf('inventory', $event)" style="margin-left: 50px;">
+                    Assign Myself as Inventory
+                </a>
             </div>
         </div>
     </div>

@@ -1,7 +1,7 @@
-<div ng-include="'js/trees/action.tpl.html'" ng-if="Auth.is('customer')"></div>
+<div ng-include="'js/trees/action.tpl.html'" ng-if="auth.is('customer')"></div>
 <div class='container' ng-controller="EstimatesListCtrl">    
 
-	<div ng-if="Auth.isAtleast('inventory')">
+	<div ng-if="auth.isAtleast('inventory')">
 		<div class='pull-right topMargin5'>
 			<div class="btn-group" bs-checkbox-group>
 				<label ng-click="setStatusFilter('all')" class="btn btn-default"><input type="radio"></input> All</label>
@@ -30,7 +30,7 @@
                     <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
                         Site Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
                     </th>
-                    <th ng-if="Auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('sales_email')">
+                    <th ng-if="auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('sales_email')">
                         Sales Rep <i ng-class="sh.columnClass('sales_email')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('total_price')">
@@ -39,7 +39,7 @@
                     <th class="clickable-header" ng-click="sh.sortByColumn('status')">
                         Status <i ng-class="sh.columnClass('status')" class='silver'></i>
                     </th>
-                    <th ng-if="Auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
+                    <th ng-if="auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
                         Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
                     </th>
                 </tr>
@@ -50,23 +50,23 @@
                 <tr ng-repeat="e in displayedEstimates">
                     <td ng-bind="e.reportID"></td>
                     <td>
-						<a ng-if="Auth.isAtleast('inventory')" href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
-						<a ng-if="!Auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
+						<a ng-if="auth.isAtleast('inventory')" href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
+						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
 					</td>
                     <td ng-bind="e.siteName_short" title="{{e.siteName}}"></td>
-                    <td ng-if="Auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
+                    <td ng-if="auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
                     <td>$ {{e.total_price}}</td>
                     <td>
-						<button ng-if="Auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
+						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
 								ng-model="e.status" ng-change="setReportStatus(e,this)"
 								placeholder="{{e.status}}"
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">
 						</button> 
-						<a href='' ng-if="!Auth.isAtleast('inventory')" ng-bind='e.status' ng-class='"small-tag "+e.status'
+						<a href='' ng-if="!auth.isAtleast('inventory')" ng-bind='e.status' ng-class='"small-tag "+e.status'
 							
 					</td>
-                    <td ng-if="Auth.isAtleast('inventory')">{{e.tstamp_updated | formatDate}}</td>
+                    <td ng-if="auth.isAtleast('inventory')">{{e.tstamp_updated | formatDate}}</td>
                 </tr>
             </tbody>
         </table>

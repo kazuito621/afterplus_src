@@ -113,25 +113,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         return false;
                     });
 
-                    $('.toggle-check').each(function(index, el) 
-                    {
-                        var $label = $(this).closest('label');
-                        $label.addClass('toggle-label');
-                        $label.find('.text').addClass('btn btn-gray btn-xs');
-
-                        $(this).bind('change' , function()
-                        {
-                            var $label = $(this).closest('label');
-                            if($(this).is(":checked"))
-                            {
-                                $label.find('.text').addClass('active');
-                            }
-                            else 
-                            {
-                                $label.find('.text').removeClass('active');
-                            }
-                        });
-                    }); 
                 } , 2000);
             }
 
@@ -346,7 +327,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.clearFilters = function(){
                 TFS.clearFilters(false);
-                //TFS.filterTheFilters();
 				s.onSelectYear(false);
                 if(!s.trees || !s.trees.length || s.trees.length<1){
                     //s.filteredSites=angular.copy(s.initData.sites); 

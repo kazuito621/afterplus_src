@@ -18,6 +18,8 @@ function (Rest, $rootScope, $q, $location ) {
 			sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
 			Rest.one('init').get()
 				.then(function (data) {
+                    //extend filters, maybe better move this logic to server side
+                    data.filters.hazards = {'building':{selected:false},'caDamage':{selected:false},'caDamagePotential':{selected:false},'powerline':{selected:false}}
 				dbg(data,'got init back')
 					initData=data;
 					$rootScope.initData=data;

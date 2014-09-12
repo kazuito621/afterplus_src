@@ -56,9 +56,10 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 	this.setTreeResults = function(trees){
 		this.trees=trees;
-		this.filterTheFilters();
+        this.resetFilterTypeCounts();
+		this.rebuildFilterTree(this.trees, selectedFilters);
 		this.data.treeResultsCount = trees.length;
-		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);
+        $rootScope.$broadcast('onTreeFilterUpdate', this.trees);
 		if(selectedFilters.length>0) this.filterTrees();
 	}
 
@@ -76,7 +77,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         //console.info('filterTheFilters, trees = ' + this.trees);
 		if(!this.trees || !this.trees.length) return;
 
-		this.data.filterTypeCounts={species:0, dbh:0, rating:0, treatments:0, caDamage:0, building:0, powerline:0}
+		this.resetFilterTypeCounts();
 		this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, building:{},powerline:{}}     //ie. {species:{'1':3}, rating:'4':1}I
         var exist=this.exist,that=this 			              	//     -- there are 3 trees with speciesID 1, one with rating 4
 
@@ -184,14 +185,10 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 	// called anytime one of the filter checkboxes along the right side are called
 	this.onChange = function(type, ID, value){
-        this.data.filterTypeCounts={species:0, dbh:0, rating:0, treatments:0, caDamage:0, building:0, powerline:0};
+        this.resetFilterTypeCounts();
         this._updateSelectedFilters(type, ID, value);
 		if(this.trees && this.trees.length && this.trees.length>0){
 			this.filterTrees();
-            //NEW TEMP ENTRY POINT!!!
-            //console.info('filter added, type: ' + type + ' id: ' + ID + ' value: ' + value);
-            //console.info('starting, trees count: ' + this.trees.length + ' filters count: ' + selectedFilters.length);
-            //this.rebuildFilterTree(this.trees, selectedFilters);
         }
 	}
 
@@ -225,9 +222,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);	
 	} , 500, {leading:false});
 
-
 	this.clearFilters = function(clearTrees){
-        this.data.filterTypeCounts={species:0, dbh:0, rating:0, treatments:0, caDamage:0, building:0, powerline:0};
+        this.resetFilterTypeCounts();
 		if(clearTrees && this.trees && this.trees.length){
 			this.trees.splice(0,this.trees.length);
 			this.data.treeResultsCount=0
@@ -235,14 +231,36 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		// clear the checkbox models
 		var filt=this.initData.filters;
 		_.each(selectedFilters, function(itm){
-			if(!itm.type||!itm.id)return;
-			var filterAr = (itm.type=='treatmentType') ? filt.treatments : filt[itm.type];
-			if(!filterAr) return;
-			var idName=(itm.type=='year')?'id':itm.type+'ID';
-			var obj = _.findObj(filterAr, idName, itm.id);
-			if(obj && obj.selected==true){
-				 obj.selected=false;
-			}
+            switch (itm.type){
+                case('species'):
+                case('rating'):
+                case('dbh'):
+                case('year'):
+                    var filterAr = filt[itm.type];
+                    var idName=(itm.type=='year')?'id':itm.type+'ID';
+                    var obj = _.findObj(filterAr, idName, itm.id);
+                    if(obj && obj.selected==true){
+                         obj.selected=false;
+                    }
+                    break;
+                case('treatments'):
+                    var filterAr = filt[itm.type];
+                    var idName='treatmentTypeID';
+                    var obj = _.findObj(filterAr, idName, itm.id);
+                    if(obj && obj.selected==true){
+                        obj.selected=false;
+                    }
+                    break;
+                case('building'):
+                case('caDamage'):
+                case('caDamagePotential'):
+                case('powerline'):
+                    var filterAr = filt['hazards'];
+                    if (filterAr[itm.type]) {
+                        filterAr[itm.type].selected = false;
+                    }
+                    break;
+            }
 		});
 		this.data.lastFilterCount=selectedFilters.length;
 		selectedFilters.splice(0, selectedFilters.length);
@@ -250,7 +268,9 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		if(!clearTrees) this.filterTrees();
 	}
 
-
+    this.resetFilterTypeCounts = function(){
+        this.data.filterTypeCounts={species:0, dbh:0, rating:0, treatments:0, caDamage:0, caDamagePotential:0, building:0, powerline:0};
+    }
 
 	// ---------------------------------------------------------  PRIVATE HELPER METHODS 
 
@@ -265,7 +285,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		var filterCounts={};			//ie. {'species':3, 'dbg':1}
 		var satisfiedFilterCounts={};
 		var totalFilterTypes=0, totalSatisfiedFilterTypes=0, yearFilterOk, treatmentFilterOk;
-                var buildingFilter, buildingFilter, caDamageFilter, powerlineFilter, nonePropFilter;
+                var buildingFilter, caDamageFilter, powerlineFilter, caDamagePotentialFilter;
                  
 
 		// loop through each filter, and see if it applies to the tree
@@ -281,11 +301,11 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
             // building, hardscape damage, and powerline flags
             buildingFilter=caDamageFilter=powerlineFilter=nonePropFilter=false;
 
-            if(filter.type == "miscProperty"){
-            	nonePropFilter = (tree.caDamage == 'yes')?true:false;
-            }
-            if(filter.type == 'caDamage'){
+            if(filter.type == "caDamage"){
                 caDamageFilter = (tree.caDamage == 'yes')?true:false;
+            }
+            if(filter.type == 'caDamagePotential'){
+                caDamagePotentialFilter = (tree.caDamage == 'potential')?true:false;
             }
             if(filter.type == 'building'){
                 buildingFilter = (tree.building == 'yes')?true:false;
@@ -306,7 +326,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 			// now evaluate the tree against this particular filter
   			var idName=filter.type + "ID"; 		//ie. "species" + "ID" = "speciesID"
-			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || nonePropFilter ||  yearFilterOk || treatmentFilterOk ){
+			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||  yearFilterOk || treatmentFilterOk ){
 				// if we havent recored this as a "satisfied filter", then do so...
 				if( !satisfiedFilterCounts[filter.type] ){
 					totalSatisfiedFilterTypes++;
@@ -344,10 +364,10 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
     //ALGORITHM
     this.rebuildFilterTree = function(trees, selectedFilters){
 
-        //this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, building:{},powerline:{}}
+        //this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, caDamagePotential:{}, building:{},powerline:{}}
         var newExist = {};
 
-        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'building', 'powerline'];
+        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline'];
         var filtersToCountSeparately = [];
         _.each(selectedFilters, function(sf){
              if (filtersToCountSeparately.indexOf(sf.type) == -1){
@@ -357,8 +377,6 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
                  filtersToCountTogether.splice(filtersToCountTogether.indexOf(sf.type), 1);
              }
         });
-        //ToDo miscProperty??? hazards!
-        //species, dbh, rating, treatments - ok
 
         var selectedFiltersExceptOne, filteredTreesForFilterType, filterCountsForFilterType;
         var that = this;
@@ -424,7 +442,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         var filterCounts={};			//ie. {'species':3, 'dbg':1}
         var satisfiedFilterCounts={};
         var totalFilterTypes=0, totalSatisfiedFilterTypes=0, yearFilterOk, treatmentFilterOk;
-        var buildingFilter, buildingFilter, caDamageFilter, powerlineFilter, nonePropFilter;
+        var buildingFilter, caDamageFilter, powerlineFilter, caDamagePotentialFilter;
 
 
         // loop through each filter, and see if it applies to the tree
@@ -438,13 +456,13 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
             yearFilterOk=treatmentFilterOk=false
 
             // building, hardscape damage, and powerline flags
-            buildingFilter=caDamageFilter=powerlineFilter=nonePropFilter=false;
+            buildingFilter=caDamageFilter=powerlineFilter=caDamagePotentialFilter=false;
 
-            if(filter.type == "miscProperty"){
-                nonePropFilter = (tree.caDamage == 'yes')?true:false;
-            }
-            if(filter.type == 'caDamage'){
+            if(filter.type == "caDamage"){
                 caDamageFilter = (tree.caDamage == 'yes')?true:false;
+            }
+            if(filter.type == 'caDamagePotential'){
+                caDamagePotentialFilter = (tree.caDamage == 'potential')?true:false;
             }
             if(filter.type == 'building'){
                 buildingFilter = (tree.building == 'yes')?true:false;
@@ -465,7 +483,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
             // now evaluate the tree against this particular filter
             var idName=filter.type + "ID"; 		//ie. "species" + "ID" = "speciesID"
-            if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || nonePropFilter ||  yearFilterOk || treatmentFilterOk ){
+            if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||  yearFilterOk || treatmentFilterOk ){
                 // if we havent recored this as a "satisfied filter", then do so...
                 if( !satisfiedFilterCounts[filter.type] ){
                     totalSatisfiedFilterTypes++;
@@ -534,6 +552,16 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
                         else {
                             exist.caDamage[tree.treeID]=1;
                             that.data.filterTypeCounts.caDamage++;
+                        }
+                    }
+                    break;
+                }
+                case ('caDamagePotential'):{
+                    if( tree.caDamage.toLowerCase()=="potential" ){
+                        if( exist.caDamagePotential[tree.treeID] ) exist.caDamagePotential[tree.treeID]++;
+                        else {
+                            exist.caDamagePotential[tree.treeID]=1;
+                            that.data.filterTypeCounts.caDamagePotential++;
                         }
                     }
                     break;
@@ -625,6 +653,17 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
                             else {
                                 exist.caDamage[tree.treeID] = 1;
                                 that.data.filterTypeCounts.caDamage++;
+                            }
+                        }
+                        break;
+                    }
+                    case ('caDamagePotential'):{
+                        if (!exist.caDamagePotential) exist.caDamagePotential = {};
+                        if (tree.caDamage.toLowerCase() == "potential") {
+                            if (exist.caDamagePotential[tree.treeID]) exist.caDamagePotential[tree.treeID]++;
+                            else {
+                                exist.caDamagePotential[tree.treeID] = 1;
+                                that.data.filterTypeCounts.caDamagePotential++;
                             }
                         }
                         break;

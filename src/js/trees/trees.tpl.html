@@ -10,7 +10,8 @@
 					<section ng-if="data.mode()=='trees'"> 
 
 						<div class="filter-container-title" ng:cloak ng-show="TFSdata.selectedFilters.length>0">
-							{{TFSdata.selectedFilters.length}} Filters Active &nbsp; <span class="lnk-clear"><a href ng-click='clearFilters();'><i class="fa fa-times"></i></a></span>
+							<span ng-if="!TFSdata.containsContradictingFilters">{{TFSdata.selectedFilters.length}}&nbsp;</span>Filters Active &nbsp; <span class="lnk-clear"><a href ng-click='clearFilters();'>
+                                <i class="fa fa-times"></i></a></span>
 						</div>
 
 						<div class="row row-xss">

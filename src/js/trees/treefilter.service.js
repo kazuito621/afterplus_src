@@ -45,7 +45,9 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 	this.data={treeResultsCount:0	// total trees after being filtered
 		     ,filterTypeCounts:{}	// counts for various types of filters available based on tree result,
 			 ,selectedFilters:selectedFilters			// ie. if a result is 1 pine, and 3 redwoods, it might be:
-			 ,lastFilterCount:0}						// { species:2 }  (ie. there are 2 different types of species)
+			 ,lastFilterCount:0                         // { species:2 }  (ie. there are 2 different types of species)
+             ,containsContradictingFilters : false
+    }
 	this.trees;						
 
 
@@ -54,10 +56,13 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		this.initData=idata;
 	}
 
+    /**
+    * initial method, called when page is loaded and site is selected
+    */
 	this.setTreeResults = function(trees){
 		this.trees=trees;
-        this.resetFilterTypeCounts();
-		this.rebuildFilterTree(this.trees, selectedFilters);
+        this._resetFilterTypeCounts();
+		this.filterTheFilters(this.trees, selectedFilters);
 		this.data.treeResultsCount = trees.length;
         $rootScope.$broadcast('onTreeFilterUpdate', this.trees);
 		if(selectedFilters.length>0) this.filterTrees();
@@ -68,92 +73,74 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 	 * Based on tree results, only show filters that are relevant...
 	 * ie. if there are no Pine trees in the results, then dont show any F'ing
 	 * pine tree filters! 
-	 * This is done by looping through the tree results array and tallying up into an "exist[]" array.
-	 * Once thats done, the 2nd helper method (filterTheFilters2) will apply the exist array to the initData item count properties
-	 * which the html templates will react to
+	 * Algorithm steps:
+     *  1) we filter trees and filters separately (filterTheFilters/filterTrees methods)
+     *  2) there are 8 filter groups: species/dbh/rating/treatments/caDamage/caDamagePotential/building/powerline
+     *  3) to calculate filters count for filter-group we should
+     *      a) remove filter query of current type
+     *      b) filter trees with rest of filter query
+     *      c) calc filter counts for current type
+     *  For example: Filter query is - selectedFilters : [{type:'species', id:4}, {type:'rating',  id:3}]
+     *  To calc filter counts for 'species' filter group:
+     *      a) remove filters of current type from query, rest is selectedFilters : [{type:'rating',  id:3}]
+     *      b) filter trees with query selectedFilters : [{type:'rating',  id:3}]
+     *      c) calc filter counts for 'species' filter group by results from step b
+     *
+     *  4) to optimize algorithm, we calculate filter counts separately only for those filter groups,
+     *  which exist in filter query. All other filter groups are calculated together.
+     *  This logic is presented in _calcOneFilterCounts/_calcSeveralFiltersCounts methods.
+     *  For example: Filter query is selectedFilters : [{type:'species', id:4}, {type:'rating',  id:3}]
+     *  We make step 3) for types 'species' and 'rating' only. For other types we make
+     *      a) selectedFilters : [{type:'species', id:4}, {type:'rating',  id:3}] - it's the same for all types
+     *      b) filter trees with this query
+     *      c) calculate all counts for all types together (by one loop)
 	 */
-	this.filterTheFilters = function() {
-        //debugger;
-        //console.info('filterTheFilters, trees = ' + this.trees);
-		if(!this.trees || !this.trees.length) return;
+    this.filterTheFilters = function(trees, selectedFilters){
 
-		this.resetFilterTypeCounts();
-		this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, building:{},powerline:{}}     //ie. {species:{'1':3}, rating:'4':1}I
-        var exist=this.exist,that=this 			              	//     -- there are 3 trees with speciesID 1, one with rating 4
+        //this.exist object structure:
+        //this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, caDamagePotential:{}, building:{},powerline:{}}
+        var newExist = {};
 
-		// loop through each tree and tally up the possible filter counts
-		_.each(this.trees, function(tree){
+        //refresh contradictions flag
+        this.data.containsContradictingFilters = false;
 
-            if (tree.hide){
-                console.info('hide');
-                return true;
+        // split filter groups based on selectedFiltrs - which should be calculated separately/together
+        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline'];
+        var filtersToCountSeparately = [];
+        _.each(selectedFilters, function(sf){
+            if (filtersToCountSeparately.indexOf(sf.type) == -1){
+                filtersToCountSeparately.push(sf.type);
             }
+            if (filtersToCountTogether.indexOf(sf.type) != -1){
+                filtersToCountTogether.splice(filtersToCountTogether.indexOf(sf.type), 1);
+            }
+        });
 
-            console.info('display!');
+        var selectedFiltersExceptOne, filteredTreesForFilterType, filterCountsForFilterType;
+        var that = this;
 
-			// increment counts for each, if count exists,
-			// else, set it to 1, and increment the filterTypeCounts 
+        //count each filterType separately
+        _.each(filtersToCountSeparately, function(filterType){
+            selectedFiltersExceptOne = that._clearSelectedFiltersFromType(selectedFilters, filterType);
 
-			if( exist.species[tree.speciesID] ) exist.species[tree.speciesID]++;
-			else {
-				exist.species[tree.speciesID]=1;
-				that.data.filterTypeCounts.species++;
-			}
+            filteredTreesForFilterType = that._filterTrees2(trees, selectedFiltersExceptOne);
 
-			if( tree.dbhID>0 ){
-				if( exist.dbh[tree.dbhID] ) exist.dbh[tree.dbhID]++;
-				else { 
-					exist.dbh[tree.dbhID]=1;
-					that.data.filterTypeCounts.dbh++;
-				}
-			}
+            filterCountsForFilterType = that._calcOneFilterCounts(filteredTreesForFilterType, filterType);
 
-			if( tree.ratingID>0 ){
-				if( exist.rating[tree.ratingID] ) exist.rating[tree.ratingID]++;
-				else {
-					exist.rating[tree.ratingID]=1;
-					that.data.filterTypeCounts.rating++;
-				}
-			}
+            newExist[filterType] = filterCountsForFilterType[filterType];
+        })
 
-			if( tree.history && tree.history.length ){
-			        _.each(tree.history, function(th){
-			                if( exist.treatments[th.treatmentTypeID] ) exist.treatments[th.treatmentTypeID]++;
-			                else {
-			                        exist.treatments[th.treatmentTypeID]=1;
-			                        that.data.filterTypeCounts.treatments++;
-			                }
-			        });
-			}
+        //rest of filterTypes will be counted together(optimisation)
+        var filteredTreesForNotUsedFilters = this._filterTrees2(trees, selectedFilters);
+        var filterCountsForNotUsedFilters = this._calcSeveralFiltersCounts(filteredTreesForNotUsedFilters, filtersToCountTogether);
+        for (var ft in filterCountsForNotUsedFilters){
+            newExist[ft] = filterCountsForNotUsedFilters[ft];
+        }
 
-			if( tree.building.toLowerCase()=="yes" ){
-				if( exist.building[tree.treeID] ) exist.building[tree.treeID]++;
-				else {
-					exist.building[tree.treeID]=1;
-					that.data.filterTypeCounts.building++;
-				}
-			}
+        this.exist = newExist;
 
-			if( tree.caDamage.toLowerCase()=="yes" ){
-				if( exist.caDamage[tree.treeID] ) exist.caDamage[tree.treeID]++;
-				else {
-					exist.caDamage[tree.treeID]=1;
-					that.data.filterTypeCounts.caDamage++;
-				}
-			}
-
-			if( tree.powerline.toLowerCase()=="yes" ){
-				if( exist.powerline[tree.treeID] ) exist.powerline[tree.treeID]++;
-				else {
-					exist.powerline[tree.treeID]=1;
-					that.data.filterTypeCounts.powerline++;
-				}
-			}
-
-		});
-
-		this.filterTheFilters2();
-	}
+        this.filterTheFilters2();
+    }
 
 	/**
 	 * Use the exist[] array, and apply those tallies to the initData count objects
@@ -164,6 +151,15 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		// loop through each tally of existing tree filter types
 		// and set the correspoding ng-model data for each filter
 		var idata=this.initData, seachObj, idName, filterArray, c;
+
+        //check for contradictions
+        var that = this;
+        _.each(selectedFilters, function (sf){
+            if (!exist[sf.type] || !exist[sf.type][sf.id] ){
+                that.data.containsContradictingFilters = true;
+            }
+        });
+
 		_.each(exist, function(countsObj, filterName) {
 			filterArray = _.extract(idata.filters, filterName);	
 			if(!filterArray || !exist[filterName]) return;
@@ -185,7 +181,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 	// called anytime one of the filter checkboxes along the right side are called
 	this.onChange = function(type, ID, value){
-        this.resetFilterTypeCounts();
+        this._resetFilterTypeCounts();
         this._updateSelectedFilters(type, ID, value);
 		if(this.trees && this.trees.length && this.trees.length>0){
 			this.filterTrees();
@@ -193,7 +189,10 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 	}
 
 
-	// Filter tree results by selected filters
+	/**
+	* Filter tree results by selected filters
+    * This method is used to filter trees collection
+	*/
 	this.filterTrees = _.throttle(function() {
 		if(!this.trees || !this.trees.length) return;
 		this.data.treeResultsCount=0;
@@ -216,14 +215,18 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 				this.trees[i].hide=true;
 			}
 		}
-        //this.filterTheFilters();
-        this.rebuildFilterTree(this.trees, selectedFilters);
+        this.filterTheFilters(this.trees, selectedFilters);
 
 		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);	
 	} , 500, {leading:false});
 
-	this.clearFilters = function(clearTrees){
-        this.resetFilterTypeCounts();
+    /**
+     * Clear tree results
+     * Clear selected filters
+     * Clear filter counts
+     */
+    this.clearFilters = function(clearTrees){
+        this._resetFilterTypeCounts();
 		if(clearTrees && this.trees && this.trees.length){
 			this.trees.splice(0,this.trees.length);
 			this.data.treeResultsCount=0
@@ -268,18 +271,18 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		if(!clearTrees) this.filterTrees();
 	}
 
-    this.resetFilterTypeCounts = function(){
+    // ---------------------------------------------------------  PRIVATE HELPER METHODS
+
+    // reset filter counts method
+    // we call it before each filtering (when new filter is added or existing filter is deleted)
+    this._resetFilterTypeCounts = function(){
         this.data.filterTypeCounts={species:0, dbh:0, rating:0, treatments:0, caDamage:0, caDamagePotential:0, building:0, powerline:0};
     }
-
-	// ---------------------------------------------------------  PRIVATE HELPER METHODS 
-
-
-
 
 	// @return BOOL - whether or not this tree is within a selected filter
 	// to be SHOWN, a tree must satisfy atleast 1 of each type of different filter
 	// so if species, and size is set, then it must match at least one of each
+    // we use this method for tree collection only
 	this._isTreeInFilter = function(tree){
 		var sf=selectedFilters;
 		var filterCounts={};			//ie. {'species':3, 'dbg':1}
@@ -338,7 +341,6 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		return (totalSatisfiedFilterTypes >= totalFilterTypes);
 	}
 
-
 	/** 
 	 * Format of selectedFilter, is an array of objects:
 	 * 	[
@@ -361,53 +363,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		}	
 	}
 
-    //ALGORITHM
-    this.rebuildFilterTree = function(trees, selectedFilters){
-
-        //this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, caDamagePotential:{}, building:{},powerline:{}}
-        var newExist = {};
-
-        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline'];
-        var filtersToCountSeparately = [];
-        _.each(selectedFilters, function(sf){
-             if (filtersToCountSeparately.indexOf(sf.type) == -1){
-                 filtersToCountSeparately.push(sf.type);
-             }
-             if (filtersToCountTogether.indexOf(sf.type) != -1){
-                 filtersToCountTogether.splice(filtersToCountTogether.indexOf(sf.type), 1);
-             }
-        });
-
-        var selectedFiltersExceptOne, filteredTreesForFilterType, filterCountsForFilterType;
-        var that = this;
-
-        //remove filters, which contradict to filters from another filter-groups
-        //ToDo clear filters, functionally it's ok, but may confuse users
-
-        //count each filterType separately
-        _.each(filtersToCountSeparately, function(filterType){
-            selectedFiltersExceptOne = that.clearSelectedFiltersFromType(selectedFilters, filterType);
-
-            filteredTreesForFilterType = that.filterTrees2(trees, selectedFiltersExceptOne);
-
-            filterCountsForFilterType = that.calcOneFilterCounts(filteredTreesForFilterType, filterType);
-
-            newExist[filterType] = filterCountsForFilterType[filterType];
-        })
-
-        //rest of filterTypes will be counted together(optimisation1)
-        var filteredTreesForNotUsedFilters = this.filterTrees2(trees, selectedFilters);
-        var filterCountsForNotUsedFilters = this.calcSeveralFiltersCounts(filteredTreesForNotUsedFilters, filtersToCountTogether);
-        for (var ft in filterCountsForNotUsedFilters){
-           newExist[ft] = filterCountsForNotUsedFilters[ft];
-        }
-
-        this.exist = newExist;
-
-        this.filterTheFilters2();
-    }
-
-    this.clearSelectedFiltersFromType = function(selectedFilters, escapeType){
+    // step 3a from filterTheFilters algorithm
+    this._clearSelectedFiltersFromType = function(selectedFilters, escapeType){
         var result = [];
         _.each(selectedFilters, function(sf){
             if (sf.type != escapeType) result.push(sf);
@@ -415,12 +372,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         return result;
     }
 
-    //the idea of dynamic filtering is to count filter values without query including current filter
-    //for example to count species-filter we need to:
-    // 1) exclude species filter from query
-    // 2) filter trees with all other filters(except species-filter)
-    // 3) each(tree) loop counts species filter values
-    this.filterTrees2 = function(trees, filters){
+    // step 3b from filterTheFilters algorithm
+    this._filterTrees2 = function(trees, filters){
         // check if there are no trees to filter
         if (!trees || trees.length < 1) return [];
         // if there no filters, then all trees satisfy filter condition
@@ -436,6 +389,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         return result;
     }
 
+    // helper method for step 3b from filterTheFilters algorithm
     //checks whether the tree satisfies to filters set
     //@params: tree, set of filters
     this._isTreeInFilter2 = function(tree, filters){
@@ -495,7 +449,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         return (totalSatisfiedFilterTypes >= totalFilterTypes);
     }
 
-    this.calcOneFilterCounts = function(trees, filterName){
+    // step 3c from filterTheFilters algorithm (for filter groups to be calculated separately)
+    this._calcOneFilterCounts = function(trees, filterName){
         if(!trees || !trees.length || trees.length < 1) return {};
 
         //var resultCount = {species:0, dbh:0, rating:0, treatments:0, caDamage:0, building:0, powerline:0}
@@ -505,6 +460,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
         // loop through each tree and tally up the possible filter counts (based on filterName)
         _.each(trees, function(tree){
+            //calc counts
             switch (filterName){
                 case ('species'):{
                     if( exist.species[tree.speciesID] ) exist.species[tree.speciesID]++;
@@ -592,7 +548,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         return exist;
     }
 
-    this.calcSeveralFiltersCounts = function(trees, filterNames){
+    // step 3c from filterTheFilters algorithm (for filter groups to be calculated together)
+    this._calcSeveralFiltersCounts = function(trees, filterNames){
         if(!trees || !trees.length || trees.length < 1) return {};
 
         var exist = {};

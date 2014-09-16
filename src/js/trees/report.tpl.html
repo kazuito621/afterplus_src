@@ -56,25 +56,20 @@
 				</div>	
 			</div>
 
-			<!--
-			<div class="col-md-2 col" ng-if='report.sales_userID>0'>
+			<div class="col-md-2 col" ng-if='report.sales_email'>
 				<div class="estimate-info">
-					<p class="name clr-orange">Sales Rep</p>
-					<dl>
-						<dt>Name: </dt>
+                    <p class="name clr-orange">Sales Rep</p>
+					<dl ng-if="report.sales_fname">
 						<dd ng-text="report.sales_fname + ' ' + report.sales_lname"></dd>
 					</dl>
 					<dl>	
-						<dt>Email: </dt>
-						<dd ng-bind='report.sales_email'></dd>
+						<dd><a href='mailto:{{report.sales_email}}' target=_new ng-bind='report.sales_email' style='color:#fff;'></a></dd>
 					</dl>
-					<dl>	
-						<dt>Phone: </dt>
+					<dl ng-if="report.sales_phone">	
 						<dd ng-bind='report.sales_phone'></dd>
 					</dl>
 				</div>
 			</div>
-			-->
 
 
 			<div class="col-md-4 col">

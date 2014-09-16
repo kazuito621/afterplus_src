@@ -286,12 +286,12 @@
 			     </div>
 			     
 			 	<div class="section-container" ng-if="data.mode()!='trees' || !auth.isAtleast('inventory')">
-			 		<h6 class="section-sub-title">Notes</h6>
-			        <span ng-bind-html="report.notes"></span>
+			 		<h6 ng-if="report.notes" class="section-sub-title" style='padding-bottom:1em;'>Notes</h6>
+			        <span ng-bind-html="report.notes"></span><BR><BR>
 
-					<h2 class="section-mini-title">Definition of Treatments:</h2>
+			   		<h6 ng-if="treatmentDescriptions.length" class="section-sub-title">Definition of Treatments</h6>
 					<div ng-repeat=" desc in treatmentDescriptions "> 
-						<p><b>{{desc.treatmentType}}</b> - {{desc.desc}}</p>
+						<p><span style='font-weight:bold;'>{{desc.treatmentType}}</span> - {{desc.desc}}</p><BR>
 					</div>
 			   	</div>
 

@@ -392,6 +392,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
             // ------------------------------------------------------ GOOGLE MAPS
+
+            //array to store marker objects for search box
+            s.searchMarkers = [];
+            s.cleanSearchMarkers = function(){
+                for (var i = 0, marker; marker = s.searchMarkers[i]; i++) {
+                    marker.setMap(null);
+                }
+            }
+
             var initMap = _.throttle(function(){
                 var deferred=$q.defer();
 
@@ -413,10 +422,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 // Create the search box and link it to the UI element.
                                 var googleSearchbox = document.getElementById('googleSearchbox');
                                 gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(googleSearchbox);
-                                var searchBox = new google.maps.places.SearchBox((googleSearchbox));
 
-                              //  angular.element(googleSearchbox).attr('clear-input', '');
-                                var searchMarkers = [];
+                                // Create clear buton for search box and link it to UI element
+                                var clearButtonForSearchBox = document.getElementById('clearButtonForSearchBox');
+                                gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(clearButtonForSearchBox);
+                                var searchBox = new google.maps.places.SearchBox((googleSearchbox));
 
                                 // Listen for the event fired when the user selects an item from the
                                 // pick list. Retrieve the matching places for that item.
@@ -426,12 +436,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                                     if (places.length == 0) {
                                         return;
                                     }
-                                    for (var i = 0, marker; marker = searchMarkers[i]; i++) {
-                                        marker.setMap(null);
-                                    }
+                                    s.cleanSearchMarkers();
 
                                     // For each place, get the icon, place name, and location.
-                                    searchMarkers = [];
                                     var bounds = new google.maps.LatLngBounds();
                                     for (var i = 0, place; place = places[i]; i++) {
                                         var image = {
@@ -450,7 +457,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                                             position: place.geometry.location
                                         });
 
-                                        searchMarkers.push(searchMarker);
+                                        s.searchMarkers.push(searchMarker);
 
                                         bounds.extend(place.geometry.location);
                                     }

@@ -730,5 +730,7 @@ td.estimate_multirow_col{
 
 /*button to clear google map search box*/
 .clear-google-search-box{
-
+    font-size:20px;
+    cursor: pointer !important;
+    text-decoration: none;
 }

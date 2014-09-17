@@ -61,8 +61,10 @@
                 <td>
                     <a ng-if="s.userCustCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
                        class='fa fa-user olive hand' bs-tooltip title='A CUSTOMER contact exists. Click to edit.'></a>
-                    <a ng-if="s.userStaffCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
-                       class='fa fa-user red hand' bs-tooltip title='A STAFF contact exists. Click to edit.'></a>
+                    <a ng-if="s.userSalesCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
+                       class='fa fa-user red hand' bs-tooltip title='A SALES contact exists. Click to edit.'></a>
+                    <a ng-if="s.userInvCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
+                       class='fa fa-user gray hand' bs-tooltip title='A INVENTORY contact exists. Click to edit.'></a>
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
 					<span ng-if="s.userCustCount<1 || s.userStaffCount<1">

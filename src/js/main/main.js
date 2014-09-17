@@ -4,7 +4,7 @@ var MainCtrl = app.controller('MainCtrl',
 ['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 
 function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
 	var s = window.mcs = $scope;
-    var staffOnly = ['sites', 'clients', 'estimates'];
+    var staffOnly = ['sites', 'clients'];
 
 	s.routeParams={};
 	s.appData={};
@@ -203,7 +203,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     };
 
     var permissionsCheck = function(loc) {
-        // Deny access to clients, sites and estimates for customers
+        // Deny access to clients and sites
         var oldPath = getPath(loc.oldUrl);
         var newPath = getPath(loc.newUrl);
 

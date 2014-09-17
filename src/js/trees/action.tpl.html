@@ -36,7 +36,8 @@
 						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>
 					</div>
 					<div class="col-xs-4 col">
-						<button ng-if="report.actionButton" ng-click="approveEstimate()" class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
+						<button ng-if="report.actionButton" tos-accept-button on-confirm-callback="approveEstimate()"
+                                class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
 								<i class="fa fa-check"></i> Approve Estimate
 						</button>
 						<!-- possible values for status: approved, completed. billed, paid -->

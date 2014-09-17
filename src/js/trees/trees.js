@@ -113,25 +113,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         return false;
                     });
 
-                    $('.toggle-check').each(function(index, el) 
-                    {
-                        var $label = $(this).closest('label');
-                        $label.addClass('toggle-label');
-                        $label.find('.text').addClass('btn btn-gray btn-xs');
-
-                        $(this).bind('change' , function()
-                        {
-                            var $label = $(this).closest('label');
-                            if($(this).is(":checked"))
-                            {
-                                $label.find('.text').addClass('active');
-                            }
-                            else 
-                            {
-                                $label.find('.text').removeClass('active');
-                            }
-                        });
-                    }); 
                 } , 2000);
             }
 
@@ -314,15 +295,19 @@ var TreesCtrl = app.controller('TreesCtrl',
                 showMappedTrees(s.trees);
             });
 
+            //make tree update after its edited
+            //use case is when notes are edited,
+            // they should then update in the estimate without a page refresh
             s.$on('onTreeUpdate', function(evt, tree){
-                return		//todo -- make tree update after its edited. use case is when notes are edited,
-                // they should then update in the estimate without a page refresh
                 if(tree && tree.treeID){
                     var t=_.findObj(s.trees, 'treeID', tree.treeID)
-                    if(t) t=tree;
+                    if(t) t= _.deepCopy(t,tree);
                     if(_.extract(ReportService, 'report.items')){
-                        var t=_.findObj(ReportService.report.items, 'treeID', tree.treeID)
-                        if(t) t=tree;
+                        var t2=_.findObj(ReportService.report.items, 'treeID', tree.treeID)
+                        if(t2) { // check do we need to update current report
+                            t2= _.deepCopy(t2,tree);
+                            $rootScope.$broadcast('itemsAddedToReport');
+                        }
                     }
                 }
             });
@@ -350,7 +335,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.clearFilters = function(){
                 TFS.clearFilters(false);
-                //TFS.filterTheFilters();
 				s.onSelectYear(false);
                 if(!s.trees || !s.trees.length || s.trees.length<1){
                     //s.filteredSites=angular.copy(s.initData.sites); 

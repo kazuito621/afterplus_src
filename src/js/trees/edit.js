@@ -103,6 +103,12 @@ var EditTreeCtrl = app.controller('EditTreeCtrl',
                 s.tree.history.splice(0, 0, itm);
             };
 
+            //when user change type of treatment, we should change treatment code
+            s.updateTreatmentCode = function(t){
+                var treatment = _.findObj(s.initData.filters.treatments, 'treatmentTypeID', t.treatmentTypeID);
+                t.treatmentTypeCode = treatment.code;
+            }
+
             s.onCancel = function () {
 				$(document).unbind('keyup', cancelOnEscape);
                 $location.url('/trees');

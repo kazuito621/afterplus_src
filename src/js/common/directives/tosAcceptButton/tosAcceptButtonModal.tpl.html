@@ -1,0 +1,28 @@
+<div class="modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" style="width:400px;">
+        <div class="modal-content">
+
+            <div>
+                <form class="form-inline">
+                    <div class='panel panel-default bottomMargin0'>
+                        <div class='panel-body' style="margin-top:20px;">
+                            <div class="containter">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <input type="checkbox" ng-click="approved =!approved" id="isApprovedCheckbox">
+                                        <label for="isApprovedCheckbox">I Agree to <a href="/go/content/terms.html" target=_new>Aplus Tree Terms of Service</a></label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer topMargin0">
+                        <button type="button" class="btn btn-sm btn-block btn-green" ng-click="test();"
+                                ng-disabled="!approved"><i class="fa fa-check"></i>Approve This Estimate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -63,7 +63,7 @@
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">
 						</button> 
-						<a href='' ng-if="!auth.isAtleast('inventory')" ng-bind='e.status' ng-class='"small-tag "+e.status'
+						<a href='#/estimate/{{e.hashLink}}' ng-if="!auth.isAtleast('inventory')" ng-bind='e.status' ng-class='"small-tag "+e.status'
 							
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">{{e.tstamp_updated | formatDate}}</td>

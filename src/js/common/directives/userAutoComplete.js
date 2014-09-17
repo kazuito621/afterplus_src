@@ -20,9 +20,10 @@ app.directive('userAutoComplete', function (Api) {
                 params.role = attrs.userRoles;
             }
 
-            if (attrs.userIgnore) {
-                ignoreList = makeIgnoreList(scope.$parent[attrs.userIgnore]);
-            }
+			// no need for an ignore list now, since a user can be assigned twice to once site
+            //if (attrs.userIgnore) {
+            //    ignoreList = makeIgnoreList(scope.$parent[attrs.userIgnore]);
+            //}
 
             return Api.user.lookUp(params).then(function (data) {
                 var res = _.filter(data, function (item) {

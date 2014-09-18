@@ -105,6 +105,7 @@ app.directive('siteUsersMultiEditModal',
 
                     user.fName = tmp.fName;
                     user.lName = tmp.lName;
+					user.phone = tmp.phone;
                     if (tmp.userID) {
                         user.userID = tmp.userID;
                     }
@@ -131,6 +132,7 @@ app.directive('siteUsersMultiEditModal',
 
                     user.fName = tmp.fName;
                     user.lName = tmp.lName;
+					user.phone = tmp.phone;
                     if (tmp.userID) {
                         user.userID = tmp.userID;
                     }

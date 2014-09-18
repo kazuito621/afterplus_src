@@ -47,13 +47,17 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates">
+                <tr ng-repeat="e in displayedEstimates" class='hoverHotspot'>
                     <td ng-bind="e.reportID"></td>
                     <td>
 						<a ng-if="auth.isAtleast('inventory')" href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
 						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
 					</td>
-                    <td ng-bind="e.siteName_short" title="{{e.siteName}}"></td>
+                    <td>
+						<span title="{{e.siteName}}">{{e.siteName_short}}</span> &nbsp; 
+						<i site-edit-modal clients="initData.clients" site-id="e.siteID" 
+                           class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i>
+					</td>
                     <td ng-if="auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
                     <td>${{e.total_price|formatPrice}}</td>
                     <td>

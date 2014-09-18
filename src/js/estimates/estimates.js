@@ -11,7 +11,10 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		self = this,
     	columnMap = {
         	'total_price': 'number'
-    	};
+    	},
+		colSortOrder = {
+			total_price: 'desc'
+		};
     s.displayedEstimates = [];
   	this.fh = FilterHelper.fh();
 
@@ -33,7 +36,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				if(d.sales_email_short) d.sales_email_short=d.sales_email.split('@')[0];
 			});
             estimates = estFiltered = data;
-            self.sh = SortHelper.sh(estimates, '', columnMap);
+            self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);
             s.displayedEstimates = estFiltered.slice(0, 49);
         });
     };

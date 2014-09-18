@@ -15,7 +15,12 @@ var SitesCtrl = app.controller('SitesCtrl',
                     siteID: 'number',
                     treeCount: 'number',
                     reportCount: 'number'
-                };
+                },
+				colSortOrder = {
+					tstamp_created: 'desc',
+					treeCount: 'desc',
+					reportCount: 'desc'
+				}
             s.mode = '';
             s.type = 'site';
             s.items = {};
@@ -61,8 +66,7 @@ var SitesCtrl = app.controller('SitesCtrl',
                         sitesFiltered = siteData;
                         sites = siteData;
                     }
-
-                    self.sh = SortHelper.sh(sitesFiltered, '', columnMap);
+                    self.sh = SortHelper.sh(sitesFiltered, '', columnMap, colSortOrder);
                     s.displayedSites = sitesFiltered.slice(0, 49);
                 });
             };

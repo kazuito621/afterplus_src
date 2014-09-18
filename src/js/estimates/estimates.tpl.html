@@ -55,7 +55,7 @@
 					</td>
                     <td ng-bind="e.siteName_short" title="{{e.siteName}}"></td>
                     <td ng-if="auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
-                    <td>$ {{e.total_price}}</td>
+                    <td>${{e.total_price|formatPrice}}</td>
                     <td>
 						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
 								ng-model="e.status" ng-change="setReportStatus(e,this)"

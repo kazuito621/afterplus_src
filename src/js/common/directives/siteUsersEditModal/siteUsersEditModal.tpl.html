@@ -21,14 +21,15 @@
                                         Property contacts for {{site.siteName}}
                                     </div>
                                 </div>
-                                <div class="row" ng-repeat="c in contacts" style="margin-top: 10px;" ng-show="contacts.length > 0">
-                                    <div class="col-sm-8">
-                                        {{c.email}}
-                                    </div>
-                                    <div class="col-sm-3 col-offset-1">
-                                        <a ng-click="unassign(c.userID, c.email, 'customer')" class="fa fa-times _red _size4" bs-tooltip title="Remove assignment" style="text-decoration: none;"></a>
-                                    </div>
+                                <div class="row hoverHotspot" ng-repeat="c in contacts" 
+										style="margin: 9px 24px 3px 1px; padding:8px 2px 8px 8px; background:#eee;" 
+										ng-show="contacts.length > 0">
+                                	<a ng-click="unassign(c.userID, c.email, 'customer')" class="hand hoverDisplay" bs-tooltip 
+											title="Remove assignment" style="text-decoration: none; ">
+                                		<i class="fa fa-times _red _size5"></i></a> &nbsp; 
+                                        {{c.email}} - {{c.fName}} {{c.lName}}
                                 </div>
+
                                 <div class="row" style="margin-top: 10px;">
 									<form ng-submit="addNewSiteContact($event)">
                                     <div class="col-sm-4">
@@ -42,7 +43,7 @@
                                         <input type="text" placeholder="Last name" required style="width: 100%;" ng-model="newContact.lName">
                                     </div>
                                     <div class="col-sm-2">
-                                        <button ng-click="addNewSiteContact($event)">Add</button>
+                                        <button ng-click="addNewSiteContact($event);" type='button' class='btn btn-primary'>Add</button>
                                     </div>
 									</form>
                                 </div>
@@ -54,14 +55,15 @@
                                         AplusTree Reps
                                     </div>
                                 </div>
-                                <div class="row" ng-repeat="r in reps" style="margin-top: 10px;" ng-show="reps.length > 0">
-                                    <div class="col-sm-8">
-                                        {{r.email}} - {{r.role}}
-                                    </div>
-                                    <div class="col-sm-3 col-offset-1">
-                                        <a ng-click="unassign(r.userID, r.email, 'staff')" class="fa fa-times _red _size4 hand" bs-tooltip 
-												title="Remove assignment" style="text-decoration: none; "></a>
-                                    </div>
+
+                                <div class="row hoverHotspot" ng-repeat="r in reps" 
+										style="margin: 9px 24px 3px 1px; padding:8px 2px 8px 8px; background:#eee;" 
+										ng-show="reps.length > 0">
+                                	<a ng-click="unassign(r.userID, r.email, 'staff')" class="hand hoverDisplay" bs-tooltip 
+											title="Remove assignment" style="text-decoration: none; ">
+                                		<i class="fa fa-times _red _size5"></i></a> &nbsp; 
+                                        {{r.email}} - {{r.fName}} {{r.lName}}  &nbsp; &nbsp; 
+											<span style='color:#fff;background:#333; padding:4px 8px; text-transform:uppercase; font-size:.7em'>{{r.role}}</span>
                                 </div>
                                 <div class="row" style="margin-top: 10px;">
 									<form ng-submit="addNewRepContact($event)">
@@ -83,7 +85,7 @@
                                         </select>
                                     </div>
                                     <div class="col-sm-2">
-                                        <button ng-click="addNewSiteRep($event);">Add</button>
+                                        <button ng-click="addNewSiteRep($event);" type='button' class='btn btn-primary'>Add</button>
                                     </div>
 									</form>
                                 </div>

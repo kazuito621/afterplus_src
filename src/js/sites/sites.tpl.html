@@ -67,12 +67,9 @@
                        class='fa fa-user gray hand' bs-tooltip title='A INVENTORY contact exists. Click to edit.'></a>
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
-					<span ng-if="s.userCustCount<1 || s.userStaffCount<1">
-						<i site-users-edit-modal site="s" on-save="refreshSite"
-						   class="fa fa-frown-o _red _size6"
-						   title="Property is missing client contacts or company sales reps!"
-						   bs-tooltip style="cursor: pointer;"></i> &nbsp;
-					</span>
+					<a ng-if="s.userCustCount<1 || s.userStaffCount<1" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s" 
+					   class="fa fa-frown-o _red _size6 hand" bs-tooltip title="Property is missing client contacts or company sales reps!"></a> 
+					&nbsp;
 					<span>
 						<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
                            class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;

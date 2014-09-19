@@ -60,43 +60,29 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 s.displayedClients = s.displayedClients.concat(addon);
             };
 
-            s.saveNewClient = function () {
-                if (!s.newClient.clientTypeID) {
-                    return s.setAlert('Choose a client type for the new client', {type: 'd'});
-                }
 
-                Api.saveNewClient(s.newClient).then(function (data) {
-                    console.log(s.newClient);
-                    console.log("Post new client response:");
-                    console.dir(data);
-                });
+			s.saveClient = function(mode){
+				if(!mode) mode = s.mode;
+				if( mode == 'edit' ){
+					var obj = s.client;
+					obj.post().then(function () {
+						Api.refreshInitData();
+					});
+				}else{
+					if (!s.client.clientTypeID) {
+						return s.setAlert('Choose a client type for the new client', {type: 'd'});
+					}
 
-                clientEditModal.hide();
-                Api.refreshInitData();
-            };
+					Api.saveNewClient(s.client).then(function (data) {
+						console.log(s.client);
+						console.log("Post new client response:");
+						console.dir(data);
+					});
 
-            s.saveExistingClient = function () {
-                var obj = s.client;
-                obj.post().then(function () {
-                    //in the old HEAD of evren07, this if statement existed priort to the "refresh" call
-                    //is this necessary? would "saveExistingClient" every be executed if the state was NOT clients??
-                    //if($route.current.params.stateID=='clients') {
-                    Api.refreshInitData();
-                });
-                clientEditModal.hide();
-            };
-
-            // HOW TO Add a new client
-            //s.newClient={clientName:'tim2', clientTypeID:1, street:'123 main'};
-            //save(s.newClient)
-
-            // Update an existing client
-            /*
-             s.Rest.one('client', 38).get().then(function(data){
-             data.clientName='tim44xx55';
-             data.post();
-             })
-             */
+                	Api.refreshInitData();
+				}
+				clientEditModal.hide();
+			}
 
             s.newClientModalOpen = function (clientID) {
                 s.client = {};
@@ -110,9 +96,9 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 Api.getClientById(clientID)
                     .then(function (data) {
                         s.client = data;
+						s.mode = 'edit';
+						clientEditModal.show();
                     });
-                s.mode = 'edit';
-                clientEditModal.show();
             };
 
             s.deleteCurrentItem = function () {

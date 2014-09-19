@@ -30,6 +30,8 @@ app.service('SiteModelUpdateService',
 	}
 
 	this.updateReportSiteModel=function(){
-		this.reportSite.siteName = this.site.siteName;
+		try{
+			this.reportSite.siteName = this.site.siteName;
+		}catch(e){}
 	}
 }]);

@@ -292,17 +292,15 @@
 												</div>	
 											</div>	
 										</div>
-										<div class="col-sm-2" ng-if="auth.isAtleast('inventory')">
-											<span ng-if="selected.siteID>0" style='color:#667;'>#{{selected.siteID}}</span> 
+										<div class="col-sm-2" ng-if="auth.isAtleast('inventory')" style='margin-left:0; padding-left:0;'>
+											<span ng-if="selected.siteID>0" style='color:#667; font-size:.85em;'>#{{selected.siteID}}</span> 
 											</span>
-											<span class="lnk">
-												<a href ng-if="selected.siteID>0" bs-tooltip title='Edit Site Details'>
+											<span class="lnk" ng-if="selected.siteID>0">
 													<i site-edit-modal clients="initData.clients" site-id="selected.siteID" 
-														class="fa fa-pencil _grey _size8 hoverHighlight hand"></i></a>
+														class="fa fa-pencil _grey _size8 hoverHighlight hand"></i>
 											</span>
-											&nbsp;
 											<span class="lnk">
-												<a href ng-click='reset()' bs-tooltip title='Reset'><i class="fa fa-rotate-left _red _size5 hoverHighlight"></i></a> 
+												<a href ng-click='reset()' bs-tooltip title='Reset'><i class="fa fa-rotate-left _red _size6 hoverHighlight"></i></a> 
 											</span>
 										</div>
 									</div>

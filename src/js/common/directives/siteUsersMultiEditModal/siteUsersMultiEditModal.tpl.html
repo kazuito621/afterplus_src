@@ -54,78 +54,76 @@
                                         <div class="col-sm-8" style="font-weight: bold;">
                                             Site contacts
                                         </div>
-                                        <div class="col-sm-3 col-offset-1">
-                                            <button type="button" class="btn btn-primary pull-right"
-                                                    ng-click="showAddForm('customer')" >
-                                                <i class='fa fa-plus white'></i> New
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="row" ng-repeat="c in contacts" style="margin-top: 10px;" ng-show="contacts.length > 0">
-                                        <div class="col-sm-12">
-                                            {{c.email}}
-                                        </div>
-                                    </div>
-                                    <div class="row" ng-show="$parent.showAddNewSiteContact === true" style="margin-top: 10px;">
-                                        <form ng-submit="addNewSiteContact($event)">
-                                            <div class="col-sm-4">
-                                                <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newContact.email" id='newContactEmail'
-                                                       user-auto-complete="contactSelect" user-roles="customer" user-ignore="contacts" bs-typeahead>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <input type="text" placeholder="First name" required style="width: 100%;" ng-model="newContact.fName">
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <input type="text" placeholder="Last name" required style="width: 100%;" ng-model="newContact.lName">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <button ng-click="addNewSiteContact($event)">Add</button>
-                                            </div>
-                                        </form>
                                     </div>
 
+									<div class="row hoverHotspot" ng-repeat="c in contacts" 
+											style="margin: 9px 24px 3px 1px; padding:8px 2px 8px 8px; background:#eee;" 
+											ng-show="contacts.length > 0">
+										<!--
+										<a ng-click="unassign(c.userID, c.email, 'customer')" class="hand hoverDisplay" bs-tooltip 
+												title="Remove assignment" style="text-decoration: none; ">
+											<i class="fa fa-times _red _size5"></i></a> &nbsp; 
+										-->
+											{{c.email}} - {{c.fName}} {{c.lName}}
+									</div>
+
+									<div class="row" style="margin: 15px 2px 10px 5px;">
+										<form ng-submit="addNewSiteContact($event)">
+											<input type="text" required placeholder="Email" style="width: 135px;" ng-model="newContact.email" id='newContactEmail'
+													user-auto-complete="contactSelect" user-roles="customer" user-ignore="contacts" bs-typeahead>
+											<input type="text" placeholder="First name" required style="width:90px" ng-model="newContact.fName">
+											<input type="text" placeholder="Last name" required style="width:90px;" ng-model="newContact.lName">
+											<input type="text" placeholder="Phone" style="width:105px;" ng-model="newContact.phone">
+											<button ng-click="addNewSiteContact($event);" type='button' class='btn btn-primary'><i class='fa fa-plus white _size4'></i></button>
+										</form>
+									</div>
+
+
+
+
+
                                     <hr> <!-- ================================================================== -->
+
+
+
 
                                     <div class="row" style="margin-top: 12px;">
                                         <div class="col-sm-8" style="font-weight: bold;">
                                             AplusTree Reps
                                         </div>
-                                        <div class="col-sm-3 col-offset-1">
-                                            <button type="button" class="btn btn-primary pullright"
-                                                    ng-click="showAddForm('rep')" >
-                                                <i class='fa fa-plus white'></i> New
-                                            </button>
-                                        </div>
                                     </div>
-                                    <div class="row" ng-repeat="r in reps" style="margin-top: 10px;" ng-show="reps.length > 0">
-                                        <div class="col-sm-12">
-                                            {{r.email}} - {{r.role}}
-                                        </div>
-                                    </div>
-                                    <div class="row" ng-show="$parent.showAddNewSiteRep === true" style="margin-top: 10px;">
-                                        <form ng-submit="addNewRepContact($event)">
-                                            <div class="col-sm-3">
-                                                <input type="text" required placeholder="Email" style="width: 100%;" ng-model="newRep.email" id='newRepEmail'
-                                                       user-auto-complete="repSelect" user-roles="sales,inventory,admin" user-ignore="reps" bs-typeahead>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <input type="text" placeholder="First name" required style="width: 100%;" ng-model="newRep.fName">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <input type="text" placeholder="Last name" required style="width: 100%;" ng-model="newRep.lName">
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <select ng-model="newRep.role" required>
-                                                    <option disabled value="">Role</option>
-                                                    <option value="sales">Sales</option>
-                                                    <option value="inventory">Inventory</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <button ng-click="addNewSiteRep($event);">Add</button>
-                                            </div>
-                                        </form>
-                                    </div>
+
+
+
+									<div class="row hoverHotspot" ng-repeat="r in reps" 
+											style="margin: 9px 24px 3px 1px; padding:8px 2px 8px 8px; background:#eee;" 
+											ng-show="reps.length > 0">
+										<!--
+										<a ng-click="unassign(r.userID, r.email, 'staff')" class="hand hoverDisplay" bs-tooltip 
+												title="Remove assignment" style="text-decoration: none; ">
+											<i class="fa fa-times _red _size5"></i></a> &nbsp; 
+										-->
+											{{r.email}} - {{r.fName}} {{r.lName}}  &nbsp; &nbsp; 
+												<span style='color:#fff;background:#333; padding:4px 8px; text-transform:uppercase; font-size:.7em'>{{r.role}}</span>
+									</div>
+									<div class="row" style="margin: 15px 2px 10px 5px;">
+										<form ng-submit="addNewRepContact($event)">
+											<input type="text" required placeholder="Email" style="width: 105px;" ng-model="newRep.email" id='newRepEmail'
+													user-auto-complete="repSelect" user-roles="sales,inventory,admin" user-ignore="reps" bs-typeahead>
+											<input type="text" placeholder="First name" required style="width:80px" ng-model="newRep.fName">
+											<input type="text" placeholder="Last name" required style="width:80px;" ng-model="newRep.lName">
+											<input type="text" placeholder="Phone" style="width:105px;" ng-model="newRep.phone">
+											<select ng-model="newRep.role" required>
+												<option disabled value="">Role</option>
+												<option value="sales">Sales</option>
+												<option value="inventory">Inventory</option>
+											</select> &nbsp;
+											<button ng-click="addNewSiteRep($event);" type='button' class='btn btn-primary'><i class='fa fa-plus white _size4'></i></button>
+										</form>
+									</div>
+
+
+                                    
                                 </div>
                             </div>
                         </div>

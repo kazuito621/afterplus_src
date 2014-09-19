@@ -30,8 +30,8 @@
                 <th class="clickable-header" ng-click="sh.sortByColumn(['city', 'state'])">
                         Location <i ng-class="sh.columnClass(['city', 'state'])" class='silver'></i>
 				</th>
-				<th class="clickable-header" ng-click="sh.sortByColumn('tstamp_lastContact')">
-					Activity <i ng-class="sh.columnClass('tstamp_lastContact')" class='silver'></i>
+				<th class="clickable-header" ng-click="sh.sortByColumn('tstamp_created')">
+					Create Date <i ng-class="sh.columnClass('tstamp_created')" class='silver'></i>
 				</th>
 				<th class="clickable-header" ng-click="sh.sortByColumn('treeCount')">
 					<i class='fa fa-tree' bs-tooltip title='Total Tree Count'></i> <i ng-class="sh.columnClass('treeCount')" class='silver'></i>
@@ -55,24 +55,21 @@
                 <td ng-bind="s.siteID"></td>
                 <td><a href='/#trees?siteID={{s.siteID}}'>{{s.siteName}}</a></td>
                 <td>{{s.city}}, {{s.state}}</td>
-                <td>{{s.tstamp_lastContact | formatDateFromNow}}</td>
+                <td>{{s.tstamp_created_2}}</td>
                 <td>{{s.treeCount}}</td>
                 <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
                 <td>
-                    <a ng-if="s.userCustCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
+                    <a ng-show="s.userCustCount>0" site-users-edit-modal site="s"
                        class='fa fa-user olive hand' bs-tooltip title='A CUSTOMER contact exists. Click to edit.'></a>
-                    <a ng-if="s.userSalesCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
+                    <a ng-show="s.userSalesCount>0" site-users-edit-modal site="s"
                        class='fa fa-user red hand' bs-tooltip title='A SALES contact exists. Click to edit.'></a>
-                    <a ng-if="s.userInvCount>0" ng-click='editUsers(s.siteID)' site-users-edit-modal site="s"
+                    <a ng-show="s.userInvCount>0" site-users-edit-modal site="s"
                        class='fa fa-user gray hand' bs-tooltip title='A INVENTORY contact exists. Click to edit.'></a>
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
-					<span ng-if="s.userCustCount<1 || s.userStaffCount<1">
-						<i site-users-edit-modal site="s" on-save="refreshSite"
-						   class="fa fa-frown-o _red _size6"
-						   title="Property is missing client contacts or company sales reps!"
-						   bs-tooltip style="cursor: pointer;"></i> &nbsp;
-					</span>
+					<a ng-show="s.userCustCount<1 || s.userStaffCount<1" site-users-edit-modal site="s" 
+					   class="fa fa-frown-o _red _size6 hand" bs-tooltip title="Property is missing client contacts or company sales reps!"></a> 
+					&nbsp;
 					<span>
 						<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
                            class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;

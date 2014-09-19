@@ -39,7 +39,7 @@
 					</p>	
 					<dl>	
 						<dt>Contact: </dt>
-						<dd ng-bind="report.contact + ' ' + report.contactPhone"></dd>
+						<dd ng-bind="report.contact + ' ' + report.contactPhone|formatPhoneNumber"></dd>
 					</dl>
 					<dl>
 						<dt>Client: </dt>
@@ -66,7 +66,7 @@
 						<dd><a href='mailto:{{report.sales_email}}' target=_new ng-bind='report.sales_email' style='color:#fff;'></a></dd>
 					</dl>
 					<dl ng-if="report.sales_phone">	
-						<dd ng-bind='report.sales_phone'></dd>
+						<dd ng-bind='report.sales_phone|formatPhoneNumber'></dd>
 					</dl>
 				</div>
 			</div>
@@ -158,10 +158,13 @@
 								</td>
 				                <td data-title="listing_ID" class="td-id">{{item.localTreeID}}</td>
 				                <td data-title="listing_species" class="td-name">
-                    				{{item.dbhID | dbhID2Name:this }}
+									{{item.dbhID | dbhID2Name:this }}
 									{{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
 									<span class="light" bo-text="'[' + item.treeID + ']'"></span>
-									<div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
+									<a href='#/tree_edit/{{item.treeID}}' class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')">
+										<i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
+									</a>
+                                    <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
 								</td>
 				                <td data-title="listing_treatment" colspan="3" class="td-treatment-bid">
 									<table class="">
@@ -187,9 +190,6 @@
                                             </td>
 
 											<td data-title="listing_options" class="td-action">
-												<a href='#/tree_edit/{{item.treeID}}' class='row-action' ng-if="auth.isAtleast('inventory')">
-                                                    <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
-                                                </a>
 												<a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action' ng-if="auth.is('admin')">
                                                     <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
                                                 </a>

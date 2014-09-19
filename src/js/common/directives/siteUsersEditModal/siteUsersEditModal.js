@@ -87,6 +87,7 @@ app.directive('siteUsersEditModal',
 
 			user.fName = tmp.fName;
 			user.lName = tmp.lName;
+			user.phone = tmp.phone;
             if (tmp.userID) user.userID = tmp.userID;
 
             console.log('Add new site contact', user);
@@ -110,6 +111,7 @@ app.directive('siteUsersEditModal',
 
 			user.fName = tmp.fName;
 			user.lName = tmp.lName;
+			user.phone = tmp.phone;
             if (tmp.userID) user.userID = tmp.userID;
 
             console.log('Add new site rep', user);

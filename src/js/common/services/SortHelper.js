@@ -1,13 +1,15 @@
 app.factory('SortHelper', function () {
     'use strict';
 
-    var SortHelper = function (sortObject, defaultCol, columnMap) {
+    var SortHelper = function (sortObject, defaultCol, columnMap, colSortMap) {
+	dbg(columnMap, colSortMap,'sorthlper start')
         var self = this;
         this.data = sortObject || [];
 
         this.sortCol = defaultCol;
         this.sortDir = 'asc';
         this.columnMap = columnMap;
+		this.colSortMap = colSortMap || {};
 
         this.convertType = function (value, type) {
             var res;
@@ -65,13 +67,16 @@ app.factory('SortHelper', function () {
                 }
             } else {
                 self.sortCol = col;
-                self.sortDir = 'asc';
+				// if there is a default sort order, use it
+				if(self.colSortMap[col]) self.sortDir = self.colSortMap[col];
+                else self.sortDir = 'asc';
             }
 
             return this.makeSort();
         };
 
-        this.columnClass = function (col) {
+        this.columnClass = function (col, sortDir) {
+			if(sortDir=='desc') self.sortDir='desc';
             if (!angular.equals(self.sortCol, col)) {
                 return 'fa fa-sort';
             }
@@ -85,8 +90,8 @@ app.factory('SortHelper', function () {
     };
 
     return {
-        sh: function (sortObject, defaultCol, columnMap) {
-            return new SortHelper(sortObject, defaultCol, columnMap);
+        sh: function (sortObject, defaultCol, columnMap, colSortOrder) {
+            return new SortHelper(sortObject, defaultCol, columnMap, colSortOrder);
         }
     };
 });

@@ -3,12 +3,21 @@
 
 	<div ng-if="auth.isAtleast('inventory')">
 		<div class='pull-right topMargin5'>
-			<div class="btn-group" bs-checkbox-group>
-				<label ng-click="setStatusFilter('all')" class="btn btn-default"><input type="radio"></input> All</label>
-				<label ng-click="setStatusFilter('sent')" class="btn btn-default"><input type="radio"></input> Sent</label>
-				<label ng-click="setStatusFilter('approved')" class="btn btn-default"><input type="radio"></input> Approved</label>
-				<label ng-click="setStatusFilter('completed')" class="btn btn-default"><input type="radio"></input> Completed</label>
-			</div>
+			<div class="btn-group" bs-radio-group id="estimatesFilters">
+				<label ng-click="setStatusFilter('all')"class="btn btn-default">
+                    <input type="radio" value="all"></input> All</label>
+				<label ng-click="setStatusFilter('sent')" class="btn btn-default">
+                    <input type="radio" value="sent"></input> Sent</label>
+				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
+                    <input type="radio" value="approved"></input> Approved</label>
+				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
+                    <input type="radio" value="completed"></input> Completed</label>
+                <span class="lnk leftSpace10">
+                    <a href ng-click='reset()' bs-tooltip title='Reset'>
+                        <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>
+                    </a>
+                </span>
+            </div>
 		</div>
 		<br>
 		<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
@@ -47,15 +56,19 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates">
+                <tr ng-repeat="e in displayedEstimates" class='hoverHotspot'>
                     <td ng-bind="e.reportID"></td>
                     <td>
 						<a ng-if="auth.isAtleast('inventory')" href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
 						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
 					</td>
-                    <td ng-bind="e.siteName_short" title="{{e.siteName}}"></td>
+                    <td>
+						<span title="{{e.siteName}}">{{e.siteName_short}}</span> &nbsp; 
+						<i site-edit-modal clients="initData.clients" site-id="e.siteID" 
+                           class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i>
+					</td>
                     <td ng-if="auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
-                    <td>$ {{e.total_price}}</td>
+                    <td>${{e.total_price|formatPrice}}</td>
                     <td>
 						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
 								ng-model="e.status" ng-change="setReportStatus(e,this)"

@@ -37,7 +37,7 @@
                     <td>{{c.clientID}}</td>
                     <td>{{c.clientName}}</td>
                     <td>{{c.street}} {{c.city}}, {{c.state}}</td>
-                    <td>{{c.contact}} {{c.contactPhone}}</td>
+                    <td>{{c.contact}} {{c.contactPhone|formatPhoneNumber}}</td>
                     <td><a href='/#sites?clientID={{c.clientID}}' bs-tooltip title='View sites'>{{c.siteCount}}</a></td>
 
                     <td>

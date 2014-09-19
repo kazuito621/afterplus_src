@@ -207,6 +207,25 @@ angular.module('arborPlusFilters', [])
 			return val;
 			return val.replace(/\.00$/,'');	// this removes .00 ...
 		}
-	});
+	})
+
+    // format phone like 510-331-1080 ext. 123
+    .filter('formatPhoneNumber', function(){
+        return function( val ){
+            if (!val || val==='') return '';
+
+            var numRegex = /^(\()?([0-9]{3})(\))?( |-|.)?([0-9]{3})( |-|.)?([0-9]{4})[ ]*(( |x|X|ex.|ex|ext|ext.|extension|Ext|Ext.|Extension|#){1}[ ]?([0-9]{1,7})){0,1}[ ]?(cell)?$/;
+
+            if(!numRegex.test(val)) {
+                return val; // regex invalid
+            } else {
+                var formatted_number = val.replace(numRegex,'$2-$5-$7 $9 $10 $11');
+                //replace ex/ext/... variations
+                formatted_number = formatted_number.replace(/extension|ext.|ext|ex.|ex|x|#/gi, 'ext.');
+            }
+            //console.info('initial ' + val + ' result ' + formatted_number);
+            return formatted_number;
+        }
+    });
 
 

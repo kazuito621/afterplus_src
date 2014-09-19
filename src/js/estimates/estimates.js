@@ -141,6 +141,21 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		s.displayedEstimates = estFiltered.slice(0, 49);
 	};
 
+    s.reset = function(){
+        //remove filter status
+        delete filters.status;
+
+        //remove filter status on UI
+        // there is a weird behavior of angular strap bs-radio component (view->model binding doesn't work),
+        // so using jquery here
+        $('#estimatesFilters').find('label').removeClass('active');
+
+        //clear search box
+        s.data.filterTextEntry = '';
+
+        applyFilter();
+    }
+
 	// when search box is changed, then update the filters, but
 	// add delay so we dont over work the browser.
 	s.$watch('data.filterTextEntry', function (txt, old) {

@@ -3,12 +3,21 @@
 
 	<div ng-if="auth.isAtleast('inventory')">
 		<div class='pull-right topMargin5'>
-			<div class="btn-group" bs-checkbox-group>
-				<label ng-click="setStatusFilter('all')" class="btn btn-default"><input type="radio"></input> All</label>
-				<label ng-click="setStatusFilter('sent')" class="btn btn-default"><input type="radio"></input> Sent</label>
-				<label ng-click="setStatusFilter('approved')" class="btn btn-default"><input type="radio"></input> Approved</label>
-				<label ng-click="setStatusFilter('completed')" class="btn btn-default"><input type="radio"></input> Completed</label>
-			</div>
+			<div class="btn-group" bs-radio-group id="estimatesFilters">
+				<label ng-click="setStatusFilter('all')"class="btn btn-default">
+                    <input type="radio" value="all"></input> All</label>
+				<label ng-click="setStatusFilter('sent')" class="btn btn-default">
+                    <input type="radio" value="sent"></input> Sent</label>
+				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
+                    <input type="radio" value="approved"></input> Approved</label>
+				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
+                    <input type="radio" value="completed"></input> Completed</label>
+                <span class="lnk leftSpace10">
+                    <a href ng-click='reset()' bs-tooltip title='Reset'>
+                        <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>
+                    </a>
+                </span>
+            </div>
 		</div>
 		<br>
 		<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 

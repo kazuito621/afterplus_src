@@ -59,7 +59,10 @@
                 <tr ng-repeat="e in displayedEstimates" class='hoverHotspot'>
                     <td ng-bind="e.reportID"></td>
                     <td>
-						<a ng-if="auth.isAtleast('inventory')" href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
+						<span ng-if="auth.isAtleast('inventory')">
+							<a href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>&nbsp;
+							<a ng-if="e.saveCount>1" href='/go/estimates/revisions/{{e.reportID}}' bs-tooltip title='{{e.saveCount}} revisions'><i class='fa fa-clock-o gray'></i></a>
+						</span>
 						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
 					</td>
                     <td>

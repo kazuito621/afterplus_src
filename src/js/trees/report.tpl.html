@@ -92,9 +92,11 @@
 				data-template="js/trees/emailReport.tpl.html"
 				ng-click="initEmailModal()"
 				>Send</button>
+		&nbsp;
+		<a ng-if='report.reportLink' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
 		<a ng-if='report.reportLink' href='{{report.reportLink}}' target='_cust_view'
-			onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> 
-		(<a ng-if='report.reportLink' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF</a>)
+			onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
+		<a ng-if='report.reportID' href='/go/estimate/revisions/{{report.reportID}}' target=_new>Past Revisions</a>
 			
 		<div class="clearfix"></div>
 	</div>	 

@@ -728,9 +728,26 @@ td.estimate_multirow_col{
     background-color: #cccccc !important;
 }
 
-/*button to clear google map search box*/
-.clear-google-search-box{
-    font-size:20px;
-    cursor: pointer !important;
+/*search bar buttons*/
+.search-panel-button:hover{
     text-decoration: none;
+}
+
+.search-panel-button{
+    background-color: white;
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    width:21px;
+    text-align:center;
+}
+.mright3{
+    margin-right:3px;
+}
+
+.mleft3{
+    margin-left:3px;
+}
+
+.mtop3{
+    margin-top:3px;
 }

@@ -6,8 +6,11 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	var myStateID='estimates',
 		estimates=[],  		// array of original estimates
 		estFiltered=[],  		// filtered list of estimates sites... which s.displayedSites uses as its source
-		filters = {},
 		filterTextTimeout,
+
+		// group the filters. so that if a status and a name is specified, both must match
+		// but if a name and email is specified, either can match
+		filterGroups=[['reportID', 'name', 'siteName', 'sales_email'], ['status']], 
 		self = this,
     	columnMap = {
         	'total_price': 'number'
@@ -17,6 +20,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		};
     s.displayedEstimates = [];
   	this.fh = FilterHelper.fh();
+	this.fh.setFilterGroups(filterGroups);
 
     var init = function () {
         var search = $location.search();
@@ -42,8 +46,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     };
 
 	s.setStatusFilter=function(status){
-		if(status && status!='all') filters.status=status;
-		else delete filters.status;
+		if(status=='all') status='';
+		self.fh.setFilter({status:status});
 		applyFilter();
 	}
 
@@ -128,27 +132,26 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 
 
 	var clearFilter = function () {
-		if (!filters || (_.objSize(filters) === 0)) { return; }
-		filters = {};
+		self.fh.setFilter({reportID:'', name:'', siteName:'', sales_email:'', status:''});
 		estFiltered = estimates;
 		s.sh.applySort();
 		s.displayedEstimates = estFiltered.slice(0, 49);
 	};
 
 	var applyFilter = function () {
-		estFiltered = self.fh.applyFilter(estimates, filters);
+		estFiltered = self.fh.applyFilter(estimates);
+		// without this line here, the filter gets messed up on the next filter execution
+		if(!estFiltered.length) estFiltered=[{name_short:'No Results', reportID:'', siteName_short:'No Results', total_price:0, status:'none'}]
 		s.sh.applySort();
 		s.displayedEstimates = estFiltered.slice(0, 49);
 	};
 
     s.reset = function(){
-        //remove filter status
-        delete filters.status;
-
         //remove filter status on UI
         // there is a weird behavior of angular strap bs-radio component (view->model binding doesn't work),
         // so using jquery here
         $('#estimatesFilters').find('label').removeClass('active');
+		clearFilter();
 
         //clear search box
         s.data.filterTextEntry = '';
@@ -162,14 +165,17 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
 		filterTextTimeout = $timeout(function () {
 			if (txt === '' || !txt) {
-				clearFilter();
+				if(old){
+					self.fh.setFilter({reportID:'', name:'', siteName:'', sales_email:''});
+					applyFilter();
+				}
 			} else if (!isNaN(txt)) {
 				// if search entry is a number, search by siteID and name
-				filters = {reportID: txt, name: txt, siteName:txt};
+				self.fh.setFilter({reportID: txt, name: txt, siteName:txt});
 				applyFilter();
 			} else {
 				// if just letters, then search by name and city, and sales person
-				filters = {siteName: txt, name:txt, sales_email:txt, status:txt};
+				self.fh.setFilter({siteName: txt, name:txt, sales_email:txt});
 				applyFilter();
 			}
 		}, 500);

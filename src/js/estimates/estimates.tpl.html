@@ -51,6 +51,7 @@
                     <th ng-if="auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
                         Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
                     </th>
+                    <th style="min-width: 75px;"></th>
                 </tr>
             </thead>
 
@@ -83,6 +84,17 @@
 							
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">{{e.tstamp_updated | formatDate}}</td>
+                    <td>
+                        <a ng-if="auth.isAtleast('inventory')"
+                           delete-with-confirm-button
+                           type="estimate"
+                           item-id="e.reportID"
+                           active-popover="activePopover"
+                           on-confirm-callback="deleteCurrentItem()"
+                           class="fa fa-times _red _size7 hand hoverDisplay"
+                           bs-tooltip title="Delete"
+                           style="text-decoration: none;"></a>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -1,0 +1,15 @@
+<div class='popover-container' style="position: absolute;">
+	<div class="alert alert-warning alert-dismissable" tabindex="-1" role="dialog">
+		<div>
+			Are you sure you want to delete this {{type}}?
+			<form class="form-inline">
+				<div class='panel-body'>
+					<button type="button" class="btn" ng-click="onConfirmCallback()">CONFIRM</button>
+					<button type="button" class="btn btn-default " ng-click="cancel()">
+                        CANCEL
+                    </button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

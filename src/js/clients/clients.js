@@ -5,7 +5,6 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 
             var s = window.cts = $scope;
             var myStateID = 'clients';
-            var clientDeletePopover;
             var self = this;
             var columnMap = {
                 clientID: 'number',
@@ -16,7 +15,6 @@ var ClientsCtrl = app.controller('ClientsCtrl',
             s.newClient = {};
             s.items = {};
             s.displayedClients = [];
-            s.activePopover = {};
             s.auth = Auth;
 
             var init = function () {
@@ -24,19 +22,26 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 s.displayedClients = s.initData.clients.slice(0, 49);
             };
 
+            //we use this object as a 'singletone' property for delete-with-confirm-button directive
+            //note, only one popover can be active on page
+            s.activePopover = {elem:{}, itemID: undefined};
+
+            //delete item method
+            s.deleteCurrentItem = function () {
+                if (!s.activePopover.itemID) return;
+
+                Api.removeClientById(s.activePopover.itemID).then(function () {
+                    Api.refreshInitData();
+                }, function err(){
+                    s.setAlert("Client can't be deleted, try again later.",{type:'d',time:5});
+                });
+                Api.refreshInitData();
+                s.activePopover.elem.hide();
+                delete s.activePopover.itemID;
+            };
+
             // Pre-fetch an external template populated with a custom scope
             var clientEditModal = $modal({scope: $scope, template: '/js/clients/edit.tpl.html', show: false});
-
-            var deletePopoverFactory = function (el) {
-                return $popover(el, {
-                    scope: $scope,
-                    template: '/js/partial_views/delete.tpl.html',
-                    show: false,
-                    animation: 'am-flip-x',
-                    placement: 'left',
-                    trigger: 'focus'
-                });
-            };
 
             s.sh = {
                 sortByColumn: function (col) {
@@ -59,7 +64,6 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 var addon = s.initData.clients.slice(count, count + 50);
                 s.displayedClients = s.displayedClients.concat(addon);
             };
-
 
 			s.saveClient = function(mode){
 				if(!mode) mode = s.mode;
@@ -99,37 +103,6 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 						s.mode = 'edit';
 						clientEditModal.show();
                     });
-            };
-
-            s.deleteCurrentItem = function () {
-                Api.removeClientById(s.activePopover.clientID)
-                    .then(function () {
-                        Api.refreshInitData();
-                    }, function err() {
-                        //todo ... how do we get this?
-                        // todo -- ad this same functionality to delete of client
-                    });
-                Api.refreshInitData();
-                clientDeletePopover.hide();
-                delete s.activePopover.clientID;
-            };
-
-            s.queueOrDequeueItemForDelete = function (itemID, event) {
-                if (clientDeletePopover && typeof clientDeletePopover.hide === 'function') {
-                    delete s.activePopover.clientID;
-                    clientDeletePopover.hide();
-                }
-
-                if (!s.activePopover.clientID && event && event.target) {
-                    s.activePopover.clientID = itemID
-                    clientDeletePopover = deletePopoverFactory($(event.target));
-
-                    clientDeletePopover.$promise.then(function () {
-                        clientDeletePopover.show();
-                    });
-                }
-
-                s.type = 'client';
             };
 
             init();

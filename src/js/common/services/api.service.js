@@ -89,6 +89,9 @@ function (Rest, $rootScope, $q, $location ) {
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },
+        removeEstimateById: function (id) {
+            return Rest.one('estimate', id).remove();
+        },
 		getEmailLogs: function( rptID ){
 			return Rest.all('estimate/' + rptID + '/emaillogs').getList();
 		},

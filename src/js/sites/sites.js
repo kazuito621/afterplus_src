@@ -5,7 +5,6 @@ var SitesCtrl = app.controller('SitesCtrl',
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites',
-                siteDeletePopover,
                 sites,  // array of original site array that comes from api/server
                 sitesFiltered,  // filtered list of sites... which s.displayedSites uses as its source
                 filters = {},
@@ -25,7 +24,6 @@ var SitesCtrl = app.controller('SitesCtrl',
             s.type = 'site';
             s.items = {};
             s.displayedSites = [];
-            s.activePopover = {};
             s.auth = Auth;
             s.allSites = {
                 selected: false,
@@ -44,6 +42,27 @@ var SitesCtrl = app.controller('SitesCtrl',
                     return 0;
                 }
             };
+
+            //we use this object as a 'singletone' property for delete-with-confirm-button directive
+            //note, only one popover can be active on page
+            s.activePopover = {elem:{}, itemID: undefined};
+
+            //delete item method
+            s.deleteCurrentItem = function () {
+                if (!s.activePopover.itemID) return;
+
+                Api.removeSiteById(s.activePopover.itemID).then(function () {
+                    s.refreshSites();
+                    Api.refreshInitData();
+                }, function err(){
+                    s.setAlert("Property can't be deleted, try again later.",{type:'d',time:5});
+                });
+                s.refreshSites();
+                Api.refreshInitData();
+                s.activePopover.elem.hide();
+                delete s.activePopover.itemID;
+            };
+
 
             this.fh = FilterHelper.fh();
 
@@ -108,18 +127,6 @@ var SitesCtrl = app.controller('SitesCtrl',
                 }, 500);
             });
 
-
-            var siteDeletePopoverFactory = function (el) {
-                return $popover(el, {
-                    scope: $scope,
-                    template: '/js/partial_views/delete.tpl.html', // production
-                    show: false,
-                    animation: 'am-flip-x',
-                    placement: 'left',
-                    trigger: 'focus'
-                });
-            };
-
             s.sh = {
                 sortByColumn: function (col) {
                     applyFilter();
@@ -139,35 +146,6 @@ var SitesCtrl = app.controller('SitesCtrl',
 
                 var count = s.displayedSites.length;
                 s.displayedSites = sitesFiltered.slice(0, count + 50);
-            };
-
-            s.deleteCurrentItem = function () {
-                Api.removeSiteById(s.activePopover.siteID).then(function () {
-                    s.refreshSites();
-                    Api.refreshInitData();
-                });
-                s.refreshSites();
-                Api.refreshInitData();
-                siteDeletePopover.hide();
-                delete s.activePopover.siteID;
-            };
-
-            s.queueOrDequeueItemForDelete = function (itemID, event) {
-                if (siteDeletePopover && typeof siteDeletePopover.hide === 'function') {
-                    delete s.activePopover.siteID;
-                    siteDeletePopover.hide();
-                }
-
-                if (!s.activePopover.siteID && event && event.target) {
-                    s.activePopover.siteID = itemID
-                    siteDeletePopover = siteDeletePopoverFactory($(event.target));
-
-                    siteDeletePopover.$promise.then(function () {
-                        siteDeletePopover.show();
-                    });
-                }
-
-                s.type = 'site';
             };
 
             s.isSiteSelected = function (id) {

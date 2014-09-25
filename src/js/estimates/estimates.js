@@ -45,6 +45,24 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         });
     };
 
+    //we use this object as a 'singletone' property for delete-with-confirm-button directive
+    //note, only one popover can be active on page
+    s.activePopover = {elem:{}, itemID: undefined};
+
+    //delete item method
+    s.deleteCurrentItem = function () {
+        if (!s.activePopover.itemID) return;
+
+        Api.removeEstimateById(s.activePopover.itemID).then(function () {
+            Api.refreshInitData();
+        }, function err(){
+            s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
+        });
+        Api.refreshInitData();
+        s.activePopover.elem.hide();
+        delete s.activePopover.itemID;
+    };
+
 	s.setStatusFilter=function(status){
 		if(status=='all') status='';
 		self.fh.setFilter({status:status});
@@ -63,7 +81,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			}
 		});
 	}
-
 
 	s.data = {
 		// determine which statuses to show based on current status

@@ -44,7 +44,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             s.displayedEstimates = estFiltered.slice(0, 49);
         });
     };
-
+    s.updateSailsRepo=function(value, report_id, sails_userid){
+    	Api.updateSailsRepo(value, report_id, sails_userid );
+    }
 	s.setStatusFilter=function(status){
 		if(status=='all') status='';
 		self.fh.setFilter({status:status});

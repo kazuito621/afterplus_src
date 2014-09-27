@@ -182,13 +182,13 @@ function (Rest, $rootScope, $q, $location ) {
                 }
                 return Rest.all('user').getList(params);
             }
-        },
-        updateSailsRepo: function(value, report_id, sails_userid ){
-            /*    POST /estimate/<ESTIMATE_ID>
-            // Post JSON data: {sales_userID: XXX}*/
-            return Rest.one('estimate', report_id).post('sales_userID': sails_userid );
-                
         }
+//        ,updateSailsRepo: function(value, report_id, sails_userid ){
+//            /*    POST /estimate/<ESTIMATE_ID>
+//            // Post JSON data: {sales_userID: XXX}*/
+//            return Rest.one('estimate', report_id).post('sales_userID': sails_userid );
+//
+//        }
     };
 }]);
 

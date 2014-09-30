@@ -45,6 +45,25 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         });
     };
 
+    //we use this object as a 'singletone' property for delete-with-confirm-button directive
+    //note, only one popover can be active on page
+    s.activePopover = {elem:{}, itemID: undefined};
+
+    //delete item method
+    s.deleteCurrentItem = function () {
+        if (!s.activePopover.itemID) return;
+		var itemID=s.activePopover.itemID;
+        Api.removeEstimateById(itemID).then(function () {
+			$("table#estimatesList tr#item_"+itemID).hide();
+			var idx=_.findObj(estimates, 'reportID', itemID, true);
+			if(idx>=0) estimates.splice(idx, 1);
+        }, function err(){
+            s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
+        });
+        s.activePopover.elem.hide();
+        delete s.activePopover.itemID;
+    };
+
 	s.setStatusFilter=function(status){
 		if(status=='all') status='';
 		self.fh.setFilter({status:status});
@@ -63,7 +82,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			}
 		});
 	}
-
 
 	s.data = {
 		// determine which statuses to show based on current status

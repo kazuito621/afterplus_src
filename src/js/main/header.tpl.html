@@ -8,7 +8,17 @@
 	<div class='header-nav cnt-actions'>
 		<div ng-if="auth.isSignedIn()">
 			<span>
-				<b>{{auth.getLoginName()}}</b> <a href ng-click="auth.signOut()">Sign Out</a>
+				<b>{{auth.getLoginName()}}</b> 
+				<a ng-if="auth.isAtleast('inventory')" href='/go/dash' target='_new' bs-tooltip title='Dashboard'>
+					<span class="fa-stack">
+					  	<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-dashboard fa-stack-1x fa-inverse"></i>
+					</span></a>
+				<a href ng-click="auth.signOut()" bs-tooltip title='Sign Out'>
+					<span class="fa-stack">
+					  	<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-sign-out fa-stack-1x fa-inverse"></i>
+					</span></a>
 			</span>
 		</div>
 	</div>	

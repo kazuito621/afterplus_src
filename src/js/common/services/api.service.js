@@ -90,7 +90,7 @@ function (Rest, $rootScope, $q, $location ) {
             return Rest.all('sendEstimate').post(rpt);
         },
         removeEstimateById: function (id) {
-            return Rest.one('estimate', id).remove();
+            return Rest.one('estimate', id).post('delete');
         },
 		getEmailLogs: function( rptID ){
 			return Rest.all('estimate/' + rptID + '/emaillogs').getList();

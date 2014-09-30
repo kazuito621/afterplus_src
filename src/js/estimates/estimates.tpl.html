@@ -27,7 +27,7 @@
 	<BR><BR>
 
     <div class='table-responsive' ng-if="displayedEstimates.length > 0">
-        <table class='table table-striped'>
+        <table class='table table-striped' id='estimatesList'>
             <thead>
                 <tr>
                     <th class="clickable-header" ng-click="sh.sortByColumn('reportID')">
@@ -57,7 +57,7 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates" class='hoverHotspot'>
+                <tr ng-repeat="e in displayedEstimates" class='hoverHotspot' id='item_{{e.reportID}}'>
                     <td ng-bind="e.reportID"></td>
                     <td>
 						<span ng-if="auth.isAtleast('inventory')">
@@ -88,7 +88,7 @@
                         <a ng-if="auth.isAtleast('inventory')"
                            delete-with-confirm-button
                            type="estimate"
-                           item-id="e.reportID"
+                           item-id="{{e.reportID}}"
                            active-popover="activePopover"
                            on-confirm-callback="deleteCurrentItem()"
                            class="fa fa-times _red _size7 hand hoverDisplay"

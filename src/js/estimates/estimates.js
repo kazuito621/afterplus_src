@@ -52,13 +52,14 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     //delete item method
     s.deleteCurrentItem = function () {
         if (!s.activePopover.itemID) return;
-
-        Api.removeEstimateById(s.activePopover.itemID).then(function () {
-            Api.refreshInitData();
+		var itemID=s.activePopover.itemID;
+        Api.removeEstimateById(itemID).then(function () {
+			$("table#estimatesList tr#item_"+itemID).hide();
+			var idx=_.findObj(estimates, 'reportID', itemID, true);
+			if(idx>=0) estimates.splice(idx, 1);
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
         });
-        Api.refreshInitData();
         s.activePopover.elem.hide();
         delete s.activePopover.itemID;
     };

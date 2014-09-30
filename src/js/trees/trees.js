@@ -68,6 +68,11 @@ var TreesCtrl = app.controller('TreesCtrl',
             };
             s.TFSdata=TFS.data;
 
+            //search component for google map
+            s.searchBox = [];
+            //array to store marker objects for search box
+            s.searchMarkers = [];
+
 //            s.$watch('selected', function (newVal, oldVal) {
 //                console.log('Selected changed\n', oldVal, newVal);
 //            }, true);
@@ -375,12 +380,40 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.sendEvt('onTreeResultImageRollout');
             }
 
+
             //ng-mouseover="onTreeImageRollover(tree.treeID,true);" ng-mouseleave="onTreeImageRollover(tree.treeID,false);"
 
 
 
 
             // ------------------------------------------------------ GOOGLE MAPS
+
+            //google map bar: event handler for button 'X'
+            s.cleanSearchMarkers = function(){
+                s.googleMapSearchBoxValue='';
+
+                for (var i = 0, marker; marker = s.searchMarkers[i]; i++) {
+                    marker.setMap(null);
+                }
+
+                s.zoomToMappedTrees();
+            }
+
+            //google map bar: event handler for button 'tree', zoom to selected sites/trees
+            s.zoomToMappedTrees = function(){
+                if (s.selected.siteID){
+                    showMappedTrees(s.trees);
+                }
+                else{
+                    showMappedSites();
+                }
+            }
+
+            //google map bar: event handler for button 'marker', zoom to search marker
+            s.zoomToSearchMarker = function(){
+                showSearchMarker();
+            }
+
             var initMap = _.throttle(function(){
                 var deferred=$q.defer();
 
@@ -388,7 +421,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     "maps",
                     "3",
                     {
-                        other_params:'sensor=false',
+                        other_params:'sensor=false&libraries=places',
                         callback:
                             function(){
                                 var myOptions = {zoom: 1, tilt:0, center: new google.maps.LatLng(37,122), mapTypeId:'hybrid', panControl:false };
@@ -399,6 +432,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                                     if(infowindow && infowindow.setMap) infowindow.setMap(null);
                                 });
 
+                                initSearchBox();
+
                                 $timeout(function () {
                                     deferred.resolve();
                                 }, 1000);
@@ -408,8 +443,33 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return deferred.promise;
             }, 2000);
 
-            var showMappedSites = _.throttle(function() {
+            var initSearchBox = _.throttle(function(){
 
+                // Create search panel
+                var searchPanel = document.getElementById('searchPanel');
+                gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(searchPanel);
+
+                s.searchBox = new google.maps.places.SearchBox((googleSearchbox));
+
+                // fix preload issue: searchpanel should be hidden until added to gMap.controls
+                // in other case, it will be visible to user when map is loading
+                $(searchPanel).show();
+
+                // Listen for the event fired when the user selects an item from the
+                // pick list. Retrieve the matching places for that item.
+                google.maps.event.addListener(s.searchBox, 'places_changed', function() {
+                    showSearchMarker();
+                });
+
+                // Bias the SearchBox results towards places that are within the bounds of the
+                // current map's viewport.
+                google.maps.event.addListener(gMap, 'bounds_changed', function() {
+                    var bounds = gMap.getBounds();
+                    s.searchBox.setBounds(bounds);
+                });
+            }, 2000);
+
+            var showMappedSites = _.throttle(function() {
                 var a, l, siteLoc, noLoc=0, numSpecies, gMapID=''
                	var map_id=(s.data.mode()=='estimate') ? 'treeMap2' : 'treeMap';
                 if(enableMap==false || !s.filteredSites || !s.filteredSites.length) return;
@@ -457,6 +517,44 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 replaceMarkers(s.siteLocs,'allSites');
             },1500);
+
+            var showSearchMarker =_.throttle(function(){
+                var places = s.searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                for (var i = 0, marker; marker = s.searchMarkers[i]; i++) {
+                    marker.setMap(null);
+                }
+
+                // For each place, get the icon, place name, and location.
+                var bounds = new google.maps.LatLngBounds();
+                for (var i = 0, place; place = places[i]; i++) {
+                    var image = {
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(25, 25)
+                    };
+
+                    // Create a marker for each place.
+                    var searchMarker = new google.maps.Marker({
+                        map: gMap,
+                        icon: image,
+                        title: place.name,
+                        position: place.geometry.location
+                    });
+
+                    s.searchMarkers.push(searchMarker);
+
+                    bounds.extend(place.geometry.location);
+                }
+
+                gMap.fitBounds(bounds);
+            }, 1500);
 
             var setSiteColor = function (site) {
                 var bg = '565656';
@@ -535,7 +633,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                             break;
                     }
                 }
-
 
                 // Don't zoom in too far on only one marker, when in site mode
                 if (addType=='allSites' && mapBounds.getNorthEast().equals(mapBounds.getSouthWest())) {

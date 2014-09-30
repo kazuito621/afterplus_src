@@ -70,7 +70,7 @@
 						<i site-edit-modal clients="initData.clients" site-id="e.siteID" 
                            class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i>
 					</td>
-                    <td ng-if="auth.isAtleast('inventory')" editable-text="e.sales_email_short" ng-bind="e.sales_email_short" title="{{e.sales_email}}" onbeforesave="updateSailsRepo($data, e.reportID, e.sales_userID)" style="cursor:pointer;"></td>
+                    <td ng-if="auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
                     <td>${{e.total_price|formatPrice}}</td>
                     <td>
 						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 

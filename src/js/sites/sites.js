@@ -64,8 +64,8 @@ var SitesCtrl = app.controller('SitesCtrl',
             };
 
 
-            this.fh = FilterHelper.fh();
 
+            this.fh = FilterHelper.fh();
             var init = function () {
                 // pull the list of sites. were are not using initData.sites, because we need a list
                 // that has user assignments as well
@@ -73,7 +73,6 @@ var SitesCtrl = app.controller('SitesCtrl',
                     // allow them to nav to /#sites?clientID=XXX and filter
                     var search = $location.search();
                     if (search.clientID) {
-                        dbg('doing search clientID');
                         sitesFiltered = [];
                         _.each(siteData, function (s) {
                             if (s.clientID === search.clientID) {
@@ -94,19 +93,21 @@ var SitesCtrl = app.controller('SitesCtrl',
                 init();
             };
 
-            var clearFilter = function () {
-                if (!filters || (_.objSize(filters) === 0)) { return; }
-                filters = {};
-                sitesFiltered = sites;
+			var clearFilter = function () {
+				self.fh.setFilter({siteID:'', siteName:'', city:''});
+				sitesFiltered = sites;
+				s.sh.applySort();
+                s.displayedSites = sitesFiltered.slice(0, 49);
+			};
+
+            var applyFilter = function () {
+                sitesFiltered = self.fh.applyFilter(sites);
+				// without this line here, the filter gets messed up on the next filter execution
+				if(!sitesFiltered.length) sitesFiltered=[{siteName:'No Results', city:'', state:'', tstamp_created_2:'', treeCount:''}];
                 s.sh.applySort();
                 s.displayedSites = sitesFiltered.slice(0, 49);
             };
 
-            var applyFilter = function () {
-                sitesFiltered = self.fh.applyFilter(sites, filters);
-                s.sh.applySort();
-                s.displayedSites = sitesFiltered.slice(0, 49);
-            };
 
             // when search box is changed, then update the filters, but
             // add delay so we dont over work the browser.
@@ -114,14 +115,17 @@ var SitesCtrl = app.controller('SitesCtrl',
                 if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
                 filterTextTimeout = $timeout(function () {
                     if (txt === '' || !txt) {
-                        clearFilter();
+						if(old){
+							self.fh.setFilter({siteName:'', city:'', siteID:''});
+							applyFilter();
+						}
                     } else if (!isNaN(txt)) {
                         // if search entry is a number, search by siteID and name
-                        filters = {siteID: txt, siteName: txt};
+						self.fh.setFilter({siteID: txt, siteName: txt});
                         applyFilter();
                     } else {
                         // if just letters, then search by name and city
-                        filters = {siteName: txt, city: txt};
+						self.fh.setFilter({siteName: txt, city: txt});
                         applyFilter();
                     }
                 }, 500);
@@ -137,7 +141,8 @@ var SitesCtrl = app.controller('SitesCtrl',
                     return self.sh.columnClass(col);
                 },
                 applySort: function () {
-                    sitesFiltered = self.sh.makeSort(sitesFiltered);
+					// todo... this breaks when using filtering
+                    //sitesFiltered = self.sh.makeSort(sitesFiltered);
                 }
             };
 

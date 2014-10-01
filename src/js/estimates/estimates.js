@@ -7,10 +7,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		estimates=[],  		// array of original estimates
 		estFiltered=[],  		// filtered list of estimates sites... which s.displayedSites uses as its source
 		filterTextTimeout,
-
-		// group the filters. so that if a status and a name is specified, both must match
-		// but if a name and email is specified, either can match
-		filterGroups=[['reportID', 'name', 'siteName', 'sales_email'], ['status']], 
 		self = this,
     	columnMap = {
         	'total_price': 'number'
@@ -20,6 +16,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		};
     s.displayedEstimates = [];
   	this.fh = FilterHelper.fh();
+	// group the filters. so that if a status and a name is specified, both must match
+	// but if a name and email is specified, either can match
+	var filterGroups=[['xuyz','reportID', 'name', 'siteName', 'sales_email'], ['status']];
 	this.fh.setFilterGroups(filterGroups);
 
     var init = function () {

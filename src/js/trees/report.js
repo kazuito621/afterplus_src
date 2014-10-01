@@ -99,8 +99,15 @@ var ReportCtrl = app.controller(
                 return '';
             };
 
-            s.onTreatmentUpdate = function () {
-                s.report.items = ReportService.ungroupReportItems();
+            s.onTreatmentTypeUpdate = function () {
+                //second param set to 'true', because we need to udpdate treatment price
+                s.report.items = RS.ungroupReportItems(s.groupedItems, true);
+                s.groupedItems = RS.groupReportItems();
+            };
+
+            s.onTreatmentPriceUpdate = function () {
+                s.report.items = RS.ungroupReportItems();
+                s.groupedItems = RS.groupReportItems();
             };
 
             // After an item in the report has been edited via x-editable

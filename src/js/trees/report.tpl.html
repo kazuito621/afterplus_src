@@ -116,7 +116,7 @@
 			</tr>
 		</table>
 	</div>
-     
+
    	<div class="table-container">
    		<div class="row row-table">
    			<div class="col-md-4" ng-if="data.mode()=='estimate'">
@@ -175,7 +175,7 @@
 												<a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
 												   editable-select="treatment.treatmentTypeCode"
 												   onshow="onShowEditItem(item.$$hashKey)"
-                                                   onaftersave="onTreatmentUpdate()"
+                                                   onaftersave="onTreatmentTypeUpdate()"
 												   onhide="onHideEditItem()">
 													{{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
 												</a>
@@ -185,7 +185,7 @@
                                                 </span>
                                             </td>
 											<td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_price" class="td-bid">
-												&#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()" onaftersave="onTreatmentUpdate()">{{treatment.price|formatPrice}}</a>
+												&#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()" onaftersave="onTreatmentPriceUpdate()">{{treatment.price|formatPrice}}</a>
 											</td>
                                             <td ng-if="auth.is('customer')">
                                                 <span ng-bind="treatment.price|formatPrice"></span>

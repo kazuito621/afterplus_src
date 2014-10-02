@@ -89,6 +89,9 @@ function (Rest, $rootScope, $q, $location ) {
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },
+        removeEstimateById: function (id) {
+            return Rest.one('estimate', id).post('delete');
+        },
 		getEmailLogs: function( rptID ){
 			return Rest.all('estimate/' + rptID + '/emaillogs').getList();
 		},
@@ -182,12 +185,6 @@ function (Rest, $rootScope, $q, $location ) {
                 }
                 return Rest.all('user').getList(params);
             }
-        },
-        updateSailsRepo: function(value, report_id, sails_userid ){
-            /*    POST /estimate/<ESTIMATE_ID>
-            // Post JSON data: {sales_userID: XXX}*/
-            return Rest.one('estimate', report_id).post({'sales_userID': sails_userid});
-                
         }
     };
 }]);

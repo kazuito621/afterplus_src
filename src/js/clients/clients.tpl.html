@@ -43,8 +43,15 @@
                     <td>
                         <a ng-if="auth.isAtleast('inventory')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hand hoverDisplay" 
 								bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
-                        <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID, $event)" class="fa fa-times _red _size7 hand hoverDisplay" 
-								bs-tooltip title="Delete" style="text-decoration: none;"></a>
+                        <a ng-if="auth.is('admin')"
+                           delete-with-confirm-button
+                           type="client"
+                           item-id="c.clientID"
+                           active-popover="activePopover"
+                           on-confirm-callback="deleteCurrentItem()"
+                           class="fa fa-times _red _size7 hand hoverDisplay"
+						   bs-tooltip title="Delete"
+                           style="text-decoration: none;"></a>
                     </td>
 
                 </tr>

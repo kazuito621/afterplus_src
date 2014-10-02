@@ -27,7 +27,7 @@
 	<BR><BR>
 
     <div class='table-responsive' ng-if="displayedEstimates.length > 0">
-        <table class='table table-striped'>
+        <table class='table table-striped' id='estimatesList'>
             <thead>
                 <tr>
                     <th class="clickable-header" ng-click="sh.sortByColumn('reportID')">
@@ -51,12 +51,13 @@
                     <th ng-if="auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
                         Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
                     </th>
+                    <th style="min-width: 75px;"></th>
                 </tr>
             </thead>
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates" class='hoverHotspot'>
+                <tr ng-repeat="e in displayedEstimates" class='hoverHotspot' id='item_{{e.reportID}}'>
                     <td ng-bind="e.reportID"></td>
                     <td>
 						<span ng-if="auth.isAtleast('inventory')">
@@ -70,7 +71,7 @@
 						<i site-edit-modal clients="initData.clients" site-id="e.siteID" 
                            class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i>
 					</td>
-                    <td ng-if="auth.isAtleast('inventory')" editable-text="e.sales_email_short" ng-bind="e.sales_email_short" title="{{e.sales_email}}" onbeforesave="updateSailsRepo($data, e.reportID, e.sales_userID)" style="cursor:pointer;"></td>
+                    <td ng-if="auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
                     <td>${{e.total_price|formatPrice}}</td>
                     <td>
 						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
@@ -83,6 +84,17 @@
 							
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">{{e.tstamp_updated | formatDate}}</td>
+                    <td>
+                        <a ng-if="auth.isAtleast('inventory')"
+                           delete-with-confirm-button
+                           type="estimate"
+                           item-id="{{e.reportID}}"
+                           active-popover="activePopover"
+                           on-confirm-callback="deleteCurrentItem()"
+                           class="fa fa-times _red _size7 hand hoverDisplay"
+                           bs-tooltip title="Delete"
+                           style="text-decoration: none;"></a>
+                    </td>
                 </tr>
             </tbody>
         </table>

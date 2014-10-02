@@ -83,12 +83,11 @@ app.factory('FilterHelper', function () {
             var rtn= _.filter(data, function (item) {
 				var filterGroupMatches=0, matches=0, activeFilterCount=0;
 				_.each(activeFilters, function(filterGrp, idx){
-					if(filterGrp.length){
+					if(filterGrp && filterGrp.length){
 						activeFilterCount++;
                 		if( self.matchFilter(item, filterGrp) ) matches++;
 					}
 				});
-
 				if(activeFilterCount==0) return true;
 				return (matches>0 && matches == activeFilterCount);
             });

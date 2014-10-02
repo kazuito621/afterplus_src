@@ -134,7 +134,7 @@ app.service('Auth',
             this.getLoginName = function () {
                 if (this.isSignedIn()) {
                     if (this.data().email) {
-                        return "Hi, " + this.data().email + ".";
+                        return this.data().email;
                     }
                     return "You are logged in.";
                 }

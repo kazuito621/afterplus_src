@@ -7,10 +7,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		estimates=[],  		// array of original estimates
 		estFiltered=[],  		// filtered list of estimates sites... which s.displayedSites uses as its source
 		filterTextTimeout,
-
-		// group the filters. so that if a status and a name is specified, both must match
-		// but if a name and email is specified, either can match
-		filterGroups=[['reportID', 'name', 'siteName', 'sales_email'], ['status']], 
 		self = this,
     	columnMap = {
         	'total_price': 'number'
@@ -20,6 +16,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		};
     s.displayedEstimates = [];
   	this.fh = FilterHelper.fh();
+	// group the filters. so that if a status and a name is specified, both must match
+	// but if a name and email is specified, either can match
+	var filterGroups=[['xuyz','reportID', 'name', 'siteName', 'sales_email'], ['status']];
 	this.fh.setFilterGroups(filterGroups);
 
     var init = function () {
@@ -44,9 +43,26 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             s.displayedEstimates = estFiltered.slice(0, 49);
         });
     };
-    s.updateSailsRepo=function(value, report_id, sails_userid){
-    	Api.updateSailsRepo(value, report_id, sails_userid );
-    }
+
+    //we use this object as a 'singletone' property for delete-with-confirm-button directive
+    //note, only one popover can be active on page
+    s.activePopover = {elem:{}, itemID: undefined};
+
+    //delete item method
+    s.deleteCurrentItem = function () {
+        if (!s.activePopover.itemID) return;
+		var itemID=s.activePopover.itemID;
+        Api.removeEstimateById(itemID).then(function () {
+			$("table#estimatesList tr#item_"+itemID).hide();
+			var idx=_.findObj(estimates, 'reportID', itemID, true);
+			if(idx>=0) estimates.splice(idx, 1);
+        }, function err(){
+            s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
+        });
+        s.activePopover.elem.hide();
+        delete s.activePopover.itemID;
+    };
+
 	s.setStatusFilter=function(status){
 		if(status=='all') status='';
 		self.fh.setFilter({status:status});
@@ -65,7 +81,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			}
 		});
 	}
-
 
 	s.data = {
 		// determine which statuses to show based on current status

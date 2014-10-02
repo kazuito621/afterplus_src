@@ -21,6 +21,48 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	var filterGroups=[['xuyz','reportID', 'name', 'siteName', 'sales_email'], ['status']];
 	this.fh.setFilterGroups(filterGroups);
 
+    // we cache sale users data for reports in this object
+    // object structure(siteID : array of users): {
+    //              '793' : [{email: 'tim@hon.com', id: 2, shortEmail: 'tim'}, {email: 'vladimir@melekh.com', id: 2, shortEmail: 'vladimir'} ],
+    //              '799' : [{email: 'tim@hon.com', id: 2, shortEmail: 'tim'}, {email: 'vladimir@melekh.com', id: 2, shortEmail: 'vladimir'} ]}
+    s.estimateUsers = {};
+
+    // load and cache users data for report
+    var loadEstimateUsers = function(siteID){
+        s.estimateUsers[siteID] = [];
+
+        Api.getSiteUsers(siteID).then(function(estUsers){
+            _.each(estUsers, function(estUser){
+
+                var shortEmail = estUser.email.substr(0, estUser.email.indexOf('@'));
+                console.info(shortEmail);
+
+                s.estimateUsers[siteID].push({id: estUser.userID, email: estUser.email, shortEmail: shortEmail});
+            })
+        })
+    }
+
+    // get from cache users data for report
+    s.getEstimateUsers = function(siteID){
+        if (!s.estimateUsers[siteID]){
+            loadEstimateUsers(siteID);
+        }
+        return s.estimateUsers[siteID];
+    }
+
+    // callback when sales_user was changed for estimate
+    s.updateEstimate = function(rpt){
+        var newSalesUser = _.findObj(s.estimateUsers[rpt.siteID], 'id', rpt.sales_userID);
+        if (newSalesUser){
+            rpt.sales_email_short = newSalesUser.shortEmail;
+            rpt.sales_email = newSalesUser.email;
+        }
+
+        Api.saveReport(rpt).then(function(data1){
+            //What should we do here? May be display some user-friendly message, that report was updated?
+        })
+    }
+
     var init = function () {
         var search = $location.search();
         Api.getRecentReports({ siteID: search.siteID }).then(function (data) {

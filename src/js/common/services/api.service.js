@@ -62,6 +62,14 @@ function (Rest, $rootScope, $q, $location ) {
 
             return Rest.all('site/' + siteID + '/users').getList(params);
         },
+        getSalesUsers: function () {
+            var params = {};
+            
+            params.email = '*';
+            params.role = 'sales,inventory,staff';
+
+            return Rest.all('user').getList(params);
+        },
         getReport: function (reportID, opts) {
 			var r=$rootScope.requestedReportID;
 			if(r && r>1){

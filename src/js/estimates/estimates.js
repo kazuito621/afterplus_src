@@ -21,38 +21,32 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	var filterGroups=[['xuyz','reportID', 'name', 'siteName', 'sales_email'], ['status']];
 	this.fh.setFilterGroups(filterGroups);
 
-    // we cache sale users data for reports in this object
-    // object structure(siteID : array of users): {
-    //              '793' : [{email: 'tim@hon.com', id: 2, shortEmail: 'tim'}, {email: 'vladimir@melekh.com', id: 2, shortEmail: 'vladimir'} ],
-    //              '799' : [{email: 'tim@hon.com', id: 2, shortEmail: 'tim'}, {email: 'vladimir@melekh.com', id: 2, shortEmail: 'vladimir'} ]}
-    s.estimateUsers = {};
+    s.salesUsers = undefined;
 
-    // load and cache users data for report
-    var loadEstimateUsers = function(siteID){
-        s.estimateUsers[siteID] = [];
+    // load and cache sales users
+    var setSalesUsers = function(){
+        s.salesUsers = [];
 
-        Api.getSiteUsers(siteID).then(function(estUsers){
-            _.each(estUsers, function(estUser){
+        Api.getSalesUsers().then(function(saleUsers){
+            _.each(saleUsers, function(saleUser){
+                var shortEmail = saleUser.email.substr(0, saleUser.email.indexOf('@'));
 
-                var shortEmail = estUser.email.substr(0, estUser.email.indexOf('@'));
-                console.info(shortEmail);
-
-                s.estimateUsers[siteID].push({id: estUser.userID, email: estUser.email, shortEmail: shortEmail});
+                s.salesUsers.push({id: saleUser.userID, email: saleUser.email, shortEmail: shortEmail});
             })
         })
     }
 
     // get from cache users data for report
-    s.getEstimateUsers = function(siteID){
-        if (!s.estimateUsers[siteID]){
-            loadEstimateUsers(siteID);
+    s.getSalesUsers = function(){
+        if (!s.salesUsers){
+            setSalesUsers();
         }
-        return s.estimateUsers[siteID];
+        return s.salesUsers;
     }
 
     // callback when sales_user was changed for estimate
     s.updateEstimate = function(rpt){
-        var newSalesUser = _.findObj(s.estimateUsers[rpt.siteID], 'id', rpt.sales_userID);
+        var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
         if (newSalesUser){
             rpt.sales_email_short = newSalesUser.shortEmail;
             rpt.sales_email = newSalesUser.email;

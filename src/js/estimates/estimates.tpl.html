@@ -72,7 +72,8 @@
                            class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i>
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">
-                        <a href e-ng-options="obj.id as obj.email for obj in getEstimateUsers(e.siteID)"
+                        <a href e-ng-options="obj.id as obj.email for obj in salesUsers"
+                           onshow="getSalesUsers()"
                            editable-select="e.sales_userID"
                            onaftersave="updateEstimate(e)">
                             {{e.sales_email_short}}

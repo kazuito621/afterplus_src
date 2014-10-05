@@ -48,7 +48,8 @@ var ReportCtrl = app.controller(
 
             // when a recent report is selected
             s.$watch('rdata.recentReportID', function (ID) {
-                if (ID) {
+                ID += '';
+                if (ID.length && $location.search().reportID !== ID) {
                     $location.search({ reportID: ID});
                 }
 
@@ -162,7 +163,8 @@ var ReportCtrl = app.controller(
             s.saveReport = function () {
                 var saveRequest = RS.saveReport();
                 saveRequest.then(function (data) {
-                    if (data && data.reportID) {
+                    data.reportID += '';
+                    if (data && data.reportID && $location.search().reportID !== data.reportID) {
                         $location.search({ reportID: data.reportID});
                     }
                 });

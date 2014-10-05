@@ -10,7 +10,7 @@
         </option>
     </select>
     <BR><BR>
-    <button class="btn btn-blue clr-white" ng-cloak ng:show="report.items.length>0" ng-click="newReport();">New Report</button>
+    <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Report</button>
 </div>
 
 <div class="touch-boundry">
@@ -18,7 +18,7 @@
 </div>	
 
 <!--BEGIN ESTIMATE TABLE SECTION-->
-<div bindonce="report" class="table_estimate estimate-container report_main mode_{{data.mode()}}" ng-if="report.items.length>0">
+<div bindonce="report" class="table_estimate estimate-container report_main mode_{{data.mode()}}" ng-if="report.siteID">
 	<div class="estimate-summary">
 		<div class="row row-estimate">
 			<div class="col-md-6 col">
@@ -77,7 +77,7 @@
 					<div class="logos">
 						<span class="logo"><img src="img/logo_tcia.png"></span>
 					</div>
-					<p class="bid">Total Bid: ${{report.total.grand|formatPrice}}</p>
+					<p class="bid">Total Bid: ${{(report.total.grand || 0)|formatPrice}}</p>
 				</div>
 			</div>		
 		</div>	
@@ -93,9 +93,11 @@
 				ng-click="initEmailModal()"
 				>Send</button>
 		&nbsp;
-		<a ng-if='report.reportLink' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
-		<a ng-if='report.reportLink' href='{{report.reportLink}}' target='_cust_view'
-			onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
+        <span ng-if="report.reportID">
+		<a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
+		<a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'
+           onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
+        </span>
 		<a ng-if='report.reportID && report.saveCount>1' href='/go/estimate/revisions/{{report.reportID}}' target=_new>Past Revisions</a>
 			
 		<div class="clearfix"></div>
@@ -279,7 +281,7 @@
 				</div>
 
 				<div class="total-amount">
-					Total: &#36;{{report.total.grand|formatPrice}}
+					Total: &#36;{{(report.total.grand || 0)|formatPrice}}
 				</div>
 
 				<div class="section-container" ng-if="data.mode()=='trees' && auth.isAtleast('inventory')">

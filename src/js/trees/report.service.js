@@ -270,7 +270,8 @@ app.service('ReportService',
 		this.getReportMd5(true);
 
 		var that=this;
-		Api.saveReport(this.report)
+        var saveRequest = Api.saveReport(this.report);
+		saveRequest
 			.then(function(data){
 				if(data && data.reportID) that.report.reportID = data.reportID;
 				if(data.token) that.report.token=data.token;
@@ -279,6 +280,8 @@ app.service('ReportService',
 			});
 
 		this.loadRecent();
+
+        return saveRequest;
 	}
 	
 	

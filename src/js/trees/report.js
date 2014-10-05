@@ -48,6 +48,10 @@ var ReportCtrl = app.controller(
 
             // when a recent report is selected
             s.$watch('rdata.recentReportID', function (ID) {
+                if (ID) {
+                    $location.search({ reportID: ID});
+                }
+
                 // todo -- if changes were made, but not saved to the report, we should probably
                 // ask them if they want to save
                 s.setAlert('Loading',{type:'ok',time:5});
@@ -153,8 +157,15 @@ var ReportCtrl = app.controller(
                 RS.getBlankReport();
             };
 
+
+
             s.saveReport = function () {
-                RS.saveReport();
+                var saveRequest = RS.saveReport();
+                saveRequest.then(function (data) {
+                    if (data && data.reportID) {
+                        $location.search({ reportID: data.reportID});
+                    }
+                });
             };
 
             s.initEmailModal = function () {

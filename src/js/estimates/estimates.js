@@ -15,14 +15,25 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			total_price: 'desc'
 		};
     s.displayedEstimates = [];
+
+    s.checkedEstimates = {
+        selectAll: false,
+        ids: [],
+        getSelected: function () {
+            console.log('Get selected', this.ids);
+            return this.ids;
+        }
+    };
+
   	this.fh = FilterHelper.fh();
 	// group the filters. so that if a status and a name is specified, both must match
 	// but if a name and email is specified, either can match
 	var filterGroups=[['xuyz','reportID', 'name', 'siteName', 'sales_email'], ['status']];
 	this.fh.setFilterGroups(filterGroups);
 
-    var init = function () {
+    var init = function (cb) {
         var search = $location.search();
+        cb = cb || angular.noop;
         Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
 			var isCust=Auth.is('customer');
 			_.each(data, function(d){
@@ -41,6 +52,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             estimates = estFiltered = data;
             self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);
             s.displayedEstimates = estFiltered.slice(0, 49);
+            cb();
         });
     };
 
@@ -108,18 +120,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		}
 	};
 
-
-
-    s.sh = {
-        sortByColumn: function (col) {
-            estimates = self.sh.sortByColumn(col);
-            s.displayedEstimates = estimates.slice(0, s.displayedEstimates.length);
-        },
-        columnClass: function (col) {
-            return self.sh.columnClass(col);
-        }
-    };
-
 	s.sh = {
 		sortByColumn: function (col) {
 			applyFilter();
@@ -135,7 +135,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			//estFiltered = self.sh.makeSort(estFiltered);
 		}
 	};
-
 
     s.showMoreEstimates = function () {
         var count = s.displayedEstimates.length;
@@ -174,9 +173,52 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         s.data.filterTextEntry = '';
 
         applyFilter();
-    }
+    };
 
-	// when search box is changed, then update the filters, but
+    s.isEstimateSelected = function (id) {
+        return s.checkedEstimates.ids.indexOf(id) > -1;
+    };
+
+    s.toggleEstimateSelection = function (id) {
+        var index = s.checkedEstimates.ids.indexOf(id);
+        if (index > -1) {
+            s.checkedEstimates.ids.splice(index, 1);
+            s.checkedEstimates.selectAll = false;
+        } else {
+            s.checkedEstimates.ids.push(id);
+            if (s.checkedEstimates.ids.length === estFiltered.length) {
+                s.checkedEstimates.selectAll = true;
+            }
+        }
+    };
+
+    s.toggleAllEstimatesSelection = function (newVal) {
+        newVal = newVal || !s.checkedEstimates.selectAll;
+        if (!newVal) {
+            s.checkedEstimates.selectAll = false;
+            s.checkedEstimates.ids = [];
+        } else {
+            s.checkedEstimates.selecteAll = true;
+            s.checkedEstimates.ids = _.pluck(estFiltered, 'reportID');
+        }
+    };
+
+    s.duplicate = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        console.log('Duplicating reports with ids: ', s.checkedEstimates.ids.join(', '));
+        // Make all duplicate requests and then reload estimates
+
+        Api.duplicateReports(s.checkedEstimates.ids).then(function (data) {
+            console.log('Reports duplicated', data);
+            init(function () {
+                applyFilter();
+            });
+        });
+    };
+
+    // when search box is changed, then update the filters, but
 	// add delay so we dont over work the browser.
 	s.$watch('data.filterTextEntry', function (txt, old) {
 		if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }

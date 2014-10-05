@@ -98,6 +98,15 @@ function (Rest, $rootScope, $q, $location ) {
 		approveReport: function( rptID ){
 			return Rest.one('estimate',rptID).post('approve');
 		},
+        duplicateReports: function (ids) {
+            var promises = [];
+            angular.forEach(ids, function (id) {
+//              POST /estimate/<estimateID>/copy
+                promises.push(Rest.one('estimate', id).post('copy'));
+            });
+
+            return $q.all(promises);
+        },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});

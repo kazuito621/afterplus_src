@@ -211,7 +211,13 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         // Make all duplicate requests and then reload estimates
 
         Api.duplicateReports(s.checkedEstimates.ids).then(function (data) {
-            console.log('Reports duplicated', data);
+			var msg='Duplicate OK',names=[];
+			_.each(data, function(d){
+			dbg(d);
+				if(d.newName) names.push(d.newName);
+			});
+			if(names.length) msg+=': '+names.join(', ');
+			s.setAlert(msg, {time:10});
             init(function () {
                 applyFilter();
             });

@@ -1,0 +1,25 @@
+
+<div class="filter-container">
+    <div class="filterHeader filter-header">
+        <h3>Treatments: <span class='filterTypeCount' ng-if="tfsTreatments > 0">({{tfsTreatments}})</span></h3>
+    </div>
+    <div class="filter-input">
+        <input ng-model='filterSearchTreatments' type="text" class="styled_input inpt inpt-text" placeholder="Search Treatments" ng-escape="filterSearchTreatments=''"/>
+        <span class="inpt-clear" ng-if="filterSearchTreatments.length > 0"><a href ng-click="filterSearchTreatments=''"><i class="fa fa-times"></i></a></span>
+    </div>
+    <div class="filterBlock filter-block">
+        <div class="filter-items">
+            <div class="filterItems filter-item"
+                 ng-repeat="t in initDataTreatments | filterByString:'treatmentType':filterSearchTreatments"
+                 ng-if="t.count !== 0 || t.count > 0">
+                <label>
+                    <input type="checkbox" id="checkBox_filter_treatment_{{t.treatmentTypeID}}" value="{{t.treatmentTypeID}}"
+                           ng-model="t.selected"
+                           ng-change="onFilterChange({ filterType: 'treatments', ID: t.treatmentTypeID, value: t.selected })">
+                    <span class="text">{{t.treatmentType}} <span class='filterCount' ng-if="t.count > 0">({{t.count}})</span></span>
+                    <div class="clearfix"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

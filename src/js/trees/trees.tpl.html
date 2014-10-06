@@ -44,30 +44,7 @@
 							<div class="col-xs-6 col">
 
 							    <!--FILTER SECTION: TREATMENT TYPE-->
-							    <div class="filter-container">
-									<div class="filterHeader filter-header">
-										<h3>Treatments: <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.treatments>0">({{TFSdata.filterTypeCounts.treatments}})</span></h3>
-									</div>
-									<div class="filter-input">
-										<input ng-model='filterSearch.treatments' type="text" class="styled_input inpt inpt-text" placeholder="Search Treatments" ng-escape="filterSearch.treatments=''"/>
-										<span class="inpt-clear" ng-if="filterSearch.treatments.length>0"><a href ng-click="filterSearch.treatments=''"><i class="fa fa-times"></i></a></span>
-									</div>
-									<div class="filterBlock filter-block">
-										<div class="filter-items">
-											<div class="filterItems filter-item" 
-											ng-repeat="t in initData.filters.treatments | filterByString:'treatmentType':filterSearch.treatments" 
-											ng-if="t.count!=0 || t.count>0">
-		        								<label>
-		        									<input type="checkbox" id="checkBox_filter_treatment_{{t.treatmentTypeID}}" value="{{t.treatmentTypeID}}"
-		        									ng-model="t.selected"
-		        									ng-change="onFilterChange('treatments', t.treatmentTypeID, t.selected)">
-													<span class="text">{{t.treatmentType}} <span class='filterCount' ng-if="t.count>0">({{t.count}})</span></span>
-													<div class="clearfix"></div>
-												</label>
-		    								</div>
-		    							</div>	
-		    						</div>
-		    					</div>		
+                                <filter-treatment-type tfs-treatments="TFSdata.filterTypeCounts.treatments" filter-search-treatments="filterSearch.treatments" init-data-treatments="initData.filters.treatments" on-filter-change="onFilterChange(filterType, ID, value)"></filter-treatment-type>
 								<!-- END TREATMENT TYPE FILTER SECTION --> 
 							</div>
 						</div> 	
@@ -97,7 +74,6 @@
 							</div>
 
 							<div class="collapse-body">
-
 								<div class="row row-xss">
 									<div class="col-xs-6 col">
 										<!--FILTER SECTION: Building, Hardscape and Powerline -->
@@ -159,7 +135,6 @@
 											</div>
 											
 										</div>	
-
 										<!-- END Building, Hardscape, POWERLINE FILTER SECTION -->
 
 										<!--FILTER SECTION: SIZE-->
@@ -183,12 +158,10 @@
 												</div>	
 											</div>
 										</div>	
-				    					<!-- END SIZE FILTER SECTION --> 
-				     
+				    					<!-- END SIZE FILTER SECTION -->
 									</div>
 										
 									<div class="col-xs-6 col">
-
 										<!--FILTER SECTION: HEALTH-->   
 										<div class="filter-container">
 											<div class="filterHeader filter-header">
@@ -210,11 +183,8 @@
 											</div>	
 										</div>
 										<!-- END HEALTH FILTER SECTION -->
-
 				    				</div>
 								</div>
-									
-								
 							</div>
 						</div>
 

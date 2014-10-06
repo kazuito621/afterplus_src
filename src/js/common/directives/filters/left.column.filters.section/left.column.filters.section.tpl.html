@@ -1,0 +1,75 @@
+
+<section ng-if="data.mode()=='trees'">
+
+    <div class="filter-container-title" ng:cloak ng-show="TFSdata.selectedFilters.length>0">
+        <span ng-if="!TFSdata.containsContradictingFilters">{{TFSdata.selectedFilters.length}}&nbsp;</span>Filters Active &nbsp; <span class="lnk-clear"><a href ng-click='clearFilters();'>
+        <i class="fa fa-times"></i></a></span>
+    </div>
+
+    <div class="row row-xss">
+        <div class="col-xs-6 col">
+
+            <div class='filter-container' ng-if="auth.is('customer') && initData.sites.length>1">
+                <div class="row row-xs row-nopad">
+                    <div class="col-xs-5 col">
+                        <div class="filter-header">
+                            <h3>Property</h3>
+                        </div>
+                    </div>
+                    <div class="col-xs-7 col">
+                        <div class="filter-input">
+                            <select  id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0"
+                                     ng-model="selected.siteID"
+                                     ng-change="onSelectSiteID(selected.siteID)">
+                                <option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--FILTER SECTION: SPECIES-->
+            <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
+            <!-- END SPECIES FILTER SECTION -->
+
+        </div>
+        <div class="col-xs-6 col">
+
+            <!--FILTER SECTION: TREATMENT TYPE-->
+            <filter-treatment-type tfs-treatments="TFSdata.filterTypeCounts.treatments" filter-search-treatments="filterSearch.treatments" init-data-treatments="initData.filters.treatments" on-filter-change="onFilterChange(filterType, ID, value)"></filter-treatment-type>
+            <!-- END TREATMENT TYPE FILTER SECTION -->
+        </div>
+    </div>
+
+    <div class="collapse-container">
+        <div class="collapse-head">
+            <a href="#">Filters <i class="fa fa-angle-double-down"></i></a>
+        </div>
+        <div class="collapse-preview">
+            <!-- START YEAR FILTER SECTION -->
+            <filter-years filters-year="filters.year" filters-years="filters.years" on-select-year="onSelectYear(id)"></filter-years>
+            <!-- END YEAR FILTER SECTION -->
+        </div>
+
+        <div class="collapse-body">
+            <div class="row row-xss">
+                <div class="col-xs-6 col">
+                    <!--FILTER SECTION: Building, Hardscape and Powerline -->
+                    <filter-hazards tfs-counts="TFSdata.filterTypeCounts" init-data-hazards="initdata.filters.hazards" on-filter-change="onFilterChange(filterType, ID, value)"></filter-hazards>
+                    <!-- END Building, Hardscape, POWERLINE FILTER SECTION -->
+
+                    <!--FILTER SECTION: SIZE-->
+                    <filter-size tfs-counts-treatments="TFSdata.filterTypeCounts.treatments" init-data-dbh="initData.filters.dbh" on-filter-change="onFilterChange(filterType, ID, value)"></filter-size>
+                    <!-- END SIZE FILTER SECTION -->
+                </div>
+
+                <div class="col-xs-6 col">
+                    <!--FILTER SECTION: HEALTH-->
+                    <filter-health tfs-counts-rating="TFSdata.filterTypeCounts.rating" init-data-ratings="initData.filters.ratings" on-filter-change="onFilterChange(filterType, ID, value)"></filter-health>
+                    <!-- END HEALTH FILTER SECTION -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

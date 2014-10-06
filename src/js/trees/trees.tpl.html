@@ -73,25 +73,7 @@
 										
 									<div class="col-xs-6 col">
 										<!--FILTER SECTION: HEALTH-->   
-										<div class="filter-container">
-											<div class="filterHeader filter-header">
-												<h3>Health <span class='filterTypeCount' ng-show="TFSdata.filterTypeCounts.rating>0">({{TFSdata.filterTypeCounts.rating}})</span></h3>
-											</div>
-											<div class="filterBlock filter-block">
-												<div class="filter-items filter-items-inline filter-items-toggle">
-													<div class="filterItems filter-item" ng-repeat="r in initData.filters.ratings" ng-if="r.count!=0 || r.count>0">
-														<label class="toggle-label">
-                                                            <input type="checkbox" id="checkBox_filter_rating_{{r.ratingID}}" value="{{r.ratingID}}"
-															ng-model="r.selected" 
-															ng-change="onFilterChange('rating', r.ratingID, r.selected)" class="toggle-check">
-															<span class="text btn btn-gray btn-xs" ng-class="{'active' : r.selected}"
-                                                                  bs-tooltip title="{{r.ratingID}} - {{r.rating_desc}}">&nbsp;{{r.ratingID}}  <span class='filterCount' ng-if="r.count>0">({{r.count}})</span>&nbsp;</span>
-															<div class="clearfix"></div>
-														</label>
-													</div> <!-- }}} ng-repeat -->
-												</div>
-											</div>	
-										</div>
+                                        <filter-health tfs-counts-rating="TFSdata.filterTypeCounts.rating" init-data-ratings="initData.filters.ratings" on-filter-change="onFilterChange(filterType, ID, value)"></filter-health>
 										<!-- END HEALTH FILTER SECTION -->
 				    				</div>
 								</div>

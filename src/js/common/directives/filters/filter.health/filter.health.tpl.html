@@ -1,0 +1,20 @@
+
+<div class="filter-container">
+    <div class="filterHeader filter-header">
+        <h3>Health <span class='filterTypeCount' ng-show="tfsCountsRating>0">({{tfsCountsRating}})</span></h3>
+    </div>
+    <div class="filterBlock filter-block">
+        <div class="filter-items filter-items-inline filter-items-toggle">
+            <div class="filterItems filter-item" ng-repeat="r in initDataRatings" ng-if="r.count!=0 || r.count>0">
+                <label class="toggle-label">
+                    <input type="checkbox" id="checkBox_filter_rating_{{r.ratingID}}" value="{{r.ratingID}}"
+                           ng-model="r.selected"
+                           ng-change="onFilterChange({ filterType: 'rating', ID: r.ratingID, value: r.selected })" class="toggle-check">
+															<span class="text btn btn-gray btn-xs" ng-class="{'active' : r.selected}"
+                                                                  bs-tooltip title="{{r.ratingID}} - {{r.rating_desc}}">&nbsp;{{r.ratingID}}  <span class='filterCount' ng-if="r.count>0">({{r.count}})</span>&nbsp;</span>
+                    <div class="clearfix"></div>
+                </label>
+            </div> <!-- }}} ng-repeat -->
+        </div>
+    </div>
+</div>

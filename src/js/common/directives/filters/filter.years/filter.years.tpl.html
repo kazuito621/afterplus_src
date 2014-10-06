@@ -1,0 +1,16 @@
+
+<div class="filter-container">
+    <div class="filterHeader filter-header">
+        <h3>By Year: &nbsp;
+            <button class="btn btn-default" ng-model="filtersYear" placeholder="All Years"
+                    ng-disabled="!filtersYears.length"
+                    ng-change="onSelectYear({ id: filters.year })"
+                    ng-options="y.id as y.desc for y in filtersYears"
+                    bs-select onclick="return false;">
+                Action <span class="caret"></span>
+            </button>
+            <a ng:cloak ng-show="filtersYear" href ng-click="onSelectYear({ id: false })" class='fa fa-times _red _size4' ></a>
+
+        </h3>
+    </div>
+</div>

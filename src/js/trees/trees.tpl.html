@@ -55,21 +55,7 @@
 							</div>
 							<div class="collapse-preview">
 								<!-- START YEAR FILTER SECTION --> 
-								<div class="filter-container">
-									<div class="filterHeader filter-header">
-										<h3>By Year: &nbsp; 
-													<button class="btn btn-default" ng-model="filters.year" placeholder="All Years"
-															ng-disabled="!filters.years.length"
-															ng-change="onSelectYear(filters.year)"
-															ng-options="y.id as y.desc for y in filters.years"
-															bs-select onclick="return false;">
-														Action <span class="caret"></span>
-													</button> 
-													<a ng:cloak ng-show="filters.year" href ng-click="onSelectYear(false)" class='fa fa-times _red _size4' ></a>
-
-										</h3>
-									</div>
-								</div>
+                                <filter-years filters-year="filters.year" filters-years="filters.years" on-select-year="onSelectYear(id)"></filter-years>
 							    <!-- END YEAR FILTER SECTION -->
 							</div>
 

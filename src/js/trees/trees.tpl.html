@@ -37,36 +37,9 @@
 								</div>	
 
 								<!--FILTER SECTION: SPECIES-->
-								<div class="filter-container">
-							    	<div class="filterHeader filter-header">
-							      		<h3>Species <span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.species>0">({{TFSdata.filterTypeCounts.species}})</span></h3>
-							    	</div>
-								    <div class="filter-input">
-								      	<input ng-model='filterSearch.species' type="text" class="styled_input inpt inpt-text" placeholder="Search Species"/>
-										<span class="inpt-clear" ng-if="filterSearch.species.length>0"><a href ng-click="filterSearch.species=''"><i class="fa fa-times"></i></a></span>
-								    </div>
-								    <div class="filterBlock filter-block">
-								    	<div class="filter-items">
-								     		<div class="filterItems filter-item" 
-											ng-repeat="speciesType in initData.filters.species | filterByString:'commonName':filterSearch.species " 
-											ng-if="speciesType.count!=0 || speciesType.count>0">
-												<!-- NOTE: there are 2 ways in which a filter can be hidden...
-														1. if the user is searching for one.. and it doesnt match (filterByString)
-														2. if the tree results list doesnt include any of this particular species 
-																(TreeFilterService will then modify the .hide property
-												-->
-												<label>
-													<input type="checkbox" id="checkBox_filter_species_{{speciesType.speciesID}}" value="{{speciesType.speciesID}}"  
-													ng-model="speciesType.selected"
-													ng-change="onFilterChange('species', speciesType.speciesID, speciesType.selected)">
-													<span class="text">{{speciesType.commonName}} <span class='filterCount' ng-if="speciesType.count>0">({{speciesType.count}})</span></span>
-													<div class="clearfix"></div>
-												</label>
-											</div> <!-- }}} .filterItems -->
-										</div>	
-								    </div>
-								</div> 
-							    <!-- END SPECIES FILTER SECTION --> 
+                                <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
+							    <!-- END SPECIES FILTER SECTION -->
+
 							</div>
 							<div class="col-xs-6 col">
 

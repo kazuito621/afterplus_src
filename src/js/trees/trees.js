@@ -334,6 +334,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             // If a specific site is selected, then filter the trees by passing onto TFS
             // Else, we are now filtering the sites, not the trees
             s.onFilterChange = function(filterType, ID, value) {
+                console.log('On filter change called with', filterType, ID, value);
                 TFS.onChange(filterType, ID, value);
                 if(!s.trees || !s.trees.length || s.trees.length<1) getFilteredSiteIDs();
             }

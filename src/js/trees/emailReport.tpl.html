@@ -10,17 +10,41 @@
 
 			<form class="form-inline" ng-submit="emailEstimate()">
 				<table cellpadding='2'>
-					 <tr><td>To:</td><td><textarea form style='width:450px; height:45px;' ng-model="emailRpt.contactEmail"></textarea><BR>
-					 <!--
-					 <tr><td>CC:</td><td> <input type="email" ng-model="emailRpt.emailCC" size=55></td></tr>
-					 -->
-					 <tr><td>From:</td><td> <input type="text" ng-model="emailRpt.senderEmail" size=55 readonly></td></tr>
-					 <tr><td>Subject:</td><td><input type="text" ng-model="emailRpt.subject" size=55></td></tr>
-					 <tr><td>&nbsp;</td><td><textarea form style='width:450px; height:220px;' ng-model="emailRpt.message"></textarea><BR>
+					 <tr>
+                         <td>To:</td>
+                         <td>
+                             <br><tags-input ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
+                         </td>
+                     </tr>
+					 <tr>
+                         <td>CC:</td>
+                         <td>
+                             <br><tags-input ng-model="emailRpt.ccEmails" placeholder="Add email"></tags-input><br>
+                         </td>
+                     </tr>
+					 <tr>
+                         <td>From:</td>
+                         <td>
+                             <input type="text" ng-model="emailRpt.senderEmail" size=55 readonly>
+                         </td>
+                     </tr>
+					 <tr>
+                         <td>Subject:</td>
+                         <td>
+                             <input type="text" ng-model="emailRpt.subject" size=55>
+                         </td>
+                     </tr>
+					 <tr>
+                         <td>&nbsp;</td>
+                         <td>
+                             <textarea form style='width:450px; height:220px;' ng-model="emailRpt.message"></textarea><BR>
 					 	<span style='color:#f33; font-weight:bold;'>The link will automatically be included in the email</span><BR>
-				 		<label><input type="checkbox" ng-model="emailRpt.sendCopy" ng-true-value="yes" ng-false-value="no"> 
-							Send me a copy</label>
-					 	</td></tr>
+				 		<label>
+                            <input type="checkbox" ng-model="emailRpt.sendCopy" ng-true-value="yes" ng-false-value="no">
+							Send me a copy
+                        </label>
+					 	</td>
+                     </tr>
 				</table>
 			</form>
 

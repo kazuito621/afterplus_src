@@ -183,6 +183,10 @@ var ReportCtrl = app.controller(
                 s.emailRpt.reportID = s.report.reportID;
                 s.emailRpt.siteID = s.report.siteID;
                 s.emailRpt.contactEmail = s.report.contactEmail;
+                s.emailRpt.cc_email = '';
+
+                s.emailRpt.ccEmails = [];
+
                 s.emailRpt.senderEmail = Auth.data().email;
                 s.emailRpt.subject = "A Plus Tree Estimate #" + s.report.reportID + " - " + s.report.name;
                 s.emailRpt.message = "Hi,\n\nThank you for providing us the opportunity to care for your trees!  In the link below you will find a customized estimate engineered by one of our Certified Arborist specifically for your trees.\n\n" + "Please review our proposal and get back to us at your earliest convenience as we look forward to thoroughly impressing you with our professional work and outstanding customer service.\n\n" + "From planting to removals, and everything in between, we've got you covered.  If you have any questions, feel free to contact us toll free at (866) 815-2525 or office@aplustree.com.\n\n" + "Sincerely,\n";
@@ -191,7 +195,6 @@ var ReportCtrl = app.controller(
                 } else {
                     s.emailRpt.message += "A Plus Tree Service";
                 }
-                s.emailRpt.emailCC = "";
                 s.emailRpt.disableSendBtn = false;
                 s.emailRpt.sendBtnText = 'Send';
 
@@ -208,6 +211,7 @@ var ReportCtrl = app.controller(
                         });
                         if (emList) {
                             s.emailRpt.contactEmail = emList.join(', ');
+                            s.emailRpt.contactEmails = emList;
                         }
                     });
             };
@@ -215,6 +219,12 @@ var ReportCtrl = app.controller(
             s.sendReport = function (hideFn, showFn) {
                 s.emailRpt.disableSendBtn = true;
                 s.emailRpt.sendBtnText = 'Sending and verifying...';
+
+                console.log('s.emailRpt', s.emailRpt);
+
+                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
+
                 Api.sendReport(s.emailRpt)
                     .then(function (msg) {
                         s.emailRpt.disableSendBtn = false;

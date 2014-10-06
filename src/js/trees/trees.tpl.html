@@ -67,26 +67,7 @@
 										<!-- END Building, Hardscape, POWERLINE FILTER SECTION -->
 
 										<!--FILTER SECTION: SIZE-->
-										<div class="filter-container">
-											<div class="filterHeader filter-header">
-												<h3>Size <span class='filterTypeCount' ng-show="TFSdata.filterTypeCounts.treatments>0">({{TFSdata.filterTypeCounts.treatments}})</span></h3>
-											</div>
-											<div class="filterBlock filter-block">
-												<div class="filter-items filter-items-inline filter-items-toggle">
-													<div class="filter-item" ng-repeat="(idx,size) in initData.filters.dbh" ng-if="size.count!=0 || size.count>0">
-														<label class="toggle-label">
-                                                            <input type="checkbox" id="checkBox_filter_size_{{size.dbhID}}" value="{{size.dbhID}}"
-															ng-model="size.selected"
-															ng-change="onFilterChange('dbh', size.dbhID, size.selected)" class="toggle-check">
-															<span class="text btn btn-gray btn-xs" ng-class="{'active' : size.selected}">{{size.diameter}}
-                                                                <span class='filterCount' ng-if="size.count>0">({{size.count}})</span></span>
-															<div class="clearfix"></div>
-														</label>
-														<div ng-if=" $index>0 && $index % 2 == 0" style='clear:both'></div>
-													</div> <!-- }}} ng-repeat -->
-												</div>	
-											</div>
-										</div>	
+                                        <filter-size tfs-counts-treatments="TFSdata.filterTypeCounts.treatments" init-data-dbh="initData.filters.dbh" on-filter-change="onFilterChange(filterType, ID, value)"></filter-size>
 				    					<!-- END SIZE FILTER SECTION -->
 									</div>
 										

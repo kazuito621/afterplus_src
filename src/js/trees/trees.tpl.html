@@ -28,12 +28,7 @@
 												</div>
 												<div class="col-sm-4">
 													<div class='input-group'>
-													 	<select  id="select_client" class='inpt inpt-select' ng-disabled="clients.length === 0"  
-															ng-model="selected.clientID"
-															ng-change="onSelectClientID(selected.clientID)" title="TEST">
-													    	<option class="option" value="">Client</option>
-													    	<option bindonce class="option" ng-repeat="client in filteredClients" value="{{client.clientID}}" bo-bind="client.clientName"></option>
-													  	</select>
+                                                        <client-dropdown model="selected.clientID" on-change="onSelectClientID(id)" data="filteredClients" all="clients"></client-dropdown>
 													</div>
 												</div>
 												<div class="col-sm-4">

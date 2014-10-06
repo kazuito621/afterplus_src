@@ -63,64 +63,7 @@
 								<div class="row row-xss">
 									<div class="col-xs-6 col">
 										<!--FILTER SECTION: Building, Hardscape and Powerline -->
-									    <div class="filter-container">
-									    	<div class="filterHeader filter-header">
-												<h3>Hazards:</h3>
-											</div>
-											<div class="filterBlock filter-block">
-												<div class="filter-items filter-items-inline filter-items-toggle">
-													<div class='filterItems filter-item' ng-show="TFSdata.filterTypeCounts.building>0">
-														<label class="toggle-label">
-															<input type="checkbox"  value="yes" test="building"
-															ng-model="initData.filters.hazards.building.selected"
-															ng-change="onFilterChange('building', '', initData.filters.hazards.building.selected)" class="toggle-check">
-															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initData.filters.hazards.building.selected}">
-																<i class='fa fa-building _red'></i> Building
-																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.building>0">({{TFSdata.filterTypeCounts.building}})</span>
-															</span>	
-															<div class="clearfix"></div>
-														</label>
-													</div>
-													<div class='filterItems filter-item' ng-show="TFSdata.filterTypeCounts.caDamagePotential>0">
-														<label class="toggle-label">
-															<input type="checkbox"  value="potential"  
-															ng-model="initData.filters.hazards.caDamagePotential.selected"
-															ng-change="onFilterChange('caDamagePotential', '', initData.filters.hazards.caDamagePotential.selected)" class="toggle-check">
-															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initData.filters.hazards.caDamagePotential.selected}">
-																<i class='fa fa-warning _orange'></i> Hardscape Damage Potential
-																<span class='filterTypeCount' ng-show="TFSdata.filterTypeCounts.caDamagePotential>0">({{TFSdata.filterTypeCounts.caDamagePotential}})</span>
-															</span>
-															<div class="clearfix"></div>
-														</label>
-													</div>
-													<div class='filterItems filter-item' ng-show="TFSdata.filterTypeCounts.caDamage>0">
-														<label class="toggle-label">
-															<input type="checkbox"  value="yes" 
-															ng-model="initData.filters.hazards.caDamage.selected"
-															ng-change="onFilterChange('caDamage', '', initData.filters.hazards.caDamage.selected)" class="toggle-check">
-															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initData.filters.hazards.caDamage.selected}">
-																<i class='fa fa-warning _red'></i> Hardscape Damage
-																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.caDamage>0">({{TFSdata.filterTypeCounts.caDamage}})</span>
-															</span>	
-															<div class="clearfix"></div>
-														</label>
-													</div>
-													<div class='filterItems filter-item' ng-show="TFSdata.filterTypeCounts.powerline>0">
-														<label class="toggle-label">
-															<input type="checkbox"  value="yes" 
-															ng-model="initData.filters.hazards.powerline.selected"
-															ng-change="onFilterChange('powerline', '', initData.filters.hazards.powerline.selected)" class="toggle-check">
-															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initData.filters.hazards.powerline.selected}">
-																<i class='fa fa-bolt _red'></i> Powerline
-																<span class='filterTypeCount' ng-if="TFSdata.filterTypeCounts.powerline>0">({{TFSdata.filterTypeCounts.powerline}})</span>
-															</span>	
-															<div class="clearfix"></div>
-														</label>
-													</div>
-												</div>
-											</div>
-											
-										</div>	
+                                        <filter-hazards tfs-counts="TFSdata.filterTypeCounts" init-data-hazards="initdata.filters.hazards" on-filter-change="onFilterChange(filterType, ID, value)"></filter-hazards>
 										<!-- END Building, Hardscape, POWERLINE FILTER SECTION -->
 
 										<!--FILTER SECTION: SIZE-->

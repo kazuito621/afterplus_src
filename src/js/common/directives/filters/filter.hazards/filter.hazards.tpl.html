@@ -1,0 +1,59 @@
+
+<div class="filter-container">
+    <div class="filterHeader filter-header">
+        <h3>Hazards:</h3>
+    </div>
+    <div class="filterBlock filter-block">
+        <div class="filter-items filter-items-inline filter-items-toggle">
+            <div class='filterItems filter-item' ng-show="tfsCounts.building>0">
+                <label class="toggle-label">
+                    <input type="checkbox"  value="yes" test="building"
+                           ng-model="initDataHazards.building.selected"
+                           ng-change="onFilterChange({ filterType: 'building', ID: '', value: initDataHazards.building.selected })" class="toggle-check">
+															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initDataHazards.building.selected}">
+																<i class='fa fa-building _red'></i> Building
+																<span class='filterTypeCount' ng-if="tfsCounts.building>0">({{tfsCounts.building}})</span>
+															</span>
+                    <div class="clearfix"></div>
+                </label>
+            </div>
+            <div class='filterItems filter-item' ng-show="tfsCounts.caDamagePotential>0">
+                <label class="toggle-label">
+                    <input type="checkbox"  value="potential"
+                           ng-model="initDataHazards.caDamagePotential.selected"
+                           ng-change="onFilterChange({ filterType: 'caDamagePotential', ID: '', value: initDataHazards.caDamagePotential.selected })" class="toggle-check">
+															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initDataHazards.caDamagePotential.selected}">
+																<i class='fa fa-warning _orange'></i> Hardscape Damage Potential
+																<span class='filterTypeCount' ng-show="tfsCounts.caDamagePotential>0">({{tfsCounts.caDamagePotential}})</span>
+															</span>
+                    <div class="clearfix"></div>
+                </label>
+            </div>
+            <div class='filterItems filter-item' ng-show="tfsCounts.caDamage>0">
+                <label class="toggle-label">
+                    <input type="checkbox"  value="yes"
+                           ng-model="initDataHazards.caDamage.selected"
+                           ng-change="onFilterChange({ filterType: 'caDamage', ID: '', value: initDataHazards.caDamage.selected })" class="toggle-check">
+															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initDataHazards.caDamage.selected}">
+																<i class='fa fa-warning _red'></i> Hardscape Damage
+																<span class='filterTypeCount' ng-if="tfsCounts.caDamage>0">({{tfsCounts.caDamage}})</span>
+															</span>
+                    <div class="clearfix"></div>
+                </label>
+            </div>
+            <div class='filterItems filter-item' ng-show="tfsCounts.powerline>0">
+                <label class="toggle-label">
+                    <input type="checkbox"  value="yes"
+                           ng-model="initDataHazards.powerline.selected"
+                           ng-change="onFilterChange({ filterType: 'powerline', ID: '', value: initDataHazards.powerline.selected })" class="toggle-check">
+															<span class="text btn btn-gray btn-xs" ng-class="{'active' : initDataHazards.powerline.selected}">
+																<i class='fa fa-bolt _red'></i> Powerline
+																<span class='filterTypeCount' ng-if="tfsCounts.powerline>0">({{tfsCounts.powerline}})</span>
+															</span>
+                    <div class="clearfix"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -23,13 +23,7 @@
 											<div class="row">
 												<div class="col-sm-4">
 													<div class="input-group">
-														<select id="select_clientType" class='inpt inpt-select'
-														ng-model="selected.clientTypeID" 
-														ng-change="onSelectClientTypeID(selected.clientTypeID)"
-														ng-disabled="initData.clientTypes.length === 0">
-															<option class="option" value="">Client Type</option>
-                                                            <option bindonce class="option" ng-repeat="clientType in initData.clientTypes" value="{{clientType.clientTypeID}}" bo-bind="clientType.name"></option>
-													  	</select>
+                                                        <client-type-dropdown model="selected.clientTypeID" on-change="onSelectClientTypeID()" data="initData.clientTypes"></client-type-dropdown>
 													</div>
 												</div>
 												<div class="col-sm-4">

@@ -1,0 +1,67 @@
+
+<div class="table-responsive">
+    <table class="table ng-scope ng-table" ng-if="data.mode()=='trees' || report.services.length > 0 ">
+        <thead>
+        <tr>
+            <td colspan="4">Misc. Services</td>
+        </tr>
+        <tr>
+            <td colspan="{{ data.mode()=='trees' && '1' || '2' }}">Description</td>
+            <td>Quantity</td>
+            <td class="text-right">Price</td>
+            <td ng-if="data.mode()=='trees'"></td>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="item in report.services" class="hoverHotspot">							   	<td data-title="service_desc" colspan="{{ data.mode()=='trees' && '1' || '2' }}">
+            <a href editable-text='item.desc' ng-if='auth.isAtleast("inventory")'>{{item.desc}}</a>
+            <span ng-if='!auth.isAtleast("inventory")'>{{item.desc}}</span>
+        </td>
+            <td data-title="service_quantity">
+                <a href editable-text='item.quantity' ng-if='auth.isAtleast("inventory")'>{{item.quantity}}</a>
+                <span ng-if='!auth.isAtleast("inventory")'>{{item.quantity}}</span>
+            </td>
+            <td data-title="service_price" class="text-right">
+                <a href editable-text='item.price' ng-if='auth.isAtleast("inventory")'>{{item.price}}</a>
+                <span ng-if='!auth.isAtleast("inventory")'>{{item.price}}</span>
+            </td>
+            <td ng-if="data.mode()=='trees'">
+                <div ng-if="auth.isAtleast('inventory')">
+                    <a href ng-click="removeItem(item.$$hashKey,'services')"
+                       class='fa fa-times _red _med hoverDisplay' ></a>
+                </div>
+            </td>
+        </tr>
+
+        <tr ng-if="data.mode()=='trees'">
+            <td>
+                <textarea ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'></textarea>
+            </td>
+            <td>
+									<span>
+										x&nbsp;<input type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
+									</span>
+            </td>
+            <td style="padding-left:0px;padding-right:0px"  class="text-right">
+									<span>
+										$&nbsp;<input type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
+									</span>
+            </td>
+            <td class="text-right">
+                <button class="btn btn-red clr-white" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
+            </td>
+        </tr>
+
+        <!-- // Subtotals // -->
+        <tr ng-if="report.total.services">
+            <td align=right colspan="3">Misc Services Subtotal:</td>
+            <td class="text-right">&#36;{{report.total.services|formatPrice}}</td>
+        </tr>
+        <tr ng-if="report.total.services">
+            <td align=right colspan="3">Tree Services Subtotal:</td>
+            <td class="text-right">&#36;{{report.total.items|formatPrice}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,13 @@
+
+<div id="searchPanel" class="mtop3" style="display:none;">
+    <a id="zoomToMappedTrees" class="fa fa-tree _red _size7 search-panel-button mright3"
+       ng-click="zoomToMappedTrees()"></a>
+    <input id="googleSearchbox" class="controls" type="text" placeholder="Search Box"
+           ng-model="googleMapSearchBoxValue">
+    <a id="searchButtonForSearchBox" class="fa fa-map-marker _red _size7 search-panel-button mleft3"
+       ng-show="googleMapSearchBoxValue && googleMapSearchBoxValue!=''"
+       ng-click="zoomToSearchMarker()"></a>
+    <a id="clearButtonForSearchBox" class="fa fa-times _red _size7 search-panel-button mleft3"
+       ng-show="googleMapSearchBoxValue && googleMapSearchBoxValue!=''"
+       ng-click="cleanSearchMarkers();"></a>
+</div>

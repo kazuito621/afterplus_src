@@ -25,19 +25,10 @@
 								<div id='treeDetails' ng-cloak ng-show="data.showTreeDetails && data.mode()=='trees'">
                                     <tree-edit></tree-edit>
 								</div>
-                                <div id="searchPanel" class="mtop3" style="display:none;">
-                                    <a id="zoomToMappedTrees" class="fa fa-tree _red _size7 search-panel-button mright3"
-                                       ng-click="zoomToMappedTrees()"></a>
-                                    <input id="googleSearchbox" class="controls" type="text" placeholder="Search Box"
-                                           ng-model="googleMapSearchBoxValue">
-                                    <a id="searchButtonForSearchBox" class="fa fa-map-marker _red _size7 search-panel-button mleft3"
-                                       ng-show="googleMapSearchBoxValue && googleMapSearchBoxValue!=''"
-                                       ng-click="zoomToSearchMarker()"></a>
-                                    <a id="clearButtonForSearchBox" class="fa fa-times _red _size7 search-panel-button mleft3"
-                                          ng-show="googleMapSearchBoxValue && googleMapSearchBoxValue!=''"
-                                            ng-click="cleanSearchMarkers();"></a>
-                                </div>
-								<div ng:cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="{{data.mode()}}" class="map"></div>
+
+                                <map-search-panel></map-search-panel>
+
+								<div ng-cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="data.mode()" class="map"></div>
 							</section>	<!-- }}} mainContent -->
 						</div>	
 					</div>

@@ -4,7 +4,7 @@ app.directive('mapSearchPanel',
 
         return {
             restrict: 'EA',
-            replace: true,
+            replace: false,
             transclude: false,
             templateUrl: 'js/common/directives/maps/map.search.panel/map.search.panel.tpl.html'
         };

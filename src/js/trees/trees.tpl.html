@@ -33,12 +33,7 @@
 												</div>
 												<div class="col-sm-4">
 													<div class='input-group'>
-													  	<select  id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0" 
-															ng-model="selected.siteID"
-															ng-change="onSelectSiteID(selected.siteID)">
-													    	<option class="option" value="">{{ filteredSites.length>0 | ifElse:'Property':'(No Properties)' }}</option>
-													    	<option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
-													  	</select>
+                                                        <site-dropdown model="selected.siteID" on-change="onSelectSiteID(id)" data="filteredSites"></site-dropdown>
 													</div>
 												</div>	
 											</div>	

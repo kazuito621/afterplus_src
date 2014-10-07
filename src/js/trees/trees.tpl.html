@@ -21,8 +21,10 @@
                             </div>
 
 							<!-- begin center content area -->
-							<section class="map-container mainContent top-margin-none {{'mode_'+data.mode()}}" ng-class="{{'mode_'+data.mode()}}">
-								<div id='treeDetails' ng:cloak ng-show="data.showTreeDetails && data.mode()=='trees'" ng-include="'js/trees/edit.tpl.html'"></div>
+							<section class="map-container mainContent top-margin-none {{'mode_'+data.mode()}}" ng-class="'mode_' + data.mode()">
+								<div id='treeDetails' ng-cloak ng-show="data.showTreeDetails && data.mode()=='trees'">
+                                    <tree-edit></tree-edit>
+								</div>
                                 <div id="searchPanel" class="mtop3" style="display:none;">
                                     <a id="zoomToMappedTrees" class="fa fa-tree _red _size7 search-panel-button mright3"
                                        ng-click="zoomToMappedTrees()"></a>

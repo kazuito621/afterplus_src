@@ -1,0 +1,42 @@
+
+<div class="tree-list-outer" id="tree-list-container">
+    <table class="tree-list-container">
+        <tbody>
+        <tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}"
+            ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
+            <td class="td-check">
+                <input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID"
+                       id="tree-result-checkbox-{{tree.treeID}}">
+            </td>
+            <td class="td-img">
+                <label for="tree-result-checkbox-{{tree.treeID}}">
+                    <div tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
+                        <img bo-src="tree.imgSm" data-treeID='{{tree.treeID}}'
+                             ng-click="onTreeImageRollover(tree.treeID);"
+                             ng-mouseover="onTreeImageRollover(tree.treeID);"
+                             ng-mouseleave="onTreeImageRollout(tree.treeID);"
+                             data-imgMed="{{tree.imgMed}}"
+                             style="border:2px solid #{{colors.bg[tree.colorID]}}"/>
+                    </div>
+                </label>
+            </td>
+            <td>
+                <label for="tree-result-checkbox-{{tree.treeID}}">
+                    <h6>{{tree.commonName}}</h6>
+
+                    <p>{{tree.dbhID|dbhID2Name:this}}</p>
+                    <small><span class='recYear {{tree.history|showRecoYear:"css"}}'
+                                 ng-bind-html="tree.history|showRecoYear"></span>
+                        <span bo-text="'(ID:' + tree.treeID + ')'"></span></small>
+                </label>
+            </td>
+            <td class="td-action" style="padding: 0px;">
+                <label for="tree-result-checkbox-{{tree.treeID}}">
+                    <a href='#/tree_edit/{{tree.treeID}}' bs-tooltip title="View/Edit Details" style="padding: 5px;"><i
+                            class="fa fa-pencil"></i></a>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

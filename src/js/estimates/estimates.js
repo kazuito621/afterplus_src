@@ -31,6 +31,42 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	var filterGroups=[['xuyz','reportID', 'name', 'siteName', 'sales_email'], ['status']];
 	this.fh.setFilterGroups(filterGroups);
 
+    s.salesUsers = undefined;
+
+    // load and cache sales users
+    var setSalesUsers = function(){
+        s.salesUsers = [];
+
+        Api.getSalesUsers().then(function(saleUsers){
+            _.each(saleUsers, function(saleUser){
+                var shortEmail = saleUser.email.substr(0, saleUser.email.indexOf('@'));
+
+                s.salesUsers.push({id: saleUser.userID, email: saleUser.email, shortEmail: shortEmail});
+            })
+        })
+    }
+
+    // get from cache users data for report
+    s.getSalesUsers = function(){
+        if (!s.salesUsers){
+            setSalesUsers();
+        }
+        return s.salesUsers;
+    }
+
+    // callback when sales_user was changed for estimate
+    s.updateEstimate = function(rpt){
+        var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
+        if (newSalesUser){
+            rpt.sales_email_short = newSalesUser.shortEmail;
+            rpt.sales_email = newSalesUser.email;
+        }
+
+        Api.saveReport(rpt).then(function(data1){
+            //What should we do here? May be display some user-friendly message, that report was updated?
+        })
+    }
+
     var init = function (cb) {
         var search = $location.search();
         cb = cb || angular.noop;

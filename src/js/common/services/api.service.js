@@ -62,6 +62,9 @@ function (Rest, $rootScope, $q, $location ) {
 
             return Rest.all('site/' + siteID + '/users').getList(params);
         },
+        getSalesUsers: function () {
+            return Rest.all('user').getList({role:'sales,inventory'});
+        },
         getReport: function (reportID, opts) {
 			var r=$rootScope.requestedReportID;
 			if(r && r>1){
@@ -91,6 +94,12 @@ function (Rest, $rootScope, $q, $location ) {
         },
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');
+        },
+        updateEstimateSalesUser: function (rptID, userID) {
+            var params = {};
+            params.sales_userID = userID;
+
+            return Rest.one('estimate', rptID).post(params);
         },
 		getEmailLogs: function( rptID ){
 			return Rest.all('estimate/' + rptID + '/emaillogs').getList();

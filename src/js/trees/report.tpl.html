@@ -2,13 +2,7 @@
 
 <!-- LOAD recent estimates list -->
 <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
-    <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="rdata.recentReportID">
-        <option value="">Recent Estimates</option>
-		<!-- todo-bindonce - was removed from here: "bindonce bo-value="r.reportID"" ... repalce this back
-			if we can get the rebinder working -->
-        <option bindonce bo-value="r.reportID" ng-repeat="r in recentReportList" ng-bind="getRecentReportTitle(r)">
-        </option>
-    </select>
+    <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
     <BR><BR>
     <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Report</button>
 </div>

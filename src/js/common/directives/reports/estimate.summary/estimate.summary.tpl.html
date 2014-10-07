@@ -1,0 +1,64 @@
+
+<div class="estimate-summary">
+    <div class="row row-estimate">
+        <div class="col-md-6 col">
+            <div class="estimate-info">
+                <dl class="small">
+                    <dt>Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
+                        Estimate ID: <span ng-bind="report.reportID"></span>
+                    </dt>
+                </dl>
+                <h1 class="title" ng-text="'Estimate for ' + report.siteName"></h1>
+                <p class="name">
+						<span ng-if="mode() === 'trees'">
+							<a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
+						</span>
+						<span ng-if="mode() !== 'trees'">
+							{{report.name}}
+						</span>
+                </p>
+                <dl>
+                    <dt>Contact: </dt>
+                    <dd ng-bind="report.contact + ' ' + report.contactPhone|formatPhoneNumber"></dd>
+                </dl>
+                <dl>
+                    <dt>Client: </dt>
+                    <dd ng-bind='report.clientName'></dd>
+                </dl>
+                <dl>
+                    <dt>Property: </dt>
+                    <dd ng-bind="report.siteName"></dd>
+                </dl>
+                <dl>
+                    <dt>Address: </dt>
+                    <dd ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip"></dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="col-md-2 col" ng-if='report.sales_email'>
+            <div class="estimate-info">
+                <p class="name clr-orange">Sales Rep</p>
+                <dl ng-if="report.sales_fname">
+                    <dd ng-text="report.sales_fname + ' ' + report.sales_lname"></dd>
+                </dl>
+                <dl>
+                    <dd><a href='mailto:{{report.sales_email}}' target=_new ng-bind='report.sales_email' style='color:#fff;'></a></dd>
+                </dl>
+                <dl ng-if="report.sales_phone">
+                    <dd ng-bind='report.sales_phone|formatPhoneNumber'></dd>
+                </dl>
+            </div>
+        </div>
+
+
+        <div class="col-md-4 col">
+            <div class="bid-info">
+                <div class="logos">
+                    <span class="logo"><img src="img/logo_tcia.png"></span>
+                </div>
+                <p class="bid">Total Bid: ${{(report.total.grand || 0)|formatPrice}}</p>
+            </div>
+        </div>
+    </div>
+</div>

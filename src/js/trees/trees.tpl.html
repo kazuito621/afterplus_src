@@ -52,13 +52,7 @@
 											</tr>
                                             <tr>
                                                 <td colspan="4">
-													<button class="btn btn-default" ng-model="data.overrideTreatmentCodes" multiple max-length=0 all-none-buttons=1
-															ng-options="t.code as t.treatmentType for t in initData.filters.treatments" 
-															bs-select placeholder="Override Recommended Treatment" onclick="return false;">
-														Treatments <span class="caret"></span>
-													</button>
-													<a ng-if="data.overrideTreatmentCodes.length" class='fa fa-times _red _size8 hand' style='padding-left:.2em;'
-															ng-click='data.overrideTreatmentCodes=[]'></a>
+                                                    <override-treatment codes="data.overrideTreatmentCodes" treatments="initData.filters.treatments"></override-treatment>
                                                 </td>
                                             </tr>
 										</tfoot>

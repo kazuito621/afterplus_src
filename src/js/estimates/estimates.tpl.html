@@ -5,13 +5,13 @@
 		<div class='pull-right topMargin5'>
 			<div class="btn-group" bs-radio-group id="estimatesFilters" ng-model="status_filters_2">
 				<label ng-click="setStatusFilter('all')"class="btn btn-default">
-                    <input type="radio" value="all"></input> All</label>
+                    <input type="radio" value="all"> All</label>
 				<label ng-click="setStatusFilter('sent')" class="btn btn-default">
-                    <input type="radio" value="sent"></input> Sent</label>
+                    <input type="radio" value="sent"> Sent</label>
 				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
-                    <input type="radio" value="approved"></input> Approved</label>
+                    <input type="radio" value="approved"> Approved</label>
 				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
-                    <input type="radio" value="completed"></input> Completed</label>
+                    <input type="radio" value="completed"> Completed</label>
                 <span class="lnk leftSpace10">
                     <a href ng-click='reset()' bs-tooltip title='Reset'>
                         <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>
@@ -30,6 +30,9 @@
         <table class='table table-striped' id='estimatesList'>
             <thead>
                 <tr>
+                    <th class="td-check clickable-header text-center" ng-if="auth.isAtleast('inventory')">
+                        <input type="checkbox" ng-checked="checkedEstimates.selectAll" ng-click="toggleAllEstimatesSelection()">
+                    </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('reportID')">
                         ID <i ng-class="sh.columnClass('name')" class='silver'></i>
                     </th>
@@ -58,6 +61,9 @@
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
                 <tr ng-repeat="e in displayedEstimates" class='hoverHotspot' id='item_{{e.reportID}}'>
+                    <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
+                        <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)" ng-click="toggleEstimateSelection(e.reportID)">
+                    </td>
                     <td ng-bind="e.reportID"></td>
                     <td>
 						<span ng-if="auth.isAtleast('inventory')">
@@ -71,7 +77,14 @@
 						<i site-edit-modal clients="initData.clients" site-id="e.siteID" 
                            class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i>
 					</td>
-                    <td ng-if="auth.isAtleast('inventory')" ng-bind="e.sales_email_short" title="{{e.sales_email}}"></td>
+                    <td ng-if="auth.isAtleast('inventory')">
+                        <a href e-ng-options="obj.id as obj.email for obj in salesUsers"
+                           onshow="getSalesUsers()"
+                           editable-select="e.sales_userID"
+                           onaftersave="updateEstimate(e)">
+                            {{e.sales_email_short}}
+                        </a>
+                    </td>
                     <td>${{e.total_price|formatPrice}}</td>
                     <td>
 						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
@@ -80,7 +93,7 @@
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">
 						</button> 
-						<a href='#/estimate/{{e.hashLink}}' ng-if="!auth.isAtleast('inventory')" ng-bind='e.status' ng-class='"small-tag "+e.status'
+						<!--<a href='#/estimate/{{e.hashLink}}' ng-if="!auth.isAtleast('inventory')" ng-bind='e.status' ng-class='"small-tag "+e.status'-->
 							
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">{{e.tstamp_updated | formatDate}}</td>
@@ -98,5 +111,16 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="action-float-bar" ng-show="checkedEstimates.ids.length > 0">
+        <div class="container">
+            <div class="action-float-bar-inner">
+                <i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp;
+                <a href="#" ng:cloak ng-click="duplicate($event)" style="margin-left: 50px;">
+                    Duplicate
+                </a>
+            </div>
+        </div>
     </div>
 </div>

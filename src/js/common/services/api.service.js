@@ -62,6 +62,9 @@ function (Rest, $rootScope, $q, $location ) {
 
             return Rest.all('site/' + siteID + '/users').getList(params);
         },
+        getSalesUsers: function () {
+            return Rest.all('user').getList({role:'sales,inventory'});
+        },
         getReport: function (reportID, opts) {
 			var r=$rootScope.requestedReportID;
 			if(r && r>1){
@@ -92,12 +95,27 @@ function (Rest, $rootScope, $q, $location ) {
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');
         },
+        updateEstimateSalesUser: function (rptID, userID) {
+            var params = {};
+            params.sales_userID = userID;
+
+            return Rest.one('estimate', rptID).post(params);
+        },
 		getEmailLogs: function( rptID ){
 			return Rest.all('estimate/' + rptID + '/emaillogs').getList();
 		},
 		approveReport: function( rptID ){
 			return Rest.one('estimate',rptID).post('approve');
 		},
+        duplicateReports: function (ids) {
+            var promises = [];
+            angular.forEach(ids, function (id) {
+//              POST /estimate/<estimateID>/copy
+                promises.push(Rest.one('estimate', id).post('copy'));
+            });
+
+            return $q.all(promises);
+        },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});
@@ -186,12 +204,6 @@ function (Rest, $rootScope, $q, $location ) {
                 return Rest.all('user').getList(params);
             }
         }
-//        ,updateSailsRepo: function(value, report_id, sails_userid ){
-//            /*    POST /estimate/<ESTIMATE_ID>
-//            // Post JSON data: {sales_userID: XXX}*/
-//            return Rest.one('estimate', report_id).post('sales_userID': sails_userid );
-//
-//        }
     };
 }]);
 

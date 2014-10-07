@@ -35,30 +35,11 @@
 
 					<div class="col-sm-4 col">
 						<div class="result-container">
-							<section class="nav_listings" ng-if="data.mode()=='trees'"> 
-
+							<section class="nav_listings" ng-if="data.mode()=='trees'">
 								<div class="table-responsive">
-									<table class="tree-list-container" ng-if="auth.isAtleast('inventory')">
-										<thead>
-											<tr>
-												<td>
-													<div class="btn-group">
-														<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-															<i class="fa fa-check-square-o"></i>
-															<span class="caret"></span>
-														</button>
-														<ul class="dropdown-menu" role="menu">
-															<li><a href ng-click="toggleCheckedTrees(true)">ALL</a></li>
-															<li><a href ng-click="toggleCheckedTrees('thisYear')">ALL {{thisYear}}</a></li>
-															<li><a href ng-click="toggleCheckedTrees(false)">NONE</a></li>
-														</ul>
-													</div>
-												</td>
-												<td colspan="3"><h6>{{selectedTrees.length}} of {{TFSdata.treeResultsCount}} trees selected </h6></td>
-											</tr>
-										</thead>
-									</table>
-									<div class="tree-list-outer" id="tree-list-container">
+                                    <div trees-selector ng-if="auth.isAtleast('inventory')" toggle-checked-trees="toggleCheckedTrees(opt)" selected-trees="selectedTrees" count="TFSdata.treeResultsCount"></div>
+
+                                    <div class="tree-list-outer" id="tree-list-container">
 										<table class="tree-list-container">
 											<tbody>
 												<tr bindonce ng-repeat="tree in trees" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}" 
@@ -94,26 +75,11 @@
 											</tbody>
 											
 										</table>
-									</div>	
-									<table class="tree-list-container" ng-if="auth.isAtleast('inventory') && trees.length">
-										<thead>
-											<tr>
-												<td>
-													<div class="btn-group">
-														<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-															<i class="fa fa-check-square-o"></i>
-															<span class="caret"></span>
-														</button>
-														<ul class="dropdown-menu" role="menu">
-															<li><a href ng-click="toggleCheckedTrees(true)">ALL</a></li>
-															<li><a href ng-click="toggleCheckedTrees('thisYear')">ALL {{thisYear}}</a></li>
-															<li><a href ng-click="toggleCheckedTrees(false)">NONE</a></li>
-														</ul>
-													</div>
-												</td>
-												<td colspan="3"><h6>{{selectedTrees.length}} of {{TFSdata.treeResultsCount}} trees selected</h6></td>
-											</tr>
-										</thead>
+									</div>
+
+                                    <div trees-selector ng-if="auth.isAtleast('inventory')" toggle-checked-trees="toggleCheckedTrees(opt)" selected-trees="selectedTrees" count="TFSdata.treeResultsCount"></div>
+
+                                    <table class="tree-list-container" ng-if="auth.isAtleast('inventory') && trees.length">
 										<tfoot>
 											<tr>
 												<td colspan="4">
@@ -133,7 +99,8 @@
                                             </tr>
 										</tfoot>
 									</table>
-								</div>	
+
+								</div>
 							</section>
 						</div>	
 					</div>

@@ -313,8 +313,9 @@
 								<div id='treeDetails' ng:cloak ng-show="data.showTreeDetails && data.mode()=='trees'" ng-include="'js/trees/edit.tpl.html'"></div>
                                 <div id="searchPanel" class="mtop3" style="display:none;">
                                     <a id="zoomToMappedTrees" class="fa fa-tree _red _size7 search-panel-button mright3"
-                                       ng-click="zoomToMappedTrees()"></a>
-                                    <input id="googleSearchbox" class="controls" type="text" placeholder="Search Box"
+                                       ng-click="zoomToMappedTrees()" ng-if="googleMapSearchBoxValue && googleMapSearchBoxValue!=''" 
+									   bs-tooltip title='Jump back to trees'></a>
+                                    <input id="googleSearchbox" class="controls" type="text" placeholder="Find Address"
                                            ng-model="googleMapSearchBoxValue">
                                     <a id="searchButtonForSearchBox" class="fa fa-map-marker _red _size7 search-panel-button mleft3"
                                        ng-show="googleMapSearchBoxValue && googleMapSearchBoxValue!=''"

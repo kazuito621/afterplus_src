@@ -100,7 +100,17 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             if(s.data.mode()=='estimate') loadEstimate();
             s.$on('nav', function (e, data) {
-				if(data.new == 'trees') loadEstimate();
+				if(data.new == 'trees') {
+                    loadEstimate()
+                    if(s.selected.siteID && s.selected.siteID>0){
+                        var siteObj = s.getSiteByID(s.selected.siteID);
+                        s.selected.clientID = siteObj.clientID;
+                        s.selected.clientTypeID = siteObj.clientTypeID;
+                        getTreeListings()
+                    }else{				// no site selected, so go back to site view, not tree view
+                        s.onSelectClientID();
+                    }
+                };
             });
 
             if(s.data.mode()=='trees')

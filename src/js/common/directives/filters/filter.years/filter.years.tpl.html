@@ -4,7 +4,7 @@
         <h3>By Year: &nbsp;
             <button class="btn btn-default" ng-model="filtersYear" placeholder="All Years"
                     ng-disabled="!filtersYears.length"
-                    ng-change="onSelectYear({ id: filters.year })"
+                    ng-change="onSelectYear({ id: filtersYear })"
                     ng-options="y.id as y.desc for y in filtersYears"
                     bs-select onclick="return false;">
                 Action <span class="caret"></span>

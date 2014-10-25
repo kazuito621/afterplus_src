@@ -36,7 +36,11 @@
 					<div class="col-sm-4 col">
 						<div class="result-container">
 							<section class="nav_listings" ng-if="data.mode()=='trees'">
-								<div class="table-responsive">
+								<div class="table-responsive" ng-if="filteredSites.length > 0 && !trees.length && TFSdata.selectedFilters.length">
+									<sites-list></sites-list>
+								</div>
+
+								<div class="table-responsive" ng-if="trees.length > 0">
                                     <div trees-selector ng-if="auth.isAtleast('inventory')" toggle-checked-trees="toggleCheckedTrees(opt)" selected-trees="selectedTrees" count="TFSdata.treeResultsCount"></div>
 
                                     <trees-list></trees-list>
@@ -57,7 +61,6 @@
                                             </tr>
 										</tfoot>
 									</table>
-
 								</div>
 							</section>
 						</div>	

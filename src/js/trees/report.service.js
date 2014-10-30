@@ -336,10 +336,7 @@ app.service('ReportService',
             return res;
         };
 
-        // updatePrice is a bool flag
-        // call method with updatePrice=true, when treatment type was changed in report
-        // that means we need to update price for new treatment type
-        this.ungroupReportItems = function (groupedItems, updatePrice) {
+        this.ungroupReportItems = function (groupedItems) {
             groupedItems = groupedItems || that.groupedItems;
 //                console.log('about to ungroup report items', groupedItems);
             var items = angular.copy(groupedItems);
@@ -352,12 +349,7 @@ app.service('ReportService',
 
                     tmp.treatmentTypeCode = treatment.treatmentTypeCode;
 
-                    if (updatePrice){
-                        tmp.price = that.getTreatmentPrice(treatment.treatmentTypeCode, item.dbhID);
-                    }
-                    else{
-                        tmp.price = treatment.price;
-                    }
+                    tmp.price = treatment.price;
 
                     res.push(tmp);
                 });

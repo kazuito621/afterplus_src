@@ -966,6 +966,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             // else show all
             var filterSitesByClients = _.throttle(function() {
                 var siteIDs=s.TFSdata.filteredSiteIDs;
+                var treeCountMap = s.TFSdata.treeCountMap;
                 if(!siteIDs || !siteIDs.length || !(siteIDs.length>0)) siteIDs=false;
                 if( s.selected.clientID ){
                     s.filteredSites = _.filter(s.initData.sites, function( obj ){
@@ -987,7 +988,15 @@ var TreesCtrl = app.controller('TreesCtrl',
                     if(siteIDs){
                         s.filteredSites = _.filter(s.initData.sites, function( obj ){
                             return (siteIDs.indexOf(obj.siteID)!=-1);
-                        })
+                        });
+
+                        _.each(s.filteredSites, function (site) {
+                            var treeCount = _.find(treeCountMap, function (tree) {
+                                return tree.siteID === site.siteID;
+                            });
+
+                            site.matchedTreesCount = treeCount.treeCount;
+                        });
                     }else //s.filteredSites=angular.copy(s.initData.sites);  -- fixed a dropdown ng-model issue
                         s.filteredSites=s.initData.sites;
                 }
@@ -1014,10 +1023,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                     opts[name]=obj.join(',')
                 });
 
+                opts.info = 1;
+
                 Api.getSites(opts)
-                    .then(function(siteIDs){
-                        if(siteIDs && siteIDs.length>0){
-                            s.TFSdata.filteredSiteIDs=siteIDs;
+                    .then(function(treeCountMap){
+                        if(treeCountMap && treeCountMap.length>0){
+                            s.TFSdata.filteredSiteIDs = _.pluck(treeCountMap, 'siteID');
+                            s.TFSdata.treeCountMap = treeCountMap;
                             filterSitesByClients();
                         }else{
                             s.TFSdata.filteredSiteIDs=false;

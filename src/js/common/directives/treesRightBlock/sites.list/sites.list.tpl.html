@@ -5,6 +5,7 @@
         <tr bindonce ng-repeat="site in filteredSites">
             <td>
                 <h6>{{site.siteName}}</h6>
+                <span>{{site.matchedTreesCount}} trees match filter</span>
             </td>
         </tr>
         </tbody>

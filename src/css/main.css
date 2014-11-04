@@ -727,3 +727,22 @@ td.estimate_multirow_col{
 .old-year-filter-option {
     background-color: #cccccc !important;
 }
+
+.edit-client-container .content h2 {
+    font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #3f3f3f;
+    line-height: 24px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+.label-prop{
+    float:left;
+    width:100px;
+}
+
+.edit-prop{
+}
+

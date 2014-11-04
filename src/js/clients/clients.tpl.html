@@ -7,6 +7,10 @@
 	class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
     style="max-width: 100%; width: auto;"
 	data-animation="am-fade-and-scale" >New Client</button>
+    &nbsp;
+    <a href="#/client_edit"
+    class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+    style="max-width: 100%; width: auto;">New Client Standalone</a>
 
 	<div class='table-responsive' ng-if="displayedClients.length > 0">
 		<h1>Clients</h1>
@@ -41,6 +45,8 @@
                     <td><a href='/#sites?clientID={{c.clientID}}' bs-tooltip title='View sites'>{{c.siteCount}}</a></td>
 
                     <td>
+                        <a ng-if="auth.isAtleast('inventory')" class="fa fa-pencil _grey _size7 hand hoverDisplay"
+                           bs-tooltip title="Edit Standalone" href="#/client_edit/{{c.clientID}}" style="text-decoration: none;"></a> &nbsp;
                         <a ng-if="auth.isAtleast('inventory')" ng-click="existingClientModalOpen(c.clientID)" class="fa fa-pencil _grey _size7 hand hoverDisplay" 
 								bs-tooltip title="Edit" style="text-decoration: none;"></a> &nbsp;
                         <a ng-if="auth.is('admin')" ng-click="queueOrDequeueItemForDelete(c.clientID, $event)" class="fa fa-times _red _size7 hand hoverDisplay" 

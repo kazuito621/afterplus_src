@@ -63,7 +63,9 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	}
 
 	var getTemplatePath = function(tplID){
+        //todo refactor to switch/case
 		if(tplID=='tree_edit') return 'js/trees/edit.tpl.html';
+		if(tplID=='client_edit') return 'js/clients/edit_standalone.tpl.html';
 		// for signin, trees, sites, and clients... used default
 		return 'js/'+tplID+"/"+tplID+".tpl.html";
 	}

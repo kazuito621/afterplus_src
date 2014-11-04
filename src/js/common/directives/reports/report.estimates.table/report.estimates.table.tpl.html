@@ -49,7 +49,7 @@
                             <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
                                editable-select="treatment.treatmentTypeCode"
                                onshow="onShowEditItem(item.$$hashKey)"
-                               onaftersave="onTreatmentTypeUpdate()"
+                               onaftersave="onTreatmentTypeUpdate(item, treatment)"
                                onhide="onHideEditItem()">
                                 {{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
                             </a>

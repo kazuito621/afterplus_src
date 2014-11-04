@@ -15,7 +15,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			total_price: 'desc'
 		};
     s.displayedEstimates = [];
-
+	s.data={}; //overwritten later
     s.checkedEstimates = {
         selectAll: false,
         ids: [],
@@ -111,10 +111,24 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         delete s.activePopover.itemID;
     };
 
+	// based on the filter, also change which date is actually shown in the list.
+	// ie. if Sent is chosen, then date columb should be tstamp_sent
 	s.setStatusFilter=function(status){
-		if(status=='all') status='';
+		if(status=='all')status='';
+		if(status=='sent'||status=='completed'||status=='approved') {
+			s.data.currentTstamp='tstamp_'+status;
+			s.data.currentTstampHeader=status.substr(0,1).toUpperCase() + status.substr(1) + ' Date';
+		}else{
+			s.data.currentTstamp='tstamp_updated';
+			s.data.currentTstampHeader='Last Updated';
+		}
 		self.fh.setFilter({status:status});
 		applyFilter();
+	}
+
+	s.getTstamp = function(row){
+		if(row[s.data.currentTstamp]) return row[s.data.currentTstamp];
+		return row.tstamp_updated;
 	}
 
 	s.setReportStatus=function(rpt){
@@ -154,7 +168,23 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 			}
 			return 0;
 		}
+		,currentTstamp:'tstamp_updated'		// based on what status were filtering for, we may be displaying/sorting
+											// by different timestamp values in the list. For example, if were filtering by "sent"
+											// then we should display "tstamp_sent", not "tstamp_updated"
+		,currentTstampHeader:'Last Updated'
 	};
+
+
+	s.sortDateCol=function(){
+		s.sh.sortByColumn(s.data.currentTstamp);
+	}
+	s.getDateColHeader=function(){
+		return s.data.currentTstampHeader;
+	}
+	s.getDateColClass=function(){
+		return s.sh.columnClass(s.data.currentTstamp);
+	}
+
 
 	s.sh = {
 		sortByColumn: function (col) {

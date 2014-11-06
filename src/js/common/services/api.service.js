@@ -123,7 +123,7 @@ function (Rest, $rootScope, $q, $location ) {
             $location.url('/signin');
         },
         // Clients
-        saveNewClient: function (client) {
+        saveOrUpdateClient: function (client) {
             return Rest.all('client').post(client);
         },
         getClientById: function (id) {

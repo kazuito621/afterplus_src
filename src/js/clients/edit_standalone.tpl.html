@@ -1,4 +1,4 @@
-<div ng-controller='EditClientCtrl' class="edit-client-container treeEditBox">
+<div ng-controller='EditClientCtrl' class="edit-client-container treeEditBox mobile-view" mobile-view my-state="client_edit">
     <div class="row">
         <div class="content">
             <h2>
@@ -41,16 +41,15 @@
                 <div class="label-prop">Zip:</div>
                 <div class="edit-prop">
                         <input type="text" ng-model="client.zip" >
+                </div>
 
+                <br/>
+                <div class='leftSpace10'>
+                    <button class='navButton' ng-click="save();">Save</button>
                 </div>
             </div>
-            <div class="clearfix"></div>
 
-            <br/>
-            <div class=''>
-                <button class='navButton' ng-click="save();">Save</button>
-                &nbsp;<a ng-click="onCancel()" bs-tooltip class='hand' title="Hotkey: Press Escape to cancel">Cancel</a>
-            </div>
+
 
         </div>
     </div>

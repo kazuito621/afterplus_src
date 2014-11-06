@@ -746,3 +746,8 @@ td.estimate_multirow_col{
 .edit-prop{
 }
 
+.mobile-view h2{
+    text-align:center;
+    max-width: 450px;
+}
+

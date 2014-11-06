@@ -30,8 +30,6 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                             }
                         });
                 }
-                // setup ESCAPE key
-                //$(document).keyup(cancelOnEscape);
             }, 700);
 
             var initClientData = function(){
@@ -42,35 +40,41 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                 if (data.new === myStateID) init();
             });
 
+            //validate client object before save, return true/false
+            //todo think about refactoring to built-in angular validation
+            s.validate = function(client){
+                if (typeof(client) === 'undefined') {
+                    s.setAlert('Unable to save', {type: 'd'});
+                    return false;
+                }
+
+                if (!client.clientTypeID) {
+                    s.setAlert('Choose a client type for the new client', {type: 'd'});
+                    return false;
+                }
+                if (!client.clientName || s.client.clientName=='') {
+                    s.setAlert('Set name for the new client', {type: 'd'});
+                    return false;
+                }
+
+                return true;
+            }
+
             s.save = function () {
-                if (s.mode == 'edit'){
-                    s.client.post().then(function () {
+                var isValid = s.validate(s.client);
+
+                if (!isValid) return;
+
+                Api.saveOrUpdateClient(s.client).then(function (data) {
+                        //not sure do we need to send events from stand-alone mobile page
                         s.sendEvt('onClientUpdate', s.client);
+
+                        //refresh page
+                        initClientData();
+
+                        //show feedback for user
+                        return s.setAlert('Client was saved', {type: 'ok'});
                     });
-                }
-                else{
-                    if (!s.client.clientTypeID) {
-                        return s.setAlert('Choose a client type for the new client', {type: 'd'});
-                    }
-                    if (!s.client.clientName || s.client.clientName=='') {
-                        return s.setAlert('Set name for the new client', {type: 'd'});
-                    }
-
-                    Api.saveNewClient(s.client).then(function (data) {
-                        s.sendEvt('onClientUpdate', s.client);
-                    });
-                }
-
-                $location.path('/clients');
-            };
-
-            s.onCancel = function () {
-                //$(document).unbind('keyup', cancelOnEscape);
-                $location.url('/clients');
-            };
-
-            var cancelOnEscape = function(e){
-                if(e.keyCode===27) s.onCancel();
             };
 
             init();

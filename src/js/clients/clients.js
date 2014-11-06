@@ -73,7 +73,7 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 						return s.setAlert('Choose a client type for the new client', {type: 'd'});
 					}
 
-					Api.saveNewClient(s.client).then(function (data) {
+					Api.saveOrUpdateClient(s.client).then(function (data) {
 						console.log(s.client);
 						console.log("Post new client response:");
 						console.dir(data);

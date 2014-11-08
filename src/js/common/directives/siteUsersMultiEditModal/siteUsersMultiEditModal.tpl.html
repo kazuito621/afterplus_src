@@ -39,12 +39,12 @@
                                 </div>
 
                                 <div class="row" ng-show="$parent.showAddNewSite === true" style="margin-top: 10px;">
-                                    <form ng-submit="addNewSite($event)">
+                                    <form ng-submit="saveNewSite($event)">
                                         <div class="col-sm-10">
                                             <input type="text" required placeholder="Site name" style="width: 100%;" ng-model="newSite.name" id='newSiteName' sites-auto-complete sites="sites" callback="siteSelect" bs-typeahead>
                                         </div>
                                         <div class="col-sm-2">
-                                            <button ng-click="addNewSite($event)">Add</button>
+                                            <button ng-click="saveNewSite($event)">Add</button>
                                         </div>
                                     </form>
                                 </div>

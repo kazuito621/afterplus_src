@@ -1,0 +1,80 @@
+<div ng-controller='EditSiteCtrl' class="treeEditBox edit-site-container" >
+    <div class="row">
+        <div class="content">
+            <h2>
+                <span ng-if="mode=='new'">New Site</span>
+                <span ng-if="mode=='edit'">Site - {{site.siteName}}</span>
+            </h2>
+            <div class="col-sm-6 col">
+                <form editable-form class="form-inline" ng-submit="saveSite()">
+                    <div class="label-prop">Client:</div>
+                    <div class="edit-prop">
+                            <!--<a href e-ng-options="c.clientID as c.clientName for c in initData.clients"-->
+                               <!--editable-select="site.clientID">-->
+                                <!--{{ site.clientID | clientName:this  || "(not specified)"}}-->
+                            <!--</a>-->
+                        <button class="btn btn-default" ng-model="site.clientID" ng-options="c.clientID as c.clientName for c in initData.clients"
+                                bs-select placeholder="Which client owns this property?" onclick="return false;" required>
+                            Client <span class="caret"></span>
+                        </button>
+                        <button class="btn btn-default" ng-show="site.clientID" ng-click="copyAddressFromClientToNewSite(site.clientID)"
+                                onclick="return false;"><i class='fa fa-copy'></i></button>
+                    </div>
+                    <br/>
+                    <div class="label-prop">Name:</div>
+                    <div class="edit-prop">
+                            <input type="text" ng-model="site.siteName" >
+
+                    </div>
+                    <br/>
+                    <div class="label-prop">Address:</div>
+                    <div class="edit-prop">
+                            <input type="text" ng-model="site.street" >
+
+                    </div>
+                    <br/>
+                    <div class="label-prop">City:</div>
+                    <div class="edit-prop">
+                            <input type="text" ng-model="site.city" >
+
+                    </div>
+                    <br/>
+                    <div class="label-prop">State:</div>
+                    <div class="edit-prop">
+                            <input type="text" ng-model="site.state" >
+
+                    </div>
+                    <br/>
+                    <div class="label-prop">Zip:</div>
+                    <div class="edit-prop">
+                            <input type="text" ng-model="site.zip" >
+                    </div>
+
+                    <br/>
+                    <div class='leftSpace10'>
+                        <span ng-show="site.siteID">
+                            <input type="submit" value="UPDATE" class='btn btn-primary'>
+                            <button type="button" class="btn btn-info" site-users-edit-modal site="site">
+                                EDIT USERS
+                            </button>
+                        </span>
+
+                        <span ng-show="!site.siteID">
+                            <button type="button" class='btn btn-primary' site-users-edit-modal before-open="saveSite" site="site">
+                                SAVE AND ADD USERS
+                            </button>
+                        </span>
+
+                        <button type="button" class='btn btn-gray' ng-click="newSite()">
+                            NEW SITE
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>

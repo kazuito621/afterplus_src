@@ -65,7 +65,14 @@ var EditClientCtrl = app.controller('EditClientCtrl',
 
                 if (!isValid) return;
 
-                Api.saveOrUpdateClient(s.client).then(function (data) {
+                if (s.client.clientID){
+                    s.client.post().then(function () {
+                        // s.onSave();
+                        $location.path('/client_edit/');
+                    });
+                }
+                else {
+                    Api.saveNewClient(s.client).then(function (data) {
                         //not sure do we need to send events from stand-alone mobile page
                         s.sendEvt('onClientUpdate', s.client);
 
@@ -75,6 +82,7 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                         //show feedback for user
                         return s.setAlert('Client was saved', {type: 'ok'});
                     });
+                }
             };
 
             init();

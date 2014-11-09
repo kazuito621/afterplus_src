@@ -729,7 +729,11 @@ td.estimate_multirow_col{
 }
 
 /*mobile view*/
-.edit-client-container .content h2,  .edit-site-container .content h2{
+.mobile-view-container{
+
+}
+
+.mobile-view-container .content h2{
     font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 18px;
     font-weight: bold;

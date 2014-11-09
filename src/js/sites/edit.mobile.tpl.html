@@ -1,4 +1,4 @@
-<div ng-controller='EditSiteCtrl' class="treeEditBox edit-site-container" >
+<div ng-controller='EditSiteCtrl' class="treeEditBox mobile-view-container" >
     <div class="row">
         <div class="content">
             <h2>
@@ -54,19 +54,19 @@
                     <div class='leftSpace10'>
                         <span ng-show="site.siteID">
                             <input type="submit" value="UPDATE" class='btn btn-primary'>
-                            <button type="button" class="btn btn-info" site-users-edit-modal site="site">
+                            <button type="button" class="btn btn-info" site="site" ng-click="editUsers()">
                                 EDIT USERS
                             </button>
                         </span>
 
                         <span ng-show="!site.siteID">
-                            <button type="button" class='btn btn-primary' site-users-edit-modal before-open="saveSite" site="site">
-                                SAVE AND ADD USERS
+                            <button type="button" class='btn btn-primary' ng-click="saveSite(true)" site="site">
+                                SAVE
                             </button>
                         </span>
 
-                        <button type="button" class='btn btn-gray' ng-click="newSite()">
-                            NEW SITE
+                        <button type="button" class='btn btn-primary' ng-click="newSite()">
+                            RESET
                         </button>
                     </div>
 

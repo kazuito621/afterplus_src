@@ -52,7 +52,7 @@ var EditClientCtrl = app.controller('EditSiteCtrl',
                 return true;
             }
 
-            s.saveSite = function (cb, nohide) {
+            s.saveSite = function (redirectToSiteUsersEdit) {
                 var isValid = s.validate(s.site);
 
                 if (!isValid) return;
@@ -70,7 +70,12 @@ var EditClientCtrl = app.controller('EditSiteCtrl',
                         s.site = data;
                         s.siteId = data.siteID;
 
-                        $location.path('/site_edit/' + s.siteId);
+                        if (redirectToSiteUsersEdit){
+                            $location.path('/site_users_edit/' + s.siteId);
+                        }
+                        else{
+                            $location.path('/site_edit/' + s.siteId);
+                        }
                     });
                 }
 
@@ -79,6 +84,11 @@ var EditClientCtrl = app.controller('EditSiteCtrl',
             s.newSite = function(){
                 initSiteData();
                 $location.path('/site_edit');
+            };
+
+            s.editUsers = function(){
+                initSiteData();
+                $location.path('/site_users_edit/' + s.siteID);
             };
 
             //when user creates new property and selects Client:
@@ -103,6 +113,7 @@ var EditClientCtrl = app.controller('EditSiteCtrl',
             }
 
             var initSiteData = function(){
+                //s.siteID='';
                 s.site={};
             }
 

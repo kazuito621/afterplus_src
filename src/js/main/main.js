@@ -67,6 +67,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		if(tplID=='tree_edit') return 'js/trees/edit.tpl.html';
 		if(tplID=='client_edit') return 'js/clients/edit.mobile.tpl.html';
 		if(tplID=='site_edit') return 'js/sites/edit.mobile.tpl.html';
+        if(tplID=='site_users_edit') return 'js/sites/siteUsers.mobile.tpl.html';
 		// for signin, trees, sites, and clients... used default
 		return 'js/'+tplID+"/"+tplID+".tpl.html";
 	}
@@ -75,7 +76,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     var checkIfMobileView = function(routeParams){
         s.isMobile = false;
 
-        if (routeParams.state1 == 'client_edit' || routeParams.state1 == 'site_edit'){
+        if (routeParams.state1 == 'client_edit' || routeParams.state1 == 'site_edit' || routeParams.state1 == 'site_users_edit'){
             s.isMobile = true;
         }
     }

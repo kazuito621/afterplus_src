@@ -34,6 +34,12 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredSites=[];				// all/filtered list of sites based on selected client
             s.trees = [];			// result set of trees based on site selected
             s.selectedTrees = []; 	// treeIDs that have been SELECTED for inclusion in estimate
+
+            s.bulkEstimates = {
+                selectedSites: [],
+                overrideTreatmentCodes: []
+            };
+
             s.treatmentTypes = [];
             s.ratingTypes = [];
             s.siteLocs = [];
@@ -948,7 +954,17 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+            self.updateSelectedSites = function () {
+                var updated = [];
 
+                angular.forEach(s.filteredSites, function (site) {
+                    if (s.bulkEstimates.selectedSites.indexOf(site.siteID) > -1) {
+                        updated.push(site.siteID);
+                    }
+                });
+
+                s.bulkEstimates.selectedSites = updated;
+            };
 
             // ---- FILTERING OF SITES 
             // There are 2 type of filtering of sites:
@@ -996,6 +1012,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                             });
 
                             site.matchedTreesCount = treeCount.treeCount;
+                            self.updateSelectedSites();
                         });
                     }else //s.filteredSites=angular.copy(s.initData.sites);  -- fixed a dropdown ng-model issue
                         s.filteredSites=s.initData.sites;

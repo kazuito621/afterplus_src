@@ -6,6 +6,10 @@ app.directive('sitesList',
             restrict: 'EA',
             replace: true,
             transclude: false,
-            templateUrl: 'js/common/directives/treesRightBlock/sites.list/sites.list.tpl.html'
+            templateUrl: 'js/common/directives/treesRightBlock/sites.list/sites.list.tpl.html',
+            scope: {
+                filteredSites: '=',
+                selectedSites: '='
+            }
         };
     }]);

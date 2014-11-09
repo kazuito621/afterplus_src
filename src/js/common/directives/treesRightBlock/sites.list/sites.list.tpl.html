@@ -2,10 +2,14 @@
 <div class="tree-list-outer" id="tree-list-container">
     <table class="tree-list-container">
         <tbody>
-        <tr bindonce ng-repeat="site in filteredSites">
+        <tr bindonce ng-repeat="site in filteredSites" ng-show="site.siteName">
+            <td class="td-check">
+                <input type="checkbox" checklist-model="selectedSites" checklist-value="site.siteID"
+                       id="site-result-checkbox-{{site.siteID}}">
+            </td>
             <td>
                 <h6>{{site.siteName}}</h6>
-                <span>{{site.matchedTreesCount}} trees match filter</span>
+                <span ng-show="site.matchedTreesCount">{{site.matchedTreesCount}} trees match filter</span>
             </td>
         </tr>
         </tbody>

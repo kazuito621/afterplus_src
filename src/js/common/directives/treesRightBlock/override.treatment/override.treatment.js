@@ -4,6 +4,9 @@ app.directive('overrideTreatment',
         'use strict';
 
         var linker = function (scope) {
+            scope.clearCodes = function () {
+                scope.codes.length = 0;
+            };
         };
 
         return {

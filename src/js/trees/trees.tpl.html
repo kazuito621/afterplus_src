@@ -37,7 +37,29 @@
 						<div class="result-container">
 							<section class="nav_listings" ng-if="data.mode()=='trees'">
 								<div class="table-responsive" ng-if="filteredSites.length > 0 && !trees.length && TFSdata.selectedFilters.length">
-									<sites-list></sites-list>
+									<div sites-selector items="filteredSites" selected="bulkEstimates.selectedSites" name="sites">
+									</div>
+
+									<sites-list filtered-sites="filteredSites" selected-sites="bulkEstimates.selectedSites">
+									</sites-list>
+
+									<div sites-selector items="filteredSites" selected="bulkEstimates.selectedSites" name="sites">
+									</div>
+
+									<table class="tree-list-container" ng-if="auth.isAtleast('inventory')">
+										<tfoot>
+											<tr ng-show="bulkEstimates.selectedSites.length && bulkEstimates.overrideTreatmentCodes.length">
+												<td colspan="4">
+													<button class="btn btn-block btn-red clr-white txt-bold" ng-click="createBulkEstimate()">Create Bulk Estimate</button>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4">
+													<override-treatment codes="bulkEstimates.overrideTreatmentCodes" treatments="initData.filters.treatments"></override-treatment>
+												</td>
+											</tr>
+										</tfoot>
+									</table>
 								</div>
 
 								<div class="table-responsive" ng-if="trees.length > 0">

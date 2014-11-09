@@ -1,4 +1,3 @@
-/*global moment*/
 app.directive('overrideTreatment',
     [function () {
         'use strict';
@@ -7,6 +6,8 @@ app.directive('overrideTreatment',
             scope.clearCodes = function () {
                 scope.codes.length = 0;
             };
+
+            scope.field = scope.field || 'code';
         };
 
         return {
@@ -16,7 +17,8 @@ app.directive('overrideTreatment',
             templateUrl: 'js/common/directives/treesRightBlock/override.treatment/override.treatment.tpl.html',
             scope: {
                 codes: '=',         //    data.overrideTreatmentCodes
-                treatments: '='     //    initData.filters.treatments
+                treatments: '=',     //    initData.filters.treatments
+                field: '@'
             },
             link: linker
         };

@@ -1,0 +1,20 @@
+
+<table class="tree-list-container">
+    <thead>
+    <tr>
+        <td>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-check-square-o"></i>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href ng-click="toggle(true)">ALL</a></li>
+                    <li><a href ng-click="toggle(false)">NONE</a></li>
+                </ul>
+            </div>
+        </td>
+        <td colspan="3"><h6>{{selected.length}} of {{items.length}} {{name}} selected </h6></td>
+    </tr>
+    </thead>
+</table>

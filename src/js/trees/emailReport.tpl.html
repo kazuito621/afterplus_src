@@ -10,7 +10,13 @@
 
 			<form class="form-inline" ng-submit="emailEstimate()">
 				<table cellpadding='2'>
-					 <tr>
+					 <tr ng-if="type === 'bulk'">
+                         <td>Sites:</td>
+                         <td>
+							 <div class="label label-primary" ng-repeat="name in emailRpt.siteNames" style="margin-right: 5px; font-size: 13px; float: left; margin-bottom: 5px;">{{name}}</div>
+                         </td>
+                     </tr>
+					 <tr ng-if="type !== 'bulk'">
                          <td>To:</td>
                          <td>
                              <br><tags-input ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>

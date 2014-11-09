@@ -363,6 +363,10 @@ app.service('ReportService',
             return res;
         };
 
+		this.email = {
+			message: "Hi,\n\nThank you for providing us the opportunity to care for your trees!  In the link below you will find a customized estimate engineered by one of our Certified Arborist specifically for your trees.\n\n" + "Please review our proposal and get back to us at your earliest convenience as we look forward to thoroughly impressing you with our professional work and outstanding customer service.\n\n" + "From planting to removals, and everything in between, we've got you covered.  If you have any questions, feel free to contact us toll free at (866) 815-2525 or office@aplustree.com.\n\n" + "Sincerely,\n"
+		};
+
 	this.init();
 
 }]);

@@ -7,8 +7,13 @@
                 <input type="checkbox" checklist-model="selectedSites" checklist-value="site.siteID" id="site-result-checkbox-{{site.siteID}}">
             </td>
             <td>
-                <h6>{{site.siteName}}</h6>
-                <span ng-show="site.matchedTreesCount">{{site.matchedTreesCount}} trees match filter</span>
+                <label for="site-result-checkbox-{{site.siteID}}">
+                    <h6>{{site.siteName}}</h6>
+                    <span ng-show="site.matchedTreesCount">{{site.matchedTreesCount}} trees match filter</span>
+                    <div ng-show="site.estimatePrice" style="font-weight: bold; font-size: 12px; margin-top: 5px;">
+                        ${{site.estimatePrice | formatPrice}}
+                    </div>
+                </label>
             </td>
         </tr>
         </tbody>

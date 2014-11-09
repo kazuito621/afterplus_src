@@ -996,9 +996,60 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.updateBulkEstimatePrice = _.throttle(self.updateBulkEstimatePriceFn, 700);
 
+            self.hideOnEscape = function (e) {
+                if (e.keyCode === 27) {
+                    self.bulkModalScope.hide();
+                }
+            };
+
+            self.getSelectedSitesNames = function () {
+                var selectedSites = _.filter(s.filteredSites, function (site) {
+                    return s.bulkEstimates.selectedSites.indexOf(site.siteID) > -1;
+                });
+
+                return _.pluck(selectedSites, 'siteName');
+            };
+
+            self.createBulkModalScope = function () {
+                var res = s.$new();
+
+                res.closeModal = function () {
+                    self.bulkModal.hide();
+                };
+
+                res.hide = function(){
+                    $(document).unbind('keyup', self.hideOnEscape);
+                    self.bulkModal.hide();
+                };
+
+                res.modalTitle = "Bulk estimate";
+                res.emailRpt = {
+                    subject: 'A Plus Tree Estimate',
+                    message: ReportService.email.message,
+                    senderEmail: Auth.data().email,
+                    siteNames: self.getSelectedSitesNames(),
+                    sendBtnText: 'Send bulk estimate'
+                };
+                res.type = 'bulk';
+                res.siteNames = [];
+
+                return res;
+            };
+
             s.createBulkEstimate = function () {
                 console.log('Creating bulk estimates for', s.bulkEstimates);
+                self.bulkModalScope = self.createBulkModalScope();
+                self.bulkModal = $modal({
+                    scope: self.bulkModalScope,
+                    //template: '/js/trees/emailReport.tpl.html', // production
+                    template: 'js/trees/emailReport.tpl.html', // dev
+                    show: false
+                });
 
+                self.bulkModal.$promise.then(function () {
+                    self.bulkModal.show();
+                    $(document).keyup(self.hideOnEscape);
+                });
             };
 
             self.updateSelectedSites = function () {
@@ -1060,6 +1111,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                             });
 
                             site.matchedTreesCount = treeCount.treeCount;
+                            site.estimatePrice = treeCount.estimatePrice;
                             self.updateSelectedSites();
                         });
                     }else //s.filteredSites=angular.copy(s.initData.sites);  -- fixed a dropdown ng-model issue

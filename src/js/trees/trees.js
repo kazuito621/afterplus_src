@@ -37,7 +37,9 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.bulkEstimates = {
                 selectedSites: [],
-                overrideTreatmentCodes: []
+                overrideTreatmentCodes: [],
+                sitesBckp: [],
+                treatmentsBckp: []
             };
 
             s.treatmentTypes = [];
@@ -952,7 +954,52 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }else{
                     s.filteredClients=s.initData.clients;
                 }
-            }
+            };
+
+            self.updateBulkEstimatePriceFn = function (updated) {
+                if (s.selected.clientTypeID || s.selected.clientID) { return; }
+                //console.log('Updating bulk estimate price', s.bulkEstimates);
+
+                if (updated.sites) {
+                    if (angular.equals(s.bulkEstimates.sitesBckp, updated.sites)) {
+                        return;
+                    }
+
+                    s.bulkEstimates.sitesBckp = updated.sites;
+                }
+
+                if (updated.treatments) {
+                    if (angular.equals(s.bulkEstimates.treatmentsBckp, updated.treatments)) {
+                        return;
+                    }
+
+                    s.bulkEstimates.treatmentsBckp = updated.treatments;
+
+                    if (updated.treatments.length === 0) {
+                        // clear prices
+                        angular.forEach(s.filteredSites, function (site) {
+                            site.estimatePrice = 0;
+                        });
+                        return;
+                    }
+                }
+
+                if (s.bulkEstimates.overrideTreatmentCodes.length === 0) {
+                    return;
+                }
+                var opts = self.makeFiltersObject();
+                opts.info = 1;
+                opts.bulkTreatment = s.bulkEstimates.overrideTreatmentCodes.join(',');
+
+                Api.getSites(opts).then(self.getSitesCB);
+            };
+
+            s.updateBulkEstimatePrice = _.throttle(self.updateBulkEstimatePriceFn, 700);
+
+            s.createBulkEstimate = function () {
+                console.log('Creating bulk estimates for', s.bulkEstimates);
+
+            };
 
             self.updateSelectedSites = function () {
                 var updated = [];
@@ -964,6 +1011,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
 
                 s.bulkEstimates.selectedSites = updated;
+                s.updateBulkEstimatePrice({ sites: s.TFSdata.filteredSiteIDs });
             };
 
             // ---- FILTERING OF SITES 
@@ -1020,16 +1068,19 @@ var TreesCtrl = app.controller('TreesCtrl',
                 showMappedSites();
             },900);
 
-
-            // Check with API all the selectedFilters, and get those siteID's that match
-            // the given filters... then call filterSitesByClients().. which also takes those siteIDs into account
-            var getFilteredSiteIDs = function(){
-                if( !(s.TFSdata.selectedFilters.length>0) ){
+            self.getSitesCB = function (treeCountMap) {
+                if(treeCountMap && treeCountMap.length>0){
+                    s.TFSdata.filteredSiteIDs = _.pluck(treeCountMap, 'siteID');
+                    s.TFSdata.treeCountMap = treeCountMap;
+                    filterSitesByClients();
+                }else{
                     s.TFSdata.filteredSiteIDs=false;
-                    s.filteredSites=s.initData.sites;
-                    return showMappedSites();
+                    s.filteredSites=[];
+                    clearMarkers();
                 }
+            };
 
+            self.makeFiltersObject = function () {
                 var opts={};
                 _.each(s.TFSdata.selectedFilters, function(filt){
                     var idName=(filt.type=='year'||filt.type=='miscProperty') ? filt.type : filt.type+'ID';
@@ -1040,21 +1091,23 @@ var TreesCtrl = app.controller('TreesCtrl',
                     opts[name]=obj.join(',')
                 });
 
+                return opts;
+            };
+
+            // Check with API all the selectedFilters, and get those siteID's that match
+            // the given filters... then call filterSitesByClients().. which also takes those siteIDs into account
+            var getFilteredSiteIDs = function(){
+                if( !(s.TFSdata.selectedFilters.length>0) ){
+                    s.TFSdata.filteredSiteIDs=false;
+                    s.filteredSites=s.initData.sites;
+                    return showMappedSites();
+                }
+
+                var opts = self.makeFiltersObject();
                 opts.info = 1;
 
-                Api.getSites(opts)
-                    .then(function(treeCountMap){
-                        if(treeCountMap && treeCountMap.length>0){
-                            s.TFSdata.filteredSiteIDs = _.pluck(treeCountMap, 'siteID');
-                            s.TFSdata.treeCountMap = treeCountMap;
-                            filterSitesByClients();
-                        }else{
-                            s.TFSdata.filteredSiteIDs=false;
-                            s.filteredSites=[];
-                            clearMarkers();
-                        }
-                    });
-            }
+                Api.getSites(opts).then(self.getSitesCB);
+            };
 
 
 
@@ -1139,6 +1192,10 @@ var TreesCtrl = app.controller('TreesCtrl',
              pre_init();
              });
              */
+
+            s.$watch('bulkEstimates.overrideTreatmentCodes', function (newVal) {
+                s.updateBulkEstimatePrice({ treatments: newVal });
+            });
 
             s.$on('onInitData', function (e,data) {
 //                console.log('On init data in trees');

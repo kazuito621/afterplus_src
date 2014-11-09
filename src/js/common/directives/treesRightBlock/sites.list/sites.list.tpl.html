@@ -4,8 +4,7 @@
         <tbody>
         <tr bindonce ng-repeat="site in filteredSites" ng-show="site.siteName">
             <td class="td-check">
-                <input type="checkbox" checklist-model="selectedSites" checklist-value="site.siteID"
-                       id="site-result-checkbox-{{site.siteID}}">
+                <input type="checkbox" checklist-model="selectedSites" checklist-value="site.siteID" id="site-result-checkbox-{{site.siteID}}">
             </td>
             <td>
                 <h6>{{site.siteName}}</h6>

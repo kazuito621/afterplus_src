@@ -267,12 +267,18 @@ app.service('ReportService',
 
 	this.saveReport = function() {
 		if(!this.report.siteID) this.report.siteID=this.siteID;
-		this.getReportMd5(true);
+		var reportHash = this.getReportMd5(true);
 
 		var that=this;
         var saveRequest = Api.saveReport(this.report);
 		saveRequest
 			.then(function(data){
+                if (reportHash != that.getReportMd5(false)){
+                    //that means that report was changed until save callback fired, so we dont need to update reportID
+                    console.log("Report data returned: "+that.report.reportID + '. But report was already changed, don"t update reportID.');
+                    return;
+                }
+
 				if(data && data.reportID) that.report.reportID = data.reportID;
 				if(data.token) that.report.token=data.token;
 				console.log("Report data returned: "+that.report.reportID);

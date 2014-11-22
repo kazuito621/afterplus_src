@@ -8,11 +8,11 @@
 			<div class="col-sm-3 col">
 				<div class="filters-container">
 					<left-column-filters-section></left-column-filters-section>
-				</div>	
-			</div>	
-			<div class="col-sm-9 col">				
+				</div>
+			</div>
+			<div class="col-sm-9 col">
 				<div class="row row-nopad">
-					
+
 					<div class="col-sm-8 col">
 						<div class="content-container">
 
@@ -26,11 +26,11 @@
                                     <tree-edit></tree-edit>
 								</div>
 
-                                <map-search-panel></map-search-panel>
+                                <div ng-include="'js/common/directives/maps/map.search.panel/map.search.panel.tpl.html'"/>
 
-								<div ng-cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="data.mode()" class="map"></div>
+                                <div ng-cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="data.mode()" class="map"></div>
 							</section>	<!-- }}} mainContent -->
-						</div>	
+						</div>
 					</div>
 
 					<div class="col-sm-4 col">

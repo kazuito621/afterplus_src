@@ -6,9 +6,10 @@ if(!preg_match('/www.dev.arbor/', __FILE__)) die();
 
 $liveDir="/var/www/prod/arborplus.com/public";
 $req=$_SERVER['REQUEST_URI'];
-if(preg_match('/(jpg|jpeg)/', $req)){
+if(preg_match('/^(.*)(jpg|jpeg)/', $req, $m)){
+	$filename=$m[0];
 	header('Content-type: image/jpeg');
-	readfile("$liveDir/$req");
+	readfile("$liveDir/$filename");
 	die();
 }
 

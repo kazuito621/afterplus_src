@@ -1,12 +1,16 @@
 
 var EditClientCtrl = app.controller('EditClientCtrl',
-    ['$scope', '$http', 'Api', '$route', '$location',
-        function ($scope, $http, Api, $route, $location) {
+    ['$scope', '$http', 'Api', '$location',
+        function ($scope, $http, Api, $location) {
             'use strict';
             var s = window.ets = $scope;
             var myStateID = 'client_edit';    // matches with the templateID
-            s.mode='';
-            s.clientID='';
+            s.mode = '';
+            s.clientID = '';
+
+            var initClientData = function () {
+                s.client = {};
+            };
 
             var init = _.throttle(function () {
                 initClientData();
@@ -15,35 +19,31 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                 s.clientID = s.renderPath[1];
 
                 //if not specified => new client
-                if (!s.clientID || s.clientID=='') {
-                    s.mode='new';
-                }
-                else { //if specified => edit client
+                if (!s.clientID || s.clientID === '') {
+                    s.mode = 'new';
+                } else { //if specified => edit client
                     Api.getClientById(s.clientID)
                         .then(function (data) {
-                            if (data){
+                            if (data) {
                                 s.client = data;
                                 s.mode = 'edit';
-                            }
-                            else{
+                            } else {
                                 $location.path('/client_edit');
                             }
                         });
                 }
             }, 700);
 
-            var initClientData = function(){
-                s.client={};
-            }
-
             s.$on('nav', function (e, data) {
-                if (data.new === myStateID) init();
+                if (data.new === myStateID) {
+                    init();
+                }
             });
 
             //validate client object before save, return true/false
             //todo think about refactoring to built-in angular validation
-            s.validate = function(client){
-                if (typeof(client) === 'undefined') {
+            s.validate = function (client) {
+                if (client === undefined) {
                     s.setAlert('Unable to save', {type: 'd'});
                     return false;
                 }
@@ -52,26 +52,26 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                     s.setAlert('Choose a client type for the new client', {type: 'd'});
                     return false;
                 }
-                if (!client.clientName || s.client.clientName=='') {
+
+                if (!client.clientName || s.client.clientName === '') {
                     s.setAlert('Set name for the new client', {type: 'd'});
                     return false;
                 }
 
                 return true;
-            }
+            };
 
             s.save = function () {
                 var isValid = s.validate(s.client);
 
-                if (!isValid) return;
+                if (!isValid) { return; }
 
-                if (s.client.clientID){
+                if (s.client.clientID) {
                     s.client.post().then(function () {
                         // s.onSave();
                         $location.path('/client_edit/');
                     });
-                }
-                else {
+                } else {
                     Api.saveNewClient(s.client).then(function (data) {
                         //not sure do we need to send events from stand-alone mobile page
                         s.sendEvt('onClientUpdate', s.client);
@@ -86,7 +86,6 @@ var EditClientCtrl = app.controller('EditClientCtrl',
             };
 
             init();
-
         }]);
 
 

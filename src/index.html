@@ -33,7 +33,7 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-	<header ng-include="'js/main/header.tpl.html'"></header>
+	<header ng-include="'js/main/header.tpl.html'" ng-if="!isMobile"></header>
 	<div ng-view></div>
 
 	<!-- ng-include is set to a variable, for lazy loading...
@@ -41,10 +41,13 @@
 	<div ng-cloak ng:show='showtpl_trees' ng-include="tpl_trees"></div>
 	<div ng-cloak ng:show='showtpl_tree_edit' ng-include="tpl_tree_edit"></div>
 	<div ng-cloak ng:show='showtpl_clients' ng-include='tpl_clients'></div>
+    <div ng-cloak ng:show='showtpl_client_edit' ng-include="tpl_client_edit"></div>
 	<div ng-cloak ng:show='showtpl_sites' ng-include='tpl_sites'></div>
+    <div ng-cloak ng:show='showtpl_site_edit' ng-include="tpl_site_edit"></div>
+    <div ng-cloak ng:show='showtpl_site_users_edit' ng-include="tpl_site_users_edit"></div>
 	<div ng-cloak ng:show='showtpl_estimates' ng-include='tpl_estimates'></div>
 	<div ng-cloak ng:show='showtpl_signin' ng-include="tpl_signin"></div>
-	
+
 	<!-- todo: load these on demand  
 	<div ng-cloak ng:show='routeParams.stateID=="trees" || routeParams.stateID=="estimate"' ng-include="'js/trees/trees.tpl.html'"></div>
 	<div ng-cloak ng:show='routeParams.stateID=="tree-edit"' ng-include="'js/trees/edit.tpl.html'"></div>
@@ -158,7 +161,10 @@
         <script src="js/main/main.js"></script>
         <script src="js/signin/signin.js"></script>
         <script src="js/clients/clients.js"></script>
+        <script src="js/clients/edit.js"></script>
         <script src="js/sites/sites.js"></script>
+        <script src="js/sites/edit.js"></script>
+        <script src="js/sites/siteUsers.js"></script>
         <script src="js/trees/trees.js"></script>
         <script src="js/trees/report.js"></script>
         <script src="js/trees/report.service.js"></script>

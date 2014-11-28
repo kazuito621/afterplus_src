@@ -44,6 +44,9 @@ function (Rest, $rootScope, $q, $location ) {
         getSiteList: function () {
             return Rest.all('site').getList({users:1});
         },
+        getSiteById: function (id) {
+            return Rest.one('site', id).get();
+        },
         updateSite: function (siteID) {
             return Rest.one('site', siteID).get();
         },

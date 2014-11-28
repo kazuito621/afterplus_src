@@ -121,7 +121,29 @@ angular.module('arborPlusFilters', [])
             return code;
         }
     })
-    
+
+    .filter('clientTypeName', function() {
+        return function(id, scope) {
+            var t = _.extract(scope.initData, 'clientTypes');
+            if(t){
+                var obj=_.findObj(t, 'clientTypeID', id);
+                if(obj && obj.name) return obj.name;
+            }
+            return 'Not specified';
+        }
+    })
+
+    .filter('clientName', function() {
+        return function(id, scope) {
+            var t = _.extract(scope.initData, 'clients');
+            if(t){
+                var obj=_.findObj(t, 'clientID', id);
+                if(obj && obj.name) return obj.name;
+            }
+            return 'Not specified';
+        }
+    })
+
     .filter('treatmentTypePriceGetter', function(){
 	 	
 	 	return function(itm){

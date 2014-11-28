@@ -63,10 +63,23 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	}
 
 	var getTemplatePath = function(tplID){
+        //todo refactor to switch/case
 		if(tplID=='tree_edit') return 'js/trees/edit.tpl.html';
+		if(tplID=='client_edit') return 'js/clients/edit.mobile.tpl.html';
+		if(tplID=='site_edit') return 'js/sites/edit.mobile.tpl.html';
+        if(tplID=='site_users_edit') return 'js/sites/siteUsers.mobile.tpl.html';
 		// for signin, trees, sites, and clients... used default
 		return 'js/'+tplID+"/"+tplID+".tpl.html";
 	}
+
+    //todo refactor. Which other 'mobile' will we have?
+    var checkIfMobileView = function(routeParams){
+        s.isMobile = false;
+
+        if (routeParams.state1 == 'client_edit' || routeParams.state1 == 'site_edit' || routeParams.state1 == 'site_users_edit'){
+            s.isMobile = true;
+        }
+    }
 
 	s.$on("$routeChangeSuccess", function(evt, current, previous) {
 		var authReq = _.extract(current, '$$route.auth');
@@ -79,6 +92,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		} 
 		dbg("no redir ");
 		s.routeParams=$routeParams;
+        checkIfMobileView(s.routeParams);
         if ($route.current.resolve) {
             render();
             s.currentTab = s.renderPath[0];

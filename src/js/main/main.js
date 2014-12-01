@@ -22,6 +22,8 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
         ,isAtleast: angular.bind(Auth, Auth.isAtleast)
 	}
 
+	$rootScope.entityID=cfg.getEntityID();
+
     s.isActiveTab = function (name) {
         var path = $location.path();
         var current = path.split('/')[1];

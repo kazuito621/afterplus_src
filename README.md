@@ -4,7 +4,7 @@ Angular/JS/Frontend repo for arbor app
 
 
 Installation
--------------
+============
 
 After cloning this repository onto your local machine:
 
@@ -26,7 +26,7 @@ Use this test account:
 
 
 Contributing
--------------
+============
 Please create a new branch for each new feature you are working on.
 Branch names should follow this pattern:
       <yourName>/##_<featureName>
@@ -44,7 +44,21 @@ For example:
  
 
 
+Entities
+========
+  This project is now able to be "white-labeled", so that multiple companies can use it as their tree management service.
+  This is controlled by "entities". Each company is an entity, that is listed in the entity database table.
+  Some things are currently being hardcoded for now.
+
+How to add an entity
+--------------------
+  - Add to entity table
+  - Add to /etc/httpd/conf/httpd.conf file (ServerAlias)
+  - Add to js/config.js
+
+
+
 History
--------
+========
 This project was broken up from a larger repository, and now only contains the javascript/html frontend portion of the project.
 

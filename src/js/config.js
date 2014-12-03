@@ -13,6 +13,14 @@ window.cfg={
             if(h.match(/app.arbor/)) return this.host()+'/api/v2.0';
             else return 'http://dev.arborplus.com/api/v2.0';
         }
+	,getEntityID: function(){
+            var h=this.host()||'';
+			if(h.match(/aplus/)) return 1;
+			if(h.match(/joseph/)) return 2;
+			if(h.match(/woodie/)) return 3;
+			return 0;
+		}
     };
+
 
 

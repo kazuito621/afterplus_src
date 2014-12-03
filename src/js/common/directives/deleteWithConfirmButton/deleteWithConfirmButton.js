@@ -5,7 +5,7 @@ app.directive('deleteWithConfirmButton',
                 restrict: 'EA',
                 scope: {
                     type: '@', //site/client/estimate
-                    itemId: '@',
+                    itemId: '=',
                     activePopover: '=', //we should monitor, that only one popover can be visible
                     onConfirmCallback: '&'
                 },

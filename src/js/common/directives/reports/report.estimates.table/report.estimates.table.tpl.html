@@ -23,14 +23,8 @@
             ng-mouseleave="hover=false;onItemRollOut(TreesCtrl.findMarker(item.treeID))"
             id="rpt_item_{{item.treeID}}">
             <td data-title="listing_image" class="td-image">
-                <img bo-src='item.imgSm + tree_cachebuster' class='item_thumb'
-                     data-placement="right"
-                     data-trigger="hover"
-                     data-content="<img style='width:100%; height:auto;' src='{{item.imgMed}}{{tree_cachebuster}}'>"
-                     data-html="true"
-                     bs-popover
-                     style="border:3px solid #{{colors.bg[item.colorID]}} !important"
-                        />
+
+                <tree-image-popover item="item" cache-buster="tree_cachebuster"/>
             </td>
             <td data-title="listing_ID" class="td-id">{{item.localTreeID}}</td>
             <td data-title="listing_species" class="td-name">

@@ -10,8 +10,9 @@ window.cfg={
         }
     ,apiBaseUrl: function(){
             var h=this.host()||'';
-            if(h.match(/app.arbor/)) return this.host()+'/api/v2.0';
-            else return 'http://dev.arborplus.com/api/v2.0';
+			var api=this.host()+'/api/v2.0';
+			return api;
+            //else return 'http://dev.arborplus.com/api/v2.0';
         }
 	,getEntityID: function(){
             var h=this.host()||'';

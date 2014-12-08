@@ -112,14 +112,23 @@ angular.module('arborPlusFilters', [])
     })
 
 	.filter('treatmentTypeCode2Name', function() {
+		'use strict';
         return function(code, scope) {
 			var t = _.extract(scope.initData, 'filters.treatments');
 			if(t){
-                var obj=_.findObj(t, 'code', code);
-                if(obj && obj.treatmentType) return obj.treatmentType;
+				if (angular.isNumber(code)) {
+					if (t[code] && t[code].treatmentType) {
+						return t[code].treatmentType;
+					}
+				} else {
+					var obj=_.findObj(t, 'code', code);
+					if(obj && obj.treatmentType) {
+						return obj.treatmentType;
+					}
+				}
             }
             return code;
-        }
+        };
     })
 
     .filter('clientTypeName', function() {

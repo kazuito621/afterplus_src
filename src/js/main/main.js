@@ -20,6 +20,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		,getLoginName: angular.bind(Auth, Auth.getLoginName)
 		,signOut: angular.bind(Auth, Auth.signOut)
         ,isAtleast: angular.bind(Auth, Auth.isAtleast)
+		,data: angular.bind(Auth, Auth.data)
 	}
 
     s.isActiveTab = function (name) {

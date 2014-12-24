@@ -23,6 +23,8 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		,data: angular.bind(Auth, Auth.data)
 	}
 
+	$rootScope.entityID=cfg.getEntityID();
+
     s.isActiveTab = function (name) {
         var path = $location.path();
         var current = path.split('/')[1];

@@ -17,9 +17,8 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css" />
     <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css" />
-    <link rel="stylesheet" href="bower_components/angular-motion/dist/angular-motion.min.css" />
-    <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.css">
-    <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.bootstrap.css">
+    <link rel="stylesheet" href="bower_components/angular-motion/dist/angular-motion.css" />
+    <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.min.css" />
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -54,10 +53,11 @@
 	-->
 
 	<!-- FOOTER -->
+	<!--
 	<footer>
 		&copy 2014 Aplus Tree, Inc.
 	</footer>
-
+	-->
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -82,7 +82,7 @@
 
     <!-- build:js js/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
@@ -101,7 +101,7 @@
     <script src="bower_components/ng-ckeditor/ng-ckeditor.js"></script>
     <script src="bower_components/angular-bindonce/bindonce.js"></script>
     <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
-    <script src="bower_components/ng-tags-input/ng-tags-input.js"></script>
+    <script src="bower_components/ng-tags-input/ng-tags-input.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -148,6 +148,7 @@
         <script src="js/common/directives/treesRightBlock/override.treatment/override.treatment.js"></script>
 
         <script src="js/common/directives/reports/recent.estimates/recent.estimates.js"></script>
+        <script src="js/common/directives/reports/treeImagePopover/treeImagePopover.js"></script>
         <script src="js/common/directives/reports/estimate.summary/estimate.summary.js"></script>
         <script src="js/common/directives/reports/email.logs/email.logs.js"></script>
         <script src="js/common/directives/reports/report.estimates.table/report.estimates.table.js"></script>
@@ -165,7 +166,6 @@
         <script src="js/trees/treefilter.service.js"></script>
         <script src="js/trees/action.js"></script>
         <script src="js/common/services/siteModelUpdateService.js"></script>
-        <script src="js/trees/edit.js"></script>
         <script src="js/estimates/estimates.js"></script>
         <!-- endbuild -->
 </body>

@@ -10,9 +10,19 @@ window.cfg={
         }
     ,apiBaseUrl: function(){
             var h=this.host()||'';
-            if(h.match(/app.arbor/)) return this.host()+'/api/v2.0';
-            else return 'http://dev.arborplus.com/api/v2.0';
+			if(h.match(/(localh|127.0.0|0.0.0)/)) h='http://dev.arborplus.com';
+			var api=h+'/api/v2.0';
+			return api;
+            //else return 'http://dev.arborplus.com/api/v2.0';
         }
+	,getEntityID: function(){
+            var h=this.host()||'';
+			if(h.match(/aplus/)) return 1;
+			if(h.match(/joseph/)) return 2;
+			if(h.match(/woodie/)) return 3;
+			return 0;
+		}
     };
+
 
 

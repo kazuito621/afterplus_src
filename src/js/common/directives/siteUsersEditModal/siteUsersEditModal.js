@@ -8,6 +8,10 @@ app.directive('siteUsersEditModal',
         var newContact = { role: 'customer', email:''};
         var newRep = { role: 'sales', email:''};
 
+        if (angular.isDefined(attrs.site)) {
+            scope.site = scope.$eval(attrs.site);            
+        }
+
         window.sues = scope;
 
         var separateUsers = function (users) {
@@ -186,9 +190,9 @@ app.directive('siteUsersEditModal',
         restrict: 'EA',
         replace: false,
         transclude: false,
-        scope: {
-            site: '='
-        },
+        //scope: {
+        //    site: '='
+        //},
         compile: function () {
             return linker;
         }

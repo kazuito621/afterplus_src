@@ -4,6 +4,19 @@ app.directive('siteEditModal',
     'use strict';
 
     var linker = function (scope, el, attrs) {
+
+        if (angular.isDefined(attrs.siteId)) {
+            scope.siteId = scope.$eval(attrs.siteId);
+        }
+
+        if (angular.isDefined(attrs.clients)) {
+            scope.clients = scope.$eval(attrs.clients);            
+        }
+
+        if (angular.isDefined(attrs.mode)) {
+            scope.mode = attrs.mode;
+        }
+
         var modal;
         var newSite = {clientID: ''};
 
@@ -116,11 +129,11 @@ app.directive('siteEditModal',
         restrict: 'EA',
         replace: false,
         transclude: false,
-        scope: {
-            siteId: '=',
-            clients: '=',
-            mode: '@'
-        },
+        //scope: {
+        //    siteId: '=',
+        //    clients: '=',
+        //    mode: '@'
+        //},        
         compile: function () {
             return linker;
         }

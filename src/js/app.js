@@ -22,12 +22,36 @@ app.config(['$routeProvider', '$locationProvider',
 								}]
                     }
                 })
-            .when("/:state1/:state2?/:state3?", {
+            /*.when("/:state1/:state2?/:state3?", {
                     auth:true
                     ,resolve: {
                       deps:['Api', function(Api){  return Api.getPromise(); }]
                     }
-                })
+                })*/
+            .when("/trees", {
+                templateUrl: "js/trees/trees.tpl.html",
+                auth:true
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
+            .when("/estimates", {
+                templateUrl: "js/estimates/estimates.tpl.html",
+                auth:true
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
+            .when("/sites", {
+                templateUrl: "js/sites/sites.tpl.html",
+                auth:true
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
+            .when("/clients", {
+                templateUrl: "js/clients/clients.tpl.html",
+                auth:true
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
             .otherwise({redirectTo: "/signin"});
 	}])
 	.run(['Restangular', '$rootScope',

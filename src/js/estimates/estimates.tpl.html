@@ -98,15 +98,16 @@
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">{{getTstamp(e) | formatDate}}</td>
                     <td>
-                        <a ng-if="auth.isAtleast('inventory')"
-                           delete-with-confirm-button
-                           type="estimate"
-                           item-id="{{e.reportID}}"
-                           active-popover="activePopover"
-                           on-confirm-callback="deleteCurrentItem()"
-                           class="fa fa-times _red _size7 hand hoverDisplay"
-                           bs-tooltip title="Delete"
-                           style="text-decoration: none;"></a>
+                        <span bs-tooltip title="Delete">
+                            <a ng-if="auth.isAtleast('inventory')"
+                               delete-with-confirm-button
+                               type="estimate"
+                               item-id="{{e.reportID}}"
+                               active-popover="activePopover"
+                               on-confirm-callback="deleteCurrentItem()"
+                               class="fa fa-times _red _size7 hand hoverDisplay"
+                               style="text-decoration: none;"></a>
+                        </span>
                     </td>
                 </tr>
             </tbody>

@@ -3,28 +3,28 @@ app.directive('deleteWithConfirmButton',
         function ($popover) {
             return {
                 restrict: 'EA',
-                //scope: {
-                //    type: '@', //site/client/estimate
-                //    itemId: '=',
-                //    activePopover: '=', //we should monitor, that only one popover can be visible
-                //    onConfirmCallback: '&'
-                //},
+                scope: {
+                    type: '@', //site/client/estimate
+                    itemId: '=',
+                    activePopover: '=', //we should monitor, that only one popover can be visible
+                    onConfirmCallback: '&'
+                },
                 link: function (scope, el, attrs) {
 
-                    if (angular.isDefined(attrs.itemId)) {
-                        scope.itemId = scope.$eval(attrs.itemId);
-                    }
-                    if (angular.isDefined(attrs.activePopover)) {
-                        scope.activePopover = scope.$eval(attrs.activePopover);
-                    }
-
-                    if (angular.isDefined(attrs.onConfirmCallback)) {
-                        scope.onConfirmCallback = attrs.onConfirmCallback;
-                    }
-
-                    if (angular.isDefined(attrs.type)) {
-                        scope.type = attrs.type;
-                    }
+                    //if (angular.isDefined(attrs.itemId)) {
+                    //    scope.itemId = scope.$eval(attrs.itemId);
+                    //}
+                    //if (angular.isDefined(attrs.activePopover)) {
+                    //    scope.activePopover = scope.$eval(attrs.activePopover);
+                    //}
+//
+                    //if (angular.isDefined(attrs.onConfirmCallback)) {
+                    //    scope.onConfirmCallback = attrs.onConfirmCallback;
+                    //}
+//
+                    //if (angular.isDefined(attrs.type)) {
+                    //    scope.type = attrs.type;
+                    //}
                                         
                     $(el).click(function () {
                         //if another is visible, then hide it

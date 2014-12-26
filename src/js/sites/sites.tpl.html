@@ -74,15 +74,16 @@
 						<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
                            class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;
 					</span>
-                    <a ng-if="auth.isAtleast('inventory')"
-                       delete-with-confirm-button
-                       type="site"
-                       item-id="s.siteID"
-                       active-popover="activePopover"
-                       on-confirm-callback="deleteCurrentItem()"
-                       class="fa fa-times _red _size6 hoverDisplay"
-                       bs-tooltip title="Delete" style="text-decoration: none; cursor:pointer; cursor: hand;">{{test.name}}</a>
-
+                    <span bs-tooltip title="Delete">
+                        <a ng-if="auth.isAtleast('inventory')"
+                           delete-with-confirm-button
+                           type="site"
+                           item-id="s.siteID"
+                           active-popover="activePopover"
+                           on-confirm-callback="deleteCurrentItem()"
+                           class="fa fa-times _red _size6 hoverDisplay"
+                           style="text-decoration: none; cursor:pointer; cursor: hand;">{{test.name}}</a>
+                    </span>
                 </td>
             </tr>
             </tbody>

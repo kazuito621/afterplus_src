@@ -70,9 +70,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                 // ie. assignment[0]=133 (the first color index for bg[0]/fg[0] is assigned to speciesID 133)
                 ,nextColorID:0
                 // tree icon colors
-                //    green     drk blue   red   orange   dkgry     purpl     yellow,  futia   brown   dk grn  dkred    lt.futia  lt.blue  dk.teal lt.teal  lt.orng med.grey   medred  med.grn  med.purp
-                ,bg:['78ee31','2044df','ce2712','db7e00','646464','6d2dd5','f5f02c','ed79fb','a8621c','487123','751307','dc85ee','9baeec','298d8c','8bf8f7','fdc476','a5a5a5','e27966','6aab09','ad8cd6']
-                ,fg:['000000','ffffff','ffffff','ffffff','ffffff','ffffff','000000','000000','ffffff','ffffff','ffffff','000000','ffffff','ffffff','000000','000000','000000','000000','000000','ffffff']
+				//Lt Blu1   Dk Blu    Green     Dk Grn    Yellow    Lt Brn    Dk Grey   Purpl     Pink      Med Blue  Lt Brn    Dk Pink   Olive     Lt Green  maroon    Lt Olive   TrueBlue  Brn2     Lt Pink2   Blk
+				,bg:['37e1e1', '1d5188', '2ecc40', '45771e', 'edcf13', 'c45e06', '646464', '6d2dd5', 'ee5ca3', '0074d9', 'f3a33c', 'ab2d6a', '3d9970', 'a5a5a5', '751307', 'a5ff5e', '040edb', '674511', 'f296ca', '2c2c2c']
+				,fg:['000000', 'ffffff', '000000', 'ffffff', '000000', 'ffffff', 'ffffff', 'ffffff', '000000', 'ffffff', '000000', 'ffffff', 'ffffff', '000000', 'ffffff', '000000', 'ffffff', 'ffffff', '000000', 'ffffff']
             };
             s.TFSdata=TFS.data;
 

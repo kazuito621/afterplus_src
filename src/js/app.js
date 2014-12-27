@@ -12,7 +12,8 @@ app.config(['$routeProvider', '$locationProvider',
 			// because were using that in the onRouteChange render action to tell if the resolve has completed
             .when('/signin',{auth:false,resolve:{}})
             .when('/estimate/:rptID', {
-                    auth:false
+                	templateUrl: "js/trees/trees.tpl.html"
+                    ,auth:false
                     ,resolve: {
                       	deps:['Api', function(Api){  return Api.getPromise(); }]
 						,signin:['Auth', '$route', function(Auth, $route){
@@ -22,14 +23,14 @@ app.config(['$routeProvider', '$locationProvider',
 								}]
                     }
                 })
-            /*.when("/:state1/:state2?/:state3?", {
-                    auth:true
-                    ,resolve: {
-                      deps:['Api', function(Api){  return Api.getPromise(); }]
-                    }
-                })*/
             .when("/trees", {
                 templateUrl: "js/trees/trees.tpl.html",
+                auth:true
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
+            .when("/tree_edit/:treeID", {
+                templateUrl: "js/trees/edit.tpl.html",
                 auth:true
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]

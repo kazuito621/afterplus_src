@@ -80,6 +80,12 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 			return;
 		} 
 		dbg("no redir ");
+
+
+		s.renderPath=$location.path().substr(1).split("/");
+		//s.renderTplID=s.renderPath[0];
+		//if(s.renderTplID=='estimate') s.renderTplID='trees';		
+
 		s.routeParams=$routeParams;
         if ($route.current.resolve) {
             render();

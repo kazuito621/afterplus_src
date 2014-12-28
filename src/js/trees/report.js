@@ -243,7 +243,7 @@ var ReportCtrl = app.controller(
 
 			var updateEmailLogs = function(){
 				Api.getEmailLogs(s.emailRpt.reportID).then(function(d){
-					if(d && d[0].senderID) s.report.emailLogs=d;
+					if(d && d[0] && d[0].senderID) s.report.emailLogs=d;
 				});
 			}
 

@@ -1,7 +1,7 @@
 
 var EditClientCtrl = app.controller('EditClientCtrl',
-    ['$scope', '$http', 'Api', '$location', 'Auth', '$q',
-        function ($scope, $http, Api, $location, Auth, $q) {
+    ['$scope', '$http', 'Api', '$location', 'Auth', '$q', '$rootScope',
+        function ($scope, $http, Api, $location, Auth, $q, $rootScope) {
             'use strict';
             var s = window.ets = $scope;
             var myStateID = 'client_edit';    // matches with the templateID
@@ -56,7 +56,7 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                     s.mode = 'new';
                 } else { //if specified => edit client
                     if (s.userToken && s.userToken.length) { // need to log in first
-                        s.isMobile = true;
+                        $rootScope.isMobile = true;
                         Api.user.get({ token: s.userToken }).then(self.getUserCB);
                     } else {
                         self.getClient();

@@ -1,7 +1,7 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth',
 function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
 	var s = window.mcs = $scope;
     var staffOnly = ['sites', 'clients'];
@@ -76,12 +76,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
     //todo refactor. Which other 'mobile' will we have?
     var checkIfMobileView = function(routeParams){
-        s.isMobile = false;
+        $rootScope.isMobile = false;
 
-        if (routeParams.state1 == 'client_edit' || routeParams.state1 == 'site_edit' || routeParams.state1 == 'site_users_edit'){
-            s.isMobile = true;
+		var hasToken = $location.search('token') !== undefined;
+		var hasClientEdit = ($location.path().search('/client_edit') > -1);
+
+        if (routeParams.state1 === 'client_edit' || routeParams.state1 === 'site_edit' || routeParams.state1 === 'site_users_edit' || (hasToken && hasClientEdit)){
+            $rootScope.isMobile = true;
         }
-    }
+    };
 
 	s.$on("$routeChangeSuccess", function(evt, current, previous) {
 		var authReq = _.extract(current, '$$route.auth');

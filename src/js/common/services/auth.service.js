@@ -83,6 +83,10 @@ app.service('Auth',
                 return Api.signIn(email, pswd, this, onDataBackFromSignIn);
             };
 
+            this.signInUserToken = function (token) {
+                return Api.user.get({ token: token });
+            };
+
             this.signOut = function () {
                 Api.signOut(this);
             };

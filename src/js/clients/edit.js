@@ -5,6 +5,7 @@ var EditClientCtrl = app.controller('EditClientCtrl',
             'use strict';
             var s = window.ets = $scope;
             var myStateID = 'client_edit';    // matches with the templateID
+            var self = this || {};
             s.mode = '';
             s.clientID = '';
 
@@ -12,25 +13,49 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                 s.client = {};
             };
 
+            self.removeUserToken = function () {
+                console.log('Removing user token');
+                $location.search('token', '');
+            };
+
+            self.getUserCB = function (data) {
+                console.log('Get user CB', data);
+                self.getClient().then(self.removeUserToken());
+            };
+
+            self.getClientByIdCB = function (data) {
+                console.log('Get client by id callback', data);
+                if (data) {
+                    s.client = data;
+                    s.mode = 'edit';
+                } else {
+                    $location.path('/client_edit');
+                }
+            };
+
+            self.getClient = function () {
+                var req = Api.getClientById(s.clientID);
+                req.then(self.getClientByIdCB);
+                return req;
+            };
+
             var init = _.throttle(function () {
                 initClientData();
 
                 //get client id from url
                 s.clientID = s.renderPath[1];
+                s.userToken = $location.search().token;
 
                 //if not specified => new client
                 if (!s.clientID || s.clientID === '') {
                     s.mode = 'new';
                 } else { //if specified => edit client
-                    Api.getClientById(s.clientID)
-                        .then(function (data) {
-                            if (data) {
-                                s.client = data;
-                                s.mode = 'edit';
-                            } else {
-                                $location.path('/client_edit');
-                            }
-                        });
+                    if (s.userToken && s.userToken.length) { // need to log in first
+                        s.isMobile = true;
+                        Api.user.get({ token: s.userToken }).then(self.getUserCB);
+                    } else {
+                        self.getClient();
+                    }
                 }
             }, 700);
 

@@ -22,6 +22,12 @@ app.config(['$routeProvider', '$locationProvider',
 								}]
                     }
                 })
+			.when("/client_edit/:clientID", {
+				auth: false,
+				resolve: {
+					deps:['Api', function(Api){  return Api.getPromise(); }]
+				}
+			})
             .when("/:state1/:state2?/:state3?", {
                     auth:true
                     ,resolve: {

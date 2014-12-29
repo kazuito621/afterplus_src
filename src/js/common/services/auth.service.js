@@ -53,7 +53,7 @@ app.service('Auth',
             };
 
             // After a login call, handle that and resolve the promise
-            var onDataBackFromSignIn = function (deferred, d) {
+            this.onDataBackFromSignIn = function (deferred, d) {
                 if (d && d.userID > 0) {
                     this.data(d);
                     if (d.requestedReportID) {
@@ -75,12 +75,12 @@ app.service('Auth',
                     def.resolve(this.data());
                     return def.promise;
                 }
-                return Api.signInCustToken(custToken, this, onDataBackFromSignIn);
+                return Api.signInCustToken(custToken, this, this.onDataBackFromSignIn);
             };
 
             // Returns a promise with either a resolve or a reject
             this.signIn = function (email, pswd) {
-                return Api.signIn(email, pswd, this, onDataBackFromSignIn);
+                return Api.signIn(email, pswd, this, this.onDataBackFromSignIn);
             };
 
             this.signInUserToken = function (token) {

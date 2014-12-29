@@ -1,7 +1,7 @@
 
 var EditClientCtrl = app.controller('EditClientCtrl',
-    ['$scope', '$http', 'Api', '$location',
-        function ($scope, $http, Api, $location) {
+    ['$scope', '$http', 'Api', '$location', 'Auth', '$q',
+        function ($scope, $http, Api, $location, Auth, $q) {
             'use strict';
             var s = window.ets = $scope;
             var myStateID = 'client_edit';    // matches with the templateID
@@ -19,8 +19,13 @@ var EditClientCtrl = app.controller('EditClientCtrl',
             };
 
             self.getUserCB = function (data) {
+                var defer = $q.defer();
                 console.log('Get user CB', data);
-                self.getClient().then(self.removeUserToken());
+                data.token = s.userToken;
+                Auth.onDataBackFromSignIn(defer, data);
+                defer.promise.then(function () {
+                    self.getClient().then(self.removeUserToken);
+                });
             };
 
             self.getClientByIdCB = function (data) {

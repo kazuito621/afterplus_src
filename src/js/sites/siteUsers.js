@@ -46,10 +46,6 @@ var EditClientCtrl = app.controller('SiteUsersCtrl',
                 s.site={};
             }
 
-            s.$on('nav', function (e, data) {
-                if (data.new === myStateID) init();
-            });
-
             init();
 
             //moved from siteUsersEditModal directive
@@ -142,8 +138,8 @@ var EditClientCtrl = app.controller('SiteUsersCtrl',
                 }
             };
 
-            s.finishUserEdit = function(){
-                $location.path('/site_edit');
+            s.finishUserEdit = function(type){
+                $location.path('/'+type);
             }
 
         }]);

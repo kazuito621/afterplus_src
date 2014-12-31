@@ -8,10 +8,13 @@
             <div class="col-sm-6 col">
                 <div class="label-prop">Client type:</div>
                 <div class="edit-prop">
-                        <a href e-ng-options="c.clientTypeID as c.name for c in initData.clientTypes"
-                           editable-select="client.clientTypeID">
-                            {{ client.clientTypeID | clientTypeName:this  || "(not specified)"}}
-                        </a>
+						<span ng-if="!initData || !initData.clientTypes">Loading...</span>
+						<select class='styled-select' ng-model="client.clientTypeID" ng-if="initData.clientTypes">
+							<option value="">(Select One)</option>
+							<option ng-repeat="c in initData.clientTypes" value="{{c.clientTypeID}}">
+								{{c.clientTypeID | clientTypeName:this}}
+							</option>
+						</select>
                 </div>
                 <br/>
                 <div class="label-prop">Name:</div>
@@ -45,7 +48,8 @@
 
                 <br/>
                 <div class='leftSpace10'>
-                    <button class='navButton' ng-click="save();">Save</button>
+                    <button class='btn btn-primary' ng-click="save();">Save</button>
+                    <button class='btn btn-primary' ng-click="save(true);">Save and Add a Property</button>
                 </div>
             </div>
 

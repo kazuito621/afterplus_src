@@ -11,12 +11,15 @@ var EditClientCtrl = app.controller('EditSiteCtrl',
             var init = _.throttle(function () {
                 initSiteData();
 
+
                 //get client id from url
                 s.siteID = s.renderPath[1];
 
                 //if not specified => new site
                 if (!s.siteID || s.siteID=='') {
                     s.mode='new';
+					var clientID=$location.search().clientID;
+					if(clientID) s.site.clientID=clientID;
                 }
                 else { //if specified => edit site
                     Api.getSiteById(s.siteID)
@@ -113,13 +116,8 @@ var EditClientCtrl = app.controller('EditSiteCtrl',
             }
 
             var initSiteData = function(){
-                //s.siteID='';
                 s.site={};
             }
-
-            s.$on('nav', function (e, data) {
-                if (data.new === myStateID) init();
-            });
 
             init();
 

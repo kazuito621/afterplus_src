@@ -8,46 +8,55 @@ var app = angular.module('arborPlusApp',
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
         $routeProvider  
-			// each route defenition must include a resolve object, even if blank,
-			// because were using that in the onRouteChange render action to tell if the resolve has completed
-            .when('/signin',{auth:false,resolve:{}})
+
+			// routes for mobile app
+			.when("/client_edit/:clientID?", {
+				templateUrl: "js/clients/edit.mobile.tpl.html",
+				auth: false, isMobile:true, resolve: {
+					signin:['Auth', '$location', function(Auth, $location){
+							return Auth.signInUserToken($location.search().token);
+						}]
+					,deps:['Api', function(Api){ return Api.getPromise(); }]
+				}
+        	})
+			.when("/site_edit/:siteID?", {
+				templateUrl: "js/sites/edit.mobile.tpl.html",
+				auth: false, isMobile:true, resolve: {
+					signin:['Auth', '$location', function(Auth, $location){
+							return Auth.signInUserToken($location.search().token);
+						}]
+					,deps:['Api', function(Api){ return Api.getPromise(); }]
+				}
+        	})
+			.when("/site_users_edit/:siteID?", {
+				templateUrl: "js/sites/siteUsers.mobile.tpl.html",
+				auth: false, isMobile:true, resolve: {
+					signin:['Auth', '$location', function(Auth, $location){
+							return Auth.signInUserToken($location.search().token);
+						}]
+					,deps:['Api', function(Api){ return Api.getPromise(); }]
+				}
+        	})
+
+
+
+			// web app routes
+
+            .when("/signin", {
+                templateUrl: "js/signin/signin.tpl.html",
+                auth:false
+				})
             .when('/estimate/:rptID', {
                 	templateUrl: "js/trees/trees.tpl.html"
                     ,auth:false
                     ,resolve: {
                       	deps:['Api', function(Api){  return Api.getPromise(); }]
 						,signin:['Auth', '$route', function(Auth, $route){
-									dbg($route.current.params.rptID)
 									var rptID=$route.current.params.rptID;
         							return Auth.signInCustToken(rptID);
 								}]
                     }
                 })
-            .when("/signin", {
-                templateUrl: "js/signin/signin.tpl.html",
-                auth:false
-			})
-			.when("/client_edit/:clientID?", {
-				templateUrl: "js/clients/edit.mobile.tpl.html",
-				auth: false,
-				resolve: {
-					deps:['Api', function(Api){ return Api.getPromise(); }]
-				}
-        	})
-			.when("/site_edit/:siteID?", {
-				templateUrl: "js/sites/edit.mobile.tpl.html",
-				auth: false,
-				resolve: {
-					deps:['Api', function(Api){ return Api.getPromise(); }]
-				}
-        	})
-			.when("/site_users_edit/:siteID?", {
-				templateUrl: "js/sites/siteUsers.mobile.tpl.html",
-				auth: false,
-				resolve: {
-					deps:['Api', function(Api){ return Api.getPromise(); }]
-				}
-        	})
             .when("/trees", {
                 templateUrl: "js/trees/trees.tpl.html",
                 auth:true

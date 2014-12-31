@@ -91,26 +91,26 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                 return true;
             };
 
-            s.save = function () {
+            s.save = function (addSiteNext) {
                 var isValid = s.validate(s.client);
 
                 if (!isValid) { return; }
 
                 if (s.client.clientID) {
                     s.client.post().then(function () {
-                        // s.onSave();
-                        $location.path('/client_edit/');
+						var path=(addSiteNext) ? '/site_edit/?clientID='+s.client.clientID : '/client_edit/';
+                        $location.path(path);
                     });
                 } else {
                     Api.saveNewClient(s.client).then(function (data) {
-                        //not sure do we need to send events from stand-alone mobile page
-                        s.sendEvt('onClientUpdate', s.client);
+						if(!data || !data.clientID) return s.setAlert('Error Saving Client!', {type:'error'}); 
+						s.setAlert('Client saved', {type: 'ok'});
 
-                        //refresh page
+						if(addSiteNext)
+                        	return $location.path('/site_edit').search('clientID', data.clientID);
+							
+                        //else refresh page
                         initClientData();
-
-                        //show feedback for user
-                        return s.setAlert('Client was saved', {type: 'ok'});
                     });
                 }
             };

@@ -84,7 +84,7 @@ app.service('Auth',
             };
 
             this.signInUserToken = function (token) {
-                return Api.user.get({ token: token });
+                return Api.user.get({ token: token }, this, this.onDataBackFromSignIn);
             };
 
             this.signOut = function () {

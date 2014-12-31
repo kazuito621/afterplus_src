@@ -26,7 +26,8 @@ function (Rest, $rootScope, $q, $location, storage) {
             sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
             Rest.one('init').get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-                data.filters.hazards = {'building':{selected:false},'caDamage':{selected:false},'caDamagePotential':{selected:false},'powerline':{selected:false}};
+				if(data.filters)
+                	data.filters.hazards = {'building':{selected:false},'caDamage':{selected:false},'caDamagePotential':{selected:false},'powerline':{selected:false}};
             dbg(data, 'got init back');
                 initData = data;
                 $rootScope.initData = data;
@@ -201,8 +202,11 @@ function (Rest, $rootScope, $q, $location, storage) {
         },
         // Users
         user: {
-            get: function (params) {
-                return Rest.one('user').get(params);
+			// get a user by a token
+            get: function (params, context, callback) {
+            	var deferred = $q.defer();
+                Rest.one('user').get(params).then(angular.bind(context, callback, deferred));
+				return deferred.promise;
             },
             remove: function (id) {
                 return Rest.one('user', id).remove();

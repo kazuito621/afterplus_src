@@ -2,7 +2,7 @@
     <div class="row">
         <div class="content">
             <h2>
-                <span>Edit users for {{site.siteName}}</span>
+                <span>Add/Edit users for {{site.siteName}}</span>
             </h2>
             <div class="col-sm-6 col">
                 <div class="row" style="margin-top: 12px;">
@@ -26,7 +26,7 @@
                         <input type="text" placeholder="First name" required style="width:90px" ng-model="newContact.fName">
                         <input type="text" placeholder="Last name" required style="width:90px;" ng-model="newContact.lName">
                         <input type="text" placeholder="Phone" style="width:105px;" ng-model="newContact.phone">
-                        <button ng-click="addNewSiteContact($event);" type='button' class='btn btn-primary'><i class='fa fa-plus white _size4'></i></button>
+                        <button ng-click="addNewSiteContact($event);" type='button' class='btn btn-primary'>Save</button>
                     </form>
                 </div>
 
@@ -59,15 +59,14 @@
                             <option value="sales">Sales</option>
                             <option value="inventory">Inventory</option>
                         </select> &nbsp;
-                        <button ng-click="addNewSiteRep($event);" type='button' class='btn btn-primary'><i class='fa fa-plus white _size4'></i></button>
+                        <button ng-click="addNewSiteRep($event);" type='button' class='btn btn-primary'>Save</button>
                     </form>
                 </div>
 
                 <br/>
                 <div class='leftSpace10'>
-                    <button type="button" class='btn btn-primary' ng-click="finishUserEdit()">
-                        DONE
-                    </button>
+                    <button type="button" class='btn btn-info' ng-click="finishUserEdit('site_edit')">Add Another Property</button>
+                    <button type="button" class='btn btn-info' ng-click="finishUserEdit('client_edit')">Add Another Client</button>
                 </div>
             </div>
 

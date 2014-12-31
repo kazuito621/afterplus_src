@@ -77,9 +77,9 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
     //todo refactor. Which other 'mobile' will we have?
     var checkIfMobileView = function(){
-		var hasToken = $location.search().token !== undefined;
-		var isMobilePath=($location.path().search('/client_edit')>-1 || $location.path().search('/site_edit')>-1 || $location.path().search('/site_users_edit')>-1);
-		$rootScope.isMobile=(isMobilePath || hasToken);
+		$rootScope.isMobile = false;
+		if($route && $route.current && $route.current.$$route)
+			$rootScope.isMobile = $route.current.$$route.isMobile
     };
     checkIfMobileView();
 

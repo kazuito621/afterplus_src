@@ -23,6 +23,10 @@ app.config(['$routeProvider', '$locationProvider',
 								}]
                     }
                 })
+            .when("/signin", {
+                templateUrl: "js/signin/signin.tpl.html",
+                auth:false
+                })
             .when("/trees", {
                 templateUrl: "js/trees/trees.tpl.html",
                 auth:true

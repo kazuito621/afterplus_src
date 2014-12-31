@@ -26,7 +26,28 @@ app.config(['$routeProvider', '$locationProvider',
             .when("/signin", {
                 templateUrl: "js/signin/signin.tpl.html",
                 auth:false
-                })
+			})
+			.when("/client_edit/:clientID?", {
+				templateUrl: "js/clients/edit.mobile.tpl.html",
+				auth: false,
+				resolve: {
+					deps:['Api', function(Api){ return Api.getPromise(); }]
+				}
+        	})
+			.when("/site_edit/:siteID?", {
+				templateUrl: "js/sites/edit.mobile.tpl.html",
+				auth: false,
+				resolve: {
+					deps:['Api', function(Api){ return Api.getPromise(); }]
+				}
+        	})
+			.when("/site_users_edit/:siteID?", {
+				templateUrl: "js/sites/siteUsers.mobile.tpl.html",
+				auth: false,
+				resolve: {
+					deps:['Api', function(Api){ return Api.getPromise(); }]
+				}
+        	})
             .when("/trees", {
                 templateUrl: "js/trees/trees.tpl.html",
                 auth:true

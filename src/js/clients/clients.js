@@ -107,6 +107,13 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 
             init();
 
+            s.$on('onClientUpdate', function (e, data) {
+                console.info('client added/updated');
+                Api.refreshInitData().then(function (data) {
+                    s.displayedClients = s.initData.clients.slice(0, s.displayedClients.length);
+                });
+            });
+
             s.$on('nav', function (e, data) {
 //                if ($route.current.params.stateID === myStateID) {
                 if (data.new === myStateID) {

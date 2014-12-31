@@ -82,7 +82,7 @@ app.directive('siteUsersMultiEditModal',
                     scope.newRep = angular.copy(user);
                 };
 
-                scope.addNewSite = function (event) {
+                scope.saveNewSite = function (event) {
                     event.preventDefault();
                     event.stopPropagation();
                     scope.showAddNewSite = false;

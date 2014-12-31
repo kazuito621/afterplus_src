@@ -1,7 +1,7 @@
 'use strict';
 
 var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth', 
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth',
 function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
 	var s = window.mcs = $scope;
     var staffOnly = ['sites', 'clients'];
@@ -65,11 +65,23 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		lastRenderedTplID=s.renderTplID;
 	}
 
+    //not being used anymore, since switching to routeProvider
 	var getTemplatePath = function(tplID){
 		if(tplID=='tree_edit') return 'js/trees/edit.tpl.html';
+		if(tplID=='client_edit') return 'js/clients/edit.mobile.tpl.html';
+		if(tplID=='site_edit') return 'js/sites/edit.mobile.tpl.html';
+        if(tplID=='site_users_edit') return 'js/sites/siteUsers.mobile.tpl.html';
 		// for signin, trees, sites, and clients... used default
 		return 'js/'+tplID+"/"+tplID+".tpl.html";
 	}
+
+    //todo refactor. Which other 'mobile' will we have?
+    var checkIfMobileView = function(){
+		var hasToken = $location.search().token !== undefined;
+		var isMobilePath=($location.path().search('/client_edit')>-1 || $location.path().search('/site_edit')>-1 || $location.path().search('/site_users_edit')>-1);
+		$rootScope.isMobile=(isMobilePath || hasToken);
+    };
+    checkIfMobileView();
 
 	s.$on("$routeChangeSuccess", function(evt, current, previous) {
 		var authReq = _.extract(current, '$$route.auth');
@@ -87,7 +99,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 		//s.renderTplID=s.renderPath[0];
 		//if(s.renderTplID=='estimate') s.renderTplID='trees';		
 
-		s.routeParams=$routeParams;
+        checkIfMobileView();
         if ($route.current.resolve) {
             render();
             s.currentTab = s.renderPath[0];

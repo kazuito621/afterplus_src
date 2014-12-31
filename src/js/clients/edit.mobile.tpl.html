@@ -1,0 +1,56 @@
+<div ng-controller='EditClientCtrl' class="mobile-view-container treeEditBox mobile-view" >
+    <div class="row">
+        <div class="content">
+            <h2>
+                <span ng-if="mode=='new'">New Client</span>
+                <span ng-if="mode=='edit'">{{client.clientName}}</span>
+            </h2>
+            <div class="col-sm-6 col">
+                <div class="label-prop">Client type:</div>
+                <div class="edit-prop">
+                        <a href e-ng-options="c.clientTypeID as c.name for c in initData.clientTypes"
+                           editable-select="client.clientTypeID">
+                            {{ client.clientTypeID | clientTypeName:this  || "(not specified)"}}
+                        </a>
+                </div>
+                <br/>
+                <div class="label-prop">Name:</div>
+                <div class="edit-prop">
+                        <input type="text" ng-model="client.clientName" required >
+
+                </div>
+                <br/>
+                <div class="label-prop">Address:</div>
+                <div class="edit-prop">
+                        <input type="text" ng-model="client.street" >
+
+                </div>
+                <br/>
+                <div class="label-prop">City:</div>
+                <div class="edit-prop">
+                        <input type="text" ng-model="client.city" >
+
+                </div>
+                <br/>
+                <div class="label-prop">State:</div>
+                <div class="edit-prop">
+                        <input type="text" ng-model="client.state" >
+
+                </div>
+                <br/>
+                <div class="label-prop">Zip:</div>
+                <div class="edit-prop">
+                        <input type="text" ng-model="client.zip" >
+                </div>
+
+                <br/>
+                <div class='leftSpace10'>
+                    <button class='navButton' ng-click="save();">Save</button>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>

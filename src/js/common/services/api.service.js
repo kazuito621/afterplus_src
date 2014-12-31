@@ -4,31 +4,38 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 
-function (Rest, $rootScope, $q, $location ) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage',
+function (Rest, $rootScope, $q, $location, storage) {
     'use strict';
     window.Api = this;
 	var initData={};
     var sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); };
 
-	var init=function(forceRefresh){  
-		var deferred=$q.defer();
-		if(!_.isEmpty(initData) && forceRefresh!=true) deferred.resolve();
-		else{
-			sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
-			Rest.one('init').get()
-				.then(function (data) {
-                    //extend filters, maybe better move this logic to server side
-                    data.filters.hazards = {'building':{selected:false},'caDamage':{selected:false},'caDamagePotential':{selected:false},'powerline':{selected:false}}
-				dbg(data,'got init back')
-					initData=data;
-					$rootScope.initData=data;
-					sendEvt('onInitData', data);
-					deferred.resolve(); 
-				});
-		}
-		return deferred.promise;	
-	}
+    var isSignedIn = function () {
+        var authData = storage.get('authData');
+        return (authData.userID > 0);
+    };
+
+    var init = function (forceRefresh) {
+        var deferred = $q.defer();
+        if (!isSignedIn()) {
+            deferred.resolve();
+        } else if (!_.isEmpty(initData) && forceRefresh !== true) {
+            deferred.resolve();
+        } else {
+            sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
+            Rest.one('init').get().then(function (data) {
+                //extend filters, maybe better move this logic to server side
+                data.filters.hazards = {'building':{selected:false},'caDamage':{selected:false},'caDamagePotential':{selected:false},'powerline':{selected:false}};
+            dbg(data, 'got init back');
+                initData = data;
+                $rootScope.initData = data;
+                sendEvt('onInitData', data);
+                deferred.resolve();
+            });
+        }
+        return deferred.promise;
+    };
 
 	// after a user signs in, refresh init data
 	$rootScope.$on('onSignin', function(){ init(true); });
@@ -43,6 +50,9 @@ function (Rest, $rootScope, $q, $location ) {
         },
         getSiteList: function () {
             return Rest.all('site').getList({users:1});
+        },
+        getSiteById: function (id) {
+            return Rest.one('site', id).get();
         },
         updateSite: function (siteID) {
             return Rest.one('site', siteID).get();

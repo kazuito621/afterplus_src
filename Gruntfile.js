@@ -419,10 +419,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
       'clean:dist',
-      'bower-install',
+      'bower-install',      
       'useminPrepare',
       //'concurrent:dist',
       'autoprefixer',
+      'html2js',
       'concat',
       'ngmin',
       'copy:dist',

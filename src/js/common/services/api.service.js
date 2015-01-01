@@ -21,7 +21,7 @@ function (Rest, $rootScope, $q, $location, storage) {
         if (!isSignedIn()) {
             deferred.resolve(initData.sites);
         } else if (!_.isEmpty(initData.sites)) {
-            deferred.resolve();
+            deferred.resolve(initData.sites);
         } else {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
             Rest.one('init?siteonly=1').get().then(function (data) {

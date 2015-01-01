@@ -63,13 +63,13 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
             s.filters.years = [
-                { id: moment().add('year', -2).format('YYYY'), desc: '2 years ago', old: 'yes' },
-                { id: moment().add('year', -1).format('YYYY'), desc: '1 year ago', old: 'yes' },
+                { id: moment().add(-2, 'year').format('YYYY'), desc: '2 years ago', old: 'yes' },
+                { id: moment().add(-1, 'year').format('YYYY'), desc: '1 year ago', old: 'yes' },
                 { id: moment().format('YYYY'), desc: 'This year' },
-                { id: moment().add('year', 1).format('YYYY'), desc: 'Next year' },
-                { id: moment().add('year', 2).format('YYYY'), desc: '+2 years' },
-                { id: moment().add('year', 3).format('YYYY'), desc: '+3 years' },
-                { id: moment().add('year', 4).format('YYYY'), desc: '+4 years' },
+                { id: moment().add(1, 'year').format('YYYY'), desc: 'Next year' },
+                { id: moment().add(2, 'year').format('YYYY'), desc: '+2 years' },
+                { id: moment().add(3, 'year').format('YYYY'), desc: '+3 years' },
+                { id: moment().add(4, 'year').format('YYYY'), desc: '+4 years' },
             ];
             _.each(s.filters.years, function (f) { f.desc = f.id + ' - ' + f.desc; });
             s.treatmentTypes = s.initData.filters.treatments;

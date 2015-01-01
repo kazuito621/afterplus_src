@@ -217,7 +217,7 @@ angular.module('arborPlusFilters', [])
 				});
 				if(opt=='css'){
 					if(yr==moment().format('YYYY')) return 'thisYear';
-					if(yr==moment().add('year',1).format('YYYY')) return 'nextYear';
+					if(yr==moment().add(1, 'year').format('YYYY')) return 'nextYear';
 				}else{
 					return yr;
 					//return "<span style='color:red;' class='recYear'>{0}</span>".format(yr);

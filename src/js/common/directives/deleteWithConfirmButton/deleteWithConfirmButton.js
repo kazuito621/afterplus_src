@@ -3,12 +3,12 @@ app.directive('deleteWithConfirmButton',
         function ($popover) {
             return {
                 restrict: 'EA',
-                scope: {
-                    type: '@', //site/client/estimate
-                    itemId: '=',
-                    activePopover: '=', //we should monitor, that only one popover can be visible
-                    onConfirmCallback: '&'
-                },
+                //scope: {
+                //    type: '@', //site/client/estimate
+                //    itemId: '=',
+                //    activePopover: '=', //we should monitor, that only one popover can be visible
+                //    onConfirmCallback: '&'
+                //},
                 link: function (scope, el, attrs) {
 
                     if (angular.isDefined(attrs.itemId)) {

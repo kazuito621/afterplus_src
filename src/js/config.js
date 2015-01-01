@@ -10,7 +10,7 @@ window.cfg={
         }
     ,apiBaseUrl: function(){
             var h=this.host()||'';
-			if(h.match(/(localh|127.0.0|0.0.0)/)) h='http://dev.aplustree.com';
+			if(h.match(/(localh|127.0.0|0.0.0)/)) h='http://dev.arborplus.com';
 			var api=h+'/api/v2.0';
 			return api;
             //else return 'http://dev.arborplus.com/api/v2.0';

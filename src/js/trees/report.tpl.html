@@ -1,87 +1,237 @@
 <div ng-controller="ReportCtrl as ReportCtrl" class='ReportCtrl div_{{routeParams.stateID}} padding-top-none'>
 
-<!-- LOAD recent estimates list -->
-<div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
-    <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
-    <BR><BR>
-    <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Report</button>
-</div>
+    <!-- LOAD recent estimates list -->
+    <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
+        <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
+        <br><br>
+        <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Report</button>
+    </div>
 
-<div class="touch-boundry">
-	<div ng-include="'js/trees/action.tpl.html'" ng-if="data.mode()=='estimate' && auth.is('customer')"></div>
-</div>	
+    <div class="touch-boundry">
+        <div ng-include="'js/trees/action.tpl.html'" ng-if="data.mode()=='estimate' && auth.is('customer')"></div>
+    </div>
 
-<!--BEGIN ESTIMATE TABLE SECTION-->
-<div bindonce="report" class="table_estimate estimate-container report_main mode_{{data.mode()}}" ng-if="report.siteID">
-    <estimate-summary report="report" mode="data.mode()"></estimate-summary>
+    <!--BEGIN ESTIMATE TABLE SECTION-->
+    <div bindonce="report" class="table_estimate estimate-container report_main mode_{{data.mode()}}" ng-if="report.siteID">
+        <!--Directive is not performing anything what is the point having simple HTML in directive-->
+        <!--<estimate-summary report="report" mode="data.mode()"></estimate-summary>-->
 
-	<div class="estimate-actions" ng-if="data.mode()=='trees'">
-		<button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>
-		<button class="btn btn-red clr-white" 
-				data-backdrop='static'
-				data-keyboard=true
-				bs-modal
-				data-template="js/trees/emailReport.tpl.html"
-				ng-click="initEmailModal()"
-				>Send</button>
-		&nbsp;
-        <span ng-if="report.reportID">
-		<a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
-		<a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'
-           onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
-        </span>
-		<a ng-if='report.reportID && report.saveCount>1' href='/go/estimate/revisions/{{report.reportID}}' target=_new>Past Revisions</a>
-			
-		<div class="clearfix"></div>
-	</div>	 
+        <!--Estimate Summary Starts-->
+        <div class="estimate-summary">
+            <div class="row row-estimate">
+                <div class="col-md-6 col">
+                    <div class="estimate-info">
+                        <dl class="small">
+                            <dt>
+                                Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
+                                Estimate ID: <span ng-bind="report.reportID"></span>
+                            </dt>
+                        </dl>
+                        <h1 class="title" ng-text="'Estimate for ' + report.siteName"></h1>
+                        <p class="name">
+                            <span ng-if="mode() === 'trees'">
+                                <a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
+                            </span>
+                            <span ng-if="mode() !== 'trees'">
+                                {{report.name}}
+                            </span>
+                        </p>
+                        <dl>
+                            <dt>Contact: </dt>
+                            <dd ng-bind="report.contact + ' ' + report.contactPhone|formatPhoneNumber"></dd>
+                        </dl>
+                        <dl>
+                            <dt>Client: </dt>
+                            <dd ng-bind='report.clientName'></dd>
+                        </dl>
+                        <dl>
+                            <dt>Property: </dt>
+                            <dd ng-bind="report.siteName"></dd>
+                        </dl>
+                        <dl>
+                            <dt>Address: </dt>
+                            <dd ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip"></dd>
+                        </dl>
+                    </div>
+                </div>
 
-	<!-- Email logs -->
-    <email-logs report="report"></email-logs>
+                <div class="col-md-2 col" ng-if='report.sales_email'>
+                    <div class="estimate-info">
+                        <p class="name clr-orange">Sales Rep</p>
+                        <dl ng-if="report.sales_fname">
+                            <dd ng-text="report.sales_fname + ' ' + report.sales_lname"></dd>
+                        </dl>
+                        <dl>
+                            <dd><a href='mailto:{{report.sales_email}}' target=_new ng-bind='report.sales_email' style='color:#fff;'></a></dd>
+                        </dl>
+                        <dl ng-if="report.sales_phone">
+                            <dd ng-bind='report.sales_phone|formatPhoneNumber'></dd>
+                        </dl>
+                    </div>
+                </div>
 
-   	<div class="table-container">
-   		<div class="row row-table">
-   			<div class="col-md-4" ng-if="data.mode()=='estimate'">
-   				<div id="treeMap_estimate" class="map-container mode_{{data.mode()}}">
-					<div id="treeMap2" class="mode_{{data.mode()}}"></div>
-				</div>
-   			</div>
-   			<div class="col-md-8 col-info-{{data.mode()}}">
-                <report-estimates-table></report-estimates-table>
 
-                <report-misc-services-table></report-misc-services-table>
+                <div class="col-md-4 col">
+                    <div class="bid-info">
+                        <div class="logos">
+                            <span class="logo"><img src="img/logo_tcia.png"></span>
+                        </div>
+                        <p class="bid">Total Bid: ${{(report.total.grand || 0)|formatPrice}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Estimate Summary Ends-->
 
-				<div class="total-amount">
-					Total: &#36;{{(report.total.grand || 0)|formatPrice}}
-				</div>
+        <!--Directive is not performing anything what is the point having simple HTML in directive-->
+        <div class="estimate-actions" ng-if="data.mode()=='trees'">
+            <button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>
+            <button class="btn btn-red clr-white"
+                    data-backdrop='static'
+                    data-keyboard=true
+                    bs-modal
+                    data-template="js/trees/emailReport.tpl.html"
+                    ng-click="initEmailModal()">
+                Send
+            </button>
+            &nbsp;
+            <span ng-if="report.reportID">
+                <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
+                <a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'
+                   onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
+            </span>
+            <a ng-if='report.reportID && report.saveCount>1' href='/go/estimate/revisions/{{report.reportID}}' target=_new>Past Revisions</a>
 
-				<div class="section-container" ng-if="data.mode()=='trees' && auth.isAtleast('inventory')">
-			   		<h6 class="section-sub-title">Notes</h6>
-			        <textarea ckeditor="editorOptions" ng-model="report.notes" placeholder="Notes" style='width:100%;height:100px;'></textarea>
-			     </div>
-			     
-			 	<div class="section-container" ng-if="data.mode()!='trees' || !auth.isAtleast('inventory')">
-			 		<h6 ng-if="report.notes" class="section-sub-title" style='padding-bottom:1em;'>Notes</h6>
-			        <span ng-bind-html="report.notes"></span><BR><BR>
+            <div class="clearfix"></div>
+        </div>
 
-			   		<h6 ng-if="treatmentDescriptions.length" class="section-sub-title">Definition of Treatments</h6>
-					<div ng-repeat=" desc in treatmentDescriptions "> 
-						<p><span style='font-weight:bold;'>{{desc.treatmentType}}</span> - {{desc.desc}}</p><BR>
-					</div>
-			   	</div>
+        <!-- Email logs -->
+        <email-logs report="report"></email-logs>
+        
 
-			   	<div class="logo-container">
-		   			<span class="logo"><img src="img/logo_wcisa.png"></span>
-					<span class="logo"><img src="img/logo_ctsp.png"></span>
-					<span class="logo"><img src="img/logo_papa.jpg"></span>
-					<span class="logo"><img src="img/logo_treeworker.jpg"></span>
-					<span class="logo"><img src="img/logo_bcma.jpg"></span>
-			   	</div>
-			   	
-   			</div>
-   		</div>
-   	</div>
+        <div class="table-container">
+            <div class="row row-table">
+                <div class="col-md-4" ng-if="data.mode()=='estimate'">
+                    <div id="treeMap_estimate" class="map-container mode_{{data.mode()}}">
+                        <div id="treeMap2" class="mode_{{data.mode()}}"></div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-info-{{data.mode()}}">
+                    <!--<report-estimates-table></report-estimates-table>-->
+                    <!--Estimate table Starts-->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}">
+                            <thead>
+                                <tr id="estimate_table_heading">
+                                    <td class="td-image">Tree</td>
+                                    <td class="td-id">ID</td>
+                                    <td class="td-name">Name</td>
+                                    <td class="td-treatment">Treatment</td>
+                                    <td class="td-bid">Bid ($)</td>
+                                    <td class="td-action"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- todo-bindonce - i removed it from below... cuz it broke editing of values...
+                                if we can get rebind to work, then we need to rebind if the user is an admin (and they want to edit)
+                                and leave bindonce if the user is a customer t-->
+                                <tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
+                                    ng-init="itemIndex = $index"
+                                    ng-class="rowHighlightClass(item)"
+                                    class='hoverHotspot'
+                                    ng-mouseover="hover=true;onItemRollOver(TreesCtrl.findMarker(item.treeID))"
+                                    ng-mouseleave="hover=false;onItemRollOut(TreesCtrl.findMarker(item.treeID))"
+                                    id="rpt_item_{{item.treeID}}">
+                                    <td data-title="listing_image" class="td-image">
 
-</div>
+                                        <tree-image-popover item="item" cache-buster="tree_cachebuster" />
+                                    </td>
+                                    <td data-title="listing_ID" class="td-id">{{item.localTreeID}}</td>
+                                    <td data-title="listing_species" class="td-name">
+                                        {{item.dbhID | dbhID2Name:this }}
+                                        {{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
+                                        <span class="light" bo-text="'[' + item.treeID + ']'"></span>
+                                        <a href='#/tree_edit/{{item.treeID}}' class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')">
+                                            <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
+                                        </a>
+                                        <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
+                                    </td>
+                                    <td data-title="listing_treatment" colspan="3" class="td-treatment-bid">
+                                        <table class="">
+                                            <tr ng-repeat="treatment in item.treatments" ng-init="treatmentIndex = $index">
+                                                <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_treatment" class="td-treatment">
+                                                    <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
+                                                       editable-select="treatment.treatmentTypeCode"
+                                                       onshow="onShowEditItem(item.$$hashKey)"
+                                                       onaftersave="onTreatmentTypeUpdate(item, treatment)"
+                                                       onhide="onHideEditItem()">
+                                                        {{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
+                                                    </a>
+                                                </td>
+                                                <td ng-if="auth.is('customer')">
+                                                    <span ng-bind="treatment.treatmentTypeCode|treatmentTypeCode2Name:this">
+                                                    </span>
+                                                </td>
+                                                <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_price" class="td-bid">
+                                                    &#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()" onaftersave="onTreatmentPriceUpdate()">{{treatment.price|formatPrice}}</a>
+                                                </td>
+                                                <td ng-if="auth.is('customer')">
+                                                    <span ng-bind="treatment.price|formatPrice"></span>
+                                                </td>
+
+                                                <td data-title="listing_options" class="td-action">
+                                                    <a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action' ng-if="auth.is('admin')">
+                                                        <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>	<!-- }}} listing_treatment colspan=3 -->
+                                </tr>
+                                <tr ng-if="report.total.items && data.mode()=='trees'">
+                                    <td colspan="4" class="td-bid">Subtotal:</td>
+                                    <td class="td-bid">&#36;{{report.total.items|formatPrice}}</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--Estimate table Ends-->
+
+                    <report-misc-services-table></report-misc-services-table>
+
+                    <div class="total-amount">
+                        Total: &#36;{{(report.total.grand || 0)|formatPrice}}
+                    </div>
+
+                    <div class="section-container" ng-if="data.mode()=='trees' && auth.isAtleast('inventory')">
+                        <h6 class="section-sub-title">Notes</h6>
+                        <textarea ckeditor="editorOptions" ng-model="report.notes" placeholder="Notes" style='width:100%;height:100px;'></textarea>
+                    </div>
+
+                    <div class="section-container" ng-if="data.mode()!='trees' || !auth.isAtleast('inventory')">
+                        <h6 ng-if="report.notes" class="section-sub-title" style='padding-bottom:1em;'>Notes</h6>
+                        <span ng-bind-html="report.notes"></span><br><br>
+
+                        <h6 ng-if="treatmentDescriptions.length" class="section-sub-title">Definition of Treatments</h6>
+                        <div ng-repeat=" desc in treatmentDescriptions ">
+                            <p><span style='font-weight:bold;'>{{desc.treatmentType}}</span> - {{desc.desc}}</p><br>
+                        </div>
+                    </div>
+
+                    <div class="logo-container">
+                        <span class="logo"><img src="img/logo_wcisa.png"></span>
+                        <span class="logo"><img src="img/logo_ctsp.png"></span>
+                        <span class="logo"><img src="img/logo_papa.jpg"></span>
+                        <span class="logo"><img src="img/logo_treeworker.jpg"></span>
+                        <span class="logo"><img src="img/logo_bcma.jpg"></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
 
 </div> <!-- }}} .report_main -->
 

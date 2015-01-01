@@ -3,7 +3,8 @@
 
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
-	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model', 'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput']);
+	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
+     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main']);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
@@ -36,9 +37,7 @@ app.config(['$routeProvider', '$locationProvider',
 						}]
 					,deps:['Api', function(Api){ return Api.getPromise(); }]
 				}
-        	})
-
-
+			})
 
 			// web app routes
 

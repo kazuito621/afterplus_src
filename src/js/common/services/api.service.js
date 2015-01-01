@@ -8,12 +8,29 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage',
 function (Rest, $rootScope, $q, $location, storage) {
     'use strict';
     window.Api = this;
-	var initData={};
+    var initData = {};
     var sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); };
 
     var isSignedIn = function () {
         var authData = storage.get('authData');
         return (authData.userID > 0);
+    };
+
+    var loadSites = function () {
+        var deferred = $q.defer();
+        if (!isSignedIn()) {
+            deferred.resolve();
+        } else if (!_.isEmpty(initData.sites)) {
+            deferred.resolve();
+        } else {
+            //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
+            Rest.one('init?siteonly=1').get().then(function (data) {
+                initData.sites = data;
+                //$rootScope.initData.sites = data;
+                deferred.resolve(data);
+            });
+        }
+        return deferred.promise;
     };
 
     var init = function (forceRefresh) {
@@ -23,14 +40,15 @@ function (Rest, $rootScope, $q, $location, storage) {
         } else if (!_.isEmpty(initData) && forceRefresh !== true) {
             deferred.resolve();
         } else {
-            sendEvt('alert', {msg: 'Loading...', time: 3, type: 'ok'});
-            Rest.one('init').get().then(function (data) {
+            sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
+            Rest.one('init?nosite=1').get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-				if(data.filters)
-                	data.filters.hazards = {'building':{selected:false},'caDamage':{selected:false},'caDamagePotential':{selected:false},'powerline':{selected:false}};
-            dbg(data, 'got init back');
+                if (data.filters)
+                    data.filters.hazards = { 'building': { selected: false }, 'caDamage': { selected: false }, 'caDamagePotential': { selected: false }, 'powerline': { selected: false } };
+                //dbg(data, 'got init back');
                 initData = data;
                 $rootScope.initData = data;
+
                 sendEvt('onInitData', data);
                 deferred.resolve();
             });
@@ -38,19 +56,20 @@ function (Rest, $rootScope, $q, $location, storage) {
         return deferred.promise;
     };
 
-	// after a user signs in, refresh init data
-	$rootScope.$on('onSignin', function(){ init(true); });
+    // after a user signs in, refresh init data
+    $rootScope.$on('onSignin', function () { init(true); });
 
     return {
-		getPromise:function(){ return init(); },
-		getInitData: function(){ return initData; },
-		// returns a promise... for .then() when refresh is done
-		refreshInitData: function(){ return init(true); },	
+        getAllSites: function () { return loadSites(); },
+        getPromise: function () { return init(); },
+        getInitData: function () { return initData; },
+        // returns a promise... for .then() when refresh is done
+        refreshInitData: function () { return init(true); },
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },
         getSiteList: function () {
-            return Rest.all('site').getList({users:1});
+            return Rest.all('site').getList({ users: 1 });
         },
         getSiteById: function (id) {
             return Rest.one('site', id).get();
@@ -59,7 +78,7 @@ function (Rest, $rootScope, $q, $location, storage) {
             return Rest.one('site', siteID).get();
         },
         getTrees: function (siteID) {
-            return Rest.all('trees').getList({siteID: siteID});
+            return Rest.all('trees').getList({ siteID: siteID });
         },
         getTree: function (treeID) {
             return Rest.one('trees', treeID).get();
@@ -74,14 +93,14 @@ function (Rest, $rootScope, $q, $location, storage) {
             return Rest.all('site/' + siteID + '/users').getList(params);
         },
         getSalesUsers: function () {
-            return Rest.all('user').getList({role:'sales,inventory'});
+            return Rest.all('user').getList({ role: 'sales,inventory' });
         },
         getReport: function (reportID, opts) {
-			var r=$rootScope.requestedReportID;
-			if(r && r>1){
-				reportID=r;
-				delete $rootScope.requestedReportI;
-			}
+            var r = $rootScope.requestedReportID;
+            if (r && r > 1) {
+                reportID = r;
+                delete $rootScope.requestedReportI;
+            }
             dbg(reportID, opts, 'get report');
             return Rest.one('estimate', reportID).get(opts);
         },
@@ -97,9 +116,9 @@ function (Rest, $rootScope, $q, $location, storage) {
             dbg(reportObj, "save rep ");
             return Rest.all('estimate').post(reportObj);
         },
-		setReportStatus: function(rptID, status){
-			return Rest.one('estimate',rptID).post(status);
-		},
+        setReportStatus: function (rptID, status) {
+            return Rest.one('estimate', rptID).post(status);
+        },
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },
@@ -112,16 +131,16 @@ function (Rest, $rootScope, $q, $location, storage) {
 
             return Rest.one('estimate', rptID).post(params);
         },
-		getEmailLogs: function( rptID ){
-			return Rest.all('estimate/' + rptID + '/emaillogs').getList();
-		},
-		approveReport: function( rptID ){
-			return Rest.one('estimate',rptID).post('approve');
-		},
+        getEmailLogs: function (rptID) {
+            return Rest.all('estimate/' + rptID + '/emaillogs').getList();
+        },
+        approveReport: function (rptID) {
+            return Rest.one('estimate', rptID).post('approve');
+        },
         duplicateReports: function (ids) {
             var promises = [];
             angular.forEach(ids, function (id) {
-//              POST /estimate/<estimateID>/copy
+                //              POST /estimate/<estimateID>/copy
                 promises.push(Rest.one('estimate', id).post('copy'));
             });
 
@@ -129,7 +148,7 @@ function (Rest, $rootScope, $q, $location, storage) {
         },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
-            return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});
+            return Rest.one('service_desc', 'treatmenttype').get({ id: ids.toString() });
         },
         // Auth
         signInCustToken: function (token, context, callback) {
@@ -138,13 +157,13 @@ function (Rest, $rootScope, $q, $location, storage) {
                 deferred.reject('Invalid token');
                 return deferred.promise;
             }
-            Rest.one('signincusttoken').get({custToken: token})
+            Rest.one('signincusttoken').get({ custToken: token })
                 .then(angular.bind(context, callback, deferred));
-			return deferred.promise;
+            return deferred.promise;
         },
         signIn: function (email, password, context, callback) {
             var deferred = $q.defer();
-            Rest.one('signin').get({e: email, p: password})
+            Rest.one('signin').get({ e: email, p: password })
                 .then(angular.bind(context, callback, deferred));
             return deferred.promise;
         },
@@ -181,13 +200,13 @@ function (Rest, $rootScope, $q, $location, storage) {
         // User / Site relationship
         userSite: {
             assign: function (siteId, user) {
-//                POST /site/456/users
-//                JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer'}
-//                RETURNS: ARRAY of user Obj: [{userID:INT, ...},{userID:INT, ...}]
-//                (this would be useful when creating new users, and you need their userID)
+                //                POST /site/456/users
+                //                JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer'}
+                //                RETURNS: ARRAY of user Obj: [{userID:INT, ...},{userID:INT, ...}]
+                //                (this would be useful when creating new users, and you need their userID)
 
-//                POST /site/456/users
-//                JSON BODY: {userID:123, role:'sales'}
+                //                POST /site/456/users
+                //                JSON BODY: {userID:123, role:'sales'}
                 return Rest.one('site', siteId).post('users', user);
             },
 
@@ -196,23 +215,23 @@ function (Rest, $rootScope, $q, $location, storage) {
             },
 
             unassign: function (siteId, userId) {
-//                POST /site/123/user/999/unassign
+                //                POST /site/123/user/999/unassign
                 return Rest.one('site', siteId).one('user', userId).post('unassign');
             }
         },
         // Users
         user: {
-			// get a user by a token
+            // get a user by a token
             get: function (params, context, callback) {
-            	var deferred = $q.defer();
+                var deferred = $q.defer();
                 Rest.one('user').get(params).then(angular.bind(context, callback, deferred));
-				return deferred.promise;
+                return deferred.promise;
             },
             remove: function (id) {
                 return Rest.one('user', id).remove();
             },
             lookUp: function (params) {
-                if (params.email && params.email[params.email.length -1] !== '*') {
+                if (params.email && params.email[params.email.length - 1] !== '*') {
                     params.email += '*';
                 }
                 return Rest.all('user').getList(params);
@@ -244,7 +263,7 @@ app.factory('ApiInterceptors', ['Restangular', '$rootScope', 'Auth', function (R
          })
          */
         .setErrorInterceptor(function () {
-            sendEvt('alert', {msg: 'Error talking to the server (3)', type: 'danger'});
+            sendEvt('alert', { msg: 'Error talking to the server (3)', type: 'danger' });
             dbg('REST error found in setErrorInterceptor');
             //return true;  //todo -- what to do here? display error to user?
         });

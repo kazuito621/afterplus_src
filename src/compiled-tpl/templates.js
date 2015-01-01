@@ -291,7 +291,7 @@ angular.module("js/common/directives/dropdowns/site.dropdown/site.dropdown.tpl.h
     "<select id=\"select_site\" class='inpt inpt-select' ng-disabled=\"data.length === 0\"\n" +
     "         ng-model=\"model\"\n" +
     "         ng-change=\"onChange({ id: model })\">\n" +
-    "    <option class=\"option\" value=\"\">{{ data.length>0 | ifElse:'Property':'(No Properties)' }}</option>\n" +
+    "    <option class=\"option\" value=\"\">{{ data.length>0 | ifElse:'Property':'Loading...' }}</option>\n" +
     "    <option bindonce class=\"option\" ng-repeat=\"site in data\" value=\"{{site.siteID}}\" bo-bind=\"site.siteName\"></option>\n" +
     "</select>\n" +
     "");

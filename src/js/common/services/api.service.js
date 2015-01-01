@@ -19,7 +19,7 @@ function (Rest, $rootScope, $q, $location, storage) {
     var loadSites = function () {
         var deferred = $q.defer();
         if (!isSignedIn()) {
-            deferred.resolve();
+            deferred.resolve(initData.sites);
         } else if (!_.isEmpty(initData.sites)) {
             deferred.resolve();
         } else {

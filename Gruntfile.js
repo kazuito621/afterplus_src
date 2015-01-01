@@ -33,7 +33,7 @@ module.exports = function (grunt) {
         watch: {
             js: {
                 files: ['<%= yeoman.app %>/js/{,*/}*.*'],
-                tasks: ['newer:jshint:all'],
+                tasks: ['newer:jshint:all', 'newer:html2js'],
                 options: {
                     livereload: true
                 }
@@ -348,7 +348,7 @@ module.exports = function (grunt) {
             },
             main: {
                 src: ['<%= yeoman.app %>/js/**/*.tpl.html'],
-                dest: '<%= yeoman.app %>/js/compiled-tpl/templates.js'
+                dest: '<%= yeoman.app %>/compiled-tpl/templates.js'
             },
         },
 

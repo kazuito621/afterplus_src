@@ -52,8 +52,10 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Load sites now.
             Api.getAllSites().then(function (data) {
-                s.initData.sites = data.sites;
-                s.filteredSites = data.sites;
+                if (data !== undefined) {
+                    s.initData.sites = data.sites;
+                    s.filteredSites = data.sites;
+                }
             });
 
 

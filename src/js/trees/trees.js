@@ -6,7 +6,8 @@
 
 var TreesCtrl = app.controller('TreesCtrl',
     ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal', '$location',
-        function ($scope, $timeout, ReportService, TreeFilterService, $filter, storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
+        function ($scope, $timeout, ReportService, TreeFilterService, $filter,
+            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
 
             var self = this;
             // local and scoped vars
@@ -275,8 +276,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
             s.onSelectSiteID = function (id) {
-                console.log('On select site id', id);
+               
                 if (id && id > 0) {
+                    console.log('On select site id', id);
                     var siteObj = s.getSiteByID(id);
                     s.selected.clientID = siteObj.clientID;
                     s.selected.clientTypeID = siteObj.clientTypeID;
@@ -951,18 +953,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.setAlert('Stop: You are mixing trees from different sites on the same estimate', { type: 'd', time: 9 });
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
             // ------------------------------------------------- HELPER METHODS
 
             // filter based on selected.clientTypeID, or all if null
@@ -1185,6 +1175,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
             var getTreeListings = function () {
+                if (s.selected.siteID <= 0)
+                    return;
                 // reset selected trees to prevent duplicates
                 s.selectedTrees = [];
                 s.setAlert('Loading Trees', { busy: true });
@@ -1269,13 +1261,26 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.updateBulkEstimatePrice({ treatments: newVal });
             });
 
+            //Watch for init data here.
+            s.$watch('initData.sites', function (data) {
+                
+                if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
+                    console.log('Map not initialized in $onInitData event');
+                    initMap().then(function () {
+                        console.log('Map initialized in $onInitData event');
+                        showMappedSites();
+                    })
+                }
+            })
+
+            //Broadcast is not occuring.
             s.$on('onInitData', function (e, data) {
                 //                console.log('On init data in trees');
 
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
-                    //                    console.log('Map not initialized in $onInitData event')
+                    console.log('Map not initialized in $onInitData event');
                     initMap().then(function () {
-                        //                        console.log('Map initialized in $onInitData event');
+                        console.log('Map initialized in $onInitData event');
                         showMappedSites();
                     })
                 }

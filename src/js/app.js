@@ -89,7 +89,7 @@ app.config(['$routeProvider', '$locationProvider',
             .otherwise({redirectTo: "/signin"});
 	}])
 	.run(['Restangular', '$rootScope',
-		function(RestProvider, rs){
+		function (RestProvider, rs) {
 			RestProvider
 				.setBaseUrl(cfg.apiBaseUrl())
 				//.setDefaultRequestParams({ apiKey: 'xx' })
@@ -138,6 +138,14 @@ app.config(['$routeProvider', '$locationProvider',
 				if(!id) return elem.id;
 				return id;
 			}
+
+			//var url;
+			//for (var i in $route.routes) {
+			//    if (url = $route.routes[i].templateUrl) {
+			//        $http.get(url, { cache: $templateCache });
+			//    }
+			//}
+
 		}]);
 
 
@@ -163,11 +171,11 @@ function dbg(){
 		var lastArg = arguments[arguments.length-1];
 		if( typeof lastArg  == 'string') {
 			loopLen -= 1
-			console.error( lastArg + ' ------------' )
+			//console.error( lastArg + ' ------------' )
 		}
 	}
 	for( var i=0; i<loopLen; i++) {
-		console.error( arguments[i] )
+		//console.error( arguments[i] )
 	}
 }
 

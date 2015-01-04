@@ -49,6 +49,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },
+        getSitesByIds: function (siteIds) {
+            return Rest.all('site/' + siteIds ).getList({});
+        },
         getSiteList: function () {
             return Rest.all('site').getList({users:1});
         },

@@ -1048,21 +1048,40 @@ var TreesCtrl = app.controller('TreesCtrl',
             };
 
             s.createBulkEstimate = function () {
-                console.log('Creating bulk estimates for', s.bulkEstimates);
-                self.bulkModalScope = self.createBulkModalScope();
-                self.bulkModal = $modal({
-                    scope: self.bulkModalScope,
-                    //template: '/js/trees/emailReport.tpl.html', // production
-                    template: 'js/trees/emailReport.tpl.html', // dev
+                var siteIDs=s.bulkEstimates.selectedSites.toString();
+                self.contractPropertyModalScope=s.$new();
+                Api.getSitesByIds(siteIDs).then(function(){
+                    self.contractPropertyModalScope.sites=res;
+                });
+                self.contractPropertyModal = $modal({
+                    scope: self.contractPropertyModalScope,
+                    //template: '/js/trees/propertyContacts.tpl.html', // production
+                    template: 'js/trees/propertyContacts.tpl.html',
                     show: false
                 });
 
-                self.bulkModal.$promise.then(function () {
-                    self.bulkModal.show();
+                self.contractPropertyModal.$promise.then(function () {
+                    self.contractPropertyModal.show();
                     $(document).keyup(self.hideOnEscape);
                 });
+//
+                //console.log('Creating bulk estimates for', s.bulkEstimates);
+                //self.bulkModalScope = self.createBulkModalScope();
+                //self.bulkModal = $modal({
+                //    scope: self.bulkModalScope,
+                //    //template: '/js/trees/emailReport.tpl.html', // production
+                //    //template: 'js/trees/emailReport.tpl.html', // Dev
+                //    show: false
+                //});
+//
+                //self.bulkModal.$promise.then(function () {
+                //    self.bulkModal.show();
+                //    $(document).keyup(self.hideOnEscape);
+                //});
             };
+            self.sendReport = function (hideFn, showFn) {
 
+            };
             self.updateSelectedSites = function () {
                 var updated = [];
 

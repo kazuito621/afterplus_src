@@ -1,0 +1,41 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="modalTitle">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="modal-title" ng-bind="modalTitle"></h4>
+            </div>
+            <div class="modal-body"> <!-- //// BODY START ///// -->
+                THE LENGTH IS {{sites.length}}
+                <form class="form-inline" ng-submit="emailEstimate()">
+                    <table cellpadding='3'>
+                        <thead>
+                        <tr>
+                            <th style="width: 125px">Name</th>
+                            <th style="width: 125px">Contacts</th>
+                            <th style="width: 125px">Trees</th>
+                            <th style="width: 125px">Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="width: 125px">Sites:</td>
+                                <td style="width: 125px">Sites:</td>
+                                <td style="width: 125px">Sites:</td>
+                                <td style="width: 125px">Sites:</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+
+
+            </div><!-- }}}} .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="sendReport($hide, $show)"
+                        ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+

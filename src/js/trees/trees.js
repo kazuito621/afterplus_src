@@ -1021,41 +1021,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return _.pluck(selectedSites, 'siteName');
             };
 
-            self.createBulkModalScope = function () {
-                var res = s.$new();
-
-                res.closeModal = function () {
-                    self.bulkModal.hide();
-                };
-
-                res.hide = function(){
-                    $(document).unbind('keyup', self.hideOnEscape);
-                    self.bulkModal.hide();
-                };
-
-                res.modalTitle = "Bulk estimate";
-                res.emailRpt = {
-                    subject: 'A Plus Tree Estimate',
-                    message: ReportService.email.message,
-                    senderEmail: Auth.data().email,
-                    siteNames: self.getSelectedSitesNames(),
-                    sendBtnText: 'Send bulk estimate'
-                };
-                res.type = 'bulk';
-                res.siteNames = [];
-
-                return res;
-            };
-
             self.getSelectedSitesInfo = function () {
                 var info=[];
                 var selectedSites = _.filter(s.filteredSites, function (site) {
                     return s.bulkEstimates.selectedSites.indexOf(site.siteID) > -1;
                 });
-
-               //var siteName= _.pluck(selectedSites, 'siteName');
-               //var estimatePrice= _.pluck(selectedSites, 'estimatePrice');
-               //var matchedTreesCount= _.pluck(selectedSites, 'matchedTreesCount');
                 angular.forEach(selectedSites,function(item){
                     info.push({
                         siteID:item.siteID,
@@ -1067,39 +1037,67 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return info;
             };
 
+            self.createBulkModalScope = function () {
+                var res = s.$new();
+
+                res.closeModal = function () {
+                    self.bulkModal.hide();
+                };
+
+                res.hide = function(){
+                    $(document).unbind('keyup', self.hideOnEscape);
+                    self.bulkModal.hide();
+                };
+                res.sitesInfo=[];
+                res.modalTitle = "Bulk estimate";
+                res.emailRpt = {
+                    subject: 'A Plus Tree Estimate',
+                    message: ReportService.email.message,
+                    senderEmail: Auth.data().email,
+                    selectedSites:[],
+                    sendBtnText: 'Send bulk estimate'
+                };
+                res.type = 'bulk';
+                res.siteNames = [];
+
+                return res;
+            };
+
             s.createBulkEstimate = function () {
                 var siteIDs=s.bulkEstimates.selectedSites.toString();
-                self.contractPropertyModalScope=s.$new();
-                self.contractPropertyModalScope.siteInfo=self.getSelectedSitesInfo();
+                self.contactPropertyModalScope=s.$new();
+                self.contactPropertyModalScope=self.createBulkModalScope();
+                self.contactPropertyModalScope.sitesInfo=self.getSelectedSitesInfo();
+                self.contactPropertyModalScope.emailRpt.selectedSites=angular.copy(self.contactPropertyModalScope.sitesInfo);
                 Api.getSiteUsersBySiteIds(siteIDs,'customer').then(function(res){
                     angular.forEach(res,function(item){
-                        for(var i=0;i<self.contractPropertyModalScope.siteInfo.length;i++){
-                            if(self.contractPropertyModalScope.siteInfo[i].siteID==item.siteID){
-                                self.contractPropertyModalScope.siteInfo[i].users=item.users;
+                        for(var i=0;i<self.contactPropertyModalScope.sitesInfo.length;i++){
+                            if(self.contactPropertyModalScope.sitesInfo[i].siteID==item.siteID){
+                                self.contactPropertyModalScope.sitesInfo[i].users=item.users;
+                                self.contactPropertyModalScope.emailRpt.selectedSites[i].users=item.users;
                                 break;
                             }
                         }
                     });
-                    var a=1;
                 });
-                self.contractPropertyModal = $modal({
-                    scope: self.contractPropertyModalScope,
+                self.contactPropertyModal = $modal({
+                    scope: self.contactPropertyModalScope,
                     //template: '/js/trees/propertyContacts.tpl.html', // production
                     template: 'js/trees/propertyContacts.tpl.html',
                     show: false
                 });
 
-                self.contractPropertyModal.$promise.then(function () {
-                    self.contractPropertyModal.show();
+                self.contactPropertyModal.$promise.then(function () {
+                    self.contactPropertyModal.show();
                     $(document).keyup(self.hideOnEscape);
                 });
             };
             s.gotoNext = function (hideFn, showFn) {
                 hideFn();
                 console.log('Creating bulk estimates for', s.bulkEstimates);
-                self.bulkModalScope = self.createBulkModalScope();
+                //self.bulkModalScope = self.createBulkModalScope();
                 self.bulkModal = $modal({
-                    scope: self.bdropdownulkModalScope,
+                    scope: self.contactPropertyModalScope,
                     //template: '/js/trees/emailReport.tpl.html', // production
                     template: 'js/trees/emailReport.tpl.html', // Dev
                     show: false
@@ -1110,6 +1108,14 @@ var TreesCtrl = app.controller('TreesCtrl',
                     $(document).keyup(self.hideOnEscape);
                 });
             };
+            s.removeUser=function(user,users){
+                for(var i=0;i<users.length;i++){
+                    if(users[i]==user){
+                        users.splice(i,1);
+                        break;
+                    }
+                }
+            }
             self.updateSelectedSites = function () {
                 var updated = [];
 

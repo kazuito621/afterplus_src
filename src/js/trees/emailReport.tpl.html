@@ -13,7 +13,7 @@
 					 <tr ng-if="type === 'bulk'">
                          <td>Sites:</td>
                          <td>
-							 <div class="label label-primary" ng-repeat="name in emailRpt.siteNames" style="margin-right: 5px; font-size: 13px; float: left; margin-bottom: 5px;">{{name}}</div>
+							 <div class="label label-primary" ng-repeat="site in emailRpt.selectedSites" style="margin-right: 5px; font-size: 13px; float: left; margin-bottom: 5px;">{{site.siteName}}</div>
                          </td>
                      </tr>
 					 <tr ng-if="type !== 'bulk'">

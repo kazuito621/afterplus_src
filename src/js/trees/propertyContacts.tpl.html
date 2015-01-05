@@ -6,11 +6,11 @@
                 <h4 class="modal-title" ng-bind="modalTitle"></h4>
             </div>
             <div class="modal-body"> <!-- //// BODY START ///// -->
-                THE LENGTH IS {{sites.length}}
                 <form class="form-inline" ng-submit="emailEstimate()">
                     <table cellpadding='3'>
                         <thead>
                         <tr>
+                            <th style="width: 125px">Select</th>
                             <th style="width: 125px">Name</th>
                             <th style="width: 125px">Contacts</th>
                             <th style="width: 125px">Trees</th>
@@ -18,26 +18,36 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <!--<tr>
-                                <td style="width: 125px">Sites:</td>
-                                <td style="width: 125px">Sites:</td>
-                                <td style="width: 125px">Sites:</td>
-                                <td style="width: 125px">Sites:</td>
-                            </tr>-->
-
-                            <tr style="width: 125px" ng-repeat="site in siteInfo">
-                                <td style="width: 125px">
-
+                            <tr style="width: 125px" ng-repeat="site in sitesInfo">
+                                <td class="td-check">
+                                    <input type="checkbox"  checklist-model="emailRpt.selectedSites" checklist-value="site" id="site-result-checkbox-{{site.siteID}}">
                                 </td>
-                                <td style="width: 125px">{{site.siteName}}</td>
-                                <td style="width: 125px">
-                                    <span ng-repeat="user in site.users">
-                                        {{user.email}}
-                                    </span>
-                                    <a class="fa fa-user olive hand" title="Add contact" bs-tooltip="" site="site" site-users-edit-modal=""></a>
+                                <td style="width: 250px">{{site.siteName}}</td>
+                                <td style="width: 900px">
+                                    <div ng-class="site.users.length==0?'btn-group':'btn-group'">
+                                        <span ng-repeat="user in site.users" class="btn btn-default hover-anchor" bs-tooltip
+                                               title="{{user.email}}">
+                                            <span class="pull-right hover-action" >
+                                                 <a ng-click="removeUser(user,site.users)"  href><i class="fa fa-times fa-fw"></i></a>
+                                            </span>
+                                            <!--
+                                             If the ellipsis is added for the email & cross button functions correctly, then use this
+                                             <span class="your_class">{{user.email}}</span>
+                                             & remove those 2 lines (no ng-if is needed)
+                                             <span ng-if="user.email.length<11">{{user.email}}</span>
+                                            <span ng-if="user.email.length>=11">{{user.email.slice(0,11)}}..</span>
+                                            -->
+                                            <span ng-if="user.email.length<11">{{user.email}}</span>
+                                            <span ng-if="user.email.length>=11">{{user.email.slice(0,11)}}..</span>
+                                        </span>
+                                    </div>
+                                    <a class="btn btn-info" title="Add contact" bs-tooltip="" site="site" site-users-edit-modal="">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                    <!--<a class="fa fa-user olive hand" title="Add contact" bs-tooltip="" site="site" site-users-edit-modal=""></a>-->
                                 </td>
-                                <td style="width: 125px">{{site.matchedTreesCount}}</td>
-                                <td style="width: 125px">{{site.estimatePrice}}:</td>
+                                <td style="width: 75px">{{site.matchedTreesCount}}</td>
+                                <td style="width: 100px">{{site.estimatePrice}}</td>
                             </tr>
                         </tbody>
                     </table>

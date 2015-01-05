@@ -221,7 +221,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	}
 
     var getPath = function (url) {
-		if(url) return url.split('#')[1].split('/')[1];
+		if(url && url.match(/#/)) return url.split('#')[1].split('/')[1];
 		return '';
     };
 

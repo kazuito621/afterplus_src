@@ -1,11 +1,15 @@
-app.directive('siteEditModal', 
-	['$modal', 'SiteModelUpdateService', 'Api', '$timeout',
-	function ($modal, SiteModelUpdateService, Api, $timeout) {
+app.directive('siteEditModal', ['$modal', 'SiteModelUpdateService', 'Api', '$timeout', function ($modal, SiteModelUpdateService, Api, $timeout) {
     'use strict';
 
     var linker = function (scope, el, attrs) {
         var modal;
         var newSite = {clientID: ''};
+
+        var hideOnEscape = function (e) {
+            if (e.keyCode === 27) {
+                scope.hide();
+            }
+        };
 
         scope.onSave = function () {
             var funcName = attrs.onSave;
@@ -18,12 +22,13 @@ app.directive('siteEditModal',
 
         //when user creates new property and selects Client:
         //system should copy address fields from Client to new property
-        scope.copyAddressFromClientToNewSite = function(id){
-            if (scope.mode && scope.mode=='new'){ //if mode!='new'('edit') => we don't need to copy address
+        scope.copyAddressFromClientToNewSite = function (id) {
+            if (scope.mode && scope.mode === 'new') { //if mode!='new'('edit') => we don't need to copy address
                 //find client info
                 var clientInfo = [];
-                for (var i = 0; i < scope.clients.length; i++){
-                    if (scope.clients[i].clientID==id){
+                var i;
+                for (i = 0; i < scope.clients.length; i += 1) {
+                    if (scope.clients[i].clientID === id) {
                         clientInfo = scope.clients[i];
                         break;
                     }
@@ -35,7 +40,7 @@ app.directive('siteEditModal',
                 scope.site.state = clientInfo.state;
                 scope.site.zip = clientInfo.zip;
             }
-        }
+        };
 
         scope.openModal = function (id) {
             if (!modal) {
@@ -52,8 +57,8 @@ app.directive('siteEditModal',
 
             modal.$promise.then(function () {
                 modal.show();
-				// setup ESCAPE key
-				$(document).keyup(hideOnEscape);
+                // setup ESCAPE key
+                $(document).keyup(hideOnEscape);
             });
         };
 
@@ -93,14 +98,12 @@ app.directive('siteEditModal',
             }
         };
 
-		scope.hide = function(){
-			if(this.hide) $(document).unbind('keyup', hideOnEscape);
-			modal.hide();
-		}	
-
-		var hideOnEscape = function(e){
-			if(e.keyCode === 27) scope.hide();
-		};
+        scope.hide = function () {
+            if (this.hide) {
+                $(document).unbind('keyup', hideOnEscape);
+            }
+            modal.hide();
+        };
 
         var init = function () {
             el.on('click', function (event) {

@@ -105,6 +105,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         getRecentReports: function (opt) {
             return Rest.all('estimate').getList(opt);
         },
+		getEmailTemplate: function(opt){
+			return Rest.one('template/emailReport').get(opt);
+		},
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...
             if (reportObj.post && typeof reportObj.post === 'function') {

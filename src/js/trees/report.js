@@ -188,13 +188,8 @@ var ReportCtrl = app.controller(
                 s.emailRpt.ccEmails = [];
 
                 s.emailRpt.senderEmail = Auth.data().email;
-                s.emailRpt.subject = "A Plus Tree Estimate #" + s.report.reportID + " - " + s.report.name;
-                s.emailRpt.message = ReportService.email.message;
-                if (Auth.data().fname) {
-                    s.emailRpt.message += Auth.data().fname;
-                } else {
-                    s.emailRpt.message += "A Plus Tree Service";
-                }
+
+                s.emailRpt.subject = cfg.getEntity().name + " Estimate #" + s.report.reportID + " - " + s.report.name;
                 s.emailRpt.disableSendBtn = false;
                 s.emailRpt.sendBtnText = 'Send';
 
@@ -214,6 +209,16 @@ var ReportCtrl = app.controller(
                             s.emailRpt.contactEmails = emList;
                         }
                     });
+
+				Api.getEmailTemplate().then(function(res){
+					if(res){
+						s.emailRpt.message = res;
+						if (Auth.data().fname) 
+							s.emailRpt.message += Auth.data().fname;
+						s.emailRpt.message+="\n"+cfg.getEntity().name;
+					}
+
+				});
             };
 
             s.sendReport = function (hideFn, showFn) {

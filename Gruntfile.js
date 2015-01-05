@@ -287,6 +287,7 @@ module.exports = function (grunt) {
                       'js/{,*/}/*.html',
                       'js/**/*.tpl.html',
                       'patch/**/*',
+					  'compiled-tpl/*',
                       //'img/*',
                       'fonts/*',
                     ]

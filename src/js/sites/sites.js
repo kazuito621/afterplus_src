@@ -15,11 +15,11 @@ var SitesCtrl = app.controller('SitesCtrl',
                     treeCount: 'number',
                     reportCount: 'number'
                 },
-				colSortOrder = {
-					tstamp_created: 'desc',
-					treeCount: 'desc',
-					reportCount: 'desc'
-				}
+                colSortOrder = {
+                    tstamp_created: 'desc',
+                    treeCount: 'desc',
+                    reportCount: 'desc'
+                };
             s.mode = '';
             s.type = 'site';
             s.items = {};
@@ -45,17 +45,17 @@ var SitesCtrl = app.controller('SitesCtrl',
 
             //we use this object as a 'singletone' property for delete-with-confirm-button directive
             //note, only one popover can be active on page
-            s.activePopover = {elem:{}, itemID: undefined};
+            s.activePopover = {elem: {}, itemID: undefined};
 
             //delete item method
             s.deleteCurrentItem = function () {
-                if (!s.activePopover.itemID) return;
+                if (!s.activePopover.itemID) { return; }
 
                 Api.removeSiteById(s.activePopover.itemID).then(function () {
                     s.refreshSites();
                     Api.refreshInitData();
-                }, function err(){
-                    s.setAlert("Property can't be deleted, try again later.",{type:'d',time:5});
+                }, function err() {
+                    s.setAlert("Property can't be deleted, try again later.", {type: 'd', time: 5});
                 });
                 s.refreshSites();
                 Api.refreshInitData();
@@ -93,17 +93,19 @@ var SitesCtrl = app.controller('SitesCtrl',
                 init();
             };
 
-			var clearFilter = function () {
-				self.fh.setFilter({siteID:'', siteName:'', city:''});
-				sitesFiltered = sites;
-				s.sh.applySort();
+            var clearFilter = function () {
+                self.fh.setFilter({siteID: '', siteName: '', city: ''});
+                sitesFiltered = sites;
+                s.sh.applySort();
                 s.displayedSites = sitesFiltered.slice(0, 49);
-			};
+            };
 
             var applyFilter = function () {
                 sitesFiltered = self.fh.applyFilter(sites);
-				// without this line here, the filter gets messed up on the next filter execution
-				if(!sitesFiltered.length) sitesFiltered=[{siteName:'No Results', city:'', state:'', tstamp_created_2:'', treeCount:''}];
+                // without this line here, the filter gets messed up on the next filter execution
+                if (!sitesFiltered.length) {
+                    sitesFiltered = [{siteName: 'No Results', city: '', state: '', tstamp_created_2: '', treeCount: ''}];
+                }
                 s.sh.applySort();
                 s.displayedSites = sitesFiltered.slice(0, 49);
             };
@@ -115,17 +117,17 @@ var SitesCtrl = app.controller('SitesCtrl',
                 if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
                 filterTextTimeout = $timeout(function () {
                     if (txt === '' || !txt) {
-						if(old){
-							self.fh.setFilter({siteName:'', city:'', siteID:''});
-							applyFilter();
-						}
+                        if (old) {
+                            self.fh.setFilter({siteName: '', city: '', siteID: ''});
+                            applyFilter();
+                        }
                     } else if (!isNaN(txt)) {
                         // if search entry is a number, search by siteID and name
-						self.fh.setFilter({siteID: txt, siteName: txt});
+                        self.fh.setFilter({siteID: txt, siteName: txt});
                         applyFilter();
                     } else {
                         // if just letters, then search by name and city
-						self.fh.setFilter({siteName: txt, city: txt});
+                        self.fh.setFilter({siteName: txt, city: txt});
                         applyFilter();
                     }
                 }, 500);
@@ -141,15 +143,15 @@ var SitesCtrl = app.controller('SitesCtrl',
                     return self.sh.columnClass(col);
                 },
                 applySort: function () {
-					// todo... this breaks when using filtering
+                    // todo... this breaks when using filtering
                     //sitesFiltered = self.sh.makeSort(sitesFiltered);
                 }
             };
 
             s.showMoreSites = function () {
+                var count = s.displayedSites.length;
                 if (s.initData === undefined || sites === undefined || count === sitesFiltered.length) { return; }
 
-                var count = s.displayedSites.length;
                 s.displayedSites = sitesFiltered.slice(0, count + 50);
             };
 

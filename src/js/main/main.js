@@ -24,6 +24,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	}
 
 	$rootScope.entityID=cfg.getEntityID();
+	$rootScope.entity=cfg.getEntity();
 
     s.isActiveTab = function (name) {
         var path = $location.path();

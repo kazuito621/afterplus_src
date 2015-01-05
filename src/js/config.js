@@ -15,12 +15,21 @@ window.cfg={
 			return api;
             //else return 'http://dev.arborplus.com/api/v2.0';
         }
+
+	// todo - later this all should be dynamically called from api
 	,getEntityID: function(){
             var h=this.host()||'';
 			if(h.match(/app.aplus/)) return 2;
 			if(h.match(/joseph/)) return 3;
 			if(h.match(/woodie/)) return 4;
 			return 1;	// default to dev.aplustree
+		}
+	,getEntity: function(){
+			var ent=[];
+			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus'};
+			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph'};
+			var eid=this.getEntityID();
+			return ent[eid];
 		}
     };
 

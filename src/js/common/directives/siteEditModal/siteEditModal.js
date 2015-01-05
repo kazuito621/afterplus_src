@@ -105,14 +105,17 @@ app.directive('siteEditModal', ['$modal', 'SiteModelUpdateService', 'Api', '$tim
             modal.hide();
         };
 
-        var init = function () {
-            el.on('click', function (event) {
-                event.preventDefault();
+        var elementClickFN = function (event) {
+            console.log('Clicking on element', scope.mode, scope.siteId);
+            event.preventDefault();
+            if (scope.mode === 'new') {
+                scope.openModal();
+            } else {
                 scope.openModal(scope.siteId);
-            });
+            }
         };
 
-        init();
+        el.on('click', elementClickFN);
     };
 
     return {

@@ -18,11 +18,26 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!--<tr>
                                 <td style="width: 125px">Sites:</td>
                                 <td style="width: 125px">Sites:</td>
                                 <td style="width: 125px">Sites:</td>
                                 <td style="width: 125px">Sites:</td>
+                            </tr>-->
+
+                            <tr style="width: 125px" ng-repeat="site in siteInfo">
+                                <td style="width: 125px">
+
+                                </td>
+                                <td style="width: 125px">{{site.siteName}}</td>
+                                <td style="width: 125px">
+                                    <span ng-repeat="user in site.users">
+                                        {{user.email}}
+                                    </span>
+                                    <a class="fa fa-user olive hand" title="Add contact" bs-tooltip="" site="site" site-users-edit-modal=""></a>
+                                </td>
+                                <td style="width: 125px">{{site.matchedTreesCount}}</td>
+                                <td style="width: 125px">{{site.estimatePrice}}:</td>
                             </tr>
                         </tbody>
                     </table>
@@ -32,8 +47,7 @@
             </div><!-- }}}} .modal-body -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
-                <button type="button" class="btn btn-primary" ng-click="sendReport($hide, $show)"
-                        ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
+                <button type="button" class="btn btn-primary" ng-click="gotoNext($hide, $show)">Next</button>
             </div>
         </div>
     </div>

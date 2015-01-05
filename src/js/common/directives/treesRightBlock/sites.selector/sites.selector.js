@@ -2,7 +2,6 @@
 app.directive('sitesSelector',
     [function () {
         'use strict';
-
         var linker = function (scope) {
             scope.totalMatchedTreeCount=0;
             scope.totalEstimatePrice=0;

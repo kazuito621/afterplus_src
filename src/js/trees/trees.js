@@ -1047,11 +1047,40 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return res;
             };
 
+            self.getSelectedSitesInfo = function () {
+                var info=[];
+                var selectedSites = _.filter(s.filteredSites, function (site) {
+                    return s.bulkEstimates.selectedSites.indexOf(site.siteID) > -1;
+                });
+
+               //var siteName= _.pluck(selectedSites, 'siteName');
+               //var estimatePrice= _.pluck(selectedSites, 'estimatePrice');
+               //var matchedTreesCount= _.pluck(selectedSites, 'matchedTreesCount');
+                angular.forEach(selectedSites,function(item){
+                    info.push({
+                        siteID:item.siteID,
+                        siteName:item.siteName,
+                        estimatePrice:item.estimatePrice,
+                        matchedTreesCount:item.matchedTreesCount
+                    })
+                });
+                return info;
+            };
+
             s.createBulkEstimate = function () {
                 var siteIDs=s.bulkEstimates.selectedSites.toString();
                 self.contractPropertyModalScope=s.$new();
-                Api.getSitesByIds(siteIDs).then(function(){
-                    self.contractPropertyModalScope.sites=res;
+                self.contractPropertyModalScope.siteInfo=self.getSelectedSitesInfo();
+                Api.getSiteUsersBySiteIds(siteIDs,'customer').then(function(res){
+                    angular.forEach(res,function(item){
+                        for(var i=0;i<self.contractPropertyModalScope.siteInfo.length;i++){
+                            if(self.contractPropertyModalScope.siteInfo[i].siteID==item.siteID){
+                                self.contractPropertyModalScope.siteInfo[i].users=item.users;
+                                break;
+                            }
+                        }
+                    });
+                    var a=1;
                 });
                 self.contractPropertyModal = $modal({
                     scope: self.contractPropertyModalScope,
@@ -1064,23 +1093,22 @@ var TreesCtrl = app.controller('TreesCtrl',
                     self.contractPropertyModal.show();
                     $(document).keyup(self.hideOnEscape);
                 });
-//
-                //console.log('Creating bulk estimates for', s.bulkEstimates);
-                //self.bulkModalScope = self.createBulkModalScope();
-                //self.bulkModal = $modal({
-                //    scope: self.bulkModalScope,
-                //    //template: '/js/trees/emailReport.tpl.html', // production
-                //    //template: 'js/trees/emailReport.tpl.html', // Dev
-                //    show: false
-                //});
-//
-                //self.bulkModal.$promise.then(function () {
-                //    self.bulkModal.show();
-                //    $(document).keyup(self.hideOnEscape);
-                //});
             };
-            self.sendReport = function (hideFn, showFn) {
-
+            s.gotoNext = function (hideFn, showFn) {
+                hideFn();
+                console.log('Creating bulk estimates for', s.bulkEstimates);
+                self.bulkModalScope = self.createBulkModalScope();
+                self.bulkModal = $modal({
+                    scope: self.bdropdownulkModalScope,
+                    //template: '/js/trees/emailReport.tpl.html', // production
+                    template: 'js/trees/emailReport.tpl.html', // Dev
+                    show: false
+                });
+////
+                self.bulkModal.$promise.then(function () {
+                    self.bulkModal.show();
+                    $(document).keyup(self.hideOnEscape);
+                });
             };
             self.updateSelectedSites = function () {
                 var updated = [];

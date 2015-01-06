@@ -136,6 +136,9 @@ function (Rest, $rootScope, $q, $location, storage) {
 
             return $q.all(promises);
         },
+        setBulkEstimate:function(data){
+            return Rest.one('todoApi',data).post('TODO');
+        },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({id: ids.toString()});

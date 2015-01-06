@@ -5,9 +5,6 @@ app.directive('sitesSelector',
         var linker = function (scope) {
             scope.totalMatchedTreeCount=0;
             scope.totalEstimatePrice=0;
-            scope.$watch(function(){return scope.selected.length;},function(n,o){
-                updateSelectedSiteInfo(scope);
-            });
             scope.toggle = function (opt) {
                 if (opt) {
                     scope.selected = _.pluck(scope.items, 'siteID');
@@ -15,19 +12,27 @@ app.directive('sitesSelector',
                     scope.selected.length = 0;
                 }
             };
-        };
-        var updateSelectedSiteInfo=function(scope){
-            scope.totalMatchedTreeCount=0;
-            scope.totalEstimatePrice=0;
-            for(var i=0;i<scope.items.length;i++){
-                if(scope.selected.indexOf(scope.items[i].siteID)!=-1){
-                    if(scope.items[i].matchedTreesCount!=undefined)
-                        scope.totalMatchedTreeCount+=parseInt(scope.items[i].matchedTreesCount);
-                    if(scope.items[i].estimatePrice!=undefined)
-                        scope.totalEstimatePrice+=parseFloat(scope.items[i].estimatePrice);
+            scope.getTotalTreeCount=function(){
+                var totalMatchedTreeCount=0;
+                for(var i=0;i<scope.items.length;i++){
+                    if(scope.selected.indexOf(scope.items[i].siteID)!=-1){
+                        if(scope.items[i].matchedTreesCount!=undefined)
+                            totalMatchedTreeCount+=parseInt(scope.items[i].matchedTreesCount);
+                    }
                 }
+                return totalMatchedTreeCount;
             }
-        }
+            scope.getTotalEstimatePrice=function(){
+                var totalEstimatePrice=0;
+                for(var i=0;i<scope.items.length;i++){
+                    if(scope.selected.indexOf(scope.items[i].siteID)!=-1){
+                        if(scope.items[i].estimatePrice!=undefined)
+                            totalEstimatePrice+=parseFloat(scope.items[i].estimatePrice);
+                    }
+                }
+                return totalEstimatePrice;
+            }
+        };
         return {
             restrict: 'EA',
             replace: false,

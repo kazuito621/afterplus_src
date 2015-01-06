@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header" ng-show="modalTitle">
                 <button type="button" class="close" ng-click="$hide()">&times;</button>
-                <h4 class="modal-title" ng-bind="modalTitle"></h4>
+                <h4 class="modal-title">Property Contacts</h4>
             </div>
             <div class="modal-body"> <!-- //// BODY START ///// -->
                 <form class="form-inline" ng-submit="emailEstimate()">
@@ -13,41 +13,51 @@
                             <th style="width: 125px">Select</th>
                             <th style="width: 125px">Name</th>
                             <th style="width: 125px">Contacts</th>
-                            <th style="width: 125px">Trees</th>
-                            <th style="width: 125px">Price</th>
+                            <th style="width: 125px">
+                                <i class="fa fa-tree ng-scope" title="Total Tree Count" bs-tooltip=""></i>
+                            </th>
+                            <th style="width: 125px">$</th>
                         </tr>
                         </thead>
                         <tbody>
-                            <tr style="width: 125px" ng-repeat="site in sitesInfo">
+                            <tr style="width: 125px" ng-repeat="site in sitesInfo" ng-class="site.users.length==0?'alert-warning':''">
                                 <td class="td-check">
                                     <input type="checkbox"  checklist-model="emailRpt.selectedSites" checklist-value="site" id="site-result-checkbox-{{site.siteID}}">
                                 </td>
                                 <td style="width: 250px">{{site.siteName}}</td>
                                 <td style="width: 900px">
-                                    <div ng-class="site.users.length==0?'btn-group':'btn-group'">
-                                        <span ng-repeat="user in site.users" class="btn btn-default hover-anchor" bs-tooltip
+                                    <div class="btn-group">
+                                        <span ng-repeat="user in site.users" class="btn btn-default hover-anchor"  bs-tooltip
                                                title="{{user.email}}">
                                             <span class="pull-right hover-action" >
                                                  <a ng-click="removeUser(user,site.users)"  href><i class="fa fa-times fa-fw"></i></a>
                                             </span>
                                             <!--
                                              If the ellipsis is added for the email & cross button functions correctly, then use this
-                                             <span class="your_class">{{user.email}}</span>
+                                             <span class="your_class">{{{user.fname+" "+user.lname}}</span>
                                              & remove those 2 lines (no ng-if is needed)
-                                             <span ng-if="user.email.length<11">{{user.email}}</span>
-                                            <span ng-if="user.email.length>=11">{{user.email.slice(0,11)}}..</span>
+                                             <span ng-if="user.email.length<10">{{user.fname+" "+user.lname}}</span>
+                                            <span ng-if="user.email.length>=10">{{(user.fname+" "+user.lname).slice(0,11)}}..</span>
                                             -->
-                                            <span ng-if="user.email.length<11">{{user.email}}</span>
-                                            <span ng-if="user.email.length>=11">{{user.email.slice(0,11)}}..</span>
+                                            <span>{{user.fName}} {{user.lName}}</span>
                                         </span>
                                     </div>
-                                    <a class="btn btn-info" title="Add contact" bs-tooltip="" site="site" site-users-edit-modal="">
+                                    <a class="btn btn-info" title="Add contact" bs-tooltip="" site="site" refresh-site-users="updateSiteUser" site-users-edit-modal="">
                                         <i class="fa fa-plus"></i>
                                     </a>
                                     <!--<a class="fa fa-user olive hand" title="Add contact" bs-tooltip="" site="site" site-users-edit-modal=""></a>-->
                                 </td>
                                 <td style="width: 75px">{{site.matchedTreesCount}}</td>
-                                <td style="width: 100px">{{site.estimatePrice}}</td>
+                                <td style="width: 100px">{{site.estimatePrice | currency}}</td>
+                            </tr>
+                            <tr style="width: 125px" >
+                                <td>
+                                </td>
+                                <td style="width: 250px"></td>
+                                <td style="width: 900px">
+                                </td>
+                                <td style="width: 75px">{{getTotalTreeCount(emailRpt.selectedSites)}}</td>
+                                <td style="width: 100px">{{getTotalEstimatePrice(emailRpt.selectedSites)| currency}}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -15,7 +15,7 @@
             </div>
         </td>
         <!--<td colspan="3"><h6>{{selected.length}} of {{items.length}} {{name}} selectedAA </h6></td>-->
-        <td colspan="3"><h6>{{selected.length}} of {{items.length}} ({{totalMatchedTreeCount}} trees, ${{totalEstimatePrice}}) </h6></td>
+        <td colspan="3"><h6>{{selected.length}} of {{items.length}} ({{getTotalTreeCount()}} trees, {{getTotalEstimatePrice()|currency}}) </h6></td>
     </tr>
     </thead>
 </table>

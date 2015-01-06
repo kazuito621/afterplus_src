@@ -1048,27 +1048,76 @@ var TreesCtrl = app.controller('TreesCtrl',
                     $(document).unbind('keyup', self.hideOnEscape);
                     self.bulkModal.hide();
                 };
+                res.goToPropertyContacts=function(hideFn, showFn){
+                    hideFn();
+                    self.contactPropertyModal.show();
+                };
+                res.getTotalTreeCount=function(collection){
+                    var total=0;
+                    angular.forEach(collection,function(item){
+                        total+=parseInt(item.matchedTreesCount);
+                    })
+                    return total;
+                };
+                res.getTotalEstimatePrice=function(collection){
+                    var total=0;
+                    angular.forEach(collection,function(item){
+                        total+=parseFloat(item.estimatePrice);
+                    })
+                    return total;
+                };
                 res.sitesInfo=[];
                 res.modalTitle = "Bulk estimate";
                 res.emailRpt = {
                     subject: 'A Plus Tree Estimate',
                     message: ReportService.email.message,
                     senderEmail: Auth.data().email,
-                    selectedSites:[],
-                    sendBtnText: 'Send bulk estimate'
+                    selectedSites:[]
                 };
+                res.emailRpt.sendBtnText= 'Send to '+res.emailRpt.selectedSites.length+" properties"
+
                 res.type = 'bulk';
                 res.siteNames = [];
 
                 return res;
             };
+            s.updateSiteUser=function(siteID,user,type){
+                if(type=='add'){
+                    for(var i=0;i<self.contactPropertyModalScope.sitesInfo.length;i++){
+                        if(self.contactPropertyModalScope.sitesInfo[i].siteID==siteID){
+                            self.contactPropertyModalScope.sitesInfo[i].users.push(user);
+                            break;
+                        }
+                    }
+                }
+                else if(type=='delete'){
+                    for(var i=0;i<self.contactPropertyModalScope.sitesInfo.length;i++){
+                        if(self.contactPropertyModalScope.sitesInfo[i].siteID==siteID){
+                            for(var j=0;j<self.contactPropertyModalScope.sitesInfo[i].users.length;j++){
+                                if(self.contactPropertyModalScope.sitesInfo[i].users[j].userID==user.userID){
+                                    self.contactPropertyModalScope.sitesInfo[i].users.splice(j,1);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
 
+
+                Api.getSiteUsers(siteID,'customer').then(function(res){
+                    for(var i=0;i<self.contactPropertyModalScope.sitesInfo.length;i++){
+                        if(self.contactPropertyModalScope.sitesInfo[i].siteID==siteID){
+                            self.contactPropertyModalScope.sitesInfo[i].users=res;
+                            break;
+                        }
+                    }
+                });
+            }
             s.createBulkEstimate = function () {
-                var siteIDs=s.bulkEstimates.selectedSites.toString();
                 self.contactPropertyModalScope=s.$new();
                 self.contactPropertyModalScope=self.createBulkModalScope();
-                self.contactPropertyModalScope.sitesInfo=self.getSelectedSitesInfo();
-                self.contactPropertyModalScope.emailRpt.selectedSites=angular.copy(self.contactPropertyModalScope.sitesInfo);
+                var siteIDs=s.bulkEstimates.selectedSites.toString();
                 Api.getSiteUsersBySiteIds(siteIDs,'customer').then(function(res){
                     angular.forEach(res,function(item){
                         for(var i=0;i<self.contactPropertyModalScope.sitesInfo.length;i++){
@@ -1080,6 +1129,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         }
                     });
                 });
+                self.contactPropertyModalScope.sitesInfo=self.getSelectedSitesInfo();
+                self.contactPropertyModalScope.emailRpt.selectedSites=angular.copy(self.contactPropertyModalScope.sitesInfo);
+
                 self.contactPropertyModal = $modal({
                     scope: self.contactPropertyModalScope,
                     //template: '/js/trees/propertyContacts.tpl.html', // production
@@ -1094,15 +1146,15 @@ var TreesCtrl = app.controller('TreesCtrl',
             };
             s.gotoNext = function (hideFn, showFn) {
                 hideFn();
+                self.contactPropertyModalScope.emailRpt.sendBtnText= 'Send to '+self.contactPropertyModalScope.emailRpt.selectedSites.length+" properties";
+                self.contactPropertyModalScope.modalTitle= 'Bulk estimate'+self.contactPropertyModalScope.emailRpt.selectedSites.length+" sites";
                 console.log('Creating bulk estimates for', s.bulkEstimates);
-                //self.bulkModalScope = self.createBulkModalScope();
                 self.bulkModal = $modal({
                     scope: self.contactPropertyModalScope,
                     //template: '/js/trees/emailReport.tpl.html', // production
                     template: 'js/trees/emailReport.tpl.html', // Dev
                     show: false
                 });
-////
                 self.bulkModal.$promise.then(function () {
                     self.bulkModal.show();
                     $(document).keyup(self.hideOnEscape);
@@ -1128,6 +1180,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.bulkEstimates.selectedSites = updated;
                 s.updateBulkEstimatePrice({ sites: s.TFSdata.filteredSiteIDs });
             };
+
+            s.sendReport=function (hideFn, showFn){
+                Api.setBulkEstimate(self.contactPropertyModalScope.emailRpt).then(function(){
+
+                });
+            }
 
             // ---- FILTERING OF SITES 
             // There are 2 type of filtering of sites:

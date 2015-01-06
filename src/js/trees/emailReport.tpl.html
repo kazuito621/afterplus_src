@@ -12,8 +12,12 @@
 				<table cellpadding='2'>
 					 <tr ng-if="type === 'bulk'">
                          <td>Sites:</td>
-                         <td>
+                         <!--<td>
 							 <div class="label label-primary" ng-repeat="site in emailRpt.selectedSites" style="margin-right: 5px; font-size: 13px; float: left; margin-bottom: 5px;">{{site.siteName}}</div>
+                         </td>-->
+                         <td>
+                             {{emailRpt.selectedSites.length}} Properties
+                             <a href="" ng-click="goToPropertyContacts($hide, $show)" style="color:blue">Edit</a>
                          </td>
                      </tr>
 					 <tr ng-if="type !== 'bulk'">
@@ -59,8 +63,9 @@
 
 			</div><!-- }}}} .modal-body -->
 			<div class="modal-footer">
+			<button type="button" class="btn btn-primary" ng-click="goToPropertyContacts($hide, $show)">Edit Contacts</button>
 			<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
-			<button type="button" class="btn btn-primary" ng-click="sendReport($hide, $show)" 
+			<button type="button" class="btn btn-primary" ng-click="sendReport($hide, $show)"
 					ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
 			</div>
 		</div>

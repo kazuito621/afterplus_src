@@ -59,23 +59,41 @@ app.service('Auth',
                     if (d.requestedReportID) {
                         $rootScope.requestedReportID = d.requestedReportID;
                     }
-                    sendEvt('onSignin');
-                    return deferred.resolve(d);
+					if(deferred){
+                    	sendEvt('onSignin');
+						deferred.resolve(d);
+					}
+					return;
                 }
                 var msg = (d && d.msg) ? d.msg : 'Login failed';
-                return deferred.reject(msg);
+                if(deferred) deferred.reject(msg);
             };
 
             // Returns a promise with either a resolve or a reject
-            this.signInCustToken = function (custToken) {
+			// @param returnData BOOL - if false, call onDataBackFromSignin directly
+            this.signInCustToken = function (custToken, waitForInit) {
+
                 // if custToken is just a number (reportID), and a user is already signed in,
                 // then just use existing login info
                 if (!isNaN(custToken) && this.isSignedIn()) {
-                    var def = $q.defer();
+               		var def = $q.defer();
                     def.resolve(this.data());
                     return def.promise;
                 }
-                return Api.signInCustToken(custToken, this, this.onDataBackFromSignIn);
+			
+				if( waitForInit ){
+               		var def = $q.defer();
+					var that=this;
+					Api.signInCustToken(custToken, false).then(function(d){
+						that.onDataBackFromSignIn(false, d);
+						Api.refreshInitData().then(function(res){
+							def.resolve(d);		
+						});
+					});
+					return def.promise;
+				}
+
+				return Api.signInCustToken(custToken, this, this.onDataBackFromSignIn);
             };
 
             // Returns a promise with either a resolve or a reject

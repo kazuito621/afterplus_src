@@ -49,11 +49,11 @@ app.config(['$routeProvider', '$locationProvider',
                 	templateUrl: "js/trees/trees.tpl.html"
                     ,auth:false, reloadOnSearch:false
                     ,resolve: {
-                      	deps:['Api', function(Api){  return Api.getPromise(); }]
-						,signin:['Auth', '$route', function(Auth, $route){
-									var rptID=$route.current.params.rptID;
-        							return Auth.signInCustToken(rptID);
-								}]
+                      	//deps:['Api', function(Api){  return Api.getPromise(); }],
+						signin:['Auth', '$route', function(Auth, $route){
+								var rptID=$route.current.params.rptID;
+								return Auth.signInCustToken(rptID, true);
+							}]
                     }
                 })
             .when("/trees", {

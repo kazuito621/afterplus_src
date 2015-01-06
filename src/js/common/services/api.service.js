@@ -41,9 +41,11 @@ function (Rest, $rootScope, $q, $location, storage) {
             sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
             Rest.one('init?nosite=1').get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-                if (data.filters)
-                    data.filters.hazards = { 'building': { selected: false }, 'caDamage': { selected: false }, 'caDamagePotential': { selected: false }, 'powerline': { selected: false } };
-                //dbg(data, 'got init back');
+                if (data.filters){
+                    data.filters.hazards = { 'building': { selected: false }, 'caDamage': { selected: false }, 
+						'caDamagePotential': { selected: false }, 'powerline': { selected: false } };
+				}
+                
                 initData = data;
                 $rootScope.initData = data;
 
@@ -151,16 +153,24 @@ function (Rest, $rootScope, $q, $location, storage) {
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({ id: ids.toString() });
         },
-        // Auth
+
+        // Auth via customer token
+		// @param context - scope of where the callback resides
+		// @param callback - FUNCTION
         signInCustToken: function (token, context, callback) {
             var deferred = $q.defer();
             if (!token) {
                 deferred.reject('Invalid token');
                 return deferred.promise;
             }
-            Rest.one('signincusttoken').get({ custToken: token })
-                .then(angular.bind(context, callback, deferred));
-            return deferred.promise;
+			if(context && callback){
+				Rest.one('signincusttoken').get({ custToken: token })
+					.then(angular.bind(context, callback, deferred));
+			}else{
+				return Rest.one('signincusttoken').get({ custToken: token })
+			}
+
+           	return deferred.promise;
         },
         signIn: function (email, password, context, callback) {
             var deferred = $q.defer();

@@ -1,12 +1,10 @@
 <div class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <div class="modal-header" ng-show="title">
-                <button type="button" class="close" ng-click="hide()">&times;</button>
+                <button type="button" class="close" ng-click="hideSiteEditModal()">&times;</button>
                 <h4 class="modal-title" ng-bind="title"></h4>
             </div>
-
             <div>
            		<form class="form-inline" ng-submit="saveSite()">
                     <div class='panel panel-default bottomMargin0'>
@@ -52,7 +50,7 @@
                             <input type="submit" value="SAVE" class='btn btn-info'>
                         </span>
 
-                        <button type="button" class="btn btn-default" ng-click="hide()">CLOSE</button>
+                        <button type="button" class="btn btn-default" ng-click="hideSiteEditModal()">CLOSE</button>
                     </div>
                 </form>
             </div>

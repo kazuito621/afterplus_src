@@ -70,10 +70,8 @@
 					<a ng-show="s.userCustCount<1 || s.userStaffCount<1" site-users-edit-modal site="s" 
 					   class="fa fa-frown-o _red _size6 hand" bs-tooltip title="Property is missing client contacts or company sales reps!"></a> 
 					&nbsp;
-					<span>
-						<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
-                           class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;
-					</span>
+					<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
+					   class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;
                     <a ng-if="auth.isAtleast('inventory')"
                        delete-with-confirm-button
                        type="site"

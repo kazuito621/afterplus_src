@@ -276,7 +276,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
             s.onSelectSiteID = function (id) {
-               
+
                 if (id && id > 0) {
                     console.log('On select site id', id);
                     var siteObj = s.getSiteByID(id);
@@ -298,9 +298,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }, 2500);
             }, s)
 
-            // When the selected.siteID model changes (not necessarily forced by user) then:
-            // 		1. if set to null, then show SITES on map
-            //		2. ELSE, if siteID exists, show TREES on the map
+            //When the selected.siteID model changes (not necessarily forced by user) then:
+            //		1. if set to null, then show SITES on map
+            //   	2. ELSE, if siteID exists, show TREES on the map
             s.$watch('selected.siteID', function (ID, oldID) {
                 SiteModelUpdateService.setSites(s.filteredSites);
                 ReportService.setSiteID(ID);
@@ -1179,12 +1179,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                     return;
                 // reset selected trees to prevent duplicates
                 s.selectedTrees = [];
-                s.setAlert('Loading Trees', { busy: true });
+                s.setAlert('Loading Trees', { busy: true, time: "false" });
                 Api.getTrees(s.selected.siteID)
-                    .then(function (data) {
+                    .then(function (data) {                        
                         TFS.setTreeResults(data);		// after this, the trees get
                         // set back on $scope via $on('onTreeFilterUpdate')
-                        s.setAlert(false);
+                        //s.setAlert(false);
+                        s.hideAllAlert();
                     });
             };
 
@@ -1263,7 +1264,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Watch for init data here.
             s.$watch('initData.sites', function (data) {
-                
+
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
                     initMap().then(function () {

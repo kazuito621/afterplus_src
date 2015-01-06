@@ -1,29 +1,29 @@
 'use strict';
 
-var MainCtrl = app.controller('MainCtrl', 
-['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout','$rootScope','$location','$q', 'Auth',
-function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth ) {
-	var s = window.mcs = $scope;
+var MainCtrl = app.controller('MainCtrl',
+['$scope', 'Restangular', '$routeParams', '$route', '$alert', 'storage', '$timeout', '$rootScope', '$location', '$q', 'Auth',
+function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootScope, $location, $q, Auth) {
+    var s = window.mcs = $scope;
     var staffOnly = ['sites', 'clients'];
 
-	s.routeParams={};
-	s.appData={};
-	s.whoami='MainCtrl'
-	s.alertBox;
-	s.localStore={};
-	storage.bind(s, 'localStore', {defaultValue:{token:false}});
+    s.routeParams = {};
+    s.appData = {};
+    s.whoami = 'MainCtrl'
+    s.alertBox;
+    s.localStore = {};
+    storage.bind(s, 'localStore', { defaultValue: { token: false } });
 
-	// links for $scope to Auth class (so templates can use them)
-	s.auth={
-		is: angular.bind(Auth, Auth.is)
-		,isSignedIn: angular.bind(Auth, Auth.isSignedIn)
-		,getLoginName: angular.bind(Auth, Auth.getLoginName)
-		,signOut: angular.bind(Auth, Auth.signOut)
-        ,isAtleast: angular.bind(Auth, Auth.isAtleast)
-		,data: angular.bind(Auth, Auth.data)
-	}
+    // links for $scope to Auth class (so templates can use them)
+    s.auth = {
+        is: angular.bind(Auth, Auth.is)
+		, isSignedIn: angular.bind(Auth, Auth.isSignedIn)
+		, getLoginName: angular.bind(Auth, Auth.getLoginName)
+		, signOut: angular.bind(Auth, Auth.signOut)
+        , isAtleast: angular.bind(Auth, Auth.isAtleast)
+		, data: angular.bind(Auth, Auth.data)
+    }
 
-	$rootScope.entityID=cfg.getEntityID();
+    $rootScope.entityID = cfg.getEntityID();
 
     s.isActiveTab = function (name) {
         var path = $location.path();
@@ -32,93 +32,93 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
         return name === current;
     };
 
-	// global wrapper for broadcasting, so that each controller doesnt need $rootScope
-	// why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,
-	// this way you dont have to keep track of where everything is in relation to everything else... 
-	s.sendEvt = function(id, obj){ $rootScope.$broadcast(id, obj); }
+    // global wrapper for broadcasting, so that each controller doesnt need $rootScope
+    // why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,
+    // this way you dont have to keep track of where everything is in relation to everything else... 
+    s.sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); }
 
 
-	var lastRenderedTplID;
-	var render = function() {
-		// break up url path into array 
-		// ie. "#/trees/edit/1234" = ['trees', 'edit', '1234']
-		s.renderPath=$location.path().substr(1).split("/");
+    var lastRenderedTplID;
+    var render = function () {
+        // break up url path into array 
+        // ie. "#/trees/edit/1234" = ['trees', 'edit', '1234']
+        s.renderPath = $location.path().substr(1).split("/");
 
-		s.renderTplID=s.renderPath[0];
-		if(s.renderTplID=='estimate') s.renderTplID='trees';		
+        s.renderTplID = s.renderPath[0];
+        if (s.renderTplID == 'estimate') s.renderTplID = 'trees';
 
-		// if render template is the same, we can stop, but still
-		// send an event that a nav has occured
-		if(lastRenderedTplID == s.renderTplID) return s.sendEvt('nav', {new:s.renderTplID, old:lastRenderedTplID});
+        // if render template is the same, we can stop, but still
+        // send an event that a nav has occured
+        if (lastRenderedTplID == s.renderTplID) return s.sendEvt('nav', { new: s.renderTplID, old: lastRenderedTplID });
 
-		// lazy load the property template based on the base path
-		// ie. if "#/trees", then load "trees.tpl.html"
-		// this is done by setting the tpl_XXXX variable, which is the value of the template path
-		var tplPath=getTemplatePath(s.renderTplID);
-		s['tpl_'+s.renderTplID]=tplPath;		// load the template, which changes the ng-include var in index.html
-		s['showtpl_'+s.renderTplID]=true;	// now show it
+        // lazy load the property template based on the base path
+        // ie. if "#/trees", then load "trees.tpl.html"
+        // this is done by setting the tpl_XXXX variable, which is the value of the template path
+        var tplPath = getTemplatePath(s.renderTplID);
+        s['tpl_' + s.renderTplID] = tplPath;		// load the template, which changes the ng-include var in index.html
+        s['showtpl_' + s.renderTplID] = true;	// now show it
 
-		s.sendEvt('nav', {new:s.renderTplID, old:lastRenderedTplID});
+        s.sendEvt('nav', { new: s.renderTplID, old: lastRenderedTplID });
 
-		// no turn off last one
-		if(lastRenderedTplID) s['showtpl_'+lastRenderedTplID]=false;
-		lastRenderedTplID=s.renderTplID;
-	}
+        // no turn off last one
+        if (lastRenderedTplID) s['showtpl_' + lastRenderedTplID] = false;
+        lastRenderedTplID = s.renderTplID;
+    }
 
     //not being used anymore, since switching to routeProvider
-	var getTemplatePath = function(tplID){
-		if(tplID=='tree_edit') return 'js/trees/edit.tpl.html';
-		if(tplID=='client_edit') return 'js/clients/edit.mobile.tpl.html';
-		if(tplID=='site_edit') return 'js/sites/edit.mobile.tpl.html';
-        if(tplID=='site_users_edit') return 'js/sites/siteUsers.mobile.tpl.html';
-		// for signin, trees, sites, and clients... used default
-		return 'js/'+tplID+"/"+tplID+".tpl.html";
-	}
+    var getTemplatePath = function (tplID) {
+        if (tplID == 'tree_edit') return 'js/trees/edit.tpl.html';
+        if (tplID == 'client_edit') return 'js/clients/edit.mobile.tpl.html';
+        if (tplID == 'site_edit') return 'js/sites/edit.mobile.tpl.html';
+        if (tplID == 'site_users_edit') return 'js/sites/siteUsers.mobile.tpl.html';
+        // for signin, trees, sites, and clients... used default
+        return 'js/' + tplID + "/" + tplID + ".tpl.html";
+    }
 
     //todo refactor. Which other 'mobile' will we have?
-    var checkIfMobileView = function(){
-		$rootScope.isMobile = false;
-		if($route && $route.current && $route.current.$$route)
-			$rootScope.isMobile = $route.current.$$route.isMobile
+    var checkIfMobileView = function () {
+        $rootScope.isMobile = false;
+        if ($route && $route.current && $route.current.$$route)
+            $rootScope.isMobile = $route.current.$$route.isMobile
     };
     checkIfMobileView();
 
-	s.$on("$routeChangeSuccess", function(evt, current, previous) {
-		var authReq = _.extract(current, '$$route.auth');
-		if (authReq && !Auth.isSignedIn()) {
-			//todo - maybe this hsould be stored internally instead of going to the url
-			//note: estimate handles its own signin
-			var currentUrl = $location.url();
-			$location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
-			return;
-		} 
-		dbg("no redir ");
+    s.$on("$routeChangeSuccess", function (evt, current, previous) {
+        var authReq = _.extract(current, '$$route.auth');
+        if (authReq && !Auth.isSignedIn()) {
+            //todo - maybe this hsould be stored internally instead of going to the url
+            //note: estimate handles its own signin
+            var currentUrl = $location.url();
+            $location.url("/signin?redirect=" + encodeURIComponent(currentUrl));
+            return;
+        }
+        dbg("no redir ");
 
 
-		s.renderPath=$location.path().substr(1).split("/");
-		//s.renderTplID=s.renderPath[0];
-		//if(s.renderTplID=='estimate') s.renderTplID='trees';		
+        s.renderPath = $location.path().substr(1).split("/");
+        //s.renderTplID=s.renderPath[0];
+        //if(s.renderTplID=='estimate') s.renderTplID='trees';		
 
         checkIfMobileView();
         if ($route.current.resolve) {
             render();
             s.currentTab = s.renderPath[0];
         }
-	});
+    });
 
 
-	// so that services/factories can call the alert
-	s.$on('alert', function(e,data){
-		s.setAlert(data.msg,data);
-	});
-
-
-
+    // so that services/factories can call the alert
+    s.$on('alert', function (e, data) {
+        s.setAlert(data.msg, data);
+    });
 
 
 
 
-	// ---------------------------------------- UTILS 
+
+
+
+    // ---------------------------------------- UTILS 
 
 
     /**
@@ -132,99 +132,113 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
      *              - pri: {INT} - priority - if set, only another status of equal or higher val can overwrite
      *              - pri_len {INT} - priority length - time in seconds of how long priority lasts
      */
-	var alertCfg={placement:'top', keyboard:true, show:true, type:'info', template:'js/main/alert.tpl.html'}
-	s.setAlert = function(txt, opt) {
-		if(!txt || txt=='' || txt=='false'){ 
-			return;
-			if( s.alertBox && s.alertBox.hide && _.isFunction(s.alertBox.hide) ){
-				s.alertBox.hide();
-				return;
-			}
-		}
+    var alertCfg = { placement: 'top', keyboard: true, show: true, type: 'info', template: 'js/main/alert.tpl.html' }
 
-		// set default values
-		opt=opt||{}; opt.type=opt.type||'info'; opt.pri=opt.pri||0;
-		opt.pri_len=opt.pri_len||4;
-		if (opt.time == 'false') {
-			opt.duration = false;
-		} else {
-			opt.duration=opt.time||5;
-		}
-		if(opt.type=='d'){opt.type='danger'}; if(opt.type=='ok'){opt.type='success'};
+    s.allAlerts = [];
+    s.setAlert = function (txt, opt) {
+        if (!txt || txt == '' || txt == 'false') {
+            return;
+            if (s.alertBox && s.alertBox.hide && _.isFunction(s.alertBox.hide)) {
+                s.alertBox.hide();
+                return;
+            }
+        }
 
-		if(s.currentAlertPri && s.currentAlertPri > opt.pri) return;     
+        // set default values
+        opt = opt || {}; opt.type = opt.type || 'info'; opt.pri = opt.pri || 0;
+        opt.pri_len = opt.pri_len || 4;
+        if (opt.time == 'false') {
+            opt.duration = false;
+        } else {
+            opt.duration = opt.time || 5;
+        }
+        if (opt.type == 'd') { opt.type = 'danger' }; if (opt.type == 'ok') { opt.type = 'success' };
+
+        if (s.currentAlertPri && s.currentAlertPri > opt.pri) return;
 
         s.currentAlertPri = opt.pri;
         clearInterval(s.iv_setAlert)
-        s.iv_setAlert = setTimeout(function(){
-			s.currentAlertPri=0;
-            }, opt.pri_len*1000)
+        s.iv_setAlert = setTimeout(function () {
+            s.currentAlertPri = 0;
+        }, opt.pri_len * 1000)
 
-		alertCfg=_.merge(alertCfg, opt);	
-		if( opt.busy )txt='<img src="img/ajax-loader.gif"> &nbsp; '+txt;
-		alertCfg.content=txt;
-		s.alertBox=$alert(alertCfg);
-	};
-
-	s.hideAlert = function() {
-		s.alertBox.hide();
-	}
-
-	s.safeApply = function(fn) {
-	  var phase = this.$root.$$phase;
-	  if(phase == '$apply' || phase == '$digest') {
-		if(fn && (typeof(fn) === 'function')) {
-		  fn();
-		}
-	  } else {
-		this.$apply(fn);
-	  }
-	};
-
-	// A safe way to call a func that was generated by a non-angular event
-	// Usage: var x=safeApplyFn(function(a,b,c){ do_something(); }, this);
-	// x(a,b,c);
-	s.safeApplyFn = function(fn,scope){
-		return function(){
-			var args=arguments;
-			var phase = this.$root.$$phase;
-			if(phase == '$apply' || phase == '$digest') {
-				fn.apply(scope,args);
-			}else{
-				s.$apply(function(){fn.apply(scope,args)});
-			}
-		}
-	}
-
-
-
-
-
-
-	// prevent navigation when a form is unsaved (dirty)
-	// how it works... 
-	//		1. ReportService registers a "dirty" check function
-	//		2. then _prevent is set to TRUE
-	//		3. on location change, if prevent is true, the "dirty" func is called... if
-	//			returned true, then a notification is sent asking user confirmation
-	//			B. if user ignores, an event is setn to Service "preventNavIgnored"
-	//		4. Trees.js which as a "onNav" event, also checks in here to setn the _prevent flag
-	//		todo... this hsould all be cleaned up into a service, and hosted on github??
-	var _prevent=false;
-	var _preventUrl=null;
-	var _dirtyChkFuncs=[];
-	s.preventNav = function(val){
-		if(val !== false) val=true;
-		_prevent=val;
-		if(val) _preventUrl=$location.absUrl();
-	}
-
-    var getPath = function (url) {
-		if(url) return url.split('#')[1].split('/')[1];
-		return '';
+        alertCfg = _.merge(alertCfg, opt);
+        if (opt.busy) txt = '<img src="img/ajax-loader.gif"> &nbsp; ' + txt;
+        alertCfg.content = txt;
+        s.alertBox = $alert(alertCfg);
+        s.allAlerts.push(s.alertBox);
     };
 
-    var permissionsCheck = function(loc) {
+    s.hideAlert = function () {
+        s.alertBox.hide();
+    }
+    s.hideAllAlert = function () {
+        if (s.allAlerts.length > 0) {
+            for (var alert in s.allAlerts) {
+                var al = s.allAlerts[alert];
+                al.hide();
+            }
+        }
+        else {
+            s.alertBox.hide();
+        }
+    }
+
+    s.safeApply = function (fn) {
+        var phase = this.$root.$$phase;
+        if (phase == '$apply' || phase == '$digest') {
+            if (fn && (typeof (fn) === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
+        }
+    };
+
+    // A safe way to call a func that was generated by a non-angular event
+    // Usage: var x=safeApplyFn(function(a,b,c){ do_something(); }, this);
+    // x(a,b,c);
+    s.safeApplyFn = function (fn, scope) {
+        return function () {
+            var args = arguments;
+            var phase = this.$root.$$phase;
+            if (phase == '$apply' || phase == '$digest') {
+                fn.apply(scope, args);
+            } else {
+                s.$apply(function () { fn.apply(scope, args) });
+            }
+        }
+    }
+
+
+
+
+
+
+    // prevent navigation when a form is unsaved (dirty)
+    // how it works... 
+    //		1. ReportService registers a "dirty" check function
+    //		2. then _prevent is set to TRUE
+    //		3. on location change, if prevent is true, the "dirty" func is called... if
+    //			returned true, then a notification is sent asking user confirmation
+    //			B. if user ignores, an event is setn to Service "preventNavIgnored"
+    //		4. Trees.js which as a "onNav" event, also checks in here to setn the _prevent flag
+    //		todo... this hsould all be cleaned up into a service, and hosted on github??
+    var _prevent = false;
+    var _preventUrl = null;
+    var _dirtyChkFuncs = [];
+    s.preventNav = function (val) {
+        if (val !== false) val = true;
+        _prevent = val;
+        if (val) _preventUrl = $location.absUrl();
+    }
+
+    var getPath = function (url) {
+        if (url) return url.split('#')[1].split('/')[1];
+        return '';
+    };
+
+    var permissionsCheck = function (loc) {
         // Deny access to clients and sites
         var oldPath = getPath(loc.oldUrl);
         var newPath = getPath(loc.newUrl);
@@ -249,47 +263,47 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
         permissionsCheck(s.locationData);
     });
 
-	s.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
-        permissionsCheck({event: event, newUrl: newUrl, oldUrl: oldUrl});
+    s.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
+        permissionsCheck({ event: event, newUrl: newUrl, oldUrl: oldUrl });
 
-		return;
-		// Allow navigation if our old url wasn't where we prevented navigation from
-		if (_preventUrl != oldUrl || _preventUrl == null) {
-			if(_prevent) return s.preventNav(false);
-		}
+        return;
+        // Allow navigation if our old url wasn't where we prevented navigation from
+        if (_preventUrl != oldUrl || _preventUrl == null) {
+            if (_prevent) return s.preventNav(false);
+        }
 
-		if (_prevent && _preventIsDirty() ){ 	//check for dirty forms
-				if(!confirm("You have unsaved changes, continue?")) 
-					event.preventDefault();
-				else{
-					s.preventNav(false);
-					s.sendEvt('preventNavIgnored');
-				}
-		}
-	});
+        if (_prevent && _preventIsDirty()) { 	//check for dirty forms
+            if (!confirm("You have unsaved changes, continue?"))
+                event.preventDefault();
+            else {
+                s.preventNav(false);
+                s.sendEvt('preventNavIgnored');
+            }
+        }
+    });
 
-	var _preventIsDirty = function(){
-		return false;
-		var isDirty=false;
-		// todo - the dirtFunc checks should be associated with a specific URL
-		// this will probably break when there is more than one registered
-		_.each(_dirtyChkFuncs,function(isDirtyF){
-			if(isDirtyF()) isDirty=true;
-		});
-		return isDirty;
-	}
+    var _preventIsDirty = function () {
+        return false;
+        var isDirty = false;
+        // todo - the dirtFunc checks should be associated with a specific URL
+        // this will probably break when there is more than one registered
+        _.each(_dirtyChkFuncs, function (isDirtyF) {
+            if (isDirtyF()) isDirty = true;
+        });
+        return isDirty;
+    }
 
-	s.$on('registerPreventNav', function(evt, fn) {
-		if(_.isFunction(fn)) _dirtyChkFuncs.push(fn);
-			s.preventNav();
-	});
+    s.$on('registerPreventNav', function (evt, fn) {
+        if (_.isFunction(fn)) _dirtyChkFuncs.push(fn);
+        s.preventNav();
+    });
 
-	window.onbeforeunload = function(){
-		if(_prevent && $location.absUrl() == _preventUrl){
-			if(_preventIsDirty())
-				return "You have unsaved changes, continue?";
-		}
-	}
+    window.onbeforeunload = function () {
+        if (_prevent && $location.absUrl() == _preventUrl) {
+            if (_preventIsDirty())
+                return "You have unsaved changes, continue?";
+        }
+    }
 
 
 

@@ -2,77 +2,82 @@
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}">
         <thead>
-        <tr id="estimate_table_heading">
-            <td class="td-image">Tree</td>
-            <td class="td-id">ID</td>
-            <td class="td-name">Name</td>
-            <td class="td-treatment">Treatment</td>
-            <td class="td-bid">Bid ($)</td>
-            <td class="td-action"></td>
-        </tr>
+            <tr id="estimate_table_heading">
+                <td class="td-image">Tree</td>
+                <td class="td-id">ID</td>
+                <td class="td-name">Name</td>
+                <td class="td-treatment">Treatment test</td>
+                <td class="td-bid">Bid ($)</td>
+                <td class="td-action"></td>
+            </tr>
         </thead>
         <tbody>
-        <!-- todo-bindonce - i removed it from below... cuz it broke editing of values...
-            if we can get rebind to work, then we need to rebind if the user is an admin (and they want to edit)
-            and leave bindonce if the user is a customer t-->
-        <tr ng-repeat="item in groupedItems" ng-if="report.items.length>0"
-            ng-init="itemIndex = $index"
-            ng-class="rowHighlightClass(item)"
-            class='hoverHotspot'
-            ng-mouseover="hover=true;onItemRollOver(TreesCtrl.findMarker(item.treeID))"
-            ng-mouseleave="hover=false;onItemRollOut(TreesCtrl.findMarker(item.treeID))"
-            id="rpt_item_{{item.treeID}}">
-            <td data-title="listing_image" class="td-image">
+            <!-- todo-bindonce - i removed it from below... cuz it broke editing of values...
+                if we can get rebind to work, then we need to rebind if the user is an admin (and they want to edit)
+                and leave bindonce if the user is a customer t-->
+            <tr ng-repeat="item in groupedItems | limitTo : limit" ng-if="report.items.length>0"
+                ng-init="itemIndex = $index"
+                ng-class="rowHighlightClass(item)"
+                class='hoverHotspot'
+                ng-mouseover="hover=true;onItemRollOver(TreesCtrl.findMarker(item.treeID))"
+                ng-mouseleave="hover=false;onItemRollOut(TreesCtrl.findMarker(item.treeID))"
+                id="rpt_item_{{item.treeID}}">
+                <td data-title="listing_image" class="td-image">
 
-                <tree-image-popover item="item" cache-buster="tree_cachebuster"/>
-            </td>
-            <td data-title="listing_ID" class="td-id">{{item.localTreeID}}</td>
-            <td data-title="listing_species" class="td-name">
-                {{item.dbhID | dbhID2Name:this }}
-                {{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
-                <span class="light" bo-text="'[' + item.treeID + ']'"></span>
-                <a href='#/tree_edit/{{item.treeID}}' class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')">
-                    <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
-                </a>
-                <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
-            </td>
-            <td data-title="listing_treatment" colspan="3" class="td-treatment-bid">
-                <table class="">
-                    <tr ng-repeat="treatment in item.treatments" ng-init="treatmentIndex = $index">
-                        <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_treatment" class="td-treatment">
-                            <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
-                               editable-select="treatment.treatmentTypeCode"
-                               onshow="onShowEditItem(item.$$hashKey)"
-                               onaftersave="onTreatmentTypeUpdate(item, treatment)"
-                               onhide="onHideEditItem()">
-                                {{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
-                            </a>
-                        </td>
-                        <td ng-if="auth.is('customer')">
-                                                <span ng-bind="treatment.treatmentTypeCode|treatmentTypeCode2Name:this">
-                                                </span>
-                        </td>
-                        <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_price" class="td-bid">
-                            &#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()" onaftersave="onTreatmentPriceUpdate()">{{treatment.price|formatPrice}}</a>
-                        </td>
-                        <td ng-if="auth.is('customer')">
-                            <span ng-bind="treatment.price|formatPrice"></span>
-                        </td>
+                    <tree-image-popover item="item" cache-buster="tree_cachebuster" />
+                </td>
+                <td data-title="listing_ID" class="td-id">{{item.localTreeID}}</td>
+                <td data-title="listing_species" class="td-name">
+                    {{item.dbhID | dbhID2Name:this }}
+                    {{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
+                    <span class="light" bo-text="'[' + item.treeID + ']'"></span>
+                    <a href='#/tree_edit/{{item.treeID}}' class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')">
+                        <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
+                    </a>
+                    <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
+                </td>
+                <td data-title="listing_treatment" colspan="3" class="td-treatment-bid">
+                    <table class="">
+                        <tr ng-repeat="treatment in item.treatments" ng-init="treatmentIndex = $index">
+                            <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_treatment" class="td-treatment">
+                                <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
+                                   editable-select="treatment.treatmentTypeCode"
+                                   onshow="onShowEditItem(item.$$hashKey)"
+                                   onaftersave="onTreatmentTypeUpdate(item, treatment)"
+                                   onhide="onHideEditItem()">
+                                    {{treatment.treatmentTypeCode|treatmentTypeCode2Name:this}}
+                                </a>
+                            </td>
+                            <td ng-if="auth.is('customer')">
+                                <span ng-bind="treatment.treatmentTypeCode|treatmentTypeCode2Name:this">
+                                </span>
+                            </td>
+                            <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_price" class="td-bid">
+                                &#36;<a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)" onhide="onHideEditItem()" onaftersave="onTreatmentPriceUpdate()">{{treatment.price|formatPrice}}</a>
+                            </td>
+                            <td ng-if="auth.is('customer')">
+                                <span ng-bind="treatment.price|formatPrice"></span>
+                            </td>
 
-                        <td data-title="listing_options" class="td-action">
-                            <a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action' ng-if="auth.is('admin')">
-                                <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-            </td>	<!-- }}} listing_treatment colspan=3 -->
-        </tr>
-        <tr ng-if="report.total.items && data.mode()=='trees'">
-            <td colspan="4" class="td-bid">Subtotal:</td>
-            <td class="td-bid">&#36;{{report.total.items|formatPrice}}</td>
-            <td>&nbsp;</td>
-        </tr>
+                            <td data-title="listing_options" class="td-action">
+                                <a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action' ng-if="auth.is('admin')">
+                                    <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>	<!-- }}} listing_treatment colspan=3 -->
+            </tr>
+            <tr >
+                <td colspan="6" ng-show="!overLimit">
+                    <a href ng-click="showMore()">{{showMoreText}}</a>
+                </td>
+            </tr>
+            <tr ng-if="report.total.items && data.mode()=='trees'">
+                <td colspan="4" class="td-bid">Subtotal:</td>
+                <td class="td-bid">&#36;{{report.total.items|formatPrice}}</td>
+                <td>&nbsp;</td>
+            </tr>
         </tbody>
     </table>
 </div>

@@ -35,7 +35,8 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/js/{,*/}*.*'],
                 tasks: ['newer:jshint:all', 'newer:html2js'],
                 options: {
-                    livereload: true
+					//it gets annoying sometimes for the browser to reload after each save
+                    //livereload: true
                 }
             },
             jsTest: {

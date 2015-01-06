@@ -60,7 +60,7 @@ module.exports = function (grunt) {
                   '.tmp/css/{,*/}*.css',
                   '<%= yeoman.app %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ],
-                tasks: ['newer:html2js'],
+                tasks: ['html2js'],
             }
         },
 

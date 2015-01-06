@@ -13,7 +13,7 @@ app.config(['$routeProvider', '$locationProvider',
 			// routes for mobile app
 			.when("/client_edit/:clientID?", {
 				templateUrl: "js/clients/edit.mobile.tpl.html",
-				auth: false, isMobile:true, resolve: {
+				auth: false, reloadOnSearch:false, isMobile:true, resolve: {
 					signin:['Auth', '$location', function(Auth, $location){
 							return Auth.signInUserToken($location.search().token);
 						}]
@@ -22,7 +22,7 @@ app.config(['$routeProvider', '$locationProvider',
         	})
 			.when("/site_edit/:siteID?", {
 				templateUrl: "js/sites/edit.mobile.tpl.html",
-				auth: false, isMobile:true, resolve: {
+				auth: false, reloadOnSearch:false, isMobile:true, resolve: {
 					signin:['Auth', '$location', function(Auth, $location){
 							return Auth.signInUserToken($location.search().token);
 						}]
@@ -31,7 +31,7 @@ app.config(['$routeProvider', '$locationProvider',
         	})
 			.when("/site_users_edit/:siteID?", {
 				templateUrl: "js/sites/siteUsers.mobile.tpl.html",
-				auth: false, isMobile:true, resolve: {
+				auth: false, reloadOnSearch:false, isMobile:true, resolve: {
 					signin:['Auth', '$location', function(Auth, $location){
 							return Auth.signInUserToken($location.search().token);
 						}]
@@ -43,11 +43,11 @@ app.config(['$routeProvider', '$locationProvider',
 
             .when("/signin", {
                 templateUrl: "js/signin/signin.tpl.html",
-                auth:false
+                auth:false, reloadOnSearch:false
 				})
             .when('/estimate/:rptID', {
                 	templateUrl: "js/trees/trees.tpl.html"
-                    ,auth:false
+                    ,auth:false, reloadOnSearch:false
                     ,resolve: {
                       	deps:['Api', function(Api){  return Api.getPromise(); }]
 						,signin:['Auth', '$route', function(Auth, $route){
@@ -57,32 +57,32 @@ app.config(['$routeProvider', '$locationProvider',
                     }
                 })
             .when("/trees", {
-                templateUrl: "js/trees/trees.tpl.html",
-                auth:true
+                templateUrl: "js/trees/trees.tpl.html"
+                ,auth:true, reloadOnSearch:false
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
             .when("/tree_edit/:treeID", {
-                templateUrl: "js/trees/edit.tpl.html",
-                auth:true
+                templateUrl: "js/trees/edit.tpl.html"
+                ,auth:true, reloadOnSearch:false
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
             .when("/estimates", {
-                templateUrl: "js/estimates/estimates.tpl.html",
-                auth:true
+                templateUrl: "js/estimates/estimates.tpl.html"
+                ,auth:true, reloadOnSearch:false
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
             .when("/sites", {
-                templateUrl: "js/sites/sites.tpl.html",
-                auth:true
+                templateUrl: "js/sites/sites.tpl.html"
+                ,auth:true, reloadOnSearch:false
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
             .when("/clients", {
-                templateUrl: "js/clients/clients.tpl.html",
-                auth:true
+                templateUrl: "js/clients/clients.tpl.html"
+                ,auth:true, reloadOnSearch:false
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})

@@ -13,7 +13,7 @@ function (Rest, $rootScope, $q, $location, storage) {
 
     var isSignedIn = function () {
         var authData = storage.get('authData');
-        return (authData.userID > 0);
+        return (authData && authData.userID > 0);
     };
 
     var loadSites = function () {

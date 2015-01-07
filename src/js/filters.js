@@ -240,6 +240,25 @@ angular.module('arborPlusFilters', [])
 		}
 	})
 
+
+	// add commas to number, and remove ".00" at end
+	.filter('statusText', function(){
+		return function( val ){
+			var o={ 
+					draft:'DRAFT',
+					sent:'SENT / NEEDS APPROVAL',
+					needs_approval:'SENT / NEEDS APPROVAL',
+					approved:'APPROVED',
+					completed:'COMPLETED',
+					paid:'PAID'
+				};
+			var v=o[val];
+			if(v) return v;
+			return val;
+		}
+	})
+	
+
     // format phone like 510-331-1080 ext. 123
     .filter('formatPhoneNumber', function(){
         return function( val ){

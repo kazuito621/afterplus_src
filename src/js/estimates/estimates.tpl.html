@@ -94,7 +94,7 @@
 								bs-select onclick="return false;">
 						</button> 
 						<button type='button' ng-if="auth.is('customer')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
-								 onclick="return false;">{{ e.status | statusText }}</button>:
+								 onclick="return false;">{{ e.status | statusText }}</button>
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">{{getTstamp(e) | formatDate}}</td>
                     <td>

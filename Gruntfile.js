@@ -35,7 +35,6 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/js/{,*/}*.*'],
                 tasks: ['newer:jshint:all'],
                 options: {
-					//it gets annoying sometimes for the browser to reload after each save
                     //livereload: true
                 }
             },
@@ -290,7 +289,6 @@ module.exports = function (grunt) {
                       'js/{,*/}/*.html',
                       'js/**/*.tpl.html',
                       'patch/**/*',
-					  'compiled-tpl/*',
                       //'img/*',
                       'fonts/*',
                       'compiled-tpl/*'

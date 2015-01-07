@@ -51,11 +51,8 @@ app.directive('siteEditModal',
         }
 
         scope.openModal = function (id) {
-
-            if (!modal) {
-                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
-            }
             scope.site = angular.copy(newSite);
+            modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
             if (id) {
                 Api.updateSite(id).then(function (data) {
                     scope.site = data;

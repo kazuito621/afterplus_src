@@ -246,8 +246,8 @@ angular.module('arborPlusFilters', [])
 		return function( val ){
 			var o={ 
 					draft:'DRAFT',
-					sent:'SENT / NEEDS APPROVAL',
-					needs_approval:'SENT / NEEDS APPROVAL',
+					sent:'NEEDS APPROVAL',
+					needs_approval:'NEEDS APPROVAL',
 					approved:'APPROVED',
 					completed:'COMPLETED',
 					paid:'PAID'

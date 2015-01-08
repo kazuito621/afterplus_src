@@ -310,6 +310,18 @@ footer
 		color: $billed;
 	}
 
+	&.sent  
+	{
+		border-color: $sent;
+		color: $sent;
+	}
+
+	&.needs_approval
+	{
+		border-color: $needs_approval;
+		color: $needs_approval;
+	}
+
 	&.completed
 	{
 		border-color: $completed;
@@ -340,6 +352,10 @@ footer
 	}
 .clr-sent {
 	background-color: $sent !important;
+	color: #fff !important;
+	}
+.clr-needs_approval {
+	background-color: $needs_approval !important;
 	color: #fff !important;
 	}
 .clr-completed {

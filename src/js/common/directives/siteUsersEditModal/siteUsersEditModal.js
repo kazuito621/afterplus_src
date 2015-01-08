@@ -11,6 +11,9 @@ app.directive('siteUsersEditModal',
         if (angular.isDefined(attrs.site)) {
             scope.site = scope.$eval(attrs.site);            
         }
+        if (angular.isDefined(attrs.refreshSiteUsers)) {
+            scope.refreshSiteUsers = scope.$eval(attrs.refreshSiteUsers);
+        }
 
         window.sues = scope;
 
@@ -101,6 +104,9 @@ app.directive('siteUsersEditModal',
 					scope.site.userCustCount++;
                 }
                 scope.newContact = angular.copy(newContact);
+
+                // For bulk estimate add the newly added user to child popup
+                if(scope.refreshSiteUsers && tmp.role=='customer') scope.refreshSiteUsers(scope.site.siteID,data,'add');
             });
         };
 
@@ -130,7 +136,10 @@ app.directive('siteUsersEditModal',
 
         scope.unassign = function (userID, email, type) {
             if ($window.confirm('User ' + email + ' will be unassigned. Please confirm.')) {
-                Api.userSite.unassign(scope.site.siteID, userID);
+                Api.userSite.unassign(scope.site.siteID, userID).then(function(res){
+                    // For bulk estimate add the newly added user to child popup
+                    if(scope.refreshSiteUsers && type=='customer') scope.refreshSiteUsers(scope.site.siteID,{userID:userID},'delete');
+                });
 
 				if(type=='customer'){
 					scope.site.userCustCount--;

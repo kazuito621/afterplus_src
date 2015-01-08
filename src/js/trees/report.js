@@ -16,6 +16,7 @@ var ReportCtrl = app.controller(
             s.groupedItems = [];
             s.estimateTreatmentCodes = [];
             s.treatmentDescriptions = [];
+            s.siteOfReport={};
             var changedItems = [];
 
             s.editorOptions = {
@@ -62,6 +63,8 @@ var ReportCtrl = app.controller(
             // When a new report is loaded, bind it to this scope
             s.$on('onLoadReport', function (evt, rpt) {
                 s.report = rpt;
+                s.siteOfReport={}
+                s.report.customers=[]
                 // set email links
                 if (rpt.emailLogs) {
                     _.each(rpt.emailLogs, function (e) {
@@ -72,7 +75,22 @@ var ReportCtrl = app.controller(
                 }
                 //s.report.grandTotal = RS.getGrandTotal(s.report.items);
                 s.groupedItems = ReportService.groupReportItems();
-				updateReportStatusUI();
+                updateReportStatusUI();
+
+                if(s.report.siteID==undefined || s.report.siteID=="") return;
+                Api.getSiteById(s.report.siteID)
+                    .then(function (data) {
+                        if (data){
+                            s.siteOfReport = data;
+                            //load site users
+
+                        }
+                    });
+                Api.getSiteUsers(s.report.siteID, 'customer')
+                    .then(function (res) {
+                        s.report.customers=res;
+                    });
+//
             });
 
 			var updateReportStatusUI = function(){
@@ -322,7 +340,24 @@ var ReportCtrl = app.controller(
             var hoveredItem = {
                 animationCompleted: false
             };
+            var setSalesUsers = function(){
+                s.salesUsers = [];
 
+                Api.getSalesUsers().then(function(saleUsers){
+                    _.each(saleUsers, function(saleUser){
+                        var shortEmail = saleUser.email.substr(0, saleUser.email.indexOf('@'));
+
+                        s.salesUsers.push({id: saleUser.userID, email: saleUser.email,fName:saleUser.fName,
+                            lName:saleUser.lName, phone: saleUser.phone,shortEmail: shortEmail});
+                    })
+                })
+            };
+            s.getSalesUsers = function(){
+                if (!s.salesUsers){
+                    setSalesUsers();
+                }
+                return s.salesUsers;
+            };
             s.onItemRollOver = function (marker) {
                 if (!hoveredItem.animationCompleted) {
                     animateMarker(marker, 'BOUNCE');
@@ -334,7 +369,36 @@ var ReportCtrl = app.controller(
                 animateMarker(marker, null);
                 hoveredItem.animationCompleted = false;
             };
+            s.reloadReport=function(){
+                RS.loadReport(s.report.reportID);
+            };
+            s.updateSalesRep=function(rpt){
+                var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
+                if (newSalesUser){
+                    rpt.sales_fname = newSalesUser.fName;
+                    rpt.sales_lname = newSalesUser.lName;
+                    rpt.sales_email = newSalesUser.email;
+                    rpt.sales_phone = newSalesUser.phone;
+                }
+                //Api.saveReport(rpt).then(function(data1){
+                //    RS.loadReport(s.report.reportID);
+                //})
+            };
+            //refreshSiteUsers(scope.site.siteID,data,'add');
+            s.updateContact=function(siteID,data,type){
+                if(type=='add'){
+                    s.report.customers.push(data[0]);
 
+                }
+                else if(type=='delete'){
+                    for(var i=0;i<s.report.customers.length;i++){
+                        if(s.report.customers[i].userID==data.userID){
+                            s.report.customers.splice(i,1);
+                            break;
+                        }
+                    }
+                }
+            };
             // only if in trees state...
             if (s.renderPath[0] === 'trees') {
                 RS.loadRecent();

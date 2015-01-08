@@ -18,6 +18,14 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 		return;
 	}
 
+	//check for a token, and sign them in
+	var token = $location.path().substr(1).split("/");
+	if(token && token[1]){
+		token=token[1];
+		Auth.signInCustToken(token);
+	}
+
+
 	s.signIn = function(){
 		s.login.btnDisabled=true;
 		if(!s.login.email || !s.login.pswd) return;
@@ -45,6 +53,8 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 		s.sendEvt('trees.reset');		
 		var url=cfg.hostAndPort() + '/#/trees';
 		document.location=url;
+		// BUG TODO - why do we need this here? because if we dont have it,
+		// the google map wont load! 
 		document.location.reload();
 	}
 

@@ -41,10 +41,11 @@ app.config(['$routeProvider', '$locationProvider',
 
 			// web app routes
 
-            .when("/signin", {
+            .when("/signin/:token?", {
                 templateUrl: "js/signin/signin.tpl.html",
                 auth:false, reloadOnSearch:false
 				})
+
             .when('/estimate/:rptID', {
                 	templateUrl: "js/trees/trees.tpl.html"
                     ,auth:false, reloadOnSearch:false

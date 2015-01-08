@@ -12,7 +12,7 @@
                             <h3 class='panel-title'>Property - {{site.siteName}}</h3>
                         </div>
                         <div class='panel-body' style='line-height:1.5em;'>
-							<div>
+							<div ng-if="auth.isAtleast('inventory')">
                             	<button class="btn btn-default" ng-model="site.clientID" ng-options="c.clientID as c.clientName for c in clients" 
 									bs-select placeholder="Which client owns this property?" onclick="return false;" required>
 									Client <span class="caret"></span>

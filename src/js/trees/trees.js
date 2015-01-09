@@ -51,14 +51,18 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.filteredSites = [];//s.initData.sites;
 
-            //Load sites now.
-            Api.getAllSites().then(function (data) {
-                if (data !== undefined) {
-                    s.initData.sites = data.sites;
-                    s.filteredSites = data.sites;
-                }
-            });
+            $scope.getAllSites = function () {
 
+                Api.getAllSites().then(function (data) {
+                    if (data !== undefined) {
+                        s.initData.sites = data.sites;
+                        s.filteredSites = data.sites;
+                    }
+                });
+
+            }
+
+            $scope.getAllSites();
 
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
@@ -444,6 +448,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                 showSearchMarker();
             }
 
+            s.treeMarkers = [];
+
             var initMap = _.throttle(function () {
                 var deferred = $q.defer();
 
@@ -460,6 +466,76 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 google.maps.event.addListener(gMap, 'click', function () {
                                     dbg(s, 'click');
                                     if (infowindow && infowindow.setMap) infowindow.setMap(null);
+                                    //In case user is editing a tree and change its location by droping it 
+                                    //on anywhere in map and after that he did not click on confirm location or cancel
+                                    //button. He simply click on map then broadcast this event so that we can recieve it 
+                                    //anywhere and make changes.
+                                    s.$broadcast('onMapClicked');
+                                });
+
+                                google.maps.event.addListener(gMap, 'rightclick', function (event) {
+
+                                    s.cancelMarker = function (index) {
+                                        if (infowindow) {
+                                            infowindow.close();
+                                        }
+                                        s.treeMarkers[index].setMap(null);
+                                        delete s.treeMarkers[index];
+                                    }
+
+                                    s.confirmLocation = function (markerIndex) {
+
+                                        s.setAlert('Saving tree', { busy: true, time: "false" });
+                                        var marker = s.treeMarkers[markerIndex];
+
+                                        var position = marker.position;
+
+                                        var tree = {
+                                            siteID: s.selected.siteID,
+                                            longitude: position.lng(),
+                                            lattitude: position.lat(),
+                                            lat: position.lat(),
+                                            lng: position.lng()
+                                        };
+
+                                        Api.saveTree(tree).then(function (response) {
+                                            s.hideAllAlert();
+                                            $location.path('tree_edit/' + response.treeID);
+                                        });
+                                    }
+
+                                    var marker = new google.maps.Marker({
+                                        position: event.latLng,
+                                        map: gMap,
+                                        title: 'Add Tree',
+                                        dragable: true
+                                        //icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
+                                    });
+
+                                    s.treeMarkers.push(marker);
+
+                                    var click = "angular.element(this).scope().cancelMarker({0})".format(s.treeMarkers.length - 1);
+                                    var confirmclick = "angular.element(this).scope().confirmLocation({0})".format(s.treeMarkers.length - 1);
+
+                                    var markertemplate = "<div style=\"height:35px;width:210px;\">" +
+                                                             "<div class=\"\">" +
+                                                                "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
+                                                                        .format(confirmclick) +
+                                                                "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
+                                                                "Cancel" +
+                                                              "</button>" +
+                                                            "</div></div>";
+
+                                    google.maps.event.addListener(marker, 'click', function (event) {
+                                        if (!infowindow)
+                                            infowindow = new google.maps.InfoWindow();
+                                        infowindow.setContent(markertemplate);
+                                        infowindow.open(gMap, this);
+
+                                    });
+
+                                    google.maps.event.trigger(marker, 'click');
+
                                 });
 
                                 initSearchBox();
@@ -522,7 +598,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                     else numSpecies = 0;
                     var _siteObj = _.findObj(s.initData.sites, 'siteID', site.siteID);
                     var _clientObj = _.findObj(s.initData.clients, 'clientID', _siteObj.clientID);
+
                     var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
+
                     site.info = '<div id="content">' +
                         '<h1 id="firstHeading" class="firstHeading">' + site.siteName + '</h1>' +
                         '<div id="bodyContent">' +
@@ -623,7 +701,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         id: a,
                         info: arr[a].info,
                         siteID: arr[a].siteID,
-                        treeID: arr[a].treeID
+                        treeID: arr[a].treeID,
+                        tree: arr[a],
+                        draggable: false,
                         //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
                     });
 
@@ -703,6 +783,138 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+            //Find the marker that user clicked after Edit Tree button.
+            s.findEditableMarkerAndChangeOthers = function (treeId, reverse) {
+                var currentEditableMarker = null;
+
+                for (var i = 0; i < markers_singleSite.length; i++) {
+                    var marker = markers_singleSite[i];
+                    if (reverse) {
+                        if (marker.prevIcon !== undefined)
+                            marker.setIcon(marker.prevIcon);
+                    }
+                    else {
+                        if (marker.treeID == treeId) {
+                            currentEditableMarker = marker;//.setDraggable(true);
+                        }
+                        else {
+                            marker.prevIcon = marker.icon;
+                            marker.setIcon('https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|d2d2d2|000000');
+                        }
+                    }
+                }
+
+                for (var i = 0; i < markers_allSites.length; i++) {
+                    var marker = markers_allSites[i];
+                    if (reverse) {
+                        if (marker.prevIcon !== undefined)
+                            marker.setIcon(marker.prevIcon);
+                    } else {
+                        if (marker.treeID == treeId) {
+                            currentEditableMarker = marker;//.setDraggable(true);
+                        }
+                        else {
+                            marker.prevIcon = marker.icon;
+                            marker.setIcon('https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|d2d2d2|000000');
+                        }
+                    }
+                }
+                return currentEditableMarker;
+            }
+
+            //Fire when user click on edit tree from infowindow in map.
+            //It contains all methods which we are using to edit a tree.
+            s.editCurrentTree = function (treeId) {
+
+                s.currentEditableMarker = s.findEditableMarkerAndChangeOthers(treeId, false);
+
+                s.currentEditableMarker.currentPosition = s.currentEditableMarker.position;
+
+                s.cancelEditing = function (moveToCurrentPosition) {
+                    if (moveToCurrentPosition === undefined) {
+                        moveToCurrentPosition = true;
+                    }
+                    if (infowindow) {
+                        infowindow.close();
+                        if (s.currentEditableMarker != null) {
+
+                            //If we found moveToCurrentPosition true it means user did not edit
+                            //so fallback to previous position.
+                            if (moveToCurrentPosition)
+                                s.currentEditableMarker.setPosition(s.currentEditableMarker.currentPosition);
+
+                            s.currentEditableMarker.setDraggable(false);
+                            s.findEditableMarkerAndChangeOthers(0, true);
+
+                            //Update click event of current markers so that when user again click 
+                            //on it we will show him old info popup.
+                            google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
+                                if (!infowindow)
+                                    infowindow = new google.maps.InfoWindow();
+                                infowindow.setContent(this.info);
+                                infowindow.open(gMap, this);
+                            });
+                        }
+                    }
+
+                    s.currentEditableMarker = null;
+                }
+
+                s.$on('onMapClicked', function () {
+                    if (s.currentEditableMarker != null)
+                        s.cancelEditing(true);
+                });
+
+                s.confirmEditing = function () {
+
+                    if (s.currentEditableMarker != null) {
+                        s.setAlert('Updating Location', { busy: true, time: "false" });
+
+                        var tree = s.currentEditableMarker.tree;
+                        var position = s.currentEditableMarker.position;
+                        tree.longitude = position.lng();
+                        tree.lattitude = position.lat();
+                        tree.lat = position.lat();
+                        tree.lng = position.lng();
+
+                        Api.updateTree(tree).then(function (response) {
+                            s.hideAllAlert();
+                            $location.path('tree_edit/' + tree.treeID);
+                        });
+                    }
+                }
+
+                var click = "angular.element(this).scope().cancelEditing()";
+                var confirmclick = "angular.element(this).scope().confirmEditing()";
+
+                var markertemplate = "<div style=\"height:60px;width:240px;\">" +
+                                         "<div class=\"\">" +
+                                            "<span>Drag pin to change the location of tree.</span><br/><br/>" +
+                                            "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
+                                                    .format(confirmclick) +
+                                            "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
+                                            "Cancel" +
+                                          "</button>" +
+                                        "</div></div>";
+
+                s.currentEditableMarker.setDraggable(true);
+
+                google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
+                    if (!infowindow)
+                        infowindow = new google.maps.InfoWindow();
+                    infowindow.setContent(markertemplate);
+                    infowindow.open(gMap, this);
+
+                    google.maps.event.addListener(infowindow, 'closeclick', function () {
+                        if (s.currentEditableMarker != null)
+                            s.cancelEditing(true);
+                    });
+                });
+
+                google.maps.event.trigger(s.currentEditableMarker, 'click');
+
+            }
+
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function (treeSet) {
 
@@ -742,8 +954,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                         // <span class='textIconBlock-red'>2014</span>
                         // .... or ...textIconBlock-grey
                         //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
+                        var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
                         if (s.data.mode() === 'trees') {
-                            o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                            //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                            o += '</div><a href="Javascript:" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
                             //o += '</div><BR>'
                             // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
                         }
@@ -1181,7 +1395,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.selectedTrees = [];
                 s.setAlert('Loading Trees', { busy: true, time: "false" });
                 Api.getTrees(s.selected.siteID)
-                    .then(function (data) {                        
+                    .then(function (data) {
                         TFS.setTreeResults(data);		// after this, the trees get
                         // set back on $scope via $on('onTreeFilterUpdate')
                         //s.setAlert(false);

@@ -208,6 +208,10 @@ function (Rest, $rootScope, $q, $location, storage) {
         removeSiteById: function (id) {
             return Rest.one('site', id).remove();
         },
+        //users
+        getUsers: function () {
+            return Rest.all('user').getList();
+        },
         // User / Site relationship
         userSite: {
             assign: function (siteId, user) {

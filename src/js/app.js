@@ -87,6 +87,12 @@ app.config(['$routeProvider', '$locationProvider',
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
+            .when("/users", {
+                templateUrl: "js/users/users.tpl.html"
+                ,auth:true, reloadOnSearch:false
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
             .otherwise({redirectTo: "/signin"});
 	}])
 	.run(['Restangular', '$rootScope',

@@ -40,17 +40,17 @@
                             <dt>Contact: </dt>
                             <dd ng-if="report.reportID!=undefined">
                                 <div style="margin-right: 5px"  ng-repeat="c in report.customers">
-                                    <span ng-bind="c.fName+' '+c.lName"></span>
-                                    <span ng-bind="c.email"></span>
+                                    <a href='mailto:{{c.email}}' target=_new><span ng-bind="c.fName+' '+c.lName"></span></a>
                                     <span ng-bind="c.phone|formatPhoneNumber"></span>
+                                		<a ng-if="$index==0 && siteOfReport.siteID" site-users-edit-modal site="siteOfReport"  
+											refresh-site-users="updateContact" bs-tooltip title='Click to edit the contacts.'
+											><i style="cursor: pointer;" class="fa fa-pencil"></i></a>
                                     </br>
                                 </div>
-                                <a ng-if="report.customers.length>0 && siteOfReport.siteID" site-users-edit-modal site="siteOfReport"  refresh-site-users="updateContact"
-                                   bs-tooltip title='Click to edit the contacts.'><i style="cursor: pointer;" class="fa fa-pencil"></i></a>
                             </dd>
                         </dl>
 
-                        <dl>
+                        <dl ng-if="report.clientName!='Residential Clients'">
                             <dt>Client: </dt>
                             <dd ng-bind='report.clientName'></dd>
                         </dl>

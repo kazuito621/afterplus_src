@@ -22,7 +22,7 @@ window.cfg={
 			if(h.match(/app.aplus/)) return 2;
 			if(h.match(/joseph/)) return 3;
 			if(h.match(/woodie|woody/)) return 4;
-			if(h.match(/hendricks/)) return 7;
+			if(h.match(/hendricks/)) return 5;
 			if(h.match(/shreiner/)) return 7;
 			if(h.match(/acme/)) return 6;
 			return 1;	// default to dev.aplustree

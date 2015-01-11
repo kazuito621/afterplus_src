@@ -27,20 +27,30 @@
                                 Estimate ID: <span ng-bind="report.reportID"></span>
                             </dt>
                         </dl>
-                        <h1 class="title" ng-text="'Estimate for ' + report.siteName"></h1>
+                        <h1 class="title" ng-bind="'Estimate for ' + report.siteName"></h1>
                         <p class="name">
-                            <span ng-if="mode() === 'trees'">
+                            <span ng-if="data.mode() === 'trees'">
                                 <a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
                             </span>
-                            <span ng-if="mode() !== 'trees'">
+                            <span ng-if="data.mode() !== 'trees'">
                                 {{report.name}}
                             </span>
                         </p>
                         <dl>
                             <dt>Contact: </dt>
-                            <dd ng-bind="report.contact + ' ' + report.contactPhone|formatPhoneNumber"></dd>
+                            <dd ng-if="report.reportID!=undefined">
+                                <div style="margin-right: 5px"  ng-repeat="c in report.customers">
+                                    <a href='mailto:{{c.email}}' target=_new><span ng-bind="c.fName+' '+c.lName"></span></a>
+                                    <span ng-bind="c.phone|formatPhoneNumber"></span>
+                                		<a ng-if="$index==0 && siteOfReport.siteID" site-users-edit-modal site="siteOfReport"  
+											refresh-site-users="updateContact" bs-tooltip title='Click to edit the contacts.'
+											><i style="cursor: pointer;" class="fa fa-pencil"></i></a>
+                                    </br>
+                                </div>
+                            </dd>
                         </dl>
-                        <dl>
+
+                        <dl ng-if="report.clientName!='Residential Clients'">
                             <dt>Client: </dt>
                             <dd ng-bind='report.clientName'></dd>
                         </dl>
@@ -50,7 +60,11 @@
                         </dl>
                         <dl>
                             <dt>Address: </dt>
-                            <dd ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip"></dd>
+                            <dd ng-if="report.reportID!=undefined" ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip">
+                            </dd>
+                            <a ng-if="report.reportID!=undefined" style="margin-left: 10px;" href="" site-edit-modal site-id="report.siteID" bs-tooltip="" title="Click to edit address"
+                               on-save="reloadReport"><i class="fa fa-pencil"></i></a>
+
                         </dl>
                     </div>
                 </div>
@@ -59,7 +73,12 @@
                     <div class="estimate-info">
                         <p class="name clr-orange">Sales Rep</p>
                         <dl ng-if="report.sales_fname">
-                            <dd ng-text="report.sales_fname + ' ' + report.sales_lname"></dd>
+                            <a ng-if="auth.isAtleast('inventory')" href e-ng-options="obj.id as obj.email for obj in salesUsers"
+                               onshow="getSalesUsers()"
+                               editable-select="report.sales_userID"
+                               onaftersave="updateSalesRep(report)">
+                               <span ng-bind="report.sales_fname+' '+report.sales_lname"></span>
+                            </a>
                         </dl>
                         <dl>
                             <dd><a href='mailto:{{report.sales_email}}' target=_new ng-bind='report.sales_email' style='color:#fff;'></a></dd>
@@ -71,7 +90,7 @@
                 </div>
 
 
-                <div class="col-md-4 col">
+                <div class="col-md-3 col pull-right">
                     <div class="bid-info">
                         <div class="logos">
                             <span class="logo"><img src="img/logo_tcia.png"></span>

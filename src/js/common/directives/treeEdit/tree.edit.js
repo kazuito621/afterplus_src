@@ -6,7 +6,7 @@
  * opens this view up in place of the map
  */
 
-app.directive('treeEdit', ['Api', '$location', function (Api, $location) {
+app.directive('treeEdit', ['$modal','Api', '$location', function ($modal,Api, $location) {
     'use strict';
 
     var linker = function (s, el, attrs) {

@@ -31,8 +31,16 @@ window.cfg={
 			var ent=[];
 			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus'};
 			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph'};
+			ent[4]={name:'Big Woodys Tree Service', medname:'Big Woodys Tree', shortname:'bigwoodys'};
+			ent[5]={name:'Hendrickson Tree Care', medname:'Hendrickson Tree', shortname:'hendrickson'};
+			ent[7]={name:'Shreiner Tree Care', medname:'Shreiner Tree', shortname:'shreiner'};
 			var eid=this.getEntityID();
-			return ent[eid];
+			var ent = ent[eid];
+			if(!ent){
+				console.debug("ERROR! No entity found for EID "+eid);
+				return {name:'Tree Company', medname:'Tree Company', shortname:''}
+			}
+			return ent;
 		}
     };
 

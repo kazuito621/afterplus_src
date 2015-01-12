@@ -51,10 +51,7 @@ app.directive('siteEditModal',
         }
 
         scope.openModal = function (id) {
-
-            if (!modal) {
-                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
-            }
+            modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
             scope.site = angular.copy(newSite);
             if (id) {
                 Api.updateSite(id).then(function (data) {
@@ -66,8 +63,13 @@ app.directive('siteEditModal',
                     });
                 });
             }
-
-
+            else{
+                modal.$promise.then(function () {
+                    modal.show();
+                    // setup ESCAPE key
+                    $(document).keyup(hideOnEscape);
+                });
+            }
         };
 
         scope.saveSite = function (cb, nohide) {

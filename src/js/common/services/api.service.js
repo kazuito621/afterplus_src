@@ -74,6 +74,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         getSiteById: function (id) {
             return Rest.one('site', id).get();
         },
+        getSitesByClientId: function (clientID) {
+            return Rest.all('client/' + clientID + '/sites').getList();
+        },
         updateSite: function (siteID) {
             return Rest.one('site', siteID).get();
         },
@@ -211,6 +214,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         //users
         getUsers: function () {
             return Rest.all('user').getList();
+        },
+        getUserRoles:function(){
+          return Rest.all('userroles').getList();
         },
         // User / Site relationship
         userSite: {

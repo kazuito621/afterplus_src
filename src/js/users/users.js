@@ -86,6 +86,7 @@ var UserCtrl = app.controller('UserCtrl',
             };
 
             var clearFilter = function () {
+                self.fh.setFilter({userRole:''});
                 self.fh.setFilter({email:'', name:'', role:'', sessionCount:''});
                 userFiltered = users;
                 s.sh.applySort();
@@ -101,13 +102,9 @@ var UserCtrl = app.controller('UserCtrl',
             };
 
             s.reset = function(){
-                //remove filter status on UI
-                // there is a weird behavior of angular strap bs-radio component (view->model binding doesn't work),
-                // so using jquery here
                 $('#userFilters').find('label').removeClass('active');
-                clearFilter();
-                //clear search box
                 s.data.filterTextEntry = '';
+                clearFilter();
                 applyFilter();
             };
 

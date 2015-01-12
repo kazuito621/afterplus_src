@@ -1,5 +1,16 @@
-<div class='container' ng-controller="UserCtrl">
-    <div ng-if="auth.isAtleast('inventory')">
+<div class='container'  ng-if="auth.isAtleast('inventory')" ng-controller="UserCtrl">
+    <button type="button"
+            ng:cloak
+            data-placement="center"
+            class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+            style="max-width: 100%; width: auto;"
+            add-edit-user-modal=""
+            on-save="refreshSites"
+            clients="initData.clients"
+            mode="new"
+            data-animation="am-fade-and-scale">New user/customer</button>
+    <br>
+    <div>
         <div class='pull-right topMargin5'>
             <div class="btn-group" bs-radio-group id="userFilters" ng-model="status_filters_2">
                 <label ng-click="setStatusFilter('All')"class="btn btn-default">

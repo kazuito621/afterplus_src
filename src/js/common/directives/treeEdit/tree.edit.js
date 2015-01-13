@@ -6,7 +6,7 @@
  * opens this view up in place of the map
  */
 
-app.directive('treeEdit', ['$modal','Api', '$location', function ($modal,Api, $location) {
+app.directive('treeEdit', ['Api', '$location', function (Api, $location) {
     'use strict';
 
     var linker = function (s, el, attrs) {
@@ -17,7 +17,6 @@ app.directive('treeEdit', ['$modal','Api', '$location', function ($modal,Api, $l
         s.ynpOptions = ['yes', 'no', 'potential'];
         s.tree_cachebuster = '?ts=' + moment().unix();
         s.yearOptions = ["2012", "2013", "2014", "2015", "2016", "2017"];
-
         var initTreeData = function () {
             s.tree = {};
             s.tree.img = s.tree.imgSm = s.tree.imgMed = '/img/blank.gif';

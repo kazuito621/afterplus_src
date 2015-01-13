@@ -63,12 +63,12 @@ app.config(['$routeProvider', '$locationProvider',
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
-            .when("/tree_edit/:treeID", {
-                templateUrl: "js/trees/edit.tpl.html"
-                ,auth:true, reloadOnSearch:false
-                ,resolve: {
-                    deps:['Api', function(Api){  return Api.getPromise(); }]
-                }})
+            //.when("/tree_edit/:treeID", {
+            //    templateUrl: "js/trees/edit.tpl.html"
+            //    ,auth:true, reloadOnSearch:false
+            //    ,resolve: {
+            //        deps:['Api', function(Api){  return Api.getPromise(); }]
+            //    }})
             .when("/estimates", {
                 templateUrl: "js/estimates/estimates.tpl.html"
                 ,auth:true, reloadOnSearch:false

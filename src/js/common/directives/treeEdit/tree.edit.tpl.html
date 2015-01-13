@@ -131,7 +131,7 @@
                             item-id="{{tree.treeID}}"
                             on-confirm-callback="deleteTree(tree.treeID)"
                             class="navButton"
-                            bs-tooltip title="Delete">
+                            bs-tooltip title="Delete" ng-if="auth.isAtleast('inventory')">
                         Delete This Tree
                     </button>
                     &nbsp;<a ng-click="onCancel()" bs-tooltip class='hand' title="Hotkey: Press Escape to cancel">Cancel</a>

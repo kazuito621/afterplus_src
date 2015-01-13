@@ -266,8 +266,10 @@ function (Rest, $rootScope, $q, $location, storage) {
             params.lattitude = tree.lattitude;
             params.lat = tree.lat;
             params.lng = tree.lng;
+            params.siteID = tree.siteID;
             
-            return Rest.one('tree', tree.treeID).post(params);
+            //(elemFunction, this)("post", undefined, params, undefined, headers);
+            return Rest.one('tree', tree.treeID).post(undefined, params);
         }
     };
 }]);

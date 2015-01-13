@@ -100,7 +100,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //            s.$watch('selected', function (newVal, oldVal) {
             //                console.log('Selected changed\n', oldVal, newVal);
             //            }, true);
-
+            s.isBindRightClick = false;
 
             var loadEstimate = function () {
                 var rptHash = s.renderPath[1];
@@ -213,7 +213,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 1);
 
 
-
+            
 
             var highlightResultRow = function (treeID) {
                 if (s.data.mode() !== 'trees') {
@@ -471,71 +471,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                                     //button. He simply click on map then broadcast this event so that we can recieve it 
                                     //anywhere and make changes.
                                     s.$broadcast('onMapClicked');
-                                });
-
-                                google.maps.event.addListener(gMap, 'rightclick', function (event) {
-
-                                    s.cancelMarker = function (index) {
-                                        if (infowindow) {
-                                            infowindow.close();
-                                        }
-                                        s.treeMarkers[index].setMap(null);
-                                        delete s.treeMarkers[index];
-                                    }
-
-                                    s.confirmLocation = function (markerIndex) {
-
-                                        s.setAlert('Saving tree', { busy: true, time: "false" });
-                                        var marker = s.treeMarkers[markerIndex];
-
-                                        var position = marker.position;
-
-                                        var tree = {
-                                            siteID: s.selected.siteID,
-                                            longitude: position.lng(),
-                                            lattitude: position.lat(),
-                                            lat: position.lat(),
-                                            lng: position.lng()
-                                        };
-
-                                        Api.saveTree(tree).then(function (response) {
-                                            s.hideAllAlert();
-                                            $location.path('tree_edit/' + response.treeID);
-                                        });
-                                    }
-
-                                    var marker = new google.maps.Marker({
-                                        position: event.latLng,
-                                        map: gMap,
-                                        title: 'Add Tree',
-                                        dragable: true
-                                        //icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
-                                    });
-
-                                    s.treeMarkers.push(marker);
-
-                                    var click = "angular.element(this).scope().cancelMarker({0})".format(s.treeMarkers.length - 1);
-                                    var confirmclick = "angular.element(this).scope().confirmLocation({0})".format(s.treeMarkers.length - 1);
-
-                                    var markertemplate = "<div style=\"height:35px;width:210px;\">" +
-                                                             "<div class=\"\">" +
-                                                                "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
-                                                                        .format(confirmclick) +
-                                                                "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
-                                                                "Cancel" +
-                                                              "</button>" +
-                                                            "</div></div>";
-
-                                    google.maps.event.addListener(marker, 'click', function (event) {
-                                        if (!infowindow)
-                                            infowindow = new google.maps.InfoWindow();
-                                        infowindow.setContent(markertemplate);
-                                        infowindow.open(gMap, this);
-
-                                    });
-
-                                    google.maps.event.trigger(marker, 'click');
-
                                 });
 
                                 initSearchBox();
@@ -921,11 +856,94 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var gMapID = '';
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID = gMap.getDiv().id;
+                // TODO NEED TO CHECK
+                // It's not working for TreeMap
                 if (gMapID !== map_id) {
                     return initMap().then(function () {
                         showMappedTrees(treeSet);
                     });
                 }
+                if (gMapID == 'treeMap' && Auth.isAtleast('inventory')) // Auth.isAtleast('inventory') && 
+                {
+                    if (!s.isBindRightClick) {
+                        google.maps.event.addListener(gMap, 'rightclick', function (event) {
+
+                            s.cancelMarker = function (index) {
+                                if (infowindow) {
+                                    infowindow.close();
+                                }
+                                s.treeMarkers[index].setMap(null);
+                                delete s.treeMarkers[index];
+                                //s.treeMarkers.splice(index, 1);
+
+                            }
+
+                            s.confirmLocation = function (markerIndex) {
+
+                                s.setAlert('Saving tree', { busy: true, time: "false" });
+                                var marker = s.treeMarkers[markerIndex];
+
+                                var position = marker.position;
+
+                                var tree = {
+                                    siteID: s.selected.siteID,
+                                    longitude: position.lng(),
+                                    lattitude: position.lat(),
+                                    lat: position.lat(),
+                                    lng: position.lng()
+                                };
+
+                                Api.saveTree(tree).then(function (response) {
+                                    s.hideAllAlert();
+                                    $location.path('tree_edit/' + response.treeID);
+                                });
+                            }
+
+                            var marker = new google.maps.Marker({
+                                position: event.latLng,
+                                map: gMap,
+                                title: 'Add Tree',
+                                draggable: true
+                                //icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
+                            });
+                           
+                            s.treeMarkers.push(marker);
+
+                            var click = "angular.element(this).scope().cancelMarker({0})".format(s.treeMarkers.length - 1);
+                            var confirmclick = "angular.element(this).scope().confirmLocation({0})".format(s.treeMarkers.length - 1);
+
+                            var markertemplate = "<div style=\"height:35px;width:210px;\">" +
+                                                     "<div class=\"\">" +
+                                                        "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
+                                                                .format(confirmclick) +
+                                                        "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
+                                                        "Cancel" +
+                                                      "</button>" +
+                                                    "</div></div>";
+
+                            google.maps.event.addListener(marker, 'click', function (event) {
+                                if (!infowindow)
+                                    infowindow = new google.maps.InfoWindow();
+                                infowindow.setContent(markertemplate);
+                                infowindow.open(gMap, this);
+                           google.maps.event.addListener(infowindow, 'closeclick', function (event) {
+                                s.cancelMarker(s.treeMarkers.length-1);
+                              });
+                            });
+
+                            google.maps.event.trigger(marker, 'click');
+
+                            s.$on('onMapClicked', function () {
+                                if (s.marker != null)
+                                    s.cancelMarker(s.treeMarkers.length - 1);
+                            });
+
+                        });
+                        s.isBindRightClick = true;
+                    }
+                }
+
+
 
                 if (s.data.mode() == 'estimate' && s.report && s.report.items) treeSet = s.report.items;
                 clearMarkers();
@@ -956,12 +974,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                         //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
                         var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
                         if (s.data.mode() === 'trees') {
+                            if (Auth.isAtleast('inventory')) {
+                                o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                            }
+                            else {
+                                o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                            }
                             //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                            o += '</div><a href="Javascript:" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
                             //o += '</div><BR>'
                             // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
                         }
-
                         itm.info = o;
                     }
                     setIconColor(itm);

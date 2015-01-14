@@ -31,7 +31,7 @@
                     {{item.dbhID | dbhID2Name:this }}
                     {{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
                     <span class="light" bo-text="'[' + item.treeID + ']'"></span>
-                    <a href='#/tree_edit/{{item.treeID}}' class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')">
+                    <a style="cursor: pointer" tree-edit-modal="item.treeID" class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')">
                         <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
                     </a>
                     <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>

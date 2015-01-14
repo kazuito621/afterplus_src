@@ -32,7 +32,12 @@ var UserCtrl = app.controller('UserCtrl',
                         if(d.lName){
                             d.name=d.name+' '+d.lName;
                         }
-                        d.userRole= d.role;
+                        // Count sales,inventory & staffs all together as staff to filter.
+                        // userRole property added in client side just for filtering purpose.
+                        if(d.role=="sales" || d.role=="inventory" || d.role=="staff")
+                            d.userRole="staff";
+                        else
+                            d.userRole= d.role;
                     });
                     users = userFiltered = data;
                     self.sh = SortHelper.sh(users, '', columnMap, colSortOrder);
@@ -55,7 +60,7 @@ var UserCtrl = app.controller('UserCtrl',
                     return;
                 }
 
-                var addon = users.slice(count, count + 50);
+                var addon = userFiltered.slice(count, count + 50);
                 s.displayedUsers = s.displayedUsers.concat(addon);
             };
 

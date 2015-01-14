@@ -19,7 +19,7 @@ app.directive('deleteWithConfirmButton',
                     }
 
                     if (angular.isDefined(attrs.onConfirmCallback)) {
-                        scope.onConfirmCallback = attrs.onConfirmCallback;
+                        scope.onConfirmCallback = scope.$eval(attrs.onConfirmCallback);
                     }
 
                     if (angular.isDefined(attrs.type)) {

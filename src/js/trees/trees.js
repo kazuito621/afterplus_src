@@ -490,24 +490,22 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 // Create search panel
                 var clickmaptoaddtree = document.getElementById('clickmaptoaddtree');
-                gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(clickmaptoaddtree);
+                gMap.controls[google.maps.ControlPosition.TOP_CENTER].push(clickmaptoaddtree);
 
                 var buttonClicktoAddTree = document.getElementById('buttonClicktoAddTree');
                 s.clickToAddtree = new google.maps.ImageMapType(buttonClicktoAddTree);
 
-                // fix preload issue: searchpanel should be hidden until added to gMap.controls
-                // in other case, it will be visible to user when map is loading
                 $(clickmaptoaddtree).show();
-
-                // Listen for the event fired when the user selects an item from the
-                // pick list. Retrieve the matching places for that item.
-                //google.maps.event.addListener(s.clickToAddtree, 'click', function () {
-                //    setStatus(editMode);
-                //});
-
-                // Bias the SearchBox results towards places that are within the bounds of the
-                // current map's viewport.
             });
+
+            s.editMode = false;
+            s.setStatus = function (editMode) {
+                if (!s.editMode) {                    
+                    initClicktoMap();
+                    s.editMode = editMode;
+                }
+            }
+
             var initSearchBox = _.throttle(function () {
 
                 // Create search panel
@@ -1082,14 +1080,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var found = _.findObj(dbh, 'dbhID', ID);
                 var diam = _.extract(found, 'diameter');
                 return diam;
-            }
-
-            s.editMode = false;
-            s.setStatus = function (editMode) {
-                //google.maps.event.addDomListener(window, 'load', initialize);
-                initClicktoMap();
-                s.editMode = editMode;
-            }
+            }          
 
 
             // ----------------------------------------------------- EVENTS for Tree Results List

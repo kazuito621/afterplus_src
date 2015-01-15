@@ -14,6 +14,7 @@ app.directive('treesSelector',
             templateUrl: 'js/common/directives/treesRightBlock/trees.selector/trees.selector.tpl.html',
             scope: {
                 toggleCheckedTrees: '&', // func (opt)
+                setStatus: '&',
                 selectedTrees: '=',
                 count: '=' // TFSdata.treeResultsCount
             },

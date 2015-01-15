@@ -94,6 +94,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //search component for google map
             s.searchBox = [];
+            s.clickToAddtree = [];
             //array to store marker objects for search box
             s.searchMarkers = [];
 
@@ -213,7 +214,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 1);
 
 
-            
+
 
             var highlightResultRow = function (treeID) {
                 if (s.data.mode() !== 'trees') {
@@ -472,7 +473,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                                     //anywhere and make changes.
                                     s.$broadcast('onMapClicked');
                                 });
-
+                                //initClicktoMap();
                                 initSearchBox();
 
                                 $timeout(function () {
@@ -484,6 +485,29 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return deferred.promise;
             }, 2000);
 
+
+            var initClicktoMap = _.throttle(function () {
+
+                // Create search panel
+                var clickmaptoaddtree = document.getElementById('clickmaptoaddtree');
+                gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(clickmaptoaddtree);
+
+                var buttonClicktoAddTree = document.getElementById('buttonClicktoAddTree');
+                s.clickToAddtree = new google.maps.ImageMapType(buttonClicktoAddTree);
+
+                // fix preload issue: searchpanel should be hidden until added to gMap.controls
+                // in other case, it will be visible to user when map is loading
+                $(clickmaptoaddtree).show();
+
+                // Listen for the event fired when the user selects an item from the
+                // pick list. Retrieve the matching places for that item.
+                //google.maps.event.addListener(s.clickToAddtree, 'click', function () {
+                //    setStatus(editMode);
+                //});
+
+                // Bias the SearchBox results towards places that are within the bounds of the
+                // current map's viewport.
+            });
             var initSearchBox = _.throttle(function () {
 
                 // Create search panel
@@ -850,6 +874,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             }
 
+            s.MarkerAdded = false;
+
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function (treeSet) {
 
@@ -866,17 +892,31 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (gMapID == 'treeMap' && Auth.isAtleast('inventory')) // Auth.isAtleast('inventory') && 
                 {
                     if (!s.isBindRightClick) {
-                        google.maps.event.addListener(gMap, 'rightclick', function (event) {
+                        google.maps.event.addListener(gMap, 'click', function (event) {
 
+                            if (!s.editMode)
+                                return;
+                                                        
                             s.cancelMarker = function (index) {
                                 if (infowindow) {
                                     infowindow.close();
                                 }
-                                s.treeMarkers[index].setMap(null);
-                                delete s.treeMarkers[index];
-                                //s.treeMarkers.splice(index, 1);
 
+                                if (s.treeMarkers[index] !== undefined) {
+                                    s.treeMarkers[index].setMap(null);
+                                    delete s.treeMarkers[index];
+                                }
                             }
+
+                            if (s.MarkerAdded)
+                            {
+                                s.cancelMarker(s.treeMarkers.length - 1);
+                                s.MarkerAdded = false;
+                            }
+
+                            s.$on('onMapClicked', function () {
+                                s.cancelMarker(s.treeMarkers.length - 1);
+                            });
 
                             s.confirmLocation = function (markerIndex) {
 
@@ -906,7 +946,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 draggable: true
                                 //icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
                             });
-                           
+
+                            s.MarkerAdded = true;
                             s.treeMarkers.push(marker);
 
                             var click = "angular.element(this).scope().cancelMarker({0})".format(s.treeMarkers.length - 1);
@@ -926,17 +967,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                                     infowindow = new google.maps.InfoWindow();
                                 infowindow.setContent(markertemplate);
                                 infowindow.open(gMap, this);
-                           google.maps.event.addListener(infowindow, 'closeclick', function (event) {
-                                s.cancelMarker(s.treeMarkers.length-1);
-                              });
+                                google.maps.event.addListener(infowindow, 'closeclick', function (event) {
+                                    s.cancelMarker(s.treeMarkers.length - 1);
+                                });
                             });
 
                             google.maps.event.trigger(marker, 'click');
-
-                            s.$on('onMapClicked', function () {
-                                if (s.marker != null)
-                                    s.cancelMarker(s.treeMarkers.length - 1);
-                            });
 
                         });
                         s.isBindRightClick = true;
@@ -974,12 +1010,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                         //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
                         var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
                         if (s.data.mode() === 'trees') {
-                            if (Auth.isAtleast('inventory')) {
-                                o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                            }
-                            else {
-                                o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
-                            }
+                            o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                            //if (Auth.isAtleast('inventory')) {
+                            //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                            //}
+                            //else {
+                            //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                            //}
                             //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
                             //o += '</div><BR>'
                             // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
@@ -1047,9 +1084,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return diam;
             }
 
-
-
-
+            s.editMode = false;
+            s.setStatus = function (editMode) {
+                //google.maps.event.addDomListener(window, 'load', initialize);
+                initClicktoMap();
+                s.editMode = editMode;
+            }
 
 
             // ----------------------------------------------------- EVENTS for Tree Results List

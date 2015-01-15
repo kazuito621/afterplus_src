@@ -40,7 +40,10 @@
                             <dt>Contact: </dt>
                             <dd ng-if="report.reportID!=undefined">
                                 <div style="margin-right: 5px"  ng-repeat="c in report.customers">
-                                    <a href='mailto:{{c.email}}' target=_new><span ng-bind="c.fName+' '+c.lName"></span></a>
+                                    <a href='mailto:{{c.email}}' target=_new>
+                                        <span ng-hide="c.fName==undefined || c.fName==''" ng-bind="c.fName+' '+c.lName"></span>
+                                        <span ng-show="c.fName==undefined || c.fName==''" ng-bind="c.email"></span>
+                                    </a>
                                     <span ng-bind="c.phone|formatPhoneNumber"></span>
                                 		<a ng-if="$index==0 && siteOfReport.siteID" site-users-edit-modal site="siteOfReport"  
 											refresh-site-users="updateContact" bs-tooltip title='Click to edit the contacts.'
@@ -125,7 +128,9 @@
         </div>
 
         <!-- Email logs -->
-        <email-logs report="report"></email-logs>
+        <div ng-if="data.mode()=='trees'">
+            <email-logs report="report"></email-logs>
+        </div>
         
 
         <div class="table-container">

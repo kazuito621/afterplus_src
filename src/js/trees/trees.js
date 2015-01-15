@@ -312,7 +312,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() == 'trees') {
                     ReportService.loadRecent();
                     if (ID && ID > 0) {
-                     
+                        var siteObj = s.getSiteByID(ID);
+                        s.selected.clientID = siteObj.clientID;
+                        s.selected.clientTypeID = siteObj.clientTypeID;
                         getTreeListings();
                     }
                     // todo -- else zoom in on the selected Site...
@@ -503,7 +505,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.editMode = false;
             s.setStatus = function (editMode) {
-                if (!s.editMode) {                    
+                if (!s.editMode) {
                     initClicktoMap();
                     s.editMode = editMode;
                 }
@@ -897,7 +899,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                             if (!s.editMode)
                                 return;
-                                                        
+
                             s.cancelMarker = function (index) {
                                 if (infowindow) {
                                     infowindow.close();
@@ -909,8 +911,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 }
                             }
 
-                            if (s.MarkerAdded)
-                            {
+                            if (s.MarkerAdded) {
                                 s.cancelMarker(s.treeMarkers.length - 1);
                                 s.MarkerAdded = false;
                             }
@@ -1083,7 +1084,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var found = _.findObj(dbh, 'dbhID', ID);
                 var diam = _.extract(found, 'diameter');
                 return diam;
-            }          
+            }
 
 
             // ----------------------------------------------------- EVENTS for Tree Results List

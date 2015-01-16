@@ -141,11 +141,19 @@
 								</div>
 
 								<div class="table-responsive" ng-if="trees.length > 0">
-                                    <div trees-selector ng-if="auth.isAtleast('inventory')" toggle-checked-trees="toggleCheckedTrees(opt)" selected-trees="selectedTrees" count="TFSdata.treeResultsCount"></div>
+                                    <div trees-selector ng-if="auth.isAtleast('inventory')"
+                                         toggle-checked-trees="toggleCheckedTrees(opt)" 
+                                         selected-trees="selectedTrees"
+                                         count="TFSdata.treeResultsCount" set-status="setStatus(true)"></div>
 
                                     <trees-list></trees-list>
 
-                                    <div trees-selector ng-if="auth.isAtleast('inventory')" toggle-checked-trees="toggleCheckedTrees(opt)" selected-trees="selectedTrees" count="TFSdata.treeResultsCount"></div>
+                                    <div trees-selector 
+                                        ng-if="auth.isAtleast('inventory')" 
+                                        toggle-checked-trees="toggleCheckedTrees(opt)"
+                                        selected-trees="selectedTrees" 
+                                        set-status="setStatus(true)"
+                                        count="TFSdata.treeResultsCount"></div>
 
                                     <table class="tree-list-container" ng-if="auth.isAtleast('inventory') && trees.length">
 										<tfoot>

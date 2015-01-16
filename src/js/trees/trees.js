@@ -94,7 +94,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //search component for google map
             s.searchBox = [];
-            s.clickToAddtree = [];
             //array to store marker objects for search box
             s.searchMarkers = [];
 
@@ -473,9 +472,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                                     //anywhere and make changes.
                                     s.$broadcast('onMapClicked');
                                 });
-                                //initClicktoMap();
                                 initSearchBox();
-
                                 $timeout(function () {
                                     deferred.resolve();
                                 }, 1000);
@@ -486,28 +483,6 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
 
-            var initClicktoMap = _.throttle(function () {
-
-                // Create search panel
-                var clickmaptoaddtree = document.getElementById('clickmaptoaddtree');
-                gMap.controls[google.maps.ControlPosition.TOP_LEFT].push(clickmaptoaddtree);
-
-                var buttonClicktoAddTree = document.getElementById('buttonClicktoAddTree');
-                s.clickToAddtree = new google.maps.ImageMapType(buttonClicktoAddTree);
-
-                // fix preload issue: searchpanel should be hidden until added to gMap.controls
-                // in other case, it will be visible to user when map is loading
-                $(clickmaptoaddtree).show();
-
-                // Listen for the event fired when the user selects an item from the
-                // pick list. Retrieve the matching places for that item.
-                //google.maps.event.addListener(s.clickToAddtree, 'click', function () {
-                //    setStatus(editMode);
-                //});
-
-                // Bias the SearchBox results towards places that are within the bounds of the
-                // current map's viewport.
-            });
             var initSearchBox = _.throttle(function () {
 
                 // Create search panel
@@ -1543,10 +1518,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
-                    initMap().then(function () {
-                        console.log('Map initialized in $onInitData event');
-                        showMappedSites();
-                    })
+                    //changes done for resolve the issue map load twice.
+                    showMappedSites();
+                    //initMap().then(function () {
+                    //    console.log('Map initialized in $onInitData event');
+                    //    showMappedSites();
+                    //})
                 }
             })
 

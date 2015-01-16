@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth',
-        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth,$modal) {
             'use strict';
 
             // local and scoped vars
@@ -48,7 +48,9 @@ var ReportCtrl = app.controller(
             });
 
             // when a recent report is selected
+
             s.$watch('rdata.recentReportID', function (ID) {
+                isReportEdited=false;
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
                     $location.search({ reportID: ID});
@@ -62,6 +64,7 @@ var ReportCtrl = app.controller(
 
             // When a new report is loaded, bind it to this scope
             s.$on('onLoadReport', function (evt, rpt) {
+                destroyWatchForChange();
                 s.report = rpt;
                 s.siteOfReport={}
                 s.report.customers=[]
@@ -90,14 +93,81 @@ var ReportCtrl = app.controller(
                     .then(function (res) {
                         s.report.customers=res;
                     });
-//
+                watchForChange();
             });
+
+            var unbindReportNotesWatch;
+            var unbindReportServiceWatch;
+            var unbindReportItemsWatch;
+            var unbindReportSalesUserIdWatch;
+            var unbindReportTitleWatch;
+            var isReportEdited=false;
+            var watchForChange=function(){
+                unbindReportNotesWatch=s.$watch('report.notes',function(n,o){
+                    if(n==null && o=="") return;
+                    if((n)==(o+'\n')) return;
+                    if(!angular.equals(n,o)){
+                        reportEdited();
+                    };
+                })
+                unbindReportServiceWatch=s.$watch('report.services',function(n,o){
+                    if(!angular.equals(n,o)){
+                        reportEdited();
+                    };
+                },true)
+                unbindReportItemsWatch=s.$watch('report.items',function(n,o){
+                    if(!angular.equals(n,o)){
+                        reportEdited();
+                    };
+                },true)
+                unbindReportSalesUserIdWatch=s.$watch('report.sales_userID',function(n,o){
+                    if(!angular.equals(n,o)){
+                        reportEdited();
+                    };
+                })
+                unbindReportTitleWatch=s.$watch('report.name',function(n,o){
+                    if(!angular.equals(n,o)){
+                        reportEdited();
+                    };
+                })
+            };
+
+            var destroyWatchForChange=function(){
+                if(unbindReportNotesWatch==undefined)
+                    return;
+                unbindReportNotesWatch();
+                unbindReportServiceWatch();
+                unbindReportItemsWatch();
+                unbindReportSalesUserIdWatch();
+                unbindReportTitleWatch();
+            }
+
+            var reportEdited=function(){
+                console.log("Changed");
+                isReportEdited=true;
+                destroyWatchForChange();
+            }
 
 			var updateReportStatusUI = function(){
 				s.disableApproveButton=false;
 				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.report.actionButton=0;
 			}
+
+            s.$on('$locationChangeStart', function (event, next, current) {
+                if(isReportEdited==false) return;
+                event.preventDefault();
+                var sm= s.$new();
+                sm.leaveCurrentPage=function(){
+                    isReportEdited=false;
+                    $location.url($location.url(next).hash());
+                }
+                sm.stayOnCurrentPage=function(){
+
+                }
+                return $modal({ scope: sm, template: 'js/common/directives/templates/pageNavConfirm.tpl.html', show: true });
+            });
+
 
             s.$on('itemsAddedToReport', function () {
                 s.groupedItems = ReportService.groupReportItems();
@@ -174,6 +244,7 @@ var ReportCtrl = app.controller(
 
             s.newReport = function () {
                 RS.getBlankReport();
+                isReportEdited=true;
             };
 
 
@@ -186,6 +257,8 @@ var ReportCtrl = app.controller(
                         $location.search({ reportID: data.reportID});
                     }
                 });
+                isReportEdited=false;
+                watchForChange();
             };
 
             s.initEmailModal = function () {

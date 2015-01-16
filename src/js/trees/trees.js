@@ -311,7 +311,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                 ReportService.setSiteID(ID);
                 if (s.data.mode() == 'trees') {
                     ReportService.loadRecent();
-                    if (ID && ID > 0) getTreeListings();
+                    if (ID && ID > 0) {
+                        var siteObj = s.getSiteByID(ID);
+                        s.selected.clientID = siteObj.clientID;
+                        s.selected.clientTypeID = siteObj.clientTypeID;
+                        getTreeListings();
+                    }
                     // todo -- else zoom in on the selected Site...
                     // zoomMap(lat, long)?
                 }
@@ -674,16 +679,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                             markers_allSites.push(marker);
                             //Add event listener for SITE markers				
                             google.maps.event.addListener(marker, 'click', function () {
-
-                                //In case we are already in edit tree mode then
-                                //check and remove editing.
-                                if (s.currentEditableMarker !== undefined
-                                    && s.currentEditableMarker !== null) {
-                                    s.cancelEditing(true);
-                                }
-
                                 infowindow.setContent(this.info);
                                 infowindow.open(gMap, this);
+                                //Add call for client info here
+                                //Rest.all("siteID", this.siteID).then(function(data){
+                                //alert("hello")}); //test
+                                //jQuery("#infoWin-clientName").innerHtml=data.clientName});
+
                             });
 
                             break;
@@ -693,14 +695,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                             gMap.setTilt(0);
                             //Add event listener for TREE markers
                             google.maps.event.addListener(marker, 'click', function () {
-
-                                //In case we are already in edit tree mode then
-                                //check and remove editing.
-                                if (s.currentEditableMarker !== undefined
-                                    && s.currentEditableMarker !== null) {
-                                    s.cancelEditing(true);
-                                }
-
                                 highlightResultRow(this.treeID);
                                 infowindow.setContent(this.info);
                                 infowindow.open(gMap, this);
@@ -790,53 +784,43 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return currentEditableMarker;
             }
 
-            s.cancelEditing = function (moveToCurrentPosition) {
-                if (moveToCurrentPosition === undefined) {
-                    moveToCurrentPosition = true;
-                }
-                if (infowindow) {
-                    infowindow.close();
-                    if (s.currentEditableMarker != null) {
-
-                        //If we found moveToCurrentPosition true it means user did not edit
-                        //so fallback to previous position.
-                        if (moveToCurrentPosition)
-                            s.currentEditableMarker.setPosition(s.currentEditableMarker.currentPosition);
-
-                        s.currentEditableMarker.setDraggable(false);
-                        s.findEditableMarkerAndChangeOthers(0, true);
-
-                        google.maps.event.clearInstanceListeners(s.currentEditableMarker);
-
-                        //Update click event of current markers so that when user again click 
-                        //on it we will show him old info popup.
-                        google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
-                            if (!infowindow)
-                                infowindow = new google.maps.InfoWindow();
-                            infowindow.setContent(this.info);
-                            infowindow.open(gMap, this);
-
-                            //In case we are already in edit tree mode then
-                            //check and remove editing.
-                            if (s.currentEditableMarker !== undefined
-                                && s.currentEditableMarker !== null) {
-                                s.cancelEditing(true);
-                            }
-                        });
-                    }
-                }
-
-                s.currentEditableMarker = null;
-            }
-
-
             //Fire when user click on edit tree from infowindow in map.
             //It contains all methods which we are using to edit a tree.
             s.editCurrentTree = function (treeId) {
-            
+
                 s.currentEditableMarker = s.findEditableMarkerAndChangeOthers(treeId, false);
 
                 s.currentEditableMarker.currentPosition = s.currentEditableMarker.position;
+
+                s.cancelEditing = function (moveToCurrentPosition) {
+                    if (moveToCurrentPosition === undefined) {
+                        moveToCurrentPosition = true;
+                    }
+                    if (infowindow) {
+                        infowindow.close();
+                        if (s.currentEditableMarker != null) {
+
+                            //If we found moveToCurrentPosition true it means user did not edit
+                            //so fallback to previous position.
+                            if (moveToCurrentPosition)
+                                s.currentEditableMarker.setPosition(s.currentEditableMarker.currentPosition);
+
+                            s.currentEditableMarker.setDraggable(false);
+                            s.findEditableMarkerAndChangeOthers(0, true);
+
+                            //Update click event of current markers so that when user again click 
+                            //on it we will show him old info popup.
+                            google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
+                                if (!infowindow)
+                                    infowindow = new google.maps.InfoWindow();
+                                infowindow.setContent(this.info);
+                                infowindow.open(gMap, this);
+                            });
+                        }
+                    }
+
+                    s.currentEditableMarker = null;
+                }
 
                 s.$on('onMapClicked', function () {
                     if (s.currentEditableMarker != null)
@@ -876,8 +860,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                                         "</div></div>";
 
                 s.currentEditableMarker.setDraggable(true);
-
-                google.maps.event.clearInstanceListeners(s.currentEditableMarker);
 
                 google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
                     if (!infowindow)

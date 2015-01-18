@@ -260,7 +260,7 @@ app.service('ReportService',
 			}
 		})
 
-		this.report.total={items:items_total, services:services_total, grand:(services_total+items_total)};
+		this.report.total={items:items_total.toFixed(2), services:services_total.toFixed(2), grand:(services_total+items_total).toFixed(2)};
 	}
 
 

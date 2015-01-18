@@ -33,7 +33,6 @@ app.directive('reportEstimatesTable',
                         $scope.overLimit = true;
                     }                    
                 }
-
             }]
         };
     }]);

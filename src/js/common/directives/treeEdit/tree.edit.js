@@ -17,7 +17,6 @@ app.directive('treeEdit', ['Api', '$location', function (Api, $location) {
         s.ynpOptions = ['yes', 'no', 'potential'];
         s.tree_cachebuster = '?ts=' + moment().unix();
         s.yearOptions = ["2012", "2013", "2014", "2015", "2016", "2017"];
-
         var initTreeData = function () {
             s.tree = {};
             s.tree.img = s.tree.imgSm = s.tree.imgMed = '/img/blank.gif';

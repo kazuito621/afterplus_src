@@ -1543,10 +1543,13 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
-                    initMap().then(function () {
+
+					// Parms solution to fix the double map load... (and comment out the following)
+                    showMappedSites();
+                    /*initMap().then(function () {
                         console.log('Map initialized in $onInitData event');
                         showMappedSites();
-                    })
+                    })*/
                 }
             })
 

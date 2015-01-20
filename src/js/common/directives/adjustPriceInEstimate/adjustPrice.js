@@ -8,7 +8,7 @@ app.directive('adjustPrice',
             return {
                 restrict: 'EA',
                 link: function (scope, el, attrs) {
-                    scope.adjustPercentage=-1;
+                    scope.adjustPercentage=0;
                     scope.newTotal=0;
                     scope.ok=function(){
                         if(isNaN(scope.popover.$scope.adjustPercentage)==false &&
@@ -48,7 +48,7 @@ app.directive('adjustPrice',
                         }
                     }
                     $(el).click(function () {
-                        scope.adjustPercentage=-1;
+                        scope.adjustPercentage=0;
                         scope.newTotal=0;
                         if (scope.popover && typeof scope.popover.hide === 'function') {
                             scope.popover.hide();

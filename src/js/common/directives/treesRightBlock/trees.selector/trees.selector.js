@@ -16,8 +16,9 @@ app.directive('treesSelector',
                 toggleCheckedTrees: '&', // func (opt)
                 setStatus: '&',
                 selectedTrees: '=',
-                count: '=' // TFSdata.treeResultsCount
+                count: '=', // TFSdata.treeResultsCount
+                editModeCss: "@"
             },
-            link: linker
+            link: linker            
         };
     }]);

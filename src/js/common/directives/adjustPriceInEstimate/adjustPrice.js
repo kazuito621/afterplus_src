@@ -9,6 +9,7 @@ app.directive('adjustPrice',
                 restrict: 'EA',
                 link: function (scope, el, attrs) {
                     scope.adjustPercentage=-1;
+                    scope.newTotal=0;
                     scope.ok=function(){
                         if(isNaN(scope.popover.$scope.adjustPercentage)==false &&
                             scope.popover.$scope.adjustPercentage>-100 &&
@@ -18,13 +19,28 @@ app.directive('adjustPrice',
                             });
                             scope.groupedItems = ReportService.groupReportItems();
                             scope.popover.hide();
+                            scope.newTotal=0;
                         }
                         else {
                             return;
                         }
 
                     };
+                    scope.change=function(){
+                        var n=this.adjustPercentage;
+                        if(isNaN(n)==false && n>-100 && n<100 ){
+                            scope.newTotal=0;
+                            _.each(scope.report.items,function(item){
+                                //scope.newTotal=scope.newTotal+parseFloat(parseFloat((parseFloat(item.price)*(1+n/100)).toFixed(2)));
+                                scope.newTotal=scope.newTotal+(parseFloat(item.price)*(1+n/100));
+                            });
+                            scope.newTotal=parseFloat(scope.newTotal).toFixed(2);
+                        }
+                        else {
+                            scope.newTotal="N/A";
+                        }
 
+                    }
                     scope.cancel = function(){
                         if (scope.popover && typeof scope.popover.hide === 'function') {
                             scope.popover.hide();
@@ -32,6 +48,8 @@ app.directive('adjustPrice',
                         }
                     }
                     $(el).click(function () {
+                        scope.adjustPercentage=-1;
+                        scope.newTotal=0;
                         if (scope.popover && typeof scope.popover.hide === 'function') {
                             scope.popover.hide();
                         }

@@ -245,7 +245,8 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. filter the sites dropdown, and set selected.siteID = null
             //		3. Update the map with Sites
             //      4. Reset all filters
-            s.onSelectClientTypeID = function () {
+            s.onSelectClientTypeID = function (typeId) {
+                s.selected.clientTypeID = typeId?typeId:"";
                 filterClients();
                 filterSitesByClients();
                 s.selected.clientID = s.selected.siteID = '';
@@ -260,6 +261,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //      4. Reset all filters
             s.onSelectClientID = function (id) {
                 if (id && id > 0) {
+                    s.selected.clientID=id;
                     filterSitesByClients();
                     s.selected.siteID = '';
                     var clientObj = s.getClientByID(s.selected.clientID);
@@ -384,8 +386,11 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
             s.reset = function () {
+                s.filteredSites = s.initData.sites;
+                s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
                 ReportService.getBlankReport();
                 TFS.clearFilters(true);
+                filterClients();
                 //todo - this action jacks up the selection of the sites dropdown by changing the model
                 // so instead of making a copy... do we need to make a copy? try not doing that
                 // or instead of creating a filteredSites array, maybe we should just set sites[0].hide=true;

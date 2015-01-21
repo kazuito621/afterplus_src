@@ -216,7 +216,6 @@ var ReportCtrl = app.controller(
                     }
                     reportBackUp= angular.copy(s.report);
                 });
-                reportBackUp= s.report;
             };
 
             s.initEmailModal = function () {

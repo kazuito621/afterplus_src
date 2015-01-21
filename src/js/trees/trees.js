@@ -946,18 +946,26 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
                 if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
                 if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
+
                 // todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
                 // then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
                 // similar to the items in the tree results list. ... ie
                 // <span class='textIconBlock-red'>2014</span>
                 // .... or ...textIconBlock-grey
                 //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-                var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
-                var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
-                if (s.data.mode() === 'trees') {
-                    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick) +
-                    '<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick) +
-                    '</div>';
+                if (s.data.mode() === 'trees'){
+					var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+					var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
+					if(Auth.isAtleast('inventory')) {
+                    	o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'
+						+'<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick);
+                    	+'<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick) 
+                    	+'</div>';
+					}else{
+						o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">View Details</a><BR>'.format(editTreeClick)
+						  +'</div>';
+					}
+
                     //if (Auth.isAtleast('inventory')) {
                     //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
                     //}

@@ -856,9 +856,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                         Api.updateTree(tree).then(function (response) {
                             s.hideAllAlert();
                             //$location.path('tree_edit/' + tree.treeID);
-                            var treeEl = angular.element(document.getElementById('tree-anchor-' + tree.treeID));
-                            if (treeEl !== undefined && treeEl.length > 0)
-                                treeEl.click();
+                            
 
                             s.cancelEditing(false);
                         });
@@ -928,6 +926,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+            s.editExistingTree = function (treeId) {
+                var treeEl = angular.element(document.getElementById('tree-anchor-' + treeId));
+                if (treeEl !== undefined && treeEl.length > 0)
+                    treeEl.click();
+            }
+
             var getTreeTemplate = function (itm) {
                 var ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
                 var o = '<div class="mapWindowContainer">'
@@ -948,9 +952,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                 // <span class='textIconBlock-red'>2014</span>
                 // .... or ...textIconBlock-grey
                 //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-                var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+                var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+                var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
                 if (s.data.mode() === 'trees') {
-                    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick) +
+                    '<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick) +
+                    '</div>';
                     //if (Auth.isAtleast('inventory')) {
                     //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
                     //}

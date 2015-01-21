@@ -647,7 +647,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var base = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
                 var num = '';
 
-                if (site.species && site.species.length > 0) {
+                if (site.species && site.species[0]) {
                     bg = 'FE7569';
                     fg = '000000';
                 }

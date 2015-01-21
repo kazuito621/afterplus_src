@@ -19,6 +19,7 @@ var ReportCtrl = app.controller(
             s.siteOfReport={};
             var reportBackUp;
             var changedItems = [];
+
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
 
@@ -115,11 +116,13 @@ var ReportCtrl = app.controller(
                     reportBackUp=undefined;
 =======
                 if(Auth.is('customer')==true || reportBackUp==undefined ||
-                    jumpedToAnotherReport==true ||
                     (ReportService.isChanged(reportBackUp, s.report)) == false) {
                     reportBackUp=undefined;
+<<<<<<< HEAD
                     jumpedToAnotherReport=false;
 >>>>>>> 73ebdf2... unsaved report nav validation structure changed.
+=======
+>>>>>>> 5b28431... fix for old estimate report
                     return;
                 };
                 $location.url($location.url(next).hash());

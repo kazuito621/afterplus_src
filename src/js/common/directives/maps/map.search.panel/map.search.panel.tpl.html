@@ -21,4 +21,12 @@
        ng-show="googleMapSearchBoxValue && googleMapSearchBoxValue!=''"
        ng-click="cleanSearchMarkers();"></a>
 </div>
+<div id="clickmaptoaddtree" class="mtop3" style="display:none;">
+    <a id="zoomToMappedTrees" class="fa fa-tree _red _size7 search-panel-button mright3"
+       ng-click="zoomToMappedTrees()" ng-if="googleMapSearchBoxValue && googleMapSearchBoxValue!=''" bs-tooltip title='Jump back to trees'></a>
+     <input id="buttonClicktoAddTree" class="controls" type="button" name="Click on map to add a tree" value="Click on map to add a tree">
+</div>
+
+
+
 

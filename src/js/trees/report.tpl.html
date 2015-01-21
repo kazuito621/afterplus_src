@@ -40,7 +40,10 @@
                             <dt>Contact: </dt>
                             <dd ng-if="report.reportID!=undefined">
                                 <div style="margin-right: 5px"  ng-repeat="c in report.customers">
-                                    <a href='mailto:{{c.email}}' target=_new><span ng-bind="c.fName+' '+c.lName"></span></a>
+                                    <a href='mailto:{{c.email}}' target=_new>
+                                        <span ng-hide="c.fName==undefined || c.fName==''" ng-bind="c.fName+' '+c.lName"></span>
+                                        <span ng-show="c.fName==undefined || c.fName==''" ng-bind="c.email"></span>
+                                    </a>
                                     <span ng-bind="c.phone|formatPhoneNumber"></span>
                                 		<a ng-if="$index==0 && siteOfReport.siteID" site-users-edit-modal site="siteOfReport"  
 											refresh-site-users="updateContact" bs-tooltip title='Click to edit the contacts.'
@@ -72,12 +75,13 @@
                 <div class="col-md-2 col" ng-if='report.sales_email'>
                     <div class="estimate-info">
                         <p class="name clr-orange">Sales Rep</p>
-                        <dl ng-if="report.sales_fname">
+                        <dl>
                             <a ng-if="auth.isAtleast('inventory')" href e-ng-options="obj.id as obj.email for obj in salesUsers"
                                onshow="getSalesUsers()"
                                editable-select="report.sales_userID"
                                onaftersave="updateSalesRep(report)">
-                               <span ng-bind="report.sales_fname+' '+report.sales_lname"></span>
+                               <span ng-hide="report.sales_fname==undefined || report.sales_fname==undefined==''" ng-bind="report.sales_fname+' '+report.sales_lname"></span>
+                               <span ng-show="report.sales_fname==undefined || report.sales_fname==undefined==''"  ng-bind="report.sales_email"></span>
                             </a>
                         </dl>
                         <dl>
@@ -125,7 +129,9 @@
         </div>
 
         <!-- Email logs -->
-        <email-logs report="report"></email-logs>
+        <div ng-if="data.mode()=='trees'">
+            <email-logs report="report"></email-logs>
+        </div>
         
 
         <div class="table-container">

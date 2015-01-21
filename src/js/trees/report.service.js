@@ -260,10 +260,35 @@ app.service('ReportService',
 			}
 		})
 
-		this.report.total={items:items_total, services:services_total, grand:(services_total+items_total)};
+		this.report.total={items:items_total.toFixed(2), services:services_total.toFixed(2), grand:(services_total+items_total).toFixed(2)};
 	}
 
+    this.isChanged=function(backupReport,report){
+        // The $$haskey of service items updated in UI when rendered, but not in backupreport.
+        //So have to update the $$haskey of backupreport also.
+        if(backupReport.services.length==report.services.length){
+            for(var i=0;i<backupReport.services.length;i++){
+                backupReport.services[i].$$hashKey=report.services[i].$$hashKey;
+            }
+        }
+        var items=_.extract(backupReport, 'items');
+        if( !items || !items.length ) return '';
+        var str=JSON.stringify(items) + JSON.stringify(backupReport.services)
+            +backupReport.name+backupReport.sales_userID;
+        var report1Report = md5.createHash(str);
 
+        items=_.extract(report,'items');
+        if( !items || !items.length ) return '';
+        var str=JSON.stringify(items) + JSON.stringify(report.services)
+            +report.name+report.sales_userID;
+        var report2Report = md5.createHash(str);
+
+        if(angular.equals(report1Report,report2Report)){
+            return false;
+        }
+        else
+            return true;
+    };
 
 	this.saveReport = function() {
 		if(!this.report.siteID) this.report.siteID=this.siteID;

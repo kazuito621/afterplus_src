@@ -115,6 +115,16 @@ app.directive('treeEdit', ['Api', '$location', function (Api, $location) {
             if (data.new === myStateID) { init(); }
         });
 
+        s.activePopover = { elem: {}, itemID: undefined };
+
+        s.deleteTree = function (treeId) {
+            s.setAlert('Deleting tree', { busy: true, time: "false" });            
+            Api.deleteTree(treeId).then(function () {
+                s.hideAllAlert();
+                $location.path('trees');
+            });
+        };
+
         init();
     };
 

@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth',
-        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth,$modal,$q) {
             'use strict';
 
             // local and scoped vars
@@ -17,8 +17,9 @@ var ReportCtrl = app.controller(
             s.estimateTreatmentCodes = [];
             s.treatmentDescriptions = [];
             s.siteOfReport={};
+            var reportBackUp;
             var changedItems = [];
-
+            var jumpedToAnotherReport=false;
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
 //                filebrowserUploadUrl: '/uploader/upload.php',
@@ -48,7 +49,9 @@ var ReportCtrl = app.controller(
             });
 
             // when a recent report is selected
+
             s.$watch('rdata.recentReportID', function (ID) {
+                jumpedToAnotherReport=true;
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
                     $location.search({ reportID: ID});
@@ -78,26 +81,47 @@ var ReportCtrl = app.controller(
                 updateReportStatusUI();
 
                 if(s.report.siteID==undefined || s.report.siteID=="") return;
-                Api.getSiteById(s.report.siteID)
-                    .then(function (data) {
-                        if (data){
-                            s.siteOfReport = data;
-                            //load site users
 
-                        }
-                    });
-                Api.getSiteUsers(s.report.siteID, 'customer')
-                    .then(function (res) {
-                        s.report.customers=res;
-                    });
-//
+                reportBackUp= angular.copy(s.report);
+
+                Api.getSiteById(s.report.siteID).then(function (data) {
+                    if (data){
+                        s.siteOfReport = data;
+                    }
+                }),
+                    Api.getSiteUsers(s.report.siteID, 'customer')
+                        .then(function (res) {
+                            s.report.customers=res;
+                        })
             });
+
 
 			var updateReportStatusUI = function(){
 				s.disableApproveButton=false;
 				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.report.actionButton=0;
 			}
+
+            s.$on('$locationChangeStart', function (event, next, current) {
+                if(Auth.is('customer')==true || reportBackUp==undefined ||
+                    jumpedToAnotherReport==true ||
+                    (ReportService.isChanged(reportBackUp, s.report)) == false) {
+                    reportBackUp=undefined;
+                    jumpedToAnotherReport=false;
+                    return;
+                };
+                $location.url($location.url(next).hash());
+                event.preventDefault();
+                var sm= s.$new();
+                sm.leaveCurrentPage=function(){
+                    reportBackUp=undefined;
+                    $location.url($location.url(next).hash());
+                }
+                sm.stayOnCurrentPage=function(){
+                }
+                return $modal({ scope: sm, template: 'js/common/directives/templates/pageNavConfirm.tpl.html', show: true });
+            });
+
 
             s.$on('itemsAddedToReport', function () {
                 s.groupedItems = ReportService.groupReportItems();
@@ -186,6 +210,7 @@ var ReportCtrl = app.controller(
                         $location.search({ reportID: data.reportID});
                     }
                 });
+                reportBackUp= s.report;
             };
 
             s.initEmailModal = function () {

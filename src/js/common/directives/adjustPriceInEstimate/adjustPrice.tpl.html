@@ -1,0 +1,34 @@
+<div class='popover-container' style="position: absolute;">
+    <div class="alert alert-warning alert-dismissable" tabindex="-1" role="dialog">
+        <div>
+            <label style="width: 100%">Adjust all prices by percent</label>
+            <form class="form-inline">
+                <div class='panel-body'>
+                    <span>
+                       <input ng-model="$parent.adjustPercentage" ng-change="change()" type="number" min="-100" max="100"/>%
+                    </span>
+                    <br>
+                    <br>
+                    <div style="width: 100%;margin: 2px">
+                        <labe class="pull-left" >Current SubTotal</labe>
+                        <labe class="pull-right">{{report.total.items|formatPrice}}</labe>
+                    </div>
+                    </br>
+                    <div style="width: 100%;margin: 2px">
+                        <labe class="pull-left">New SubTotal</labe>
+                        <labe class="pull-right">{{newTotal|formatPrice}}</labe>
+                    </div>
+                    </br>
+                    <div style="width: 100%;margin: 2px">
+                        <button type="button" class="btn" ng-click="ok();">OK</button>
+                        <button type="button" class="btn btn-default " ng-click="cancel()">
+                            CANCEL
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -1,5 +1,5 @@
 app.directive('deleteWithConfirmButton',
-    ['$popover',
+    ['$popover', 
         function ($popover) {
             return {
                 restrict: 'EA',
@@ -7,7 +7,7 @@ app.directive('deleteWithConfirmButton',
                 //    type: '@', //site/client/estimate
                 //    itemId: '=',
                 //    activePopover: '=', //we should monitor, that only one popover can be visible
-                //    onConfirmCallback: '&'
+                //  onConfirmCallback: '&'
                 //},
                 link: function (scope, el, attrs) {
 
@@ -18,14 +18,20 @@ app.directive('deleteWithConfirmButton',
                         scope.activePopover = scope.$eval(attrs.activePopover);
                     }
 
-                    if (angular.isDefined(attrs.onConfirmCallback)) {
-                        scope.onConfirmCallback = attrs.onConfirmCallback;
+                    //if (angular.isDefined(attrs.onConfirmCallback)) {
+                    //    scope.onConfirmCallback = $parse(attrs.onConfirmCallback);
+                    //}
+
+                    scope.clickConfirm = function () {
+                        if (angular.isDefined(attrs.onConfirmCallback)) {
+                            scope.$eval(attrs.onConfirmCallback);
+                        }
                     }
 
                     if (angular.isDefined(attrs.type)) {
                         scope.type = attrs.type;
                     }
-                                        
+
                     $(el).click(function () {
                         //if another is visible, then hide it
                         if (scope.activePopover && scope.activePopover.elem && typeof scope.activePopover.elem.hide === 'function') {
@@ -54,7 +60,7 @@ app.directive('deleteWithConfirmButton',
 
                     });
 
-                    scope.cancel = function(){
+                    scope.cancel = function () {
                         if (scope.activePopover && scope.activePopover.elem && typeof scope.activePopover.elem.hide === 'function') {
                             scope.activePopover.elem.hide();
                         }
@@ -62,4 +68,4 @@ app.directive('deleteWithConfirmButton',
                 }
             }
 
-    }]);
+        }]);

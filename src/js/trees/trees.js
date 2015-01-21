@@ -251,7 +251,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		3. Update the map with Sites
             //      4. Reset all filters
             s.onSelectClientTypeID = function (typeId) {
-                s.selected.clientTypeID = typeId?typeId:"";
+                s.selected.clientTypeID = typeId ? typeId : "";
                 filterClients();
                 filterSitesByClients();
                 s.selected.clientID = s.selected.siteID = '';
@@ -314,9 +314,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() == 'trees') {
                     ReportService.loadRecent();
                     if (ID && ID > 0) {
-                        var siteObj = s.getSiteByID(ID);
-                        s.selected.clientID = siteObj.clientID;
-                        s.selected.clientTypeID = siteObj.clientTypeID;
+
                         getTreeListings();
                     }
                     // todo -- else zoom in on the selected Site...
@@ -496,24 +494,35 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
 
-            var initClicktoMap = _.throttle(function () {
+            //var initClicktoMap = _.throttle(function () {
 
-                // Create search panel
-                var clickmaptoaddtree = document.getElementById('clickmaptoaddtree');
-                gMap.controls[google.maps.ControlPosition.TOP_CENTER].push(clickmaptoaddtree);
+            //    //// Create search panel
+            //    //var clickmaptoaddtree = document.getElementById('clickmaptoaddtree');
+            //    //gMap.controls[google.maps.ControlPosition.TOP_CENTER].push(clickmaptoaddtree);
 
-                var buttonClicktoAddTree = document.getElementById('buttonClicktoAddTree');
-                s.clickToAddtree = new google.maps.ImageMapType(buttonClicktoAddTree);
+            //    //var buttonClicktoAddTree = document.getElementById('buttonClicktoAddTree');
+            //    //s.clickToAddtree = new google.maps.ImageMapType(buttonClicktoAddTree);
 
-                $(clickmaptoaddtree).show();
-            });
+            //    //$(clickmaptoaddtree).show();
+
+            //    s.setAlert("Click on map to add tree.", { type: 'ok', time: 10 });
+            //});
 
             s.editMode = false;
+            s.editModeCss = "fa-plus";
             s.setStatus = function (editMode) {
-                if (!s.editMode) {
-                    initClicktoMap();
-                    s.editMode = editMode;
+                if (s.editMode) {
+                    s.cancelMarker(s.treeMarkers.length - 1, true);
+                    s.editMode = false;
+                    s.editModeCss = "fa-plus";
                 }
+                else {
+                    //initClicktoMap();
+                    s.setAlert("Click on map to add tree.", { type: 'ok', time: 10 });
+                    s.editMode = true;
+                    s.editModeCss = "fa-minus";
+                }
+                return s.editMode;
             }
 
             var initSearchBox = _.throttle(function () {
@@ -803,29 +812,29 @@ var TreesCtrl = app.controller('TreesCtrl',
                     }
                     if (infowindow) {
                         infowindow.close();
-                        if (s.currentEditableMarker != null) {
+                    }
+                    if (s.currentEditableMarker != null) {
 
-                            //If we found moveToCurrentPosition true it means user did not edit
-                            //so fallback to previous position.
-                            if (moveToCurrentPosition)
-                                s.currentEditableMarker.setPosition(s.currentEditableMarker.currentPosition);
+                        //If we found moveToCurrentPosition true it means user did not edit
+                        //so fallback to previous position.
+                        if (moveToCurrentPosition)
+                            s.currentEditableMarker.setPosition(s.currentEditableMarker.currentPosition);
 
-                            s.currentEditableMarker.setDraggable(false);
-                            s.findEditableMarkerAndChangeOthers(0, true);
+                        s.currentEditableMarker.setDraggable(false);
+                        s.findEditableMarkerAndChangeOthers(0, true);
 
-                            //Update click event of current markers so that when user again click 
-                            //on it we will show him old info popup.
-                            google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
-                                if (!infowindow)
-                                    infowindow = new google.maps.InfoWindow();
-                                infowindow.setContent(this.info);
-                                infowindow.open(gMap, this);
-                            });
-                        }
+                        //Update click event of current markers so that when user again click 
+                        //on it we will show him old info popup.
+                        google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
+                            if (!infowindow)
+                                infowindow = new google.maps.InfoWindow();
+                            infowindow.setContent(this.info);
+                            infowindow.open(gMap, this);
+                        });
                     }
 
                     s.currentEditableMarker = null;
-                }
+                };
 
                 s.$on('onMapClicked', function () {
                     if (s.currentEditableMarker != null)
@@ -846,7 +855,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                         Api.updateTree(tree).then(function (response) {
                             s.hideAllAlert();
-                            $location.path('tree_edit/' + tree.treeID);
+                            //$location.path('tree_edit/' + tree.treeID);
+                            var treeEl = angular.element(document.getElementById('tree-anchor-' + tree.treeID));
+                            if (treeEl !== undefined && treeEl.length > 0)
+                                treeEl.click();
+
+                            s.cancelEditing(false);
                         });
                     }
                 }
@@ -872,6 +886,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                     infowindow.setContent(markertemplate);
                     infowindow.open(gMap, this);
 
+
+
                     google.maps.event.addListener(infowindow, 'closeclick', function () {
                         if (s.currentEditableMarker != null)
                             s.cancelEditing(true);
@@ -883,6 +899,70 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             s.MarkerAdded = false;
+
+            s.cancelMarker = function (index, switchOfAddMode) {
+
+                if (switchOfAddMode === undefined)
+                    switchOfAddMode = false;
+
+                if (infowindow) {
+                    infowindow.close();
+                }
+
+                if (s.treeMarkers[index] !== undefined) {
+                    s.treeMarkers[index].setMap(null);
+                    delete s.treeMarkers[index];
+                }
+                if (switchOfAddMode) {
+                    //Also turn off edit mode.
+                    s.editMode = false;
+                    if (!s.$$phase) {
+                        s.$apply(function () {
+                            s.editModeCss = "fa-plus";
+                        });
+                    }
+                    else {
+                        s.editModeCss = "fa-plus";
+                    }
+                    s.hideAllAlert();
+                }
+            }
+
+            var getTreeTemplate = function (itm) {
+                var ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                var o = '<div class="mapWindowContainer">'
+                     + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
+                     + '<div class="mwcBody">'
+                     + '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
+                     + '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
+                         itm.treeID, $filter('dbhID2Name')(itm.dbhID, s));
+                if (itm.ratingID) o += '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID, ratingD);
+                o += '<div>';
+                if (itm.caDamage == 'yes') o += '<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
+                if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
+                if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
+                if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
+                // todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
+                // then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
+                // similar to the items in the tree results list. ... ie
+                // <span class='textIconBlock-red'>2014</span>
+                // .... or ...textIconBlock-grey
+                //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
+                var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+                if (s.data.mode() === 'trees') {
+                    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                    //if (Auth.isAtleast('inventory')) {
+                    //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                    //}
+                    //else {
+                    //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                    //}
+                    //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                    //o += '</div><BR>'
+                    // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
+                }
+                return o;
+            }
 
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function (treeSet) {
@@ -905,24 +985,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                             if (!s.editMode)
                                 return;
 
-                            s.cancelMarker = function (index) {
-                                if (infowindow) {
-                                    infowindow.close();
-                                }
-
-                                if (s.treeMarkers[index] !== undefined) {
-                                    s.treeMarkers[index].setMap(null);
-                                    delete s.treeMarkers[index];
-                                }
-                            }
-
                             if (s.MarkerAdded) {
-                                s.cancelMarker(s.treeMarkers.length - 1);
+                                s.cancelMarker(s.treeMarkers.length - 1, false);
                                 s.MarkerAdded = false;
                             }
 
                             s.$on('onMapClicked', function () {
-                                s.cancelMarker(s.treeMarkers.length - 1);
+                                s.cancelMarker(s.treeMarkers.length - 1, false);
                             });
 
                             s.confirmLocation = function (markerIndex) {
@@ -942,7 +1011,47 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                                 Api.saveTree(tree).then(function (response) {
                                     s.hideAllAlert();
-                                    $location.path('tree_edit/' + response.treeID);
+
+                                    var lastInsertedMarker = s.treeMarkers[s.treeMarkers.length - 1];
+
+                                    lastInsertedMarker.treeID = response.treeID;
+                                    lastInsertedMarker.siteID = tree.siteID;
+
+                                    lastInsertedMarker.tree = tree;
+                                    lastInsertedMarker.info = getTreeTemplate(response);
+                                    lastInsertedMarker.setIcon(setIconColor(response));
+                                    markers_singleSite.push(lastInsertedMarker);
+                                    s.trees.push(response);
+
+                                    if (infowindow) {
+                                        infowindow.close();
+                                    }
+                                    var timeOut = setTimeout(function () {
+                                        var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
+                                        if (treeEl !== undefined && treeEl.length > 0)
+                                            treeEl.click();
+
+                                        clearTimeout(timeOut);
+                                    }, 1000);
+
+                                    google.maps.event.clearListeners(marker, 'click');
+
+                                    google.maps.event.addListener(marker, 'click', function (event) {
+                                        if (!infowindow)
+                                            infowindow = new google.maps.InfoWindow();
+                                        infowindow.setContent(this.info);
+                                        infowindow.open(gMap, this);
+
+                                        google.maps.event.clearListeners(infowindow, 'closeclick');
+
+                                        google.maps.event.addListener(infowindow, 'closeclick', function (event) {
+                                            if (infowindow) {
+                                                infowindow.close();
+                                            }
+                                        });
+                                    });
+
+                                    //$location.path('tree_edit/' + response.treeID);
                                 });
                             }
 
@@ -950,14 +1059,15 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 position: event.latLng,
                                 map: gMap,
                                 title: 'Add Tree',
-                                draggable: true
-                                //icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
+                                draggable: true,
+                                icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=1|006256|000000'
+                                //'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
                             });
 
                             s.MarkerAdded = true;
                             s.treeMarkers.push(marker);
 
-                            var click = "angular.element(this).scope().cancelMarker({0})".format(s.treeMarkers.length - 1);
+                            var click = "angular.element(this).scope().cancelMarker({0},{1})".format(s.treeMarkers.length - 1, true);
                             var confirmclick = "angular.element(this).scope().confirmLocation({0})".format(s.treeMarkers.length - 1);
 
                             var markertemplate = "<div style=\"height:35px;width:210px;\">" +
@@ -996,39 +1106,40 @@ var TreesCtrl = app.controller('TreesCtrl',
                     if (!itm || itm.hide) return;
                     if (itm.commonName == null || itm.commonName == 'null' || !itm.commonName) itm.commonName = ' ';
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
-                        ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
-                        o = '<div class="mapWindowContainer">'
-                            + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
-                            + '<div class="mwcBody">'
-							+ '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
-							+ '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
-                                itm.treeID, $filter('dbhID2Name')(itm.dbhID, s));
-                        if (itm.ratingID) o += '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID, ratingD);
-                        o += '<div>';
-                        if (itm.caDamage == 'yes') o += '<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
-                        if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
-                        if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
-                        if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
-                        // todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
-                        // then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
-                        // similar to the items in the tree results list. ... ie
-                        // <span class='textIconBlock-red'>2014</span>
-                        // .... or ...textIconBlock-grey
-                        //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-                        var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
-                        if (s.data.mode() === 'trees') {
-                            o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
-                            //if (Auth.isAtleast('inventory')) {
-                            //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                            //}
-                            //else {
-                            //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
-                            //}
-                            //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                            //o += '</div><BR>'
-                            // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
-                        }
-                        itm.info = o;
+                        itm.info = getTreeTemplate(itm);
+                        //ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                        //o = '<div class="mapWindowContainer">'
+                        //    + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
+                        //    + '<div class="mwcBody">'
+                        //	+ '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
+                        //	+ '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
+                        //        itm.treeID, $filter('dbhID2Name')(itm.dbhID, s));
+                        //if (itm.ratingID) o += '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID, ratingD);
+                        //o += '<div>';
+                        //if (itm.caDamage == 'yes') o += '<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        //if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        //if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
+                        //if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
+                        //// todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
+                        //// then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
+                        //// similar to the items in the tree results list. ... ie
+                        //// <span class='textIconBlock-red'>2014</span>
+                        //// .... or ...textIconBlock-grey
+                        ////	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
+                        //var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+                        //if (s.data.mode() === 'trees') {
+                        //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                        //    //if (Auth.isAtleast('inventory')) {
+                        //    //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                        //    //}
+                        //    //else {
+                        //    //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                        //    //}
+                        //    //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                        //    //o += '</div><BR>'
+                        //    // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
+                        //}
+                        //itm.info = o;
                     }
                     setIconColor(itm);
                     set2.push(itm)
@@ -1072,6 +1183,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
                 itm.colorID = idx;
                 itm.iconType = base + num + '|' + bg + '|' + fg;
+
+                return itm.iconType;
             }
 
             //Define function to get specific treatment types (string) by ID
@@ -1548,7 +1661,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
 
-					// Parms solution to fix the double map load... (and comment out the following)
+                    // Parms solution to fix the double map load... (and comment out the following)
                     showMappedSites();
                     /*initMap().then(function () {
                         console.log('Map initialized in $onInitData event');

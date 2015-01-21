@@ -8,32 +8,49 @@ app.directive('reportEstimatesTable',
             transclude: false,
             templateUrl: 'js/common/directives/reports/report.estimates.table/report.estimates.table.tpl.html',
             controller: ['$scope', function ($scope) {
-                $scope.showMoreText = "Show More";
+                //$scope.showMoreText = "Show More";
                 $scope.total = $scope.groupedItems.length;
-                $scope.limit = 50;
+                $scope.limit = 100;
 
-                if ($scope.limit >= $scope.total) {                    
-                    $scope.overLimit = true;
-                }
+                //if ($scope.limit >= $scope.total) {                    
+                //    $scope.overLimit = true;
+                //}
 
                 $scope.$watch('groupedItems', function () {
                     $scope.total = $scope.groupedItems.length;
-                    $scope.limit = 50;
-                    if ($scope.limit >= $scope.total) {                        
-                        $scope.overLimit = true;
-                    }
+                    $scope.limit = 100;
+                    $scope.timeoutID = window.setTimeout(function () {
+                        $scope.setLimit();
+                    }, 1000);
                 });
 
-                $scope.overLimit = false;
+                //$scope.overLimit = false;
 
-                $scope.showMore = function () {
-                    $scope.limit += 50;
+                //$scope.showMore = function () {
+                //    $scope.limit += 300;
+
+                //    if ($scope.limit >= $scope.total) {
+                //        $scope.overLimit = true;
+                //    }                    
+                //}
+
+                $scope.setLimit = function () {
+                    $scope.$apply(function () {
+                        $scope.limit += 100;
+                    })
 
                     if ($scope.limit >= $scope.total) {
-                        $scope.overLimit = true;
-                    }                    
+                        window.clearTimeout($scope.timeoutID);
+                        delete $scope.timeoutID;
+                        //Do Nothing
+                    }
+                    else {
+                        setTimeout(function () {  
+                            $scope.setLimit();
+                        }, 1000);
+                    }
                 }
 
-            }]
+            }]  
         };
     }]);

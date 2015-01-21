@@ -19,9 +19,10 @@ var ReportCtrl = app.controller(
             s.siteOfReport={};
             var reportBackUp;
             var changedItems = [];
-
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
+
+            var jumpedToAnotherReport=false;
 
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
@@ -55,6 +56,8 @@ var ReportCtrl = app.controller(
 
             s.$watch('rdata.recentReportID', function (ID) {
                 reportBackUp=undefined;
+                jumpedToAnotherReport=true;
+
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
                     $location.search({ reportID: ID});
@@ -106,9 +109,17 @@ var ReportCtrl = app.controller(
 			}
 
             s.$on('$locationChangeStart', function (event, next, current) {
+<<<<<<< HEAD
                 if(!Auth.is('customer')==true || reportBackUp==undefined ||
                     ReportService.isChanged(reportBackUp, s.report) == false) {
                     reportBackUp=undefined;
+=======
+                if(Auth.is('customer')==true || reportBackUp==undefined ||
+                    jumpedToAnotherReport==true ||
+                    (ReportService.isChanged(reportBackUp, s.report)) == false) {
+                    reportBackUp=undefined;
+                    jumpedToAnotherReport=false;
+>>>>>>> 73ebdf2... unsaved report nav validation structure changed.
                     return;
                 };
                 $location.url($location.url(next).hash());
@@ -212,6 +223,10 @@ var ReportCtrl = app.controller(
                     }
                     reportBackUp= angular.copy(s.report);
                 });
+<<<<<<< HEAD
+=======
+                reportBackUp= s.report;
+>>>>>>> 73ebdf2... unsaved report nav validation structure changed.
             };
 
             s.initEmailModal = function () {

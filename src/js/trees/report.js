@@ -207,8 +207,8 @@ var ReportCtrl = app.controller(
                     if (data && data.reportID && $location.search().reportID !== data.reportID) {
                         $location.search({ reportID: data.reportID});
                     }
+                    reportBackUp= angular.copy(s.report);
                 });
-                reportBackUp= s.report;
             };
 
             s.initEmailModal = function () {

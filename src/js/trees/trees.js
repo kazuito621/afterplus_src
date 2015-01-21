@@ -856,7 +856,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                         Api.updateTree(tree).then(function (response) {
                             s.hideAllAlert();
                             //$location.path('tree_edit/' + tree.treeID);
-                            
+
 
                             s.cancelEditing(false);
                         });
@@ -998,7 +998,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                             }
 
                             s.$on('onMapClicked', function () {
-                                s.cancelMarker(s.treeMarkers.length - 1, false);
+                                if (s.MarkerAdded)
+                                    s.cancelMarker(s.treeMarkers.length - 1, false);
                             });
 
                             s.confirmLocation = function (markerIndex) {
@@ -1057,8 +1058,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                                             }
                                         });
                                     });
+                                    s.MarkerAdded = false;
 
-                                    //$location.path('tree_edit/' + response.treeID);
                                 });
                             }
 

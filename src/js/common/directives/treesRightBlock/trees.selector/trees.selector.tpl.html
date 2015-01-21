@@ -17,7 +17,7 @@
         </td>
         <td colspan="3"><h6>{{selectedTrees.length}} of {{count}} trees selected </h6></td>
 		<td>
-            <a href ng-click='setStatus(true)' bs-tooltip title='Add Tree to Map'><i class="fa {{editModeCss}} white _size6"></i></a>
+            <a href ng-if="Auth.isAtleast('inventory')" ng-click='setStatus(true)' bs-tooltip title='Add Tree to Map'><i class="fa {{editModeCss}} white _size6"></i></a>
 				<i class="fa fa-plus" style='visibility:hidden;'></i><!-- if this isnt here, the above rollover doesnt work right... wtf -->
 		</td>
     </tr>

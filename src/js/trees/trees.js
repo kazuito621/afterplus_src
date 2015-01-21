@@ -954,7 +954,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
                 var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
                 var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
-                if (s.data.mode() === 'trees') {
+                if (s.data.mode() === 'trees' && Auth.isAtleast('inventory')) {
                     o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick) +
                     '<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick) +
                     '</div>';

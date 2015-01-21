@@ -267,7 +267,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.onSelectClientID = function (id) {
                 if (id && id > 0) {
                     s.selected.clientID=id;
-                    filterSitesByClients();
+                    filterSitesByClients(id);
                     s.selected.siteID = '';
                     var clientObj = s.getClientByID(s.selected.clientID);
                     s.selected.clientTypeID = clientObj.clientTypeID;
@@ -1365,10 +1365,14 @@ var TreesCtrl = app.controller('TreesCtrl',
             // if selected.clientID, filter based on that,
             // else if selected.clientTypeID filter based on clientTypeID
             // else show all
-            var filterSitesByClients = _.throttle(function () {
+            var filterSitesByClients = _.throttle(function (clientId) {
                 var siteIDs = s.TFSdata.filteredSiteIDs;
                 var treeCountMap = s.TFSdata.treeCountMap;
                 if (!siteIDs || !siteIDs.length || !(siteIDs.length > 0)) siteIDs = false;
+                if (clientId !== undefined)
+                {
+                    s.selected.clientID = clientId;
+                }
                 if (s.selected.clientID) {
                     s.filteredSites = _.filter(s.initData.sites, function (obj) {
                         if (obj.clientID == s.selected.clientID) {

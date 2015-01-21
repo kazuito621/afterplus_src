@@ -23,6 +23,8 @@ var ReportCtrl = app.controller(
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
 
+            var jumpedToAnotherReport=false;
+
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
 //                filebrowserUploadUrl: '/uploader/upload.php',
@@ -55,6 +57,8 @@ var ReportCtrl = app.controller(
 
             s.$watch('rdata.recentReportID', function (ID) {
                 reportBackUp=undefined;
+                jumpedToAnotherReport=true;
+
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
                     $location.search({ reportID: ID});
@@ -106,9 +110,11 @@ var ReportCtrl = app.controller(
 			}
 
             s.$on('$locationChangeStart', function (event, next, current) {
-                if(!Auth.is('customer')==true || reportBackUp==undefined ||
-                    ReportService.isChanged(reportBackUp, s.report) == false) {
+                if(Auth.is('customer')==true || reportBackUp==undefined ||
+                    jumpedToAnotherReport==true ||
+                    (ReportService.isChanged(reportBackUp, s.report)) == false) {
                     reportBackUp=undefined;
+                    jumpedToAnotherReport=false;
                     return;
                 };
                 $location.url($location.url(next).hash());
@@ -212,6 +218,7 @@ var ReportCtrl = app.controller(
                     }
                     reportBackUp= angular.copy(s.report);
                 });
+                reportBackUp= s.report;
             };
 
             s.initEmailModal = function () {

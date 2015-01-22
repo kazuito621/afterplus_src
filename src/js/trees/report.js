@@ -20,6 +20,9 @@ var ReportCtrl = app.controller(
             var reportBackUp;
             var changedItems = [];
 
+			s.afiliations=cfg.getEntity().afiliations || '';
+			if(s.afiliations)s.afiliations=s.afiliations.split(',');
+
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
 //                filebrowserUploadUrl: '/uploader/upload.php',

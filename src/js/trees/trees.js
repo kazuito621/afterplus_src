@@ -856,8 +856,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         Api.updateTree(tree).then(function (response) {
                             s.hideAllAlert();
                             //$location.path('tree_edit/' + tree.treeID);
-                            
-
                             s.cancelEditing(false);
                         });
                     }
@@ -953,6 +951,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 // <span class='textIconBlock-red'>2014</span>
                 // .... or ...textIconBlock-grey
                 //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
+
                 if (s.data.mode() === 'trees'){
 					var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
 					var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
@@ -1006,7 +1005,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                             }
 
                             s.$on('onMapClicked', function () {
-                                s.cancelMarker(s.treeMarkers.length - 1, false);
+                                if (s.MarkerAdded)
+                                    s.cancelMarker(s.treeMarkers.length - 1, false);
                             });
 
                             s.confirmLocation = function (markerIndex) {
@@ -1065,8 +1065,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                                             }
                                         });
                                     });
+                                    s.MarkerAdded = false;
 
-                                    //$location.path('tree_edit/' + response.treeID);
                                 });
                             }
 

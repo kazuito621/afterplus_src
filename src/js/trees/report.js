@@ -106,8 +106,8 @@ var ReportCtrl = app.controller(
 			}
 
             s.$on('$locationChangeStart', function (event, next, current) {
-                if(Auth.is('customer')==true || reportBackUp==undefined ||
-                    (ReportService.isChanged(reportBackUp, s.report)) == false) {
+                if(!Auth.is('customer')==true || reportBackUp==undefined ||
+                    ReportService.isChanged(reportBackUp, s.report) == false) {
                     reportBackUp=undefined;
                     return;
                 };

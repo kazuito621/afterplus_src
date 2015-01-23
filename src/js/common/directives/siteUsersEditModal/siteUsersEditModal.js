@@ -111,12 +111,14 @@ app.directive('siteUsersEditModal',
         };
 
         scope.addNewSiteRep = function (event) {
+            
             event.preventDefault();
             event.stopPropagation();
 
             scope.showAddNewSiteRep = false;
 
             var tmp = angular.copy(scope.newRep);
+            
             var user = { role: tmp.role, email: tmp.email };
 
 			user.fName = tmp.fName;
@@ -157,7 +159,7 @@ app.directive('siteUsersEditModal',
 
         var saveSiteCallback = function (site) {
             console.log('Save site callback', site);
-
+            scope.site = site;
             $timeout(function () {
                 console.log('Opening sues modal with id:', site.siteID);
                 scope.openModal(site.siteID);

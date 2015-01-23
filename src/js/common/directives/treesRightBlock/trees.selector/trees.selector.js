@@ -5,6 +5,7 @@ app.directive('treesSelector',
 
         var linker = function (scope) {
             scope.thisYear = moment().format('YYYY');
+		 scope.auth=Auth;
         };
 
         return {

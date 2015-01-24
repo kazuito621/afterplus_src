@@ -4,7 +4,7 @@
     <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
         <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
         <br><br>
-        <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Report</button>
+        <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
     </div>
 
     <div class="touch-boundry">
@@ -45,7 +45,7 @@
                                         <span ng-show="c.fName==undefined || c.fName==''" ng-bind="c.email"></span>
                                     </a>
                                     <span ng-bind="c.phone|formatPhoneNumber"></span>
-                                		<a ng-if="$index==0 && siteOfReport.siteID && Auth.isAtleast('inventory')" site-users-edit-modal site="siteOfReport"  
+                                		<a ng-if="$index==0 && siteOfReport.siteID && auth.isAtleast('inventory')" site-users-edit-modal site="siteOfReport"  
 											refresh-site-users="updateContact" bs-tooltip title='Click to edit the contacts.'
 											><i style="cursor: pointer;" class="fa fa-pencil"></i></a>
                                     </br>
@@ -65,7 +65,7 @@
                             <dt>Address: </dt>
                             <dd ng-if="report.reportID!=undefined" ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip">
                             </dd>
-                            <a ng-if="report.reportID!=undefined && Auth.isAtleast('inventory')" style="margin-left: 10px;" 
+                            <a ng-if="report.reportID!=undefined && auth.isAtleast('inventory')" style="margin-left: 10px;" 
 								href="" site-edit-modal site-id="report.siteID" bs-tooltip="" title="Click to edit address"
                                	on-save="reloadReport"><i class="fa fa-pencil"></i></a>
 

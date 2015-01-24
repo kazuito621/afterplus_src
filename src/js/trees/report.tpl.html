@@ -38,7 +38,7 @@
                         </p>
                         <dl>
                             <dt>Contact: </dt>
-                            <dd ng-if="report.reportID!=undefined">
+                            <dd ng-if="report.customers.length>0">
                                 <div style="margin-right: 5px"  ng-repeat="c in report.customers">
                                     <a href='mailto:{{c.email}}' target=_new>
                                         <span ng-hide="c.fName==undefined || c.fName==''" ng-bind="c.fName+' '+c.lName"></span>

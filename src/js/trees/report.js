@@ -91,17 +91,24 @@ var ReportCtrl = app.controller(
 
                 reportBackUp= angular.copy(s.report);
 
+                getSiteBySiteID();
+                getSiteCustomers();
+            });
+
+            var getSiteCustomers=function(){
+                Api.getSiteUsers(s.report.siteID, 'customer')
+                    .then(function (res) {
+                        s.report.customers=res;
+                    })
+            }
+
+            var getSiteBySiteID=function(){
                 Api.getSiteById(s.report.siteID).then(function (data) {
                     if (data){
                         s.siteOfReport = data;
                     }
-                }),
-                    Api.getSiteUsers(s.report.siteID, 'customer')
-                        .then(function (res) {
-                            s.report.customers=res;
-                        })
-            });
-
+                })
+            }
 
 			var updateReportStatusUI = function(){
 				s.disableApproveButton=false;
@@ -131,6 +138,9 @@ var ReportCtrl = app.controller(
 
             s.$on('itemsAddedToReport', function () {
                 s.groupedItems = ReportService.groupReportItems();
+                if(s.report.customers.length==0){
+                    getSiteCustomers();
+                }
             });
 
             // After the counts for the treatments have been added, add in the service descriptions 

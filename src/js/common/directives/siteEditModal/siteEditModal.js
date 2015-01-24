@@ -86,14 +86,14 @@ app.directive('siteEditModal',
             } else {
                 Api.saveNewSite(scope.site).then(function (data) {
                     console.log('New site created', data);
-
-                    scope.site = data;
-                    scope.siteId = data.siteID;
+                    scope.site = {};
+                   // scope.site = data;
+                    //scope.siteId = data.siteID;
 
                     modal.hide();
 
                     if (cb) {
-                        scope.openModal(data.siteID);
+                        //scope.openModal(data.siteID);
                         $timeout(function () {
                             cb(data);
                         }, 250);

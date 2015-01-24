@@ -217,10 +217,7 @@ var ReportCtrl = app.controller(
                     }
                     reportBackUp= angular.copy(s.report);
                 });
-<<<<<<< HEAD
-=======
                 reportBackUp= s.report;
->>>>>>> 73ebdf2... unsaved report nav validation structure changed.
             };
 
             s.initEmailModal = function () {

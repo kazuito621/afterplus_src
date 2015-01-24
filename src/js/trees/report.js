@@ -110,19 +110,10 @@ var ReportCtrl = app.controller(
 			}
 
             s.$on('$locationChangeStart', function (event, next, current) {
-<<<<<<< HEAD
-                if(!Auth.is('customer')==true || reportBackUp==undefined ||
-                    ReportService.isChanged(reportBackUp, s.report) == false) {
-                    reportBackUp=undefined;
-=======
                 if(Auth.is('customer')==true || reportBackUp==undefined ||
                     (ReportService.isChanged(reportBackUp, s.report)) == false) {
                     reportBackUp=undefined;
-<<<<<<< HEAD
                     jumpedToAnotherReport=false;
->>>>>>> 73ebdf2... unsaved report nav validation structure changed.
-=======
->>>>>>> 5b28431... fix for old estimate report
                     return;
                 };
                 $location.url($location.url(next).hash());

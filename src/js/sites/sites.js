@@ -86,6 +86,7 @@ var SitesCtrl = app.controller('SitesCtrl',
                     }
                     self.sh = SortHelper.sh(sitesFiltered, '', columnMap, colSortOrder);
                     s.displayedSites = sitesFiltered.slice(0, 49);
+                    s.sites=sitesFiltered;
                 });
             };
 

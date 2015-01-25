@@ -2,39 +2,62 @@
  * Created by Imdadul Huq on 11-Jan-15.
  */
 app.directive('addEditUserModal',
-    ['$modal', 'SiteModelUpdateService', 'Api', '$window', '$timeout',
-        function ($modal, SiteModelUpdateService, Api, $window, $timeout) {
+    ['$modal', 'Api',
+        function ($modal, Api) {
             'use strict';
 
             var linker = function (scope, el, attrs) {
                 var modal;
                 window.sues = scope;
-                scope.userRoles=[
-                    {role:'Admin'},{role:'Customer'},{role:'Inventory'},{role:'Sales'},
-                ];
                 scope.newContact={};
                 scope.addedSites=[];
                 scope.selectedClient={};
                 scope.selectedClient.email="";
-                Api.getUserRoles().then(function(userRoles){
-                    scope.userRoles = angular.copy(userRoles);
-                })
-                scope.openModal = function (id) {
-                    if (!id) {
-                        console.log('Trying to open site users modal without site id provided');
-                        return;
+                scope.addedClients=[];
+                scope.addedSites=[];
+                if (angular.isDefined(attrs.addEditUserModal)) {
+                    scope.userID = scope.$eval(attrs.addEditUserModal);
+                }
+                scope.openModal = function () {
+                    Api.getUserRoles().then(function(userRoles){
+                        scope.userRoles = angular.copy(userRoles);
+                    });
+                    if (angular.isDefined(attrs.sites)) {
+                        scope.sites = scope.$eval(attrs.sites);
+                    }
+                    if(scope.sites==undefined){ // in case site have been not provided.
+                        Api.getSiteList().then(function (data) {
+                            scope.sites=data;
+                        })
                     }
                     if (!modal) {
                         modal = $modal({scope: scope, template: '/js/common/directives/addEditUserModal/addEditUserModal.tpl.html', show: false});
                     }
 
+                    if(scope.userID){
+                        var param={
+                            id:scope.userID
+                        };
+                        Api.user.getUserById(param).then(function(data){
+                            scope.newContact.email=data.email;
+                            scope.newContact.role.roleCode=data.role;
+                            scope.newContact.fName=data.fName;
+                            scope.newContact.lName=data.lName;
+                            scope.newContact.phone=data.phone;
+
+                            scope.userRoles
+                        });
+                    }
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
                         $(document).keyup(hideOnEscape);
                     });
-                };
 
+                };
+                var getRoleIndex=function(){
+                    for(var i=0;i<)
+                }
                 scope.closeModal = function () {
                     scope.showAddNewSiteContact = false;
                     scope.showAddNewSiteRep = false;
@@ -45,40 +68,81 @@ app.directive('addEditUserModal',
                     scope.selectedClient=user;
 
                 };
+                scope.siteSelect = function (user) {
+                    scope.selectedProperty=user;
+
+                };
                 scope.SaveUser = function (event) {
                     var user={};
-                    if(user.email==undefined || user.email.trim()==""|| user.role==undefined){
+                    if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
+                        scope.newContact.role==undefined){
                         return;
                     }
-                    user.email= scope.newContact.email;
-                    user.role= scope.newContact.role;
+                    user.email=  scope.newContact.email;
+                    user.role=   scope.newContact.role.roleCode;
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
-                    user.siteIDs= _.pluck(angular.copy(scope.addedSites), 'siteID');
-
-                    //Api.userSite.assign(user).then(function (data) {
-                    //    if (data[0]) {
-                    //        scope.contacts.push(data[0]);
-                    //        scope.site.userCustCount++;
-                    //    }
-                    //});
+                    user.siteIDs= _.pluck(scope.addedSites, 'siteID');
+                    user.clientIDs=[];
+                    angular.forEach(scope.addedClients,function(item){
+                        user.clientIDs.push(item.client.clientID);
+                    });
+                   /*
+                    POST /site/multi/users
+                    JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer',
+                    siteIDs:[123, 876, 432],
+                    clientIDs:[456]}
+                    or (for existing users)
+                    JSON BODY: {userID:123, role:'sales', siteIDs:[123, 876, 432]}
+                    */
+                    Api.user.create(user).then(function (data) {
+                        var a=1;
+                    });
                 };//
 
                 scope.addClientsProperty = function (event) {
-                    //event.preventDefault();
-                    //event.stopPropagation();
-//
-                    //scope.showAddNewSiteRep = false;
-//
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if(scope.selectedClient.userID==undefined) return;
+                    for(var i=0;i<scope.addedClients.length;i++){
+                        if(scope.addedClients[i].client.userID==scope.selectedClient.userID){
+                            return;
+                        }
+                    }
+                    var siteNames=[];
                     Api.getSitesByClientId(scope.selectedClient.userID).then(function(sites){
                         angular.forEach(sites,function(item){
-                            scope.addedSites.push({
-                                siteName:item.siteName,siteID:item.siteID
+                            siteNames.push({
+                                siteName:item.siteName
                             });
-                        })
-                     var a=1;
+                        });
+
+                        scope.addedClients.push({
+                            client:scope.selectedClient,
+                            siteNames:siteNames
+                        });
+                        scope.selectedClient={};
                     });
+                };
+                scope.addProperty=function(event){
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if(scope.selectedProperty.siteID==undefined) return;
+                    for(var i=0;i<scope.addedSites.length;i++){
+                        if(scope.addedSites[i].siteID==scope.selectedProperty.siteID){
+                           return;
+                        }
+                    }
+                    scope.addedSites.push(scope.selectedProperty);
+                    scope.selectedProperty=undefined;
+                }
+                scope.getPropertyNames=function(client){
+                    var str="";
+                    angular.forEach(client.siteNames,function(item){
+                        str=str+","+item.siteName;
+                    });
+                    return str;
                 };
 
                 scope.removeFromAddedSiteList = function (site) {
@@ -89,14 +153,13 @@ app.directive('addEditUserModal',
                         }
                     }
                 };
-
-                var saveSiteCallback = function (site) {
-                    console.log('Save site callback', site);
-
-                    $timeout(function () {
-                        console.log('Opening sues modal with id:', site.siteID);
-                        scope.openModal(site.siteID);
-                    }, 500);
+                scope.removeFromAddedClientList = function (client) {
+                    for(var i=0;i<scope.addedClients.length;i++){
+                        if(scope.addedClients[i].userID==client.userID){
+                            scope.addedClients.splice(i,1);
+                            break;
+                        }
+                    }
                 };
 
                 scope.hide = function(){
@@ -118,13 +181,8 @@ app.directive('addEditUserModal',
                         if (funcName && angular.isFunction(func)) {
                             func(saveSiteCallback, true);
                         } else {
-                            //	if(scope.site && scope.site.siteID)
-                            //scope.openModal(scope.site.siteID);
-                            //	else if(scope.siteId)
-                              	//scope.openModal(scope.siteID);
                                 scope.addedSites=[];
                               	scope.openModal(1);
-                            //	else console.debug('Error in siteUserEditModal - no site or siteID found');
                         }
                     });
                 };

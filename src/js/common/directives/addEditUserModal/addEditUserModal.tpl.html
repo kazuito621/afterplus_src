@@ -6,7 +6,7 @@
                 <h4 class="modal-title" ng-bind="title"></h4>
             </div>
             <div>
-                <form class="form-inline">
+                <div class="form-inline">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-heading'>
                             <h3 class='panel-title'>Add new user</h3>
@@ -16,22 +16,21 @@
                                 <div class="row" style="margin: 15px 2px 10px 5px;">
                                     <!--<form ng-submit="addNewSiteContact($event)">-->
                                     <label class="col-sm-2" style="font-weight: bold">Email</label>
-                                    <input type="text" required placeholder="Email" style="width: 250px" ng-model="newContact.email" id='newContactEmail'></br>
+                                    <input type="email" required placeholder="Email" style="width: 250px" ng-model="newContact.email" id='newContactEmail'></br>
                                     <label class="col-sm-2" style="font-weight: bold">Name</label>
                                     <input type="text" placeholder="First name" required style="width:125px" ng-model="newContact.fName">
-                                    <input type="text" placeholder="Last name" required style="width:125px;" ng-model="newContact.lName"></br>
+                                    <input type="text" placeholder="Last name" required style="width:120px;" ng-model="newContact.lName"></br>
                                     <label class="col-sm-2" style="font-weight: bold">Phone</label>
                                     <input type="text" placeholder="Phone" style="width:250px;" ng-model="newContact.phone"></br>
                                     <label class="col-sm-2" style="font-weight: bold">Role</label>
-                                    <select ng-model="newContact.role" required>
-                                        <option disabled value="">Role</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="customer">Customer</option>
+                                    <select ng-model="newContact.role" ng-options="role.name for role in userRoles"  required>
+                                        <option>{{role.name}}</option>
                                     </select> &nbsp;
-                                    <div style="height:25px">
-                                        <span ng-show="newContact.role=='admin'">This is Admin</span>
-                                        <span ng-show="newContact.role=='customer'">This is  Customer</span>
-                                    </div>
+                                    <ul style="height:25px;margin: 10px;list-style: inside" >
+                                        <li ng-repeat="roleDesc in newContact.role.permDesc">
+                                            {{roleDesc}}
+                                        </li>
+                                    </ul>
                                     <hr> <!-- ================================================================== -->
                                 </div>
                                 <label class="col-sm-5" style="font-weight: bold">Assigned properties</label>
@@ -46,13 +45,38 @@
                                             <span>{{s.siteName}}</span>
                                         </span>
                                 </div>
-                                <hr>
                                 <div class="row" style="margin: 15px 2px 10px 5px;">
-                                    <form ng-submit="addNewRepContact($event)">
-                                        <label class="col-sm-4" style="font-weight: bold">Add all properties of client</label>
-                                        <input type="text" required placeholder="Client email id" style="width: 250px;" ng-model="newRep.email" id='newRepEmail'
-                                               user-auto-complete="clientSelected"  bs-typeahead>
-                                        <button ng-click="addClientsProperty($event);" type='button' class='btn btn-primary'>ADD</button>
+                                    <form ng-submit="addProperty($event);newSite=''">
+                                        <div class="col-sm-10">
+                                            <input type="text" required placeholder="Site name" style="width: 100%;" ng-model="newSite" id='newSiteName'
+                                               sites-auto-complete sites="sites" callback="siteSelect" bs-typeahead>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button ng-click="addProperty($event);newSite='';" type='button' class='btn btn-primary'>ADD</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr>
+                                <label class="col-sm-4" style="font-weight: bold">Assigned Clients</label>
+                                <br>
+                                <div class="btn-group">
+                                        <span ng-repeat="c in addedClients" class="btn btn-default hover-anchor"  bs-tooltip
+                                              title="{{getPropertyNames(c)}}">
+                                            <span class="pull-right hover-action" >
+                                                 <a ng-click="removeFromAddedClientList(c)"  href><i class="fa fa-times fa-fw"></i></a>
+                                            </span>
+                                            <span>{{c.client.fName+c.client.lName}} ({{c.siteNames.length}} properties)</span>
+                                        </span>
+                                </div>
+                                <div class="row" style="margin: 15px 2px 10px 5px;">
+                                    <form ng-submit="addClientsProperty($event);newClient=''">
+                                        <div class="col-sm-10">
+                                        <input type="text" required placeholder="Client email id" style="width: 100%;" ng-model="newClient" id='newRepEmail'
+                                               user-auto-complete="clientSelected" user-ignore="addedClients" bs-typeahead>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button ng-click="addClientsProperty($event);newClient='';" type='button' class='btn btn-primary'>ADD</button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -62,7 +86,7 @@
                         <button type="button" class="btn btn-default" ng-click="$parent.closeModal();">CLOSE</button>
                         <button type="button" class="btn btn-default" ng-click="$parent.SaveUser();">SAVE</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

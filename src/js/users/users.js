@@ -39,6 +39,10 @@ var UserCtrl = app.controller('UserCtrl',
                     s.displayedUsers = userFiltered.slice(0, 49);
                     cb();
                 });
+
+                Api.getSiteList().then(function (data) {
+                    s.sites=data; // This will passed to add-edit-user directive
+                })
             };
 
             s.activePopover = {elem:{}, itemID: undefined};

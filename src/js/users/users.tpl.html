@@ -54,9 +54,9 @@
             </thead>
             <tbody infinite-scroll="showMoreUsers()" infinite-scroll-distance="3">
             <tr ng-repeat="e in displayedUsers track by $index" class='hoverHotspot' id='item_{{e.reportID}}'>
-                <td ng-bind="e.email"></td>
+                <td ng-bind="e.email" add-edit-user-modal="e.userID" sites="sites" on-save="refreshSites" style="text-decoration:underline;cursor: pointer"></td>
                <!--<td ng-show="e.fName && e.lName" ng-bind="e.fName+' '+e.lName"></td>-->
-                <td ng-bind="e.name"></td>
+                <td  ng-bind="e.name"></td>
                 <td ng-bind="e.role"></td>
                 <td ng-bind="e.sessionCount"></td>
             </tr>

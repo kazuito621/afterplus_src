@@ -15,7 +15,14 @@ app.directive('adjustPrice',
                             scope.popover.$scope.adjustPercentage>-100 &&
                             scope.popover.$scope.adjustPercentage<100 ){
                             _.each(scope.report.items,function(item){
-                                item.price=(parseFloat(item.price)*(1+scope.popover.$scope.adjustPercentage/100)).toFixed(2);
+                                var v=parseFloat(item.price)*(1+scope.popover.$scope.adjustPercentage/100);
+                                if((v - Math.floor(v))<0.5){
+                                    v=Math.floor(v);
+                                }
+                                else {
+                                    v=Math.ceil(v);
+                                }
+                                item.price=v;
                             });
                             scope.groupedItems = ReportService.groupReportItems();
                             scope.popover.hide();
@@ -32,9 +39,16 @@ app.directive('adjustPrice',
                             scope.newTotal=0;
                             _.each(scope.report.items,function(item){
                                 //scope.newTotal=scope.newTotal+parseFloat(parseFloat((parseFloat(item.price)*(1+n/100)).toFixed(2)));
-                                scope.newTotal=scope.newTotal+(parseFloat(item.price)*(1+n/100));
+                                var v=(parseFloat(item.price)*(1+n/100));
+                                if((v - Math.floor(v))<0.5){
+                                    v=Math.floor(v);
+                                }
+                                else {
+                                    v=Math.ceil(v);
+                                }
+                                scope.newTotal=scope.newTotal+v;
                             });
-                            scope.newTotal=parseFloat(scope.newTotal).toFixed(2);
+                            //scope.newTotal=parseFloat(scope.newTotal).toFixed(2);
                         }
                         else {
                             scope.newTotal="N/A";

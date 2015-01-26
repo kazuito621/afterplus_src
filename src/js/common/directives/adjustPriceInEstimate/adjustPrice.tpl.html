@@ -18,6 +18,10 @@
                         <labe class="pull-left">New SubTotal</labe>
                         <labe class="pull-right">{{newTotal|formatPrice}}</labe>
                     </div>
+                    <div style="width: 100%;margin: 2px">
+                        <label class="pull-left">Round items to nearest dollar</label>
+                        <input type="checkbox" ng-model="doRoundPrice" ng-change="change()" class="pull-right">
+                    </div>
                     </br>
                     <div style="width: 100%;margin: 2px">
                         <button type="button" class="btn" ng-click="ok();">OK</button>

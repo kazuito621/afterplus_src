@@ -61,6 +61,7 @@ app.directive('adjustPrice',
                                     scope.newTotal=scope.newTotal+ parseFloat(v.toFixed(2));
                                 }
                             });
+                            scope.newTotal=parseFloat(scope.newTotal.toFixed(2))
                         }
                         else {
                             scope.newTotal="N/A";
@@ -69,6 +70,8 @@ app.directive('adjustPrice',
 
                     scope.cancel = function(){
                         if (scope.popover && typeof scope.popover.hide === 'function') {
+                            scope.adjustPercentage=0;
+                            scope.popover.$scope.adjustPercentage=0;
                             scope.popover.hide();
                         }
                     }

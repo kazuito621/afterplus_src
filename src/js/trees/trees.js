@@ -57,6 +57,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     if (data !== undefined) {
                         s.initData.sites = data.sites;
                         s.filteredSites = data.sites;
+                        $timeout(function () { onUserNav() }, 1000);
                     }
                 });
 
@@ -105,12 +106,15 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             var loadEstimate = function () {
                 var rptHash = s.renderPath[1];
+
                 if (!rptHash) return;
                 ReportService.loadReport(rptHash, { getTreeDetails: 1 })
 					.then(function (data) {
 					    if (Auth && Auth.requestedReportID) delete Auth.requestedReportID;
 					    s.report = data;
-					    if (data && data.siteID) s.selected.siteID = data.siteID;
+					    if (data && data.siteID)
+					        s.selected.siteID = data.siteID;
+
 					    showMappedTrees();
 
 					    // todo - find a better place for this.... should happen after
@@ -126,34 +130,34 @@ var TreesCtrl = app.controller('TreesCtrl',
             if (s.data.mode() == 'estimate') loadEstimate();
 
             //#*#*# Commented this cause, inside trees page if user clicks on any item that has \trees href, it does not fire this nav.
-           //s.$on('nav', function (e, data) {
-           //    if (data.new == 'trees') {
-           //        loadEstimate()
-           //        if (s.selected.siteID && s.selected.siteID > 0) {
-           //            var siteObj = s.getSiteByID(s.selected.siteID);
-           //            s.selected.clientID = siteObj.clientID;
-           //            s.selected.clientTypeID = siteObj.clientTypeID;
-           //            //getTreeListings()
-           //        } else {				// no site selected, so go back to site view, not tree view
-           //            s.onSelectClientID();
-           //        }
-           //    };
-           //});
-//
+            //s.$on('nav', function (e, data) {
+            //    if (data.new == 'trees') {
+            //        loadEstimate()
+            //        if (s.selected.siteID && s.selected.siteID > 0) {
+            //            var siteObj = s.getSiteByID(s.selected.siteID);
+            //            s.selected.clientID = siteObj.clientID;
+            //            s.selected.clientTypeID = siteObj.clientTypeID;
+            //            //getTreeListings()
+            //        } else {				// no site selected, so go back to site view, not tree view
+            //            s.onSelectClientID();
+            //        }
+            //    };
+            //});
+            //
 
-            s.gotoTreesPage=function(){
+            s.gotoTreesPage = function () {
                 s.selected.siteID = '';
                 TFS.clearFilters(true);
                 s.openTreesOrSites();
             }
 
-            s.openTreesOrSites=function(){
-                if(s.initData.sites.length==1){ // If only site, open that site in satellite view.
-                    s.selected.siteID=s.initData.sites[0].siteID;
+            s.openTreesOrSites = function () {
+                if (s.initData.sites.length == 1) { // If only site, open that site in satellite view.
+                    s.selected.siteID = s.initData.sites[0].siteID;
                     getTreeListings();
                 }
-                else{ //else show all sites in map.
-                    s.trees=[];
+                else { //else show all sites in map.
+                    s.trees = [];
                     showMappedSites();
                 }
             }
@@ -190,7 +194,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             var showSite = function (id) {
                 console.log('Showing site', id);
-                s.selected.siteID = id;
+
+                //$timeout(function () {
+
+                s.selected.siteID = id
+
+                //}, 1000);
+                //s.selected.siteID = id;
+
                 s.selected.clientTypeID = '';
                 s.selected.clientID = '';
                 s.onSelectSiteID(id);
@@ -229,7 +240,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             $timeout(function () {
                 storage.bind(s, 'selected', { defaultValue: { clientTypeID: '', clientID: '', siteID: '', treatmentIDs: [] } });
                 s.selected.treatmentIDs = [];
-                onUserNav();
+                //  onUserNav();
                 if (!s.selected.siteID && s.data.mode() != 'estimate') showMappedSites();
             }, 1);
 
@@ -286,7 +297,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //      4. Reset all filters
             s.onSelectClientID = function (id) {
                 ReportService.setClientID(id);
-				s.selected.clientID=id;
+                s.selected.clientID = id;
                 if (id && id > 0) {
                     filterSitesByClients(id);
                     s.selected.siteID = '';
@@ -304,13 +315,14 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
             s.onSelectSiteID = function (id) {
-                s.selected.siteID=id;
+                s.selected.siteID = id;
                 ReportService.setSiteID(id);
                 if (s.data.mode() == 'trees') {
                     ReportService.loadRecent();
                 }
                 if (id && id > 0) {
                     console.log('On select site id', id);
+
                     var siteObj = s.getSiteByID(id);
                     s.selected.clientID = siteObj.clientID;
                     s.selected.clientTypeID = siteObj.clientTypeID;
@@ -340,7 +352,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //    if (s.data.mode() == 'trees') {
             //        ReportService.loadRecent();
             //        if (ID && ID > 0) {
-//
+            //
             //            getTreeListings();
             //        }
             //        // todo -- else zoom in on the selected Site...
@@ -978,18 +990,18 @@ var TreesCtrl = app.controller('TreesCtrl',
                 // .... or ...textIconBlock-grey
                 //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
 
-                if (s.data.mode() === 'trees'){
-					var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
-					var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
-					if(Auth.isAtleast('inventory')) {
-                    	o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'
-						+'<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick);
-                    	+'<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick) 
-                    	+'</div>';
-					}else{
-						o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">View Details</a><BR>'.format(editTreeClick)
-						  +'</div>';
-					}
+                if (s.data.mode() === 'trees') {
+                    var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+                    var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
+                    if (Auth.isAtleast('inventory')) {
+                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'
+						+ '<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick);
+                        +'<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick)
+                    	+ '</div>';
+                    } else {
+                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">View Details</a><BR>'.format(editTreeClick)
+						  + '</div>';
+                    }
 
                     //if (Auth.isAtleast('inventory')) {
                     //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
@@ -1523,8 +1535,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var siteIDs = s.TFSdata.filteredSiteIDs;
                 var treeCountMap = s.TFSdata.treeCountMap;
                 if (!siteIDs || !siteIDs.length || !(siteIDs.length > 0)) siteIDs = false;
-                if (clientId !== undefined)
-                {
+                if (clientId !== undefined) {
                     s.selected.clientID = clientId;
                 }
                 if (s.selected.clientID) {
@@ -1611,6 +1622,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             var getTreeListings = function () {
                 if (s.selected.siteID <= 0)
                     return;
+
+                console.log('Loading tree for Site #' + s.selected.siteID);
+
                 // reset selected trees to prevent duplicates
                 s.selectedTrees = [];
                 s.setAlert('Loading Trees', { busy: true, time: "false" });
@@ -1697,24 +1711,29 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
             //Watch for init data here.
-            s.$watch('initData.sites', function (data) {
-                if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {// Parms solution to fix the double map load... (and comment out the following)
+            //s.$watch('initData.sites', function (data) {
 
-                    if(!gMap && !$location.search().reportID && !$location.search().reportID){ // Imdad's solution to fix the double map load
-                                                                                               // This if condition is blocking to override the satellite view.
-                        console.log('Map not initialized in $onInitData event');
-                        s.openTreesOrSites();
-                    }
-                    /*initMap().then(function () {
-                        console.log('Map initialized in $onInitData event');
-                        showMappedSites();
-                    })*/
-                }
-            })
+            //    if (data === undefined && data === null)
+            //        return;
+
+            //    console.log('On init data in sites');
+            //    if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {// Parms solution to fix the double map load... (and comment out the following)
+
+            //        if (!gMap && !$location.search().reportID && !$location.search().reportID) { // Imdad's solution to fix the double map load
+            //            // This if condition is blocking to override the satellite view.
+            //            console.log('Map not initialized in $onInitData event');
+            //            s.openTreesOrSites();
+            //        }
+            //        /*initMap().then(function () {
+            //            console.log('Map initialized in $onInitData event');
+            //            showMappedSites();
+            //        })*/
+            //    }
+            //})
 
             //Broadcast is not occuring.
             s.$on('onInitData', function (e, data) {
-                //                console.log('On init data in trees');
+                console.log('On init data in trees');
 
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
@@ -1725,7 +1744,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             });
 
-            s.$on('$routeChangeSuccess', onUserNav);
+            //  s.$on('$routeChangeSuccess', onUserNav);
         }]);	// }}} TreesCtrl
 
 

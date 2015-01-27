@@ -295,6 +295,9 @@ app.service('ReportService',
 		var reportHash = this.getReportMd5(true);
 
 		var that=this;
+        if(this.report.sales_userID==undefined){
+            this.report.sales_userID=Auth.authData.userID;
+        }
         var saveRequest = Api.saveReport(this.report);
 		saveRequest
 			.then(function(data){

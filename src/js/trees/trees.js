@@ -305,6 +305,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                     s.selected.clientTypeID = clientObj.clientTypeID;
                     showMappedSites();
                     TFS.clearFilters(true);
+                    var url = cfg.hostAndPort() + '/#/trees';
+                    document.location = url;
                 } else {					//else, go back to showing clientType
                     s.onSelectClientTypeID();
                 }

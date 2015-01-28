@@ -9,17 +9,32 @@ app.directive('adjustPrice',
                 restrict: 'EA',
                 link: function (scope, el, attrs) {
                     scope.adjustPercentage=0;
-                    scope.newTotal=0;
+                    scope.doRoundPrice=false;
                     scope.ok=function(){
+                        scope.newTotal=0;
+                        var doRoundPrice=this.doRoundPrice;
                         if(isNaN(scope.popover.$scope.adjustPercentage)==false &&
                             scope.popover.$scope.adjustPercentage>-100 &&
                             scope.popover.$scope.adjustPercentage<100 ){
                             _.each(scope.report.items,function(item){
-                                item.price=(parseFloat(item.price)*(1+scope.popover.$scope.adjustPercentage/100)).toFixed(2);
+                                var v=parseFloat(item.price)*(1+scope.popover.$scope.adjustPercentage/100);
+                                if(doRoundPrice){
+                                    if((v - Math.floor(v))<0.5){
+                                        v=Math.floor(v);
+                                    }
+                                    else {
+                                        v=Math.ceil(v);
+                                    }
+                                    item.price=v;
+                                }
+                                else {
+                                    item.price=parseFloat(v.toFixed(2));
+                                }
                             });
                             scope.groupedItems = ReportService.groupReportItems();
                             scope.popover.hide();
-                            scope.newTotal=0;
+                            scope.adjustPercentage=0;
+                            scope.popover.$scope.adjustPercentage=0;
                         }
                         else {
                             return;
@@ -28,28 +43,41 @@ app.directive('adjustPrice',
                     };
                     scope.change=function(){
                         var n=this.adjustPercentage;
+                        var doRoundPrice=this.doRoundPrice;
                         if(isNaN(n)==false && n>-100 && n<100 ){
                             scope.newTotal=0;
                             _.each(scope.report.items,function(item){
-                                //scope.newTotal=scope.newTotal+parseFloat(parseFloat((parseFloat(item.price)*(1+n/100)).toFixed(2)));
-                                scope.newTotal=scope.newTotal+(parseFloat(item.price)*(1+n/100));
+                                var v=(parseFloat(item.price)*(1+n/100));
+                                if(doRoundPrice){
+                                    if((v - Math.floor(v))<0.5){
+                                        v=Math.floor(v);
+                                    }
+                                    else {
+                                        v=Math.ceil(v);
+                                    }
+                                    scope.newTotal=scope.newTotal+ v;
+                                }
+                                else{
+                                    scope.newTotal=scope.newTotal+ parseFloat(v.toFixed(2));
+                                }
                             });
-                            scope.newTotal=parseFloat(scope.newTotal).toFixed(2);
+                            scope.newTotal=parseFloat(scope.newTotal.toFixed(2))
                         }
                         else {
                             scope.newTotal="N/A";
                         }
-
                     }
+
                     scope.cancel = function(){
                         if (scope.popover && typeof scope.popover.hide === 'function') {
+                            scope.adjustPercentage=0;
+                            scope.popover.$scope.adjustPercentage=0;
                             scope.popover.hide();
-                            //scope.popover=null;
                         }
                     }
                     $(el).click(function () {
                         scope.adjustPercentage=0;
-                        scope.newTotal=0;
+                        scope.newTotal=angular.copy(scope.report.total.items);
                         if (scope.popover && typeof scope.popover.hide === 'function') {
                             scope.popover.hide();
                         }

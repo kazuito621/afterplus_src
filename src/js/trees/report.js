@@ -214,6 +214,9 @@ var ReportCtrl = app.controller(
 
             s.newReport = function () {
                 RS.getBlankReport();
+                var url = cfg.hostAndPort() + '/#/trees';
+                document.location = url;
+                document.location.reload();
             };
 
 

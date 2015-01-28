@@ -57,7 +57,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     if (data !== undefined) {
                         s.initData.sites = data.sites;
                         s.filteredSites = data.sites;
-                        $timeout(function () { onUserNav() }, 1000);
+                        $timeout(function () { onUserNav(); }, 1000);
                     }
                 });
 
@@ -499,7 +499,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             var initMap = _.throttle(function () {
                 var deferred = $q.defer();
-
+                // alert("map called");
                 google.load(
                     "maps",
                     "3",
@@ -1711,30 +1711,30 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
             //Watch for init data here.
-            //s.$watch('initData.sites', function (data) {
+            s.$watch('initData.sites', function (data) {
+                // alert("watch called");
+                //  //if (data === undefined && data === null)
+                //  //   return;
 
-            //    if (data === undefined && data === null)
-            //        return;
+                // // console.log('On init data in sites');
+                if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {// Parms solution to fix the double map load... (and comment out the following)
 
-            //    console.log('On init data in sites');
-            //    if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {// Parms solution to fix the double map load... (and comment out the following)
-
-            //        if (!gMap && !$location.search().reportID && !$location.search().reportID) { // Imdad's solution to fix the double map load
-            //            // This if condition is blocking to override the satellite view.
-            //            console.log('Map not initialized in $onInitData event');
-            //            s.openTreesOrSites();
-            //        }
-            //        /*initMap().then(function () {
-            //            console.log('Map initialized in $onInitData event');
-            //            showMappedSites();
-            //        })*/
-            //    }
-            //})
+                    if (!gMap && !$location.search().reportID && !$location.search().reportID) { // Imdad's solution to fix the double map load
+                        ////            // This if condition is blocking to override the satellite view.
+                        console.log('Map not initialized in $onInitData event');
+                        s.openTreesOrSites();
+                    }
+                    ////        /*initMap().then(function () {
+                    ////            console.log('Map initialized in $onInitData event');
+                    ////            showMappedSites();
+                    ////        })*/
+                }
+            });
 
             //Broadcast is not occuring.
             s.$on('onInitData', function (e, data) {
                 console.log('On init data in trees');
-
+                
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
                     initMap().then(function () {

@@ -957,7 +957,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             var getTreeTemplate = function (itm) {
-                var ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                var ratingD = (itm.ratingID > 0 && itm.ratingID<6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
                 var o = '<div class="mapWindowContainer">'
                      + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
                      + '<div class="mwcBody">'

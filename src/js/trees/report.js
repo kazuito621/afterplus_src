@@ -214,9 +214,10 @@ var ReportCtrl = app.controller(
 
             s.newReport = function () {
                 RS.getBlankReport();
-                var url = cfg.hostAndPort() + '/#/trees';
-                document.location = url;
-                document.location.reload();
+
+				// clear out the query string
+				if( $location.search().reportID ) $location.search('reportID','');
+				if( $location.search().siteID ) $location.search('siteID','');
             };
 
 

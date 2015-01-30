@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q',
-        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth,$modal,$q) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q','$rootScope',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth, $modal, $q, $rootScope) {
             'use strict';
 
             // local and scoped vars
@@ -19,6 +19,7 @@ var ReportCtrl = app.controller(
             s.siteOfReport={};
             var reportBackUp;
             var changedItems = [];
+            
 
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
@@ -72,8 +73,12 @@ var ReportCtrl = app.controller(
 
             // When a new report is loaded, bind it to this scope
             s.$on('onLoadReport', function (evt, rpt) {
-                s.report = rpt;
-                s.siteOfReport={}
+                s.report = rpt;                
+                
+                //Use to load site on basis of recent selected report in tree.js
+                $rootScope.$broadcast('OnLoadReportEvent', { siteID: rpt.siteID });
+
+                s.siteOfReport = {}
                 s.report.customers=[]
                 // set email links
                 if (rpt.emailLogs) {

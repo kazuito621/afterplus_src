@@ -367,6 +367,14 @@ var TreesCtrl = app.controller('TreesCtrl',
             //    if (s.data.mode() == 'trees') ReportService.loadRecent();
             //});
 
+            //Wil be fired when user select report id from recent drop down.
+            s.$on('OnLoadReportEvent', function (evt, data) {
+                if (data.siteID == undefined || data.siteID == "")
+                    return;
+                                
+                s.onSelectSiteID(data.siteID);
+            });
+
             // When the trees[] array changes because of a filter event... update the ui.
             // This also may be triggered when site dropdown is selected (via getTreeListings())
             s.$on('onTreeFilterUpdate', function (evt, trees) {
@@ -1736,7 +1744,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             //Broadcast is not occuring.
             s.$on('onInitData', function (e, data) {
                 console.log('On init data in trees');
-                
+
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
                     initMap().then(function () {

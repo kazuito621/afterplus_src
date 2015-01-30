@@ -83,7 +83,6 @@
                                onaftersave="updateSalesRep(report)">
                                <span ng-hide="report.sales_fname==undefined || report.sales_fname==''" ng-bind="report.sales_fname+' '+report.sales_lname"></span>
                                <span ng-show="report.sales_fname==undefined || report.sales_fname==''"  ng-bind="report.sales_email"></span>
-                               <span style="color: #ffffff" ng-show="report.sales_email==undefined">Click to select sales Rep</span>
                             </a>
                         </dl>
                         <dl>

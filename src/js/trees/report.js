@@ -133,6 +133,12 @@ var ReportCtrl = app.controller(
 
             s.$on('itemsAddedToReport', function () {
                 s.groupedItems = ReportService.groupReportItems();
+                if(s.report.sales_userID==undefined){
+                    s.report.sales_userID=Auth.authData.userID;
+                    s.report.sales_email=Auth.authData.email;
+                    s.report.sales_fname=Auth.authData.fName;
+                    s.report.sales_lname=Auth.authData.lName;
+                }
                 if(s.report.customers.length==0){
                     getSiteCustomers();
                 }

@@ -18,21 +18,14 @@ app.directive('bulkTreeEditor',
                 var treatmentTypeIDs=[];
                 var dbh=[];
                 var species=[];
-
+                scope.singleTreatmentSelected=false;
                 scope.openModal = function () {
                     scope.species=[];
                     scope.treatments=[];
                     scope.dbh=[];
                     scope.years=[];
-                    scope.site= scope.initData.sites[13];
-                    if(scope.site==undefined){
-                        scope.site={};
-                        scope.site.siteID="1495";
-                        scope.site.species=[
-                            355,52,148,104,36,105,170,165,53,1,211,64,182,236
-                        ];
-                    }
-                    Api.getTrees(1495).then(function(data){
+
+                    Api.getTrees(scope.siteID).then(function(data){
 
                         _.each(data,function(item){
 
@@ -90,10 +83,10 @@ app.directive('bulkTreeEditor',
                         });
                         scope.years.unshift('All');
 
-                        scope.selected.treatment=scope.treatments[1];
-                        scope.selected.species=scope.species[1];
-                        scope.selected.dbh=scope.dbh[1];
-                        scope.selected.year=scope.years[1];
+                        scope.selected.treatment=scope.treatments[0];
+                        scope.selected.species=scope.species[0];
+                        scope.selected.dbh=scope.dbh[0];
+                        scope.selected.year=scope.years[0];
 
                     });
 
@@ -111,9 +104,18 @@ app.directive('bulkTreeEditor',
                 };
 
                 scope.selectionChanged=function(){
+                    if(scope.selected.treatment.treatmentTypeID==-1){
+                        scope.singleTreatmentSelected=false;
+                    }
+                    else{
+                        scope.singleTreatmentSelected=true;
+                    }
                     var param={};
                     if(scope.mode=='site'){
-                        param.siteID=1495; //scope.siteID;
+                        param.siteID=scope.siteID;
+                    }
+                    else{
+                        param.reportID=scope.siteID;
                     }
                     if(scope.selected.isTreatmentSelected){
                         param.treatmentTypeID=scope.selected.treatment.treatmentTypeID;
@@ -156,6 +158,7 @@ app.directive('bulkTreeEditor',
 
                         if (angular.isDefined(attrs.siteId)) {
                             scope.siteID= scope.$eval(attrs.siteId);
+                            scope.siteID='1495';
                         }
                         scope.mode=attrs.mode;
                         // TO REMOVE

@@ -297,10 +297,13 @@ var TreesCtrl = app.controller('TreesCtrl',
             //      4. Reset all filters
             s.onSelectClientID = function (id) {
                 ReportService.setClientID(id);
+                ReportService.setSiteID('');
                 s.selected.clientID = id;
+                s.selected.siteID = '';
+                if (s.data.mode() == 'trees') ReportService.loadRecent();
+
                 if (id && id > 0) {
                     filterSitesByClients(id);
-                    s.selected.siteID = '';
                     var clientObj = s.getClientByID(s.selected.clientID);
                     s.selected.clientTypeID = clientObj.clientTypeID;
                     showMappedSites();
@@ -319,18 +322,17 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.onSelectSiteID = function (id) {
                 s.selected.siteID = id;
                 ReportService.setSiteID(id);
-                if (s.data.mode() == 'trees') {
-                    ReportService.loadRecent();
-                }
                 if (id && id > 0) {
                     console.log('On select site id', id);
-
+                    if (s.data.mode() == 'trees') {
+                        ReportService.loadRecent();
+                    }
                     var siteObj = s.getSiteByID(id);
                     s.selected.clientID = siteObj.clientID;
                     s.selected.clientTypeID = siteObj.clientTypeID;
                     getTreeListings()
                 } else {				// no site selected, so go back to site view, not tree view
-                    s.onSelectClientID();
+                    s.onSelectClientID(s.selected.clientID);
                 }
                 SiteModelUpdateService.setSites(s.filteredSites);
             }
@@ -444,7 +446,6 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.reset = function () {
                 s.filteredSites = s.initData.sites;
                 s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
-                ReportService.getBlankReport();
                 TFS.clearFilters(true);
                 filterClients();
                 //todo - this action jacks up the selection of the sites dropdown by changing the model
@@ -452,9 +453,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                 // or instead of creating a filteredSites array, maybe we should just set sites[0].hide=true;
                 //		and use hte original array;
                 //s.filteredSites=angular.copy(s.initData.sites);
-                s.filteredSites = s.initData.sites;  //-- fixed a dropdown ng-model issuet 
                 showMappedSites();
-                s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
+                //s.onSelectSiteID('');
+                //s.onSelectClientID('');
+                ReportService.setClientID('');
+                ReportService.setSiteID('');
+                s.selected.clientID = '';
+                s.selected.siteID = '';
+                s.selected.clientTypeID = '';
+                ReportService.loadRecent();
+                ReportService.getBlankReport();
             }
 
             s.onTreeImageRollover = function (treeID) {
@@ -517,7 +525,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                         other_params: 'sensor=false&libraries=places',
                         callback:
                             function () {
-                                var myOptions = { zoom: 1, tilt: 0, center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid', panControl: false };
+                                var myOptions = { zoom: 1, tilt: 0, center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',scrollwheel: false, panControl: false };
                                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                                 gMap = new google.maps.Map($('#' + map_id)[0], myOptions);
                                 google.maps.event.addListener(gMap, 'click', function () {

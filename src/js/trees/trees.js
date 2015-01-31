@@ -5,7 +5,8 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal', '$location',
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 
+		'SiteModelUpdateService', '$rootScope', '$modal', '$location',
         function ($scope, $timeout, ReportService, TreeFilterService, $filter,
             storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
 
@@ -442,6 +443,10 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
             s.reset = function () {
+				// clear out the query string
+				if( $location.search().reportID ) $location.search('reportID', null);
+				if( $location.search().siteID ) $location.search('siteID', null);
+
                 s.filteredSites = s.initData.sites;
                 s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
                 ReportService.getBlankReport();

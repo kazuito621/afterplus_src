@@ -9,7 +9,7 @@
                 <form class="form-inline">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-body'>
-                            <h4 style="font-weight: bold" ng-if="mode='report'" ng-bind="report"></h4>
+                            <h4 style="font-weight: bold" ng-if="mode=='report'" ng-bind="report"></h4>
                             <h3>Edit all trees where</h3>
                             <div class="containter">
                                 <div class="row" style="margin: 15px 2px 10px 5px;">
@@ -59,7 +59,7 @@
                                         <input type="checkbox" ng-model="selected.IsChangeToTreatment"/>
                                         <label ng-if="mode=='site'"  style="font-weight: bold">Change Recommendation to</label>
                                         <label ng-if="mode=='report'" style="font-weight: bold">Change treatment to</label></br>
-                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in treatments.slice(1, treatments.length)" required>
+                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                         </select> &nbsp;</br>
                                     </span>
                                     </br>
@@ -74,7 +74,7 @@
                                     <input type="checkbox" ng-model="selected.IsTreatmentRecommendationAdded"/>
                                     <label ng-if="mode=='report'" style="font-weight: bold">Add Treatment</label>
                                     <label ng-if="mode=='site'" style="font-weight: bold">Add Treatment Recommendation</label>
-                                    <select ng-model="selected.addedTreatRecom"  class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in treatments.slice(1, treatments.length)" required>
+                                    <select ng-model="selected.addedTreatRecom"  class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                     </select> &nbsp;</br>
                                     <select class="pull-right"  style="width: 40%;margin-right: 25%"  ng-if="mode=='site'" ng-model="selected.addedTreatRecomYear"   ng-options="y for y in years.slice(1, years.length)" required>
                                     </select> &nbsp;</br></br></br>

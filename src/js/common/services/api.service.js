@@ -86,6 +86,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         getTree: function (treeID) {
             return Rest.one('trees', treeID).get();
         },
+        getTreatmentPrice: function () {
+            return Rest.all('treatmentprice').getList();
+        },
         getSiteUsers: function (siteID, roles) {
             var params = {};
 

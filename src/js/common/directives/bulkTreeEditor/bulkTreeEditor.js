@@ -14,6 +14,7 @@ app.directive('bulkTreeEditor',
                 window.sues = scope;
                 scope.newContact={};
                 scope.addedSites=[];
+                scope.allTreatments=[];
                 scope.selected={};
                 var treatmentTypeIDs=[];
                 var dbh=[];
@@ -90,6 +91,8 @@ app.directive('bulkTreeEditor',
 
                     });
 
+
+
                     if (!modal) {
                         modal = $modal({scope: scope, template: '/js/common/directives/bulkTreeEditor/bulkTreeEditor.tpl.html', show: false});
                     }
@@ -130,9 +133,9 @@ app.directive('bulkTreeEditor',
                         param.year=scope.selected.year;
                     }
 
-                    Api.getBulkEditInfo(param).then(function(data){
-                        var a=1;
-                    });
+                    //Api.getBulkEditInfo(param).then(function(data){
+                    //    var a=1;
+                    //});
                 }
                 scope.closeModal = function () {
                     modal.hide();
@@ -159,6 +162,9 @@ app.directive('bulkTreeEditor',
                         if (angular.isDefined(attrs.siteId)) {
                             scope.siteID= scope.$eval(attrs.siteId);
                             scope.siteID='1495';
+                        }
+                        if (angular.isDefined(attrs.treatments)) {
+                            scope.allTreatments= scope.$eval(attrs.treatments);
                         }
                         scope.mode=attrs.mode;
                         // TO REMOVE

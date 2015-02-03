@@ -4,7 +4,7 @@
     <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
         <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
         <br><br>
-        <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
+        <button ng-if="report.siteID" class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
     </div>
 
     <div class="touch-boundry">

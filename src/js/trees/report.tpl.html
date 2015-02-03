@@ -4,7 +4,7 @@
     <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
         <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
         <br><br>
-        <button class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
+        <button ng-if="report.siteID" class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
     </div>
 
     <div class="touch-boundry">
@@ -73,7 +73,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-2 col" ng-if='report.sales_email'>
+                <div class="col-md-2 col">
                     <div class="estimate-info">
                         <p class="name clr-orange">Sales Rep</p>
                         <dl>
@@ -81,8 +81,8 @@
                                onshow="getSalesUsers()"
                                editable-select="report.sales_userID"
                                onaftersave="updateSalesRep(report)">
-                               <span ng-hide="report.sales_fname==undefined || report.sales_fname==undefined==''" ng-bind="report.sales_fname+' '+report.sales_lname"></span>
-                               <span ng-show="report.sales_fname==undefined || report.sales_fname==undefined==''"  ng-bind="report.sales_email"></span>
+                               <span ng-hide="report.sales_fname==undefined || report.sales_fname==''" ng-bind="report.sales_fname+' '+report.sales_lname"></span>
+                               <span ng-show="report.sales_fname==undefined || report.sales_fname==''"  ng-bind="report.sales_email"></span>
                             </a>
                         </dl>
                         <dl>

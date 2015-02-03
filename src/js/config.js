@@ -25,6 +25,8 @@ window.cfg={
 			if(h.match(/hendricks/)) return 5;
 			if(h.match(/shreiner/)) return 7;
 			if(h.match(/acme/)) return 6;
+			if(h.match(/medallion/)) return 8;
+			if(h.match(/padilla/)) return 9;
 			return 1;	// default to dev.aplustree
 		}
 	,getEntity: function(){
@@ -34,6 +36,9 @@ window.cfg={
 			ent[4]={name:'Big Woodys Tree Service', medname:'Big Woodys Tree', shortname:'bigwoodys',afiliations:''};
 			ent[5]={name:'Hendrickson Tree Care', medname:'Hendrickson Tree', shortname:'hendrickson',afiliations:'wcisa.png'};
 			ent[7]={name:'Shreiner Tree Care', medname:'Shreiner Tree', shortname:'shreiner',afiliations:'wcisa.png'};
+			ent[8]={name:"Medallion Landscape Management, Inc.",medname:"Medallion Landscape Mgmt",shortname:"medallion",afiliations:""};
+			ent[9]={name:"Padilla Group Inc.",medname:"Padilla Group",shortname:"padilla",afiliations:""};
+
 			var eid=this.getEntityID();
 			var ent = ent[eid];
 			if(!ent){

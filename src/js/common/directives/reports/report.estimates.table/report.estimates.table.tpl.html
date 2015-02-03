@@ -6,10 +6,10 @@
                 <td class="td-image">Tree</td>
                 <td class="td-id">ID</td>
                 <td class="td-name">Name</td>
-                <td class="td-treatment">Treatment test</td>
+                <td class="td-treatment">Treatments</td>
                 <td class="td-bid">
                     Bid ($)
-					<a adjust-price href="">
+					<a adjust-price href="" ng-if="auth.isAtleast('inventory')">
                         <i class="fa fa-gear"></i>
                     </a>
                 </td>

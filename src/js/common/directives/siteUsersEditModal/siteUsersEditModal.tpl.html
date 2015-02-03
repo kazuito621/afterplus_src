@@ -39,8 +39,7 @@
                                         <input type="text" placeholder="Last name" required style="width:90px;" ng-model="newContact.lName">
                                         <input type="text" placeholder="Phone" required style="width:105px;" ng-model="newContact.phone">
                                         <button ng-disabled="siteUsersForm.$invalid"
-                                                ng-click="addNewSiteContact($event);" type='button' class='btn btn-primary'>
-                                            <i class='fa fa-plus white _size4'></i>
+                                                ng-click="addNewSiteContact($event);" type='button' class='btn btn-primary'>Add
                                         </button>
                                     </div>
                                 </div>
@@ -82,8 +81,7 @@
                                         </select> &nbsp;
                                         <button ng-click="addNewSiteRep($event);"
                                                 ng-disabled="siteUsersFormContract.$invalid"
-                                                type='button' class='btn btn-primary'>
-                                            <i class='fa fa-plus white _size4'></i>
+                                                type='button' class='btn btn-primary'>Add
                                         </button>
                                     </div>
                                 </div>
@@ -91,7 +89,7 @@
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
-                        <button type="button" class="btn btn-default" ng-click="$parent.closeModal();">CLOSE</button>
+                        <button type="button" class="btn btn-default" ng-click="$parent.closePopup();">CLOSE</button>
                     </div>
                 </form>
             </div>

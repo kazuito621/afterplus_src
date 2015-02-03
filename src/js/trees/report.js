@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q',
-        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth,$modal,$q) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q','$rootScope',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth, $modal, $q, $rootScope) {
             'use strict';
 
             // local and scoped vars
@@ -19,6 +19,7 @@ var ReportCtrl = app.controller(
             s.siteOfReport={};
             var reportBackUp;
             var changedItems = [];
+            
 
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
@@ -72,9 +73,16 @@ var ReportCtrl = app.controller(
 
             // When a new report is loaded, bind it to this scope
             s.$on('onLoadReport', function (evt, rpt) {
-                s.report = rpt;
-                s.siteOfReport={}
+                s.report = rpt;                
+                
+                //Use to load site on basis of recent selected report in tree.js
+                $rootScope.$broadcast('OnLoadReportEvent', { siteID: rpt.siteID });
+
+                s.siteOfReport = {}
                 s.report.customers=[]
+                if(s.report.sales_userID==undefined){
+                    setDefaultSalesRep();
+                }
                 // set email links
                 if (rpt.emailLogs) {
                     _.each(rpt.emailLogs, function (e) {
@@ -135,6 +143,12 @@ var ReportCtrl = app.controller(
                 return $modal({ scope: sm, template: 'js/common/directives/templates/pageNavConfirm.tpl.html', show: true });
             });
 
+            var setDefaultSalesRep=function(){
+                s.report.sales_userID=Auth.authData.userID;
+                s.report.sales_email=Auth.authData.email;
+                s.report.sales_fname=Auth.authData.fName;
+                s.report.sales_lname=Auth.authData.lName;
+            }
 
             s.$on('itemsAddedToReport', function () {
                 s.groupedItems = ReportService.groupReportItems();
@@ -214,6 +228,10 @@ var ReportCtrl = app.controller(
 
             s.newReport = function () {
                 RS.getBlankReport();
+
+				// clear out the query string
+				if( $location.search().reportID ) $location.search('reportID','');
+				if( $location.search().siteID ) $location.search('siteID','');
             };
 
 
@@ -273,11 +291,7 @@ var ReportCtrl = app.controller(
 				Api.getEmailTemplate().then(function(res){
 					if(res){
 						s.emailRpt.message = res;
-						if (Auth.data().fname) 
-							s.emailRpt.message += Auth.data().fname;
-						s.emailRpt.message+="\n"+cfg.getEntity().name;
 					}
-
 				});
             };
 

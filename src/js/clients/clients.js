@@ -31,11 +31,22 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 if (!s.activePopover.itemID) return;
 
                 Api.removeClientById(s.activePopover.itemID).then(function () {
-                    Api.refreshInitData();
+                    if(false){ //TODO  if msg don't  indicates success,
+                        s.setAlert("There was an error deleting the property.",{type:'d',time:5});
+                    }
+                    else {
+                        if(idx>=0) {
+                            s.initData.clients.splice(idx, 1);
+                        }
+                        s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+                    }
                 }, function err(){
                     s.setAlert("Client can't be deleted, try again later.",{type:'d',time:5});
                 });
-                Api.refreshInitData();
+                var idx=_.findObj(s.initData.clients, 'clientID', s.activePopover.itemID, true);
+                if(idx>=0) {
+                    s.displayedClients.splice(idx, 1);
+                }
                 s.activePopover.elem.hide();
                 delete s.activePopover.itemID;
             };

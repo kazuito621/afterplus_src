@@ -80,6 +80,9 @@ var ReportCtrl = app.controller(
 
                 s.siteOfReport = {}
                 s.report.customers=[]
+                if(s.report.sales_userID==undefined){
+                    setDefaultSalesRep();
+                }
                 // set email links
                 if (rpt.emailLogs) {
                     _.each(rpt.emailLogs, function (e) {
@@ -140,6 +143,12 @@ var ReportCtrl = app.controller(
                 return $modal({ scope: sm, template: 'js/common/directives/templates/pageNavConfirm.tpl.html', show: true });
             });
 
+            var setDefaultSalesRep=function(){
+                s.report.sales_userID=Auth.authData.userID;
+                s.report.sales_email=Auth.authData.email;
+                s.report.sales_fname=Auth.authData.fName;
+                s.report.sales_lname=Auth.authData.lName;
+            }
 
             s.$on('itemsAddedToReport', function () {
                 s.groupedItems = ReportService.groupReportItems();

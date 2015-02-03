@@ -76,6 +76,20 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 s.displayedClients = s.displayedClients.concat(addon);
             };
 
+            s.updateAddess=function(address){
+                s.client.street=address.formatted_address;
+                _.each(address.address_components,function(item){
+                    if(item.types.toString()=="locality,political"){
+                        s.client.city = item.long_name;
+                    }
+                    else if(item.types.toString()=="administrative_area_level_1,political"){
+                        s.client.state = item.long_name;
+                    }
+                    else if(item.types.toString()=="postal_code"){
+                        s.client.zip = item.long_name;
+                    }
+                })
+            };
 			s.saveClient = function(mode){
 				if(!mode) mode = s.mode;
 				if( mode == 'edit' ){

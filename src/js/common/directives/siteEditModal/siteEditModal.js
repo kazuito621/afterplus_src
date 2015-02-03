@@ -28,6 +28,20 @@ app.directive('siteEditModal',
                 func();
             }
         };
+        scope.updateAddess=function(address){
+            scope.site.street=address.formatted_address;
+            _.each(address.address_components,function(item){
+                if(item.types.toString()=="locality,political"){
+                    scope.site.city = item.long_name;
+                }
+                else if(item.types.toString()=="administrative_area_level_1,political"){
+                    scope.site.state = item.long_name;
+                }
+                else if(item.types.toString()=="postal_code"){
+                    scope.site.zip = item.long_name;
+                }
+            })
+        };
 
         //when user creates new property and selects Client:
         //system should copy address fields from Client to new property

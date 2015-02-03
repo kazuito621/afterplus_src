@@ -273,11 +273,7 @@ var ReportCtrl = app.controller(
 				Api.getEmailTemplate().then(function(res){
 					if(res){
 						s.emailRpt.message = res;
-						if (Auth.data().fname) 
-							s.emailRpt.message += Auth.data().fname;
-						s.emailRpt.message+="\n"+cfg.getEntity().name;
 					}
-
 				});
             };
 

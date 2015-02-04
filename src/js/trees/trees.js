@@ -1,62 +1,64 @@
 /*
  See treefilter.service.js for detailed diagram of filter interactions
-
  */
 
 /*
-     for handling all DropDown functionality if tree/client/site data
+      EVENTS BASED ON DROPDOWNS
 	  How this interacts with the TreeController:
-                                                                                         +------+                                                    
-                                                                                         | Api  |                                                    
-                                                                                         +--+---+                                                    
-                                                                                            |                                                        
-                                                                                            |                                                        
-                                                                                            +                                                        
-                                                                                   selected[]array                                                 
-                                                                                            +                                                        
-                                                                                            |                                                        
-                                                                                            |                                                        
-                                                             +------------------------------------------------------------------------+              
-                                                             |                              |                                         |              
-                                                  +----------+------------+       +---------+----------------+        +---------------+-------------+
-                                                  | ClientDropDown        |       |ClientTypeDropDown        |        |   SiteDropDown              |
-                                                  |                       |       |                          |        |                             |
-                                                  |                       |       |                          |        |                             |
-                                                  +-----------------------+       +--------------------------+        +-----------------+-----------+
-                                                                                                                                        |            
-                                                                                +----------------------------------+                    |            
-                                                                                | if(id !=0 && data.mode=='trees') |                    |            
-                                                  +-----------+---------+       |                                  |                    |            
-                                                  |  ReportService      |<------+ Then GoTo ReportService          |  OnSelectedSite()  |            
-                                                  |                     |       |                                  |                    |            
-                                                  +-------+-------------+       | Set Clientdropdown and ClientType|                    |            
-                                                          |                     |                                  |<-------------------+            
-                                                          |                     |DropDown Based on SiteDropDown    |                                 
-                                                          |                     |                                  |                                 
-                                                          |                     | Selection                        |                                 
-                                                          |                     |                                  |                                 
-                                                          |                     | Otherwise GoTo                   |                                 
-                                                          |                     |                                  |                                 
-                                                          | LoadRecnent()       |  SiteModelUpdateService          |                                                 
-                                                          v                     |                                  |                                 
-                                            +------------------------+          |                                  |
-                                            | RecentEstimateDropDown |          |                                  |
-                                            |                        |          |                                  |                                 
-                                            |                        |          |                                  |                                 
-                                            +-----------+------------+          +------------+---------------------+                                 
-                                                        |OnChange()                          |                                                       
-+---------------------------------+                     |                                    |  setSites()                                           
-| LoadReport()Based On Selection  |                     |                                    v                                                       
-|                                 |                     |                                                                                            
-| from ReportService & Url Changes|<--------------------+                    +---------------------+---------------+                                 
-|                                 |    GoTo ReportController                 |   SiteModelUpdateService            |                                 
-| to #/trees?reportID=xxxx        |                                          |                                     |
-| and 3 dropdown also Changes     |                                          |                                     |                               
-| and load Corresponding Trees    |                                          |                                     |                                 
-|                                 |                                          +-------------------------------------+                                 
-|                                 |                                                                                                                  
-+---------------------------------+                                                                                                                  
-                                 
+                                                           +------------+                                                                                         
+                                                           |  Api       |                                                                                         
+                                                           |            |                                                                                         
+                                                           |            |                                                                                         
+                                                           +----+-------+                                                                                         
+                                                                |                                                                                                 
+       +------------------------+                               |                                                                                                 
+       |filter clients dropdown |                               |                                                                                                 
+       |                        |when user selects clienttype   |                                                                                                 
+       |filter the site dropdown|  OnChange()                   |                                                                                                 
+       |                        | <---------------+             |                                                                                                 
+       |Update map with Sites   |                 |             |                                                                                                 
+       |                        |                 |             +                                                                                                 
+       |Reset all filters       |                 |     Selected[]array                                                                                           
+       +------------------------+                 |             |                                                                                                 
+                                                  |             |                                                                                                 
+                                                  |             +----------------+                                                                                
+                                                  |                              |                                                                                
+                                                  |                              |                                                                                
+                                                  +-----------------------+      |$scope.selected.ClientTypeID                                                    
+                                                  | Select ClientType     | <----+                                                                                
+                                                  +-----------------------+      |                                                                                
+             when user selects client             +-----------------------+      | $scope.selected.clientID                                                   
+                  +--------------------------------+Select Client         | <----+                                                                                
+                  |     OnChange()                 +----------------------+      |                                    +---------+---------+                       
+                  |                                +----------------------+      | $scope.selected.SiteID             |ReportService      +---------+             
+                  |                                |Select Site           | <----+                                    |                   |         | LoadRecent()
+                  |                                +--+-------------------+                                           +-----+-------------+         |             
+                  |                                   |                                                                     |                       |             
+                  |                                   |                                                                     |                       |             
+                  |                                   |                    +----------------------------------+             |                       |             
+                  |                                   |                    |Set clientID and clientTypeID     |             |                       |             
+                  |                                   |when user selects   |                                  +-------------+                       |             
+                  |                                   |a site              |with corresponding values         |                       +-------------+--------+    
+                  |                                   |OnChange()          |                                  |                       |RecentEstimateDropDown|    
+                  |                                   |                    |Get trees for this site           |  +------------------+ |                      |    
+                  |                                   |                    |                                  |  |LoadReport()Based | |                      |    
++-----------------v----------------+                  +------------------> |$watch will update the map        |  |                  | +---------+------------+    
+|filter sites dropdown             |                                       |                                  |  |On Selection & Url|           |                 
+|                                  |                                       |with TREES                        |  |                  |           | OnChange()      
+|filter  clientTypeID              |                                       |                                  |  |Changes to        |           |                 
+|                                  |                                                                          |  |                  |    <------+                 
+|Update the map with Sites         |                                       +----------------------------------+  |#/trees?reportID= |                             
+|                                  |                                                                             |                  |                             
+|Reset all filters                 |                                                                             |xxxx              +                             
++----------------------------------+                                                                             |and 3 dropdown and|                              
+                                                                                                                 |                  |                             
+                                                                                                                 |Corresponding Tree|                             
+                                                                                                                 |                  |                             
+                                                                                                                 |Changes           |                             
+                                                                                                                 |                  |                             
+                                                                                                                 +------------------+                             
+
+
 */
 'use strict';
 

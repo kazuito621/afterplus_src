@@ -2,6 +2,62 @@
  See treefilter.service.js for detailed diagram of filter interactions
 
  */
+
+/*
+     for handling all DropDown functionality if tree/client/site data
+	  How this interacts with the TreeController:
+                                                                                         +------+                                                    
+                                                                                         | Api  |                                                    
+                                                                                         +--+---+                                                    
+                                                                                            |                                                        
+                                                                                            |                                                        
+                                                                                            +                                                        
+                                                                                   selected[]array                                                 
+                                                                                            +                                                        
+                                                                                            |                                                        
+                                                                                            |                                                        
+                                                             +------------------------------------------------------------------------+              
+                                                             |                              |                                         |              
+                                                  +----------+------------+       +---------+----------------+        +---------------+-------------+
+                                                  | ClientDropDown        |       |ClientTypeDropDown        |        |   SiteDropDown              |
+                                                  |                       |       |                          |        |                             |
+                                                  |                       |       |                          |        |                             |
+                                                  +-----------------------+       +--------------------------+        +-----------------+-----------+
+                                                                                                                                        |            
+                                                                                +----------------------------------+                    |            
+                                                                                | if(id !=0 && data.mode=='trees') |                    |            
+                                                  +-----------+---------+       |                                  |                    |            
+                                                  |  ReportService      |<------+ Then GoTo ReportService          |  OnSelectedSite()  |            
+                                                  |                     |       |                                  |                    |            
+                                                  +-------+-------------+       | Set Clientdropdown and ClientType|                    |            
+                                                          |                     |                                  |<-------------------+            
+                                                          |                     |DropDown Based on SiteDropDown    |                                 
+                                                          |                     |                                  |                                 
+                                                          |                     | Selection                        |                                 
+                                                          |                     |                                  |                                 
+                                                          |                     | Otherwise GoTo                   |                                 
+                                                          |                     |                                  |                                 
+                                                          | LoadRecnent()       |  SiteModelUpdateService          |                                                 
+                                                          v                     |                                  |                                 
+                                            +------------------------+          |                                  |
+                                            | RecentEstimateDropDown |          |                                  |
+                                            |                        |          |                                  |                                 
+                                            |                        |          |                                  |                                 
+                                            +-----------+------------+          +------------+---------------------+                                 
+                                                        |OnChange()                          |                                                       
++---------------------------------+                     |                                    |  setSites()                                           
+| LoadReport()Based On Selection  |                     |                                    v                                                       
+|                                 |                     |                                                                                            
+| from ReportService & Url Changes|<--------------------+                    +---------------------+---------------+                                 
+|                                 |    GoTo ReportController                 |   SiteModelUpdateService            |                                 
+| to #/trees?reportID=xxxx        |                                          |                                     |
+| and 3 dropdown also Changes     |                                          |                                     |                               
+| and load Corresponding Trees    |                                          |                                     |                                 
+|                                 |                                          +-------------------------------------+                                 
+|                                 |                                                                                                                  
++---------------------------------+                                                                                                                  
+                                 
+*/
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',

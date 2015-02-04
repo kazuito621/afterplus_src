@@ -4,7 +4,6 @@
 app.directive('adjustPrice',
     ['$popover','ReportService',
         function ($popover,ReportService) {
-            var a=0;
             return {
                 restrict: 'EA',
                 link: function (scope, el, attrs) {
@@ -16,7 +15,7 @@ app.directive('adjustPrice',
                         if(isNaN(scope.popover.$scope.adjustPercentage)==false &&
                             scope.popover.$scope.adjustPercentage>-100 &&
                             scope.popover.$scope.adjustPercentage<100 ){
-                            _.each(scope.report.items,function(item){
+                            _.each(scope.$parent.report.items,function(item){
                                 var v=parseFloat(item.price)*(1+scope.popover.$scope.adjustPercentage/100);
                                 if(doRoundPrice){
                                     if((v - Math.floor(v))<0.5){
@@ -31,7 +30,7 @@ app.directive('adjustPrice',
                                     item.price=parseFloat(v.toFixed(2));
                                 }
                             });
-                            scope.groupedItems = ReportService.groupReportItems();
+                            scope.$parent.groupedItems = ReportService.groupReportItems();
                             scope.popover.hide();
                             scope.adjustPercentage=0;
                             scope.popover.$scope.adjustPercentage=0;
@@ -39,14 +38,13 @@ app.directive('adjustPrice',
                         else {
                             return;
                         }
-
                     };
                     scope.change=function(){
                         var n=this.adjustPercentage;
                         var doRoundPrice=this.doRoundPrice;
                         if(isNaN(n)==false && n>-100 && n<100 ){
                             scope.newTotal=0;
-                            _.each(scope.report.items,function(item){
+                            _.each(scope.$parent.report.items,function(item){
                                 var v=(parseFloat(item.price)*(1+n/100));
                                 if(doRoundPrice){
                                     if((v - Math.floor(v))<0.5){
@@ -77,7 +75,7 @@ app.directive('adjustPrice',
                     }
                     $(el).click(function () {
                         scope.adjustPercentage=0;
-                        scope.newTotal=angular.copy(scope.report.total.items);
+                        scope.newTotal=angular.copy(scope.$parent.report.total.items);
                         if (scope.popover && typeof scope.popover.hide === 'function') {
                             scope.popover.hide();
                         }

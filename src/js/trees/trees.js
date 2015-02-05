@@ -323,8 +323,12 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.onSelectSiteID = function (id) {
                 s.selected.siteID = id;
                 ReportService.setSiteID(id);
+
+                if (s.data.mode() != 'trees') return;
+
+                ReportService.loadRecent();
+
                 if (id && id > 0) {
-                    console.log('On select site id', id);
                     if (s.data.mode() == 'trees') {
                         ReportService.loadRecent();
                     }
@@ -370,6 +374,8 @@ var TreesCtrl = app.controller('TreesCtrl',
             //    if (s.data.mode() == 'trees') ReportService.loadRecent();
             //});
 
+
+
             //Wil be fired when user select report id from recent drop down.
             s.$on('OnLoadReportEvent', function (evt, data) {
                 if (data.siteID == undefined || data.siteID == "")
@@ -377,6 +383,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 
                 s.onSelectSiteID(data.siteID);
             });
+
+
 
             // When the trees[] array changes because of a filter event... update the ui.
             // This also may be triggered when site dropdown is selected (via getTreeListings())

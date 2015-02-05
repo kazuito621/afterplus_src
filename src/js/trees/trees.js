@@ -56,10 +56,7 @@
                                                                                                                  |                  |                             
                                                                                                                  |Changes           |                             
                                                                                                                  |                  |                             
-                                                                                                                 +------------------+                             
-
-
-*/
+                                                                                                                 +------------------+                             */
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
@@ -1828,4 +1825,24 @@ var TreesCtrl = app.controller('TreesCtrl',
             //  s.$on('$routeChangeSuccess', onUserNav);
         }]);	// }}} TreesCtrl
 
+/*
+Description of Performance improvements.
+            
+Begore my performance improvements fixes we are loading all data in one request using init() method in api service.
+which is crashing whole page due to lot of data being get and then render through angular. 
+So to overcome this problem we implement two api methods one will get clients and client types and other will get sites only.
+because sites have lot of data in it so we seprated it out in other method called "loadsites()".
 
+Afte that we face a new rendering problem which is related to tree list on right side bar.
+because we have almost 1000 tress in one site so load this much of data at once thru angular slow down the page and almost crashes it.
+So to overcome this issue I edited tree.list directive and attach a controller in it.
+Now I fetch all data from API but load 100 by 100 with each seconds until all records have been loaded in. It save a lot of rendering issue.
+
+Then we found the same issue in estmation grid below on page and I did the same in it too and I think it almost speed up application rendering process to 50%.
+
+Now the only problem left with rendering is we are loading lot of directives on page and these directives contains their templates.
+so angular issue a ajax get request to load them and it slow down the page so to overcome it I use "HTML2JS" task in grunt when we run it,
+It wil automatically put all templates in one template.js file and also out those templates in cache of angular so angular don't have to issue a get request.
+It load template from cache. I think it saves a lot of time while rendering and solve almost 80% of speed issue.
+
+*/

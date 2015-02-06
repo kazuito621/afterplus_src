@@ -66,6 +66,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             $scope.getAllSites();
 
+console.debug("top of trees ");
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
@@ -187,7 +188,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     $timeout(function () { 			// not sure if this is needed
                         if (google && google.maps)
                             google.maps.event.trigger(gMap, 'resize')
-                    }, 2000);
+                    }, 2000); // todo this is dumb. we should use a real callback
                 }
             }
 
@@ -528,9 +529,52 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.treeMarkers = [];
 
-            var initMap = _.throttle(function () {
+
+			//NOT DONE: the idea here is to wait for the google init callback as well in index.html
+			window.mapLoaded=false;
+            var initMap = _.throttle(function (deferred3) {
+console.debug("init map 1");
                 var deferred = $q.defer();
-                // alert("map called");
+				if(window.mapLoaded)		// if map loaded, then resolve now
+					return deferred.resolve();
+
+console.debug("					init map 2");
+
+				if( window.googleApiReady==true ){	// if api loaded, then load the map
+				console.debug("			google api is read! ");
+					loadMap().then(function(){
+						window.mapLoaded=true;
+						deferred.resolve();
+					});
+					return deferred.promise;
+
+				}else{								// we're still waiting on google api js 
+													// to load, 
+													console.debug("			google map NOTTTT ready! ");
+					var def2;
+					var tmp = function(){
+						def2=$q.defer();
+						return def2.promise;
+					}
+					window.googleApiQ=def2;
+					tmp().then(function(){		// will be executed when google api done loading
+						if(window.mapLoaded){ 
+							deferred.resolve();
+							if(deferred3) deferred3.resolve();
+							return;
+						}
+						console.debug("			int mp 3 ");
+						initMap(deferred);
+					});
+					return deferred.promise;
+				}
+            }, 2000);
+
+
+			var loadMap = function() {
+			console.debug("load map ");
+                var deferred = $q.defer();
+				try{
                 google.load(
                     "maps",
                     "3",
@@ -538,7 +582,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                         other_params: 'sensor=false&libraries=places',
                         callback:
                             function () {
-                                var myOptions = { zoom: 1, tilt: 0, center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',scrollwheel: false, panControl: false };
+						console.debug("		-- google map callback ");
+                                var myOptions = { 
+										zoom: 1, tilt: 0, 
+										center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
+										scrollwheel: false, panControl: false 
+									};
                                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                                 gMap = new google.maps.Map($('#' + map_id)[0], myOptions);
                                 google.maps.event.addListener(gMap, 'click', function () {
@@ -553,14 +602,22 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 //initClicktoMap();
                                 initSearchBox();
 
+								// do we really need this? ... this was here before
                                 $timeout(function () {
                                     deferred.resolve();
+									mapLoaded=true;
                                 }, 1000);
+
                             }
                     }
                 );
+				}catch(err){
+					
+					console.debug("ERROR LOADING MAP! ");
+					console.debug(err);
+				}
                 return deferred.promise;
-            }, 2000);
+            }
 
 
             //var initClicktoMap = _.throttle(function () {
@@ -622,6 +679,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
+			console.debug("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;

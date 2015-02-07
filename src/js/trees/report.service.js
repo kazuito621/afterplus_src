@@ -342,7 +342,14 @@ app.service('ReportService',
 			});
 	},1000);
 
+
+// todo... i thought this was not needed, because we were pulling the grouped
+// items from the server.. but that will not work. what about newly added
+// items ... those need to be grouped as well....
+// todo .. make ht work
+
         this.groupReportItems = function () {
+//		return;
             var items = angular.copy(that.report.items);
             var res = [];
             var keys = [];
@@ -372,7 +379,6 @@ app.service('ReportService',
 
         this.ungroupReportItems = function (groupedItems) {
             groupedItems = groupedItems || that.groupedItems;
-//                console.log('about to ungroup report items', groupedItems);
             var items = angular.copy(groupedItems);
             var res = [];
 
@@ -380,17 +386,11 @@ app.service('ReportService',
                 angular.forEach(item.treatments, function (treatment) {
                     var tmp = angular.copy(item);
                     delete tmp.treatments;
-
                     tmp.treatmentTypeCode = treatment.treatmentTypeCode;
-
                     tmp.price = treatment.price;
-
                     res.push(tmp);
                 });
             });
-
-//                console.log('Ungrouped items', res);
-
             return res;
         };
 

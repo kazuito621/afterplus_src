@@ -1182,8 +1182,22 @@ var TreesCtrl = app.controller('TreesCtrl',
             };
 
             s.sendReport=function (hideFn, showFn){
-                Api.setBulkEstimate(self.contactPropertyModalScope.emailRpt).then(function(){
+                var postObj={};
+                postObj.title='';
+                postObj.message='';
+                postObj.testEmail='';
+                postObj.sites=[];
+                _.each(self.contactPropertyModalScope.emailRpt.selectedSites,function(site){
+                    var userIDs= _.pluck(site.users,'userID');
+                    postObj.sites.push({siteID:site.siteID,userIDs:userIDs});
+                });
+                var param={};
+                param.bulkTreatment=s.bulkEstimates.overrideTreatmentCodes.toString();
+                param.speciesID=s.bulkEstimates.overrideTreatmentCodes.toString();
+                Api.setBulkEstimate(param,postObj).then(function(){
 
+                    hideFn();
+                    s.setAlert('Estimate sent',{type:'ok'})
                 });
             }
 

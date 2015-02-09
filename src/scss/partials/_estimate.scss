@@ -254,6 +254,32 @@
 			{
 				@include clearfix();
 
+				&.client-contact
+				{
+					border-bottom: 3px solid $dark-gray-color;
+					display: inline-block;
+
+					dd
+					{
+						div
+						{
+							border-bottom: 3px solid $dark-gray-color;
+							padding: 3px 0;
+							margin-right: 0 !important;
+
+							&:last-child, &:first-child
+							{
+								border-bottom: 0;
+							}
+
+							&:first-child
+							{
+								padding: 0;
+							}
+						}
+					}
+				}
+
 				dt 
 				{
 					float: left;

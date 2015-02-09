@@ -200,6 +200,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	s.sh = {
 		sortByColumn: function (col) {
 			applyFilter();
+            self.sh.setData(estFiltered);
 			estFiltered = self.sh.sortByColumn(col);
 			s.displayedEstimates = estFiltered.slice(0, 49);
 		},
@@ -219,7 +220,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             return;
         }
 
-        var addon = estimates.slice(count, count + 50);
+        var addon = estFiltered.slice(count, count + 50);
         s.displayedEstimates = s.displayedEstimates.concat(addon);
     };
 

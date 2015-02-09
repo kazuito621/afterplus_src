@@ -5,27 +5,40 @@
             <form class="form-inline">
                 <div class='panel-body'>
                     <span>
-                       <input ng-model="$parent.adjustPercentage" ng-change="change()" type="number" min="-100" max="100"/>%
+                        <button class="button" ng-mousedown='mouseDown("down")' ng-mouseup='mouseUp()' ng-mouseleave="mouseUp()">
+                           <i class="fa fa-minus"></i>
+                       </button>
+                       <input id="adjustPercentage" style="width: 50px" ng-model="adjustPercentage" ng-change="change()" type="text"/>
+                        <button class="button" ng-mousedown='mouseDown("up")' ng-mouseup='mouseUp()' ng-mouseleave="mouseUp()">
+                            <i class="fa fa-plus"></i>
+                        </button>
                     </span>
                     <br>
                     <br>
                     <div style="width: 100%;margin: 2px">
-                        <labe class="pull-left" >Current SubTotal</labe>
-                        <labe class="pull-right">{{report.total.items|formatPrice}}</labe>
+                        <label class="pull-left" >Current SubTotal</label>
+                        <label class="pull-right">{{report.total.items|formatPrice}}</label>
                     </div>
                     </br>
                     <div style="width: 100%;margin: 2px">
-                        <labe class="pull-left">New SubTotal</labe>
-                        <labe class="pull-right">{{newTotal|formatPrice}}</labe>
+                        <label class="pull-left">New SubTotal</label>
+                        <label class="pull-right">{{newTotal|formatPrice}}</label>
                     </div>
                     <div style="width: 100%;margin: 2px">
-                        <label class="pull-left">Round items to nearest dollar</label>
-                        <input type="checkbox" ng-model="doRoundPrice" ng-change="change()" class="pull-right">
+                        <br><br>
+						<label>
+                        <input type="checkbox" ng-model="doRoundPrice" ng-change="change()" class="pull-left"> &nbsp;
+                        <span style='font-weight:normal;'>Round to whole dollars</span></label>
                     </div>
                     </br>
                     <div style="width: 100%;margin: 2px">
-                        <button type="button" class="btn" ng-click="ok();">OK</button>
+                        <button type="button" ng-disabled="" class="btn btn-default" ng-click="ok();">
+                            <i class="fa fa-check"></i>
+                            OK
+                        </button>
+
                         <button type="button" class="btn btn-default " ng-click="cancel()">
+                            <i class="fa fa-remove"></i>
                             CANCEL
                         </button>
                     </div>

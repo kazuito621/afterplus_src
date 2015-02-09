@@ -86,7 +86,7 @@
 
 /* line 30, ../scss/clrs/_skins.scss */
 .bg-silver {
-  background-color: #ddd;
+  background-color: #777;
 }
 
 /* line 31, ../scss/clrs/_skins.scss */
@@ -167,7 +167,7 @@
 
 /* line 50, ../scss/clrs/_skins.scss */
 .silver {
-  color: #ddd;
+  color: #777;
 }
 
 /* line 51, ../scss/clrs/_skins.scss */
@@ -262,7 +262,7 @@
 
 /* line 76, ../scss/clrs/_skins.scss */
 .border--silver {
-  border-color: #ddd;
+  border-color: #777;
 }
 
 /* line 77, ../scss/clrs/_skins.scss */
@@ -348,7 +348,7 @@
 
 /* line 97, ../scss/clrs/_skins.scss */
 .fill-silver {
-  fill: #ddd;
+  fill: #777;
 }
 
 /* line 98, ../scss/clrs/_skins.scss */
@@ -434,7 +434,7 @@
 
 /* line 117, ../scss/clrs/_skins.scss */
 .stroke-silver {
-  stroke: #ddd;
+  stroke: #777;
 }
 
 /* line 118, ../scss/clrs/_skins.scss */
@@ -1094,6 +1094,13 @@ footer {
   padding: 0;
   position: absolute;
   width: 1px;
+}
+
+/* line 416, ../scss/partials/_common.scss */
+.modal .modal-dialog .modal-content form.form-inline .panel .panel-body .silver {
+  font-size: 19.5px;
+  line-height: 26px;
+  margin: 10px 0 5px 0;
 }
 
 /* line 3, ../scss/partials/_estimate.scss */

@@ -11,173 +11,173 @@
 /* Backgrounds */
 /* line 15, ../scss/clrs/_skins.scss */
 .bg-navy {
-  background-color: #001f3f;
+  background-color: #001F3F;
 }
 
 /* line 16, ../scss/clrs/_skins.scss */
 .bg-blue {
-  background-color: #0074d9;
+  background-color: #0074D9;
 }
 
 /* line 17, ../scss/clrs/_skins.scss */
 .bg-aqua {
-  background-color: #7fdbff;
+  background-color: #7FDBFF;
 }
 
 /* line 18, ../scss/clrs/_skins.scss */
 .bg-teal {
-  background-color: #39cccc;
+  background-color: #39CCCC;
 }
 
 /* line 19, ../scss/clrs/_skins.scss */
 .bg-olive {
-  background-color: #3d9970;
+  background-color: #3D9970;
 }
 
 /* line 20, ../scss/clrs/_skins.scss */
 .bg-green {
-  background-color: #2ecc40;
+  background-color: #2ECC40;
 }
 
 /* line 21, ../scss/clrs/_skins.scss */
 .bg-lime {
-  background-color: #01ff70;
+  background-color: #01FF70;
 }
 
 /* line 22, ../scss/clrs/_skins.scss */
 .bg-yellow {
-  background-color: #ffdc00;
+  background-color: #FFDC00;
 }
 
 /* line 23, ../scss/clrs/_skins.scss */
 .bg-orange {
-  background-color: #ff851b;
+  background-color: #FF851B;
 }
 
 /* line 24, ../scss/clrs/_skins.scss */
 .bg-red {
-  background-color: #ff4136;
+  background-color: #FF4136;
 }
 
 /* line 25, ../scss/clrs/_skins.scss */
 .bg-fuchsia {
-  background-color: #f012be;
+  background-color: #F012BE;
 }
 
 /* line 26, ../scss/clrs/_skins.scss */
 .bg-purple {
-  background-color: #b10dc9;
+  background-color: #B10DC9;
 }
 
 /* line 27, ../scss/clrs/_skins.scss */
 .bg-maroon {
-  background-color: #85144b;
+  background-color: #85144B;
 }
 
 /* line 28, ../scss/clrs/_skins.scss */
 .bg-white {
-  background-color: white;
+  background-color: #fff;
 }
 
 /* line 29, ../scss/clrs/_skins.scss */
 .bg-gray {
-  background-color: #aaaaaa;
+  background-color: #aaa;
 }
 
 /* line 30, ../scss/clrs/_skins.scss */
 .bg-silver {
-  background-color: #dddddd;
+  background-color: #ddd;
 }
 
 /* line 31, ../scss/clrs/_skins.scss */
 .bg-black {
-  background-color: #111111;
+  background-color: #111;
 }
 
 /* Colors */
 /* line 36, ../scss/clrs/_skins.scss */
 .navy {
-  color: #001f3f;
+  color: #001F3F;
 }
 
 /* line 37, ../scss/clrs/_skins.scss */
 .blue {
-  color: #0074d9;
+  color: #0074D9;
 }
 
 /* line 38, ../scss/clrs/_skins.scss */
 .aqua {
-  color: #7fdbff;
+  color: #7FDBFF;
 }
 
 /* line 39, ../scss/clrs/_skins.scss */
 .teal {
-  color: #39cccc;
+  color: #39CCCC;
 }
 
 /* line 40, ../scss/clrs/_skins.scss */
 .olive {
-  color: #3d9970;
+  color: #3D9970;
 }
 
 /* line 41, ../scss/clrs/_skins.scss */
 .green {
-  color: #2ecc40;
+  color: #2ECC40;
 }
 
 /* line 42, ../scss/clrs/_skins.scss */
 .lime {
-  color: #01ff70;
+  color: #01FF70;
 }
 
 /* line 43, ../scss/clrs/_skins.scss */
 .yellow {
-  color: #ffdc00;
+  color: #FFDC00;
 }
 
 /* line 44, ../scss/clrs/_skins.scss */
 .orange {
-  color: #ff851b;
+  color: #FF851B;
 }
 
 /* line 45, ../scss/clrs/_skins.scss */
 .red {
-  color: #ff4136;
+  color: #FF4136;
 }
 
 /* line 46, ../scss/clrs/_skins.scss */
 .fuchsia {
-  color: #f012be;
+  color: #F012BE;
 }
 
 /* line 47, ../scss/clrs/_skins.scss */
 .purple {
-  color: #b10dc9;
+  color: #B10DC9;
 }
 
 /* line 48, ../scss/clrs/_skins.scss */
 .maroon {
-  color: #85144b;
+  color: #85144B;
 }
 
 /* line 49, ../scss/clrs/_skins.scss */
 .white {
-  color: white;
+  color: #fff;
 }
 
 /* line 50, ../scss/clrs/_skins.scss */
 .silver {
-  color: #dddddd;
+  color: #ddd;
 }
 
 /* line 51, ../scss/clrs/_skins.scss */
 .gray {
-  color: #aaaaaa;
+  color: #aaa;
 }
 
 /* line 52, ../scss/clrs/_skins.scss */
 .black {
-  color: #111111;
+  color: #111;
 }
 
 /* Border colors 
@@ -187,262 +187,262 @@
 */
 /* line 61, ../scss/clrs/_skins.scss */
 .border--navy {
-  border-color: #001f3f;
+  border-color: #001F3F;
 }
 
 /* line 62, ../scss/clrs/_skins.scss */
 .border--blue {
-  border-color: #0074d9;
+  border-color: #0074D9;
 }
 
 /* line 63, ../scss/clrs/_skins.scss */
 .border--aqua {
-  border-color: #7fdbff;
+  border-color: #7FDBFF;
 }
 
 /* line 64, ../scss/clrs/_skins.scss */
 .border--teal {
-  border-color: #39cccc;
+  border-color: #39CCCC;
 }
 
 /* line 65, ../scss/clrs/_skins.scss */
 .border--olive {
-  border-color: #3d9970;
+  border-color: #3D9970;
 }
 
 /* line 66, ../scss/clrs/_skins.scss */
 .border--green {
-  border-color: #2ecc40;
+  border-color: #2ECC40;
 }
 
 /* line 67, ../scss/clrs/_skins.scss */
 .border--lime {
-  border-color: #01ff70;
+  border-color: #01FF70;
 }
 
 /* line 68, ../scss/clrs/_skins.scss */
 .border--yellow {
-  border-color: #ffdc00;
+  border-color: #FFDC00;
 }
 
 /* line 69, ../scss/clrs/_skins.scss */
 .border--orange {
-  border-color: #ff851b;
+  border-color: #FF851B;
 }
 
 /* line 70, ../scss/clrs/_skins.scss */
 .border--red {
-  border-color: #ff4136;
+  border-color: #FF4136;
 }
 
 /* line 71, ../scss/clrs/_skins.scss */
 .border--fuchsia {
-  border-color: #f012be;
+  border-color: #F012BE;
 }
 
 /* line 72, ../scss/clrs/_skins.scss */
 .border--purple {
-  border-color: #b10dc9;
+  border-color: #B10DC9;
 }
 
 /* line 73, ../scss/clrs/_skins.scss */
 .border--maroon {
-  border-color: #85144b;
+  border-color: #85144B;
 }
 
 /* line 74, ../scss/clrs/_skins.scss */
 .border--white {
-  border-color: white;
+  border-color: #fff;
 }
 
 /* line 75, ../scss/clrs/_skins.scss */
 .border--gray {
-  border-color: #aaaaaa;
+  border-color: #aaa;
 }
 
 /* line 76, ../scss/clrs/_skins.scss */
 .border--silver {
-  border-color: #dddddd;
+  border-color: #ddd;
 }
 
 /* line 77, ../scss/clrs/_skins.scss */
 .border--black {
-  border-color: #111111;
+  border-color: #111;
 }
 
 /* Fills for SVG */
 /* line 82, ../scss/clrs/_skins.scss */
 .fill-navy {
-  fill: #001f3f;
+  fill: #001F3F;
 }
 
 /* line 83, ../scss/clrs/_skins.scss */
 .fill-blue {
-  fill: #0074d9;
+  fill: #0074D9;
 }
 
 /* line 84, ../scss/clrs/_skins.scss */
 .fill-aqua {
-  fill: #7fdbff;
+  fill: #7FDBFF;
 }
 
 /* line 85, ../scss/clrs/_skins.scss */
 .fill-teal {
-  fill: #39cccc;
+  fill: #39CCCC;
 }
 
 /* line 86, ../scss/clrs/_skins.scss */
 .fill-olive {
-  fill: #3d9970;
+  fill: #3D9970;
 }
 
 /* line 87, ../scss/clrs/_skins.scss */
 .fill-green {
-  fill: #2ecc40;
+  fill: #2ECC40;
 }
 
 /* line 88, ../scss/clrs/_skins.scss */
 .fill-lime {
-  fill: #01ff70;
+  fill: #01FF70;
 }
 
 /* line 89, ../scss/clrs/_skins.scss */
 .fill-yellow {
-  fill: #ffdc00;
+  fill: #FFDC00;
 }
 
 /* line 90, ../scss/clrs/_skins.scss */
 .fill-orange {
-  fill: #ff851b;
+  fill: #FF851B;
 }
 
 /* line 91, ../scss/clrs/_skins.scss */
 .fill-red {
-  fill: #ff4136;
+  fill: #FF4136;
 }
 
 /* line 92, ../scss/clrs/_skins.scss */
 .fill-fuchsia {
-  fill: #f012be;
+  fill: #F012BE;
 }
 
 /* line 93, ../scss/clrs/_skins.scss */
 .fill-purple {
-  fill: #b10dc9;
+  fill: #B10DC9;
 }
 
 /* line 94, ../scss/clrs/_skins.scss */
 .fill-maroon {
-  fill: #85144b;
+  fill: #85144B;
 }
 
 /* line 95, ../scss/clrs/_skins.scss */
 .fill-white {
-  fill: white;
+  fill: #fff;
 }
 
 /* line 96, ../scss/clrs/_skins.scss */
 .fill-gray {
-  fill: #aaaaaa;
+  fill: #aaa;
 }
 
 /* line 97, ../scss/clrs/_skins.scss */
 .fill-silver {
-  fill: #dddddd;
+  fill: #ddd;
 }
 
 /* line 98, ../scss/clrs/_skins.scss */
 .fill-black {
-  fill: #111111;
+  fill: #111;
 }
 
 /* Strokes for SVG */
 /* line 102, ../scss/clrs/_skins.scss */
 .stroke-navy {
-  stroke: #001f3f;
+  stroke: #001F3F;
 }
 
 /* line 103, ../scss/clrs/_skins.scss */
 .stroke-blue {
-  stroke: #0074d9;
+  stroke: #0074D9;
 }
 
 /* line 104, ../scss/clrs/_skins.scss */
 .stroke-aqua {
-  stroke: #7fdbff;
+  stroke: #7FDBFF;
 }
 
 /* line 105, ../scss/clrs/_skins.scss */
 .stroke-teal {
-  stroke: #39cccc;
+  stroke: #39CCCC;
 }
 
 /* line 106, ../scss/clrs/_skins.scss */
 .stroke-olive {
-  stroke: #3d9970;
+  stroke: #3D9970;
 }
 
 /* line 107, ../scss/clrs/_skins.scss */
 .stroke-green {
-  stroke: #2ecc40;
+  stroke: #2ECC40;
 }
 
 /* line 108, ../scss/clrs/_skins.scss */
 .stroke-lime {
-  stroke: #01ff70;
+  stroke: #01FF70;
 }
 
 /* line 109, ../scss/clrs/_skins.scss */
 .stroke-yellow {
-  stroke: #ffdc00;
+  stroke: #FFDC00;
 }
 
 /* line 110, ../scss/clrs/_skins.scss */
 .stroke-orange {
-  stroke: #ff851b;
+  stroke: #FF851B;
 }
 
 /* line 111, ../scss/clrs/_skins.scss */
 .stroke-red {
-  stroke: #ff4136;
+  stroke: #FF4136;
 }
 
 /* line 112, ../scss/clrs/_skins.scss */
 .stroke-fuchsia {
-  stroke: #f012be;
+  stroke: #F012BE;
 }
 
 /* line 113, ../scss/clrs/_skins.scss */
 .stroke-purple {
-  stroke: #b10dc9;
+  stroke: #B10DC9;
 }
 
 /* line 114, ../scss/clrs/_skins.scss */
 .stroke-maroon {
-  stroke: #85144b;
+  stroke: #85144B;
 }
 
 /* line 115, ../scss/clrs/_skins.scss */
 .stroke-white {
-  stroke: white;
+  stroke: #fff;
 }
 
 /* line 116, ../scss/clrs/_skins.scss */
 .stroke-gray {
-  stroke: #aaaaaa;
+  stroke: #aaa;
 }
 
 /* line 117, ../scss/clrs/_skins.scss */
 .stroke-silver {
-  stroke: #dddddd;
+  stroke: #ddd;
 }
 
 /* line 118, ../scss/clrs/_skins.scss */
 .stroke-black {
-  stroke: #111111;
+  stroke: #111;
 }
 
-/* line 5, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 5, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -464,45 +464,45 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
-/* line 22, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 22, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 html {
   line-height: 1;
 }
 
-/* line 24, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 24, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 ol, ul {
   list-style: none;
 }
 
-/* line 26, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 26, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* line 28, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 28, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 caption, th, td {
   text-align: left;
   font-weight: normal;
   vertical-align: middle;
 }
 
-/* line 30, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 30, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 q, blockquote {
   quotes: none;
 }
-/* line 103, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 103, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 q:before, q:after, blockquote:before, blockquote:after {
   content: "";
   content: none;
 }
 
-/* line 32, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 32, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 a img {
   border: none;
 }
 
-/* line 116, ../../../../../../usr/lib/ruby/gems/1.8/gems/compass-core-1.0.1/stylesheets/compass/reset/_utilities.scss */
+/* line 116, C:/Ruby21/lib/ruby/gems/2.1.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
   display: block;
 }
@@ -512,7 +512,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 25px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 25px;
   width: 100%;
   max-width: 130px;
@@ -522,7 +522,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 20px;
 }
 /* line 15, ../scss/partials/_buttons.scss */
@@ -530,7 +530,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 24px;
 }
 /* line 20, ../scss/partials/_buttons.scss */
@@ -553,7 +553,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /* line 31, ../scss/partials/_buttons.scss */
 .btn.btn-gray:hover, .btn.btn-gray:focus, .btn.btn-gray:active, .btn.btn-gray.active {
   background: #bbbbbb;
-  color: white;
+  color: #FFF;
 }
 /* line 38, ../scss/partials/_buttons.scss */
 .btn.btn-red {
@@ -658,7 +658,7 @@ body {
 
 /* line 12, ../scss/partials/_common.scss */
 .clr-white {
-  color: white !important;
+  color: #FFF !important;
 }
 
 /* line 17, ../scss/partials/_common.scss */
@@ -674,7 +674,7 @@ body {
 /* line 27, ../scss/partials/_common.scss */
 header {
   background: none;
-  background-color: black;
+  background-color: #000;
   padding: 0 20px;
 }
 /* line 33, ../scss/partials/_common.scss */
@@ -909,7 +909,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: normal;
-  color: black;
+  color: #000;
   line-height: 20px;
   padding-top: 30px;
   padding-bottom: 30px;
@@ -935,7 +935,7 @@ footer {
 /* line 253, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a:hover, .collapse-container .collapse-head a:focus {
   text-decoration: none;
-  color: white;
+  color: #FFF;
 }
 /* line 259, ../scss/partials/_common.scss */
 .collapse-container .collapse-head a i {
@@ -975,44 +975,44 @@ footer {
 }
 /* line 301, ../scss/partials/_common.scss */
 .big-tag.approved {
-  border-color: #2ecc40;
-  color: #2ecc40;
+  border-color: #2ECC40;
+  color: #2ECC40;
 }
 /* line 307, ../scss/partials/_common.scss */
 .big-tag.billed {
-  border-color: #ff851b;
-  color: #ff851b;
+  border-color: #FF851B;
+  color: #FF851B;
 }
 /* line 313, ../scss/partials/_common.scss */
 .big-tag.sent {
-  border-color: #0074d9;
-  color: #0074d9;
+  border-color: #0074D9;
+  color: #0074D9;
 }
 /* line 319, ../scss/partials/_common.scss */
 .big-tag.needs_approval {
-  border-color: #ff4136;
-  color: #ff4136;
+  border-color: #FF4136;
+  color: #FF4136;
 }
 /* line 325, ../scss/partials/_common.scss */
 .big-tag.completed {
-  border-color: #0074d9;
-  color: #0074d9;
+  border-color: #0074D9;
+  color: #0074D9;
   font-size: 26px;
 }
 /* line 332, ../scss/partials/_common.scss */
 .big-tag.paid {
-  border-color: #ff4136;
-  color: #ff4136;
+  border-color: #FF4136;
+  color: #FF4136;
 }
 /* line 338, ../scss/partials/_common.scss */
 .big-tag.sent {
-  border-color: #0074d9;
-  color: #0074d9;
+  border-color: #0074D9;
+  color: #0074D9;
 }
 
 /* line 345, ../scss/partials/_common.scss */
 .clr-approved {
-  background-color: #2ecc40 !important;
+  background-color: #2ECC40 !important;
   color: #fff !important;
 }
 
@@ -1024,25 +1024,25 @@ footer {
 
 /* line 353, ../scss/partials/_common.scss */
 .clr-sent {
-  background-color: #0074d9 !important;
+  background-color: #0074D9 !important;
   color: #fff !important;
 }
 
 /* line 357, ../scss/partials/_common.scss */
 .clr-needs_approval {
-  background-color: #ff4136 !important;
+  background-color: #FF4136 !important;
   color: #fff !important;
 }
 
 /* line 361, ../scss/partials/_common.scss */
 .clr-completed {
-  background-color: #0074d9 !important;
+  background-color: #0074D9 !important;
   color: #fff !important;
 }
 
 /* line 365, ../scss/partials/_common.scss */
 .clr-paid {
-  background-color: #ff4136 !important;
+  background-color: #FF4136 !important;
   color: #fff !important;
 }
 
@@ -1061,27 +1061,27 @@ footer {
 }
 /* line 380, ../scss/partials/_common.scss */
 .small-tag.approved {
-  background: #2ecc40;
+  background: #2ECC40;
 }
 /* line 381, ../scss/partials/_common.scss */
 .small-tag.needs_approval {
-  background: #ff4136;
+  background: #FF4136;
 }
 /* line 382, ../scss/partials/_common.scss */
 .small-tag.billed {
-  background: #ff851b;
+  background: #FF851B;
 }
 /* line 383, ../scss/partials/_common.scss */
 .small-tag.completed {
-  background: #0074d9;
+  background: #0074D9;
 }
 /* line 384, ../scss/partials/_common.scss */
 .small-tag.paid {
-  background: #ff4136;
+  background: #FF4136;
 }
 /* line 385, ../scss/partials/_common.scss */
 .small-tag.sent {
-  background: #0074d9;
+  background: #0074D9;
 }
 
 /* line 390, ../scss/partials/_common.scss */
@@ -1104,7 +1104,7 @@ footer {
 /* line 9, ../scss/partials/_estimate.scss */
 .action-container {
   padding: 15px 15px;
-  background: white;
+  background: #FFF;
   margin: 0;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
@@ -1241,7 +1241,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 5px;
   padding: 5px;
 }
@@ -1250,7 +1250,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9px;
   font-weight: normal;
-  color: black;
+  color: #000;
   line-height: 10px;
   text-transform: uppercase;
 }
@@ -1266,11 +1266,11 @@ footer {
 }
 /* line 174, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat:hover .number, .action-container .action-block .stats .stat:focus .number, .action-container .action-block .stats .stat:active .number {
-  color: white;
+  color: #FFF;
 }
 /* line 179, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat:hover .text, .action-container .action-block .stats .stat:focus .text, .action-container .action-block .stats .stat:active .text {
-  color: white;
+  color: #FFF;
 }
 @media (max-width: 767px) {
   /* line 189, ../scss/partials/_estimate.scss */
@@ -1307,7 +1307,7 @@ footer {
   -webkit-print-color-adjust: exact;
   position: relative;
   background: #333333;
-  color: white;
+  color: #FFF;
   padding: 10px 15px;
   border-radius: 5px 5px 0 0;
   margin-bottom: 15px;
@@ -1327,7 +1327,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 24px;
 }
 /* line 14, ../scss/modules/mixins/_clearfix.scss */
@@ -1345,7 +1345,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 20px;
   margin-right: 5px;
 }
@@ -1355,7 +1355,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 20px;
 }
 /* line 272, ../scss/partials/_estimate.scss */
@@ -1363,7 +1363,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 20px;
   margin-right: 5px;
 }
@@ -1372,7 +1372,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 20px;
 }
 @media (max-width: 991px) {
@@ -1556,7 +1556,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
-  color: black;
+  color: #000;
   line-height: 20px;
   background: #f2f3f5;
   border: none;
@@ -1670,7 +1670,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: normal;
-  color: black;
+  color: #000;
   line-height: 18px;
 }
 /* line 601, ../scss/partials/_estimate.scss */
@@ -1678,7 +1678,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-weight: bold;
-  color: black;
+  color: #000;
   line-height: 18px;
 }
 /* line 606, ../scss/partials/_estimate.scss */
@@ -1686,7 +1686,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
-  color: black;
+  color: #000;
   line-height: 18px;
   margin-top: 10px;
 }
@@ -1719,7 +1719,7 @@ footer {
 
   /* line 647, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
-    border: 1px solid black;
+    border: 1px solid #000;
   }
 
   /* line 655, ../scss/partials/_estimate.scss */
@@ -1854,7 +1854,7 @@ footer {
   padding: 5px;
   border-radius: 3px;
   background: #5c5c5c;
-  color: white;
+  color: #FFF;
   border: 1px solid #696a6a;
   margin: 0;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -2036,15 +2036,15 @@ footer {
 /* line 341, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td {
   background: #333333;
-  color: white;
+  color: #FFF;
 }
 /* line 346, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td h6 {
-  color: white;
+  color: #FFF;
 }
 /* line 352, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group button {
-  color: white;
+  color: #FFF;
   border: none;
   background: none;
   padding-left: 0;
@@ -2083,7 +2083,7 @@ footer {
 /* line 385, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:hover, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:focus, .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li a:active {
   background: #333333;
-  color: white;
+  color: #FFF;
 }
 /* line 392, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container thead tr td .btn-group .dropdown-menu li:nth-child(odd) {
@@ -2152,7 +2152,7 @@ footer {
 /* line 464, ../scss/partials/_trees.scss */
 .trees-container .result-container table.tree-list-container tr td.td-action a {
   font-size: 18px;
-  color: white;
+  color: #FFF;
   -webkit-transition: all linear 0.4s;
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
@@ -2194,7 +2194,7 @@ footer {
   padding: 5px;
   border-radius: 3px;
   background: #5c5c5c;
-  color: white;
+  color: #FFF;
   border: 1px solid #696a6a;
 }
 @media (max-width: 767px) {
@@ -2215,7 +2215,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 30px;
 }
 /* line 549, ../scss/partials/_trees.scss */
@@ -2223,7 +2223,7 @@ footer {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px;
   font-weight: normal;
-  color: white;
+  color: #FFF;
   line-height: 30px;
 }
 
@@ -2309,7 +2309,7 @@ footer {
 }
 /* line 9, ../scss/partials/_sites.scss */
 .action-float-bar .action-float-bar-inner {
-  background: #111111;
+  background: #111;
   padding: 15px 15px 35px 15px;
   box-shadow: 0 0px 9px rgba(0, 0, 0, 0.25);
 }

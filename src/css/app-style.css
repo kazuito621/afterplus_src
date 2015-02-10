@@ -973,80 +973,104 @@ footer {
     margin-top: 20px;
   }
 }
-/* line 301, ../scss/partials/_common.scss */
+@media (max-width: 1300px) {
+  /* line 275, ../scss/partials/_common.scss */
+  .big-tag {
+    padding: 8px 15px;
+    font-size: 25px;
+    margin-top: 0;
+  }
+}
+@media (max-width: 1100px) {
+  /* line 275, ../scss/partials/_common.scss */
+  .big-tag {
+    padding: 8px 10px;
+    font-size: 20px;
+  }
+}
+@media (max-width: 950px) {
+  /* line 275, ../scss/partials/_common.scss */
+  .big-tag {
+    padding: 8px 10px;
+    font-size: 20px;
+    margin: auto;
+    margin-bottom: 15px;
+  }
+}
+/* line 319, ../scss/partials/_common.scss */
 .big-tag.approved {
   border-color: #2ECC40;
   color: #2ECC40;
 }
-/* line 307, ../scss/partials/_common.scss */
+/* line 325, ../scss/partials/_common.scss */
 .big-tag.billed {
   border-color: #FF851B;
   color: #FF851B;
 }
-/* line 313, ../scss/partials/_common.scss */
+/* line 331, ../scss/partials/_common.scss */
 .big-tag.sent {
   border-color: #0074D9;
   color: #0074D9;
 }
-/* line 319, ../scss/partials/_common.scss */
+/* line 337, ../scss/partials/_common.scss */
 .big-tag.needs_approval {
   border-color: #FF4136;
   color: #FF4136;
 }
-/* line 325, ../scss/partials/_common.scss */
+/* line 343, ../scss/partials/_common.scss */
 .big-tag.completed {
   border-color: #0074D9;
   color: #0074D9;
   font-size: 26px;
 }
-/* line 332, ../scss/partials/_common.scss */
+/* line 350, ../scss/partials/_common.scss */
 .big-tag.paid {
   border-color: #FF4136;
   color: #FF4136;
 }
-/* line 338, ../scss/partials/_common.scss */
+/* line 356, ../scss/partials/_common.scss */
 .big-tag.sent {
   border-color: #0074D9;
   color: #0074D9;
 }
 
-/* line 345, ../scss/partials/_common.scss */
+/* line 363, ../scss/partials/_common.scss */
 .clr-approved {
   background-color: #2ECC40 !important;
   color: #fff !important;
 }
 
-/* line 349, ../scss/partials/_common.scss */
+/* line 367, ../scss/partials/_common.scss */
 .clr-draft {
   background-color: #cccccc !important;
   color: #fff !important;
 }
 
-/* line 353, ../scss/partials/_common.scss */
+/* line 371, ../scss/partials/_common.scss */
 .clr-sent {
   background-color: #0074D9 !important;
   color: #fff !important;
 }
 
-/* line 357, ../scss/partials/_common.scss */
+/* line 375, ../scss/partials/_common.scss */
 .clr-needs_approval {
   background-color: #FF4136 !important;
   color: #fff !important;
 }
 
-/* line 361, ../scss/partials/_common.scss */
+/* line 379, ../scss/partials/_common.scss */
 .clr-completed {
   background-color: #0074D9 !important;
   color: #fff !important;
 }
 
-/* line 365, ../scss/partials/_common.scss */
+/* line 383, ../scss/partials/_common.scss */
 .clr-paid {
   background-color: #FF4136 !important;
   color: #fff !important;
 }
 
-/* line 370, ../scss/partials/_common.scss */
+/* line 388, ../scss/partials/_common.scss */
 .small-tag {
   padding: 3px 6px;
   color: #fff;
@@ -1055,36 +1079,36 @@ footer {
   font-size: .8em;
   letter-spacing: .15em;
 }
-/* line 379, ../scss/partials/_common.scss */
+/* line 397, ../scss/partials/_common.scss */
 .small-tag.draft {
   background: #cccccc;
 }
-/* line 380, ../scss/partials/_common.scss */
+/* line 398, ../scss/partials/_common.scss */
 .small-tag.approved {
   background: #2ECC40;
 }
-/* line 381, ../scss/partials/_common.scss */
+/* line 399, ../scss/partials/_common.scss */
 .small-tag.needs_approval {
   background: #FF4136;
 }
-/* line 382, ../scss/partials/_common.scss */
+/* line 400, ../scss/partials/_common.scss */
 .small-tag.billed {
   background: #FF851B;
 }
-/* line 383, ../scss/partials/_common.scss */
+/* line 401, ../scss/partials/_common.scss */
 .small-tag.completed {
   background: #0074D9;
 }
-/* line 384, ../scss/partials/_common.scss */
+/* line 402, ../scss/partials/_common.scss */
 .small-tag.paid {
   background: #FF4136;
 }
-/* line 385, ../scss/partials/_common.scss */
+/* line 403, ../scss/partials/_common.scss */
 .small-tag.sent {
   background: #0074D9;
 }
 
-/* line 390, ../scss/partials/_common.scss */
+/* line 408, ../scss/partials/_common.scss */
 .toggle-label .toggle-check {
   border: 0;
   clip: rect(0 0 0 0);
@@ -1096,7 +1120,7 @@ footer {
   width: 1px;
 }
 
-/* line 416, ../scss/partials/_common.scss */
+/* line 434, ../scss/partials/_common.scss */
 .modal .modal-dialog .modal-content form.form-inline .panel .panel-body .silver {
   font-size: 19.5px;
   line-height: 26px;
@@ -1174,13 +1198,47 @@ footer {
 .action-container .action-block.action-block-3 .row > .col {
   float: right;
 }
-/* line 94, ../scss/partials/_estimate.scss */
+@media (max-width: 950px) {
+  /* line 87, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-3 .row > .col {
+    width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  /* line 87, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-3 .row > .col {
+    width: 33.333333%;
+  }
+}
+@media (max-width: 500px) {
+  /* line 87, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-3 .row > .col {
+    width: 100%;
+  }
+}
+/* line 105, ../scss/partials/_estimate.scss */
+.action-container .action-block.action-block-3 .btn-block {
+  margin: 0;
+}
+@media (max-width: 950px) {
+  /* line 105, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-3 .btn-block {
+    margin-bottom: 5px;
+  }
+}
+@media (max-width: 767px) {
+  /* line 105, ../scss/partials/_estimate.scss */
+  .action-container .action-block.action-block-3 .btn-block {
+    margin-bottom: 0;
+  }
+}
+/* line 119, ../scss/partials/_estimate.scss */
 .action-container .action-block .img-approve {
   position: relative;
   display: block;
   width: 100%;
 }
-/* line 99, ../scss/partials/_estimate.scss */
+/* line 124, ../scss/partials/_estimate.scss */
 .action-container .action-block .img-approve img {
   height: 80px;
   width: auto;
@@ -1190,21 +1248,21 @@ footer {
   top: -25px;
 }
 @media (max-width: 1199px) {
-  /* line 99, ../scss/partials/_estimate.scss */
+  /* line 124, ../scss/partials/_estimate.scss */
   .action-container .action-block .img-approve img {
     height: 50px;
     top: -10px;
   }
 }
 @media (max-width: 767px) {
-  /* line 99, ../scss/partials/_estimate.scss */
+  /* line 124, ../scss/partials/_estimate.scss */
   .action-container .action-block .img-approve img {
     height: 80px;
     top: -25px;
   }
 }
 @media (max-width: 500px) {
-  /* line 99, ../scss/partials/_estimate.scss */
+  /* line 124, ../scss/partials/_estimate.scss */
   .action-container .action-block .img-approve img {
     position: relative;
     text-align: center;
@@ -1212,11 +1270,11 @@ footer {
     margin: auto;
   }
 }
-/* line 130, ../scss/partials/_estimate.scss */
+/* line 155, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats {
   text-align: center;
 }
-/* line 134, ../scss/partials/_estimate.scss */
+/* line 159, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat {
   display: inline-block;
   margin: auto;
@@ -1227,7 +1285,7 @@ footer {
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;
 }
-/* line 143, ../scss/partials/_estimate.scss */
+/* line 168, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .number {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 40px;
@@ -1238,7 +1296,7 @@ footer {
   position: relative;
   display: inline-block;
 }
-/* line 150, ../scss/partials/_estimate.scss */
+/* line 175, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .number .supp {
   position: absolute;
   right: -15px;
@@ -1252,7 +1310,7 @@ footer {
   line-height: 5px;
   padding: 5px;
 }
-/* line 162, ../scss/partials/_estimate.scss */
+/* line 187, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat .text {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9px;
@@ -1261,7 +1319,7 @@ footer {
   line-height: 10px;
   text-transform: uppercase;
 }
-/* line 168, ../scss/partials/_estimate.scss */
+/* line 193, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat:hover, .action-container .action-block .stats .stat:focus, .action-container .action-block .stats .stat:active {
   text-decoration: none;
   background: #f3f3f4;
@@ -1271,45 +1329,45 @@ footer {
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF909090', endColorstr='#FF909090', GradientType=0);
 }
-/* line 174, ../scss/partials/_estimate.scss */
+/* line 199, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat:hover .number, .action-container .action-block .stats .stat:focus .number, .action-container .action-block .stats .stat:active .number {
   color: #FFF;
 }
-/* line 179, ../scss/partials/_estimate.scss */
+/* line 204, ../scss/partials/_estimate.scss */
 .action-container .action-block .stats .stat:hover .text, .action-container .action-block .stats .stat:focus .text, .action-container .action-block .stats .stat:active .text {
   color: #FFF;
 }
 @media (max-width: 767px) {
-  /* line 189, ../scss/partials/_estimate.scss */
+  /* line 214, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-1 {
     text-align: center;
   }
 }
 @media (max-width: 500px) {
-  /* line 199, ../scss/partials/_estimate.scss */
+  /* line 224, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-3 .col-xs-4 {
     float: none;
     clear: both;
     display: block;
     width: 100%;
   }
-  /* line 207, ../scss/partials/_estimate.scss */
+  /* line 232, ../scss/partials/_estimate.scss */
   .action-container .action-block.action-block-3 .btn-block {
     margin-bottom: 10px;
   }
 }
 
-/* line 216, ../scss/partials/_estimate.scss */
+/* line 241, ../scss/partials/_estimate.scss */
 .estimate-container {
   padding: 0;
   margin: 0;
   margin-top: 15px;
 }
-/* line 224, ../scss/partials/_estimate.scss */
+/* line 249, ../scss/partials/_estimate.scss */
 .estimate-container .row-estimate .col {
   min-height: 100%;
 }
-/* line 229, ../scss/partials/_estimate.scss */
+/* line 254, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary {
   -webkit-print-color-adjust: exact;
   position: relative;
@@ -1319,7 +1377,7 @@ footer {
   border-radius: 5px 5px 0 0;
   margin-bottom: 15px;
 }
-/* line 241, ../scss/partials/_estimate.scss */
+/* line 266, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1329,7 +1387,7 @@ footer {
   margin: 0;
   text-transform: uppercase;
 }
-/* line 248, ../scss/partials/_estimate.scss */
+/* line 273, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info .name {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -1346,26 +1404,26 @@ footer {
 .estimate-container .estimate-summary .estimate-info dl:after {
   clear: both;
 }
-/* line 257, ../scss/partials/_estimate.scss */
+/* line 282, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.client-contact {
   border-bottom: 3px solid #444444;
   display: inline-block;
 }
-/* line 264, ../scss/partials/_estimate.scss */
+/* line 289, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.client-contact dd div {
   border-bottom: 3px solid #444444;
   padding: 3px 0;
   margin-right: 0 !important;
 }
-/* line 270, ../scss/partials/_estimate.scss */
+/* line 295, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.client-contact dd div:last-child, .estimate-container .estimate-summary .estimate-info dl.client-contact dd div:first-child {
   border-bottom: 0;
 }
-/* line 275, ../scss/partials/_estimate.scss */
+/* line 300, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.client-contact dd div:first-child {
   padding: 0;
 }
-/* line 283, ../scss/partials/_estimate.scss */
+/* line 308, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dt {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1375,7 +1433,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 290, ../scss/partials/_estimate.scss */
+/* line 315, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl dd {
   float: left;
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1384,7 +1442,7 @@ footer {
   color: #FFF;
   line-height: 20px;
 }
-/* line 298, ../scss/partials/_estimate.scss */
+/* line 323, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dt {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1393,7 +1451,7 @@ footer {
   line-height: 20px;
   margin-right: 5px;
 }
-/* line 304, ../scss/partials/_estimate.scss */
+/* line 329, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .estimate-info dl.small dd {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -1402,35 +1460,35 @@ footer {
   line-height: 20px;
 }
 @media (max-width: 991px) {
-  /* line 239, ../scss/partials/_estimate.scss */
+  /* line 264, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .estimate-info {
     margin-bottom: 20px;
   }
 }
-/* line 317, ../scss/partials/_estimate.scss */
+/* line 342, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info {
   display: table;
   min-height: 135px;
   width: 100%;
 }
-/* line 323, ../scss/partials/_estimate.scss */
+/* line 348, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos {
   display: block;
   text-align: right;
 }
-/* line 328, ../scss/partials/_estimate.scss */
+/* line 353, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos .logo {
   height: 50px;
   width: auto;
   display: inline-block;
 }
-/* line 334, ../scss/partials/_estimate.scss */
+/* line 359, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .logos .logo img {
   height: 100px;
   width: auto;
   padding: 3px;
 }
-/* line 343, ../scss/partials/_estimate.scss */
+/* line 368, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-summary .bid-info .bid {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1444,11 +1502,11 @@ footer {
   right: 15px;
 }
 @media (max-width: 991px) {
-  /* line 317, ../scss/partials/_estimate.scss */
+  /* line 342, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info {
     min-height: 0;
   }
-  /* line 357, ../scss/partials/_estimate.scss */
+  /* line 382, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary .bid-info .bid {
     text-align: left;
     position: relative;
@@ -1456,64 +1514,64 @@ footer {
     right: auto;
   }
 }
-/* line 368, ../scss/partials/_estimate.scss */
+/* line 393, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions {
   margin-bottom: 15px;
 }
-/* line 372, ../scss/partials/_estimate.scss */
+/* line 397, ../scss/partials/_estimate.scss */
 .estimate-container .estimate-actions button {
   width: 180px;
 }
 
-/* line 379, ../scss/partials/_estimate.scss */
+/* line 404, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table {
   width: 100%;
   overflow-x: auto;
 }
-/* line 390, ../scss/partials/_estimate.scss */
+/* line 415, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table thead tr td {
   text-align: center !important;
 }
-/* line 399, ../scss/partials/_estimate.scss */
+/* line 424, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td {
   text-align: center;
 }
-/* line 404, ../scss/partials/_estimate.scss */
+/* line 429, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-image {
   min-width: 100px;
 }
-/* line 409, ../scss/partials/_estimate.scss */
+/* line 434, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-id {
   min-width: 50px;
 }
-/* line 414, ../scss/partials/_estimate.scss */
+/* line 439, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-name {
   min-width: 300px;
   text-align: left;
 }
-/* line 420, ../scss/partials/_estimate.scss */
+/* line 445, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-treatment {
   min-width: 200px;
 }
-/* line 425, ../scss/partials/_estimate.scss */
+/* line 450, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-bid {
   min-width: 50px;
 }
-/* line 430, ../scss/partials/_estimate.scss */
+/* line 455, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-treatment-bid {
   min-width: 350px;
 }
 
-/* line 438, ../scss/partials/_estimate.scss */
+/* line 463, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 443, ../scss/partials/_estimate.scss */
+/* line 468, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 443, ../scss/partials/_estimate.scss */
+  /* line 468, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -1529,12 +1587,12 @@ footer {
     clear: both;
   }
 }
-/* line 456, ../scss/partials/_estimate.scss */
+/* line 481, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 456, ../scss/partials/_estimate.scss */
+  /* line 481, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -1550,7 +1608,7 @@ footer {
     clear: both;
   }
 }
-/* line 469, ../scss/partials/_estimate.scss */
+/* line 494, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-info-trees {
   width: 100%;
   display: block;
@@ -1566,57 +1624,57 @@ footer {
 .table-container .row-table .col-info-trees:after {
   clear: both;
 }
-/* line 482, ../scss/partials/_estimate.scss */
+/* line 507, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 486, ../scss/partials/_estimate.scss */
+/* line 511, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 486, ../scss/partials/_estimate.scss */
+  /* line 511, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 501, ../scss/partials/_estimate.scss */
+/* line 526, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 507, ../scss/partials/_estimate.scss */
+/* line 532, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
   vertical-align: middle;
 }
-/* line 512, ../scss/partials/_estimate.scss */
+/* line 537, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment {
   width: 300px;
   text-align: left;
 }
-/* line 517, ../scss/partials/_estimate.scss */
+/* line 542, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-bid {
   min-width: 60px;
   text-align: right;
 }
-/* line 523, ../scss/partials/_estimate.scss */
+/* line 548, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
   min-width: 45px;
   text-align: right;
 }
-/* line 529, ../scss/partials/_estimate.scss */
+/* line 554, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment-bid {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
 }
-/* line 539, ../scss/partials/_estimate.scss */
+/* line 564, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 542, ../scss/partials/_estimate.scss */
+/* line 567, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1628,19 +1686,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 550, ../scss/partials/_estimate.scss */
+/* line 575, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 555, ../scss/partials/_estimate.scss */
+/* line 580, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 565, ../scss/partials/_estimate.scss */
+/* line 590, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 568, ../scss/partials/_estimate.scss */
+/* line 593, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -1651,19 +1709,19 @@ footer {
   color: #646665;
   line-height: 20px;
 }
-/* line 576, ../scss/partials/_estimate.scss */
+/* line 601, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 581, ../scss/partials/_estimate.scss */
+/* line 606, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 586, ../scss/partials/_estimate.scss */
+/* line 611, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 591, ../scss/partials/_estimate.scss */
+/* line 616, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
   -webkit-transition: all linear 0.4s;
@@ -1672,55 +1730,55 @@ footer {
   font-size: 12px;
   margin-right: 5px;
 }
-/* line 598, ../scss/partials/_estimate.scss */
+/* line 623, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
   opacity: 1;
 }
-/* line 603, ../scss/partials/_estimate.scss */
+/* line 628, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:last-child {
   margin-right: 0;
 }
-/* line 608, ../scss/partials/_estimate.scss */
+/* line 633, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-primary {
   color: #333333;
 }
-/* line 613, ../scss/partials/_estimate.scss */
+/* line 638, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-danger {
   color: #f84540;
 }
-/* line 619, ../scss/partials/_estimate.scss */
+/* line 644, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table {
   width: 100%;
   border: none;
 }
-/* line 626, ../scss/partials/_estimate.scss */
+/* line 651, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td {
   padding: 8px;
   border-right: none;
   background: none !important;
   border-bottom: 1px solid #CCCCCC;
 }
-/* line 633, ../scss/partials/_estimate.scss */
+/* line 658, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td:last-child {
   border-right: none;
 }
-/* line 641, ../scss/partials/_estimate.scss */
+/* line 666, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr:last-child td {
   border-bottom: none;
 }
-/* line 652, ../scss/partials/_estimate.scss */
+/* line 677, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 660, ../scss/partials/_estimate.scss */
+/* line 685, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 668, ../scss/partials/_estimate.scss */
+/* line 693, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 677, ../scss/partials/_estimate.scss */
+/* line 702, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1730,7 +1788,7 @@ footer {
   text-align: right;
 }
 
-/* line 684, ../scss/partials/_estimate.scss */
+/* line 709, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1738,7 +1796,7 @@ footer {
   color: #000;
   line-height: 18px;
 }
-/* line 686, ../scss/partials/_estimate.scss */
+/* line 711, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -1746,7 +1804,7 @@ footer {
   color: #000;
   line-height: 18px;
 }
-/* line 691, ../scss/partials/_estimate.scss */
+/* line 716, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1756,20 +1814,20 @@ footer {
   margin-top: 10px;
 }
 
-/* line 700, ../scss/partials/_estimate.scss */
+/* line 725, ../scss/partials/_estimate.scss */
 .logo-container {
   display: block;
   border-top: 1px solid #BBB;
   margin-top: 20px;
   padding-top: 15px;
 }
-/* line 708, ../scss/partials/_estimate.scss */
+/* line 733, ../scss/partials/_estimate.scss */
 .logo-container .logo {
   height: 50px;
   width: auto;
   display: inline-block;
 }
-/* line 714, ../scss/partials/_estimate.scss */
+/* line 739, ../scss/partials/_estimate.scss */
 .logo-container .logo img {
   height: 85px;
   width: auto;
@@ -1777,17 +1835,17 @@ footer {
 }
 
 @media print {
-  /* line 725, ../scss/partials/_estimate.scss */
+  /* line 750, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 732, ../scss/partials/_estimate.scss */
+  /* line 757, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid #000;
   }
 
-  /* line 740, ../scss/partials/_estimate.scss */
+  /* line 765, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;

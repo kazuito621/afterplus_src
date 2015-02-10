@@ -297,6 +297,24 @@ footer
 		margin-top: 20px;
 	}
 
+	@media(max-width: 1300px) {
+		padding: 8px 15px;
+		font-size: 25px;
+		margin-top: 0;
+	}
+
+	@media(max-width: 1100px) {
+		padding: 8px 10px;
+		font-size: 20px;
+	}
+
+	@media(max-width: 950px) {
+		padding: 8px 10px;
+		font-size: 20px;
+		margin: auto;
+		margin-bottom: 15px;
+	}
+
 
 	&.approved
 	{

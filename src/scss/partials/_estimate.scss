@@ -82,11 +82,36 @@
 			padding: 19px 0;
 			text-align: right;
 
-			.row 
+			.row
 			{
 				> .col 
 				{
 					float: right;
+
+					@media(max-width: 950px) {
+						width: 100%;
+					}
+
+					@media(max-width: $screen-xs-max) {
+						width: 33.333333%;
+					}
+
+					@media(max-width: 500px) {
+						width: 100%;
+					}
+				}
+			}
+
+			.btn-block
+			{
+				margin: 0;
+
+				@media(max-width: 950px) {
+					margin-bottom: 5px;
+				}
+
+				@media(max-width: $screen-xs-max) {
+					margin-bottom: 0;
 				}
 			}
 		}

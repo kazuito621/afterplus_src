@@ -755,7 +755,7 @@ header .nav-container nav ul li {
 header .nav-container nav ul li a {
   text-align: center;
   display: block;
-  padding: 14px 40px;
+  padding: 19px 40px;
   -webkit-transition: all linear 0.4s;
   -o-transition: all linear 0.4s;
   transition: all linear 0.4s;

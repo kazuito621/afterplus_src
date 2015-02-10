@@ -176,6 +176,11 @@
 }
 
 /* line 52, ../scss/clrs/_skins.scss */
+.gray {
+  color: #aaa;
+}
+
+/* line 53, ../scss/clrs/_skins.scss */
 .black {
   color: #111;
 }
@@ -185,259 +190,259 @@
    Use with another border utility that sets border-width and style 
    i.e .border { border-width: 1px; border-style: solid; }     
 */
-/* line 61, ../scss/clrs/_skins.scss */
+/* line 62, ../scss/clrs/_skins.scss */
 .border--navy {
   border-color: #001F3F;
 }
 
-/* line 62, ../scss/clrs/_skins.scss */
+/* line 63, ../scss/clrs/_skins.scss */
 .border--blue {
   border-color: #0074D9;
 }
 
-/* line 63, ../scss/clrs/_skins.scss */
+/* line 64, ../scss/clrs/_skins.scss */
 .border--aqua {
   border-color: #7FDBFF;
 }
 
-/* line 64, ../scss/clrs/_skins.scss */
+/* line 65, ../scss/clrs/_skins.scss */
 .border--teal {
   border-color: #39CCCC;
 }
 
-/* line 65, ../scss/clrs/_skins.scss */
+/* line 66, ../scss/clrs/_skins.scss */
 .border--olive {
   border-color: #3D9970;
 }
 
-/* line 66, ../scss/clrs/_skins.scss */
+/* line 67, ../scss/clrs/_skins.scss */
 .border--green {
   border-color: #2ECC40;
 }
 
-/* line 67, ../scss/clrs/_skins.scss */
+/* line 68, ../scss/clrs/_skins.scss */
 .border--lime {
   border-color: #01FF70;
 }
 
-/* line 68, ../scss/clrs/_skins.scss */
+/* line 69, ../scss/clrs/_skins.scss */
 .border--yellow {
   border-color: #FFDC00;
 }
 
-/* line 69, ../scss/clrs/_skins.scss */
+/* line 70, ../scss/clrs/_skins.scss */
 .border--orange {
   border-color: #FF851B;
 }
 
-/* line 70, ../scss/clrs/_skins.scss */
+/* line 71, ../scss/clrs/_skins.scss */
 .border--red {
   border-color: #FF4136;
 }
 
-/* line 71, ../scss/clrs/_skins.scss */
+/* line 72, ../scss/clrs/_skins.scss */
 .border--fuchsia {
   border-color: #F012BE;
 }
 
-/* line 72, ../scss/clrs/_skins.scss */
+/* line 73, ../scss/clrs/_skins.scss */
 .border--purple {
   border-color: #B10DC9;
 }
 
-/* line 73, ../scss/clrs/_skins.scss */
+/* line 74, ../scss/clrs/_skins.scss */
 .border--maroon {
   border-color: #85144B;
 }
 
-/* line 74, ../scss/clrs/_skins.scss */
+/* line 75, ../scss/clrs/_skins.scss */
 .border--white {
   border-color: #fff;
 }
 
-/* line 75, ../scss/clrs/_skins.scss */
+/* line 76, ../scss/clrs/_skins.scss */
 .border--gray {
   border-color: #aaa;
 }
 
-/* line 76, ../scss/clrs/_skins.scss */
+/* line 77, ../scss/clrs/_skins.scss */
 .border--silver {
   border-color: #777;
 }
 
-/* line 77, ../scss/clrs/_skins.scss */
+/* line 78, ../scss/clrs/_skins.scss */
 .border--black {
   border-color: #111;
 }
 
 /* Fills for SVG */
-/* line 82, ../scss/clrs/_skins.scss */
+/* line 83, ../scss/clrs/_skins.scss */
 .fill-navy {
   fill: #001F3F;
 }
 
-/* line 83, ../scss/clrs/_skins.scss */
+/* line 84, ../scss/clrs/_skins.scss */
 .fill-blue {
   fill: #0074D9;
 }
 
-/* line 84, ../scss/clrs/_skins.scss */
+/* line 85, ../scss/clrs/_skins.scss */
 .fill-aqua {
   fill: #7FDBFF;
 }
 
-/* line 85, ../scss/clrs/_skins.scss */
+/* line 86, ../scss/clrs/_skins.scss */
 .fill-teal {
   fill: #39CCCC;
 }
 
-/* line 86, ../scss/clrs/_skins.scss */
+/* line 87, ../scss/clrs/_skins.scss */
 .fill-olive {
   fill: #3D9970;
 }
 
-/* line 87, ../scss/clrs/_skins.scss */
+/* line 88, ../scss/clrs/_skins.scss */
 .fill-green {
   fill: #2ECC40;
 }
 
-/* line 88, ../scss/clrs/_skins.scss */
+/* line 89, ../scss/clrs/_skins.scss */
 .fill-lime {
   fill: #01FF70;
 }
 
-/* line 89, ../scss/clrs/_skins.scss */
+/* line 90, ../scss/clrs/_skins.scss */
 .fill-yellow {
   fill: #FFDC00;
 }
 
-/* line 90, ../scss/clrs/_skins.scss */
+/* line 91, ../scss/clrs/_skins.scss */
 .fill-orange {
   fill: #FF851B;
 }
 
-/* line 91, ../scss/clrs/_skins.scss */
+/* line 92, ../scss/clrs/_skins.scss */
 .fill-red {
   fill: #FF4136;
 }
 
-/* line 92, ../scss/clrs/_skins.scss */
+/* line 93, ../scss/clrs/_skins.scss */
 .fill-fuchsia {
   fill: #F012BE;
 }
 
-/* line 93, ../scss/clrs/_skins.scss */
+/* line 94, ../scss/clrs/_skins.scss */
 .fill-purple {
   fill: #B10DC9;
 }
 
-/* line 94, ../scss/clrs/_skins.scss */
+/* line 95, ../scss/clrs/_skins.scss */
 .fill-maroon {
   fill: #85144B;
 }
 
-/* line 95, ../scss/clrs/_skins.scss */
+/* line 96, ../scss/clrs/_skins.scss */
 .fill-white {
   fill: #fff;
 }
 
-/* line 96, ../scss/clrs/_skins.scss */
+/* line 97, ../scss/clrs/_skins.scss */
 .fill-gray {
   fill: #aaa;
 }
 
-/* line 97, ../scss/clrs/_skins.scss */
+/* line 98, ../scss/clrs/_skins.scss */
 .fill-silver {
   fill: #777;
 }
 
-/* line 98, ../scss/clrs/_skins.scss */
+/* line 99, ../scss/clrs/_skins.scss */
 .fill-black {
   fill: #111;
 }
 
 /* Strokes for SVG */
-/* line 102, ../scss/clrs/_skins.scss */
+/* line 103, ../scss/clrs/_skins.scss */
 .stroke-navy {
   stroke: #001F3F;
 }
 
-/* line 103, ../scss/clrs/_skins.scss */
+/* line 104, ../scss/clrs/_skins.scss */
 .stroke-blue {
   stroke: #0074D9;
 }
 
-/* line 104, ../scss/clrs/_skins.scss */
+/* line 105, ../scss/clrs/_skins.scss */
 .stroke-aqua {
   stroke: #7FDBFF;
 }
 
-/* line 105, ../scss/clrs/_skins.scss */
+/* line 106, ../scss/clrs/_skins.scss */
 .stroke-teal {
   stroke: #39CCCC;
 }
 
-/* line 106, ../scss/clrs/_skins.scss */
+/* line 107, ../scss/clrs/_skins.scss */
 .stroke-olive {
   stroke: #3D9970;
 }
 
-/* line 107, ../scss/clrs/_skins.scss */
+/* line 108, ../scss/clrs/_skins.scss */
 .stroke-green {
   stroke: #2ECC40;
 }
 
-/* line 108, ../scss/clrs/_skins.scss */
+/* line 109, ../scss/clrs/_skins.scss */
 .stroke-lime {
   stroke: #01FF70;
 }
 
-/* line 109, ../scss/clrs/_skins.scss */
+/* line 110, ../scss/clrs/_skins.scss */
 .stroke-yellow {
   stroke: #FFDC00;
 }
 
-/* line 110, ../scss/clrs/_skins.scss */
+/* line 111, ../scss/clrs/_skins.scss */
 .stroke-orange {
   stroke: #FF851B;
 }
 
-/* line 111, ../scss/clrs/_skins.scss */
+/* line 112, ../scss/clrs/_skins.scss */
 .stroke-red {
   stroke: #FF4136;
 }
 
-/* line 112, ../scss/clrs/_skins.scss */
+/* line 113, ../scss/clrs/_skins.scss */
 .stroke-fuchsia {
   stroke: #F012BE;
 }
 
-/* line 113, ../scss/clrs/_skins.scss */
+/* line 114, ../scss/clrs/_skins.scss */
 .stroke-purple {
   stroke: #B10DC9;
 }
 
-/* line 114, ../scss/clrs/_skins.scss */
+/* line 115, ../scss/clrs/_skins.scss */
 .stroke-maroon {
   stroke: #85144B;
 }
 
-/* line 115, ../scss/clrs/_skins.scss */
+/* line 116, ../scss/clrs/_skins.scss */
 .stroke-white {
   stroke: #fff;
 }
 
-/* line 116, ../scss/clrs/_skins.scss */
+/* line 117, ../scss/clrs/_skins.scss */
 .stroke-gray {
   stroke: #aaa;
 }
 
-/* line 117, ../scss/clrs/_skins.scss */
+/* line 118, ../scss/clrs/_skins.scss */
 .stroke-silver {
   stroke: #777;
 }
 
-/* line 118, ../scss/clrs/_skins.scss */
+/* line 119, ../scss/clrs/_skins.scss */
 .stroke-black {
   stroke: #111;
 }
@@ -1528,50 +1533,64 @@ footer {
   width: 100%;
   overflow-x: auto;
 }
-/* line 415, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table thead tr td {
-  text-align: center !important;
+/* line 409, ../scss/partials/_estimate.scss */
+.clients-estimate-report-table table.table {
+  /* thead
+  {
+  	tr
+  	{
+  		td
+  		{
+  			text-align: center !important;
+  
+  			&.td-name
+  			{
+  				text-align: left !important;
+  			}
+  		}
+  	}
+  } */
 }
-/* line 424, ../scss/partials/_estimate.scss */
+/* line 429, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td {
   text-align: center;
 }
-/* line 429, ../scss/partials/_estimate.scss */
+/* line 434, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-image {
   min-width: 100px;
 }
-/* line 434, ../scss/partials/_estimate.scss */
+/* line 439, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-id {
   min-width: 50px;
 }
-/* line 439, ../scss/partials/_estimate.scss */
+/* line 444, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-name {
   min-width: 300px;
   text-align: left;
 }
-/* line 445, ../scss/partials/_estimate.scss */
+/* line 450, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-treatment {
   min-width: 200px;
 }
-/* line 450, ../scss/partials/_estimate.scss */
+/* line 455, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-bid {
   min-width: 50px;
 }
-/* line 455, ../scss/partials/_estimate.scss */
+/* line 460, ../scss/partials/_estimate.scss */
 .clients-estimate-report-table table.table tr td.td-treatment-bid {
   min-width: 350px;
 }
 
-/* line 463, ../scss/partials/_estimate.scss */
+/* line 468, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 468, ../scss/partials/_estimate.scss */
+/* line 473, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 468, ../scss/partials/_estimate.scss */
+  /* line 473, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -1587,12 +1606,12 @@ footer {
     clear: both;
   }
 }
-/* line 481, ../scss/partials/_estimate.scss */
+/* line 486, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 481, ../scss/partials/_estimate.scss */
+  /* line 486, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -1608,7 +1627,7 @@ footer {
     clear: both;
   }
 }
-/* line 494, ../scss/partials/_estimate.scss */
+/* line 499, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-info-trees {
   width: 100%;
   display: block;
@@ -1624,57 +1643,57 @@ footer {
 .table-container .row-table .col-info-trees:after {
   clear: both;
 }
-/* line 507, ../scss/partials/_estimate.scss */
+/* line 512, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 511, ../scss/partials/_estimate.scss */
+/* line 516, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 511, ../scss/partials/_estimate.scss */
+  /* line 516, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 526, ../scss/partials/_estimate.scss */
+/* line 531, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 532, ../scss/partials/_estimate.scss */
+/* line 537, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
   vertical-align: middle;
 }
-/* line 537, ../scss/partials/_estimate.scss */
+/* line 542, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment {
   width: 300px;
   text-align: left;
 }
-/* line 542, ../scss/partials/_estimate.scss */
+/* line 547, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-bid {
   min-width: 60px;
   text-align: right;
 }
-/* line 548, ../scss/partials/_estimate.scss */
+/* line 553, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
   min-width: 45px;
   text-align: right;
 }
-/* line 554, ../scss/partials/_estimate.scss */
+/* line 559, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment-bid {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
 }
-/* line 564, ../scss/partials/_estimate.scss */
+/* line 569, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 567, ../scss/partials/_estimate.scss */
+/* line 572, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1686,19 +1705,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 575, ../scss/partials/_estimate.scss */
+/* line 580, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 580, ../scss/partials/_estimate.scss */
+/* line 585, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 590, ../scss/partials/_estimate.scss */
+/* line 595, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 593, ../scss/partials/_estimate.scss */
+/* line 598, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -1709,19 +1728,19 @@ footer {
   color: #646665;
   line-height: 20px;
 }
-/* line 601, ../scss/partials/_estimate.scss */
+/* line 606, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 606, ../scss/partials/_estimate.scss */
+/* line 611, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 611, ../scss/partials/_estimate.scss */
+/* line 616, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 616, ../scss/partials/_estimate.scss */
+/* line 621, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
   -webkit-transition: all linear 0.4s;
@@ -1730,55 +1749,55 @@ footer {
   font-size: 12px;
   margin-right: 5px;
 }
-/* line 623, ../scss/partials/_estimate.scss */
+/* line 628, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
   opacity: 1;
 }
-/* line 628, ../scss/partials/_estimate.scss */
+/* line 633, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:last-child {
   margin-right: 0;
 }
-/* line 633, ../scss/partials/_estimate.scss */
+/* line 638, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-primary {
   color: #333333;
 }
-/* line 638, ../scss/partials/_estimate.scss */
+/* line 643, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-danger {
   color: #f84540;
 }
-/* line 644, ../scss/partials/_estimate.scss */
+/* line 649, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table {
   width: 100%;
   border: none;
 }
-/* line 651, ../scss/partials/_estimate.scss */
+/* line 656, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td {
   padding: 8px;
   border-right: none;
   background: none !important;
   border-bottom: 1px solid #CCCCCC;
 }
-/* line 658, ../scss/partials/_estimate.scss */
+/* line 663, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td:last-child {
   border-right: none;
 }
-/* line 666, ../scss/partials/_estimate.scss */
+/* line 671, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr:last-child td {
   border-bottom: none;
 }
-/* line 677, ../scss/partials/_estimate.scss */
+/* line 682, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 685, ../scss/partials/_estimate.scss */
+/* line 690, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 693, ../scss/partials/_estimate.scss */
+/* line 698, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 702, ../scss/partials/_estimate.scss */
+/* line 707, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1788,7 +1807,7 @@ footer {
   text-align: right;
 }
 
-/* line 709, ../scss/partials/_estimate.scss */
+/* line 714, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1796,7 +1815,7 @@ footer {
   color: #000;
   line-height: 18px;
 }
-/* line 711, ../scss/partials/_estimate.scss */
+/* line 716, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -1804,7 +1823,7 @@ footer {
   color: #000;
   line-height: 18px;
 }
-/* line 716, ../scss/partials/_estimate.scss */
+/* line 721, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1814,20 +1833,20 @@ footer {
   margin-top: 10px;
 }
 
-/* line 725, ../scss/partials/_estimate.scss */
+/* line 730, ../scss/partials/_estimate.scss */
 .logo-container {
   display: block;
   border-top: 1px solid #BBB;
   margin-top: 20px;
   padding-top: 15px;
 }
-/* line 733, ../scss/partials/_estimate.scss */
+/* line 738, ../scss/partials/_estimate.scss */
 .logo-container .logo {
   height: 50px;
   width: auto;
   display: inline-block;
 }
-/* line 739, ../scss/partials/_estimate.scss */
+/* line 744, ../scss/partials/_estimate.scss */
 .logo-container .logo img {
   height: 85px;
   width: auto;
@@ -1835,17 +1854,17 @@ footer {
 }
 
 @media print {
-  /* line 750, ../scss/partials/_estimate.scss */
+  /* line 755, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 757, ../scss/partials/_estimate.scss */
+  /* line 762, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid #000;
   }
 
-  /* line 765, ../scss/partials/_estimate.scss */
+  /* line 770, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;

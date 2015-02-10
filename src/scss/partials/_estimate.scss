@@ -408,16 +408,21 @@
 
 	table.table
 	{
-		thead
+		/* thead
 		{
 			tr
 			{
 				td
 				{
 					text-align: center !important;
+		
+					&.td-name
+					{
+						text-align: left !important;
+					}
 				}
 			}
-		}
+		} */
 
 		tr
 		{

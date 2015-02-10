@@ -5,6 +5,7 @@ window.cfg={
     hostAndPort:function(){
         return 'http://'+window.location.host;
         }
+	// @return hostname ie. "http://app.aplustree.com"
     ,host: function(){
         return 'http://'+window.location.host.replace(/:[0-9]+$/, '');
         }

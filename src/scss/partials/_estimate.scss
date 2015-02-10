@@ -376,6 +376,66 @@
 	}
 }
 
+.clients-estimate-report-table
+{
+	width: 100%;
+	max-width: 780px;
+	overflow-x: auto;
+
+	table.table
+	{
+		thead
+		{
+			tr
+			{
+				td
+				{
+					text-align: center !important;
+				}
+			}
+		}
+
+		tr
+		{
+			td
+			{
+				text-align: center;
+			}
+
+			td.td-image
+			{
+				min-width: 100px;
+			}
+
+			td.td-id
+			{
+				min-width: 50px;
+			}
+
+			td.td-name
+			{
+				min-width: 250px;
+				text-align: left;
+			}
+
+			td.td-treatment
+			{
+				min-width: 200px;
+			}
+
+			td.td-bid
+			{
+				min-width: 50px;
+			}
+
+			td.td-treatment-bid
+			{
+				min-width: 300px;
+			}
+		}
+	}
+}
+
 .table-container
 {
 	margin-bottom: 30px;

@@ -1025,25 +1025,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
                     var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
                     if (Auth.isAtleast('inventory')) {
-                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'
-						+ '<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick);
+                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'.format(editPositionClick)
+						+ '<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'
                         +'<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick)
                     	+ '</div>';
                     } else {
                         o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">View Details</a><BR>'.format(editTreeClick)
 						  + '</div>';
                     }
-
-                    //if (Auth.isAtleast('inventory')) {
-                    //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                    //}
-                    //else {
-                    //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
-                    //}
-                    //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                    //o += '</div><BR>'
-                    // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
                 }
+                
                 return o;
             }
 

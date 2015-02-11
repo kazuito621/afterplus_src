@@ -108,10 +108,10 @@ It load template from cache. I think it saves a lot of time while rendering and 
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 
-		'SiteModelUpdateService', '$rootScope', '$modal', '$location',
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api',
+		'SiteModelUpdateService', '$rootScope', '$modal', '$location', 'gMapInitializer',
         function ($scope, $timeout, ReportService, TreeFilterService, $filter,
-            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
+            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location, gMapInitializer) {
 
             var self = this;
             // local and scoped vars
@@ -169,6 +169,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             $scope.getAllSites();
 
+            console.debug("top of trees ");
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
@@ -290,7 +291,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     $timeout(function () { 			// not sure if this is needed
                         if (google && google.maps)
                             google.maps.event.trigger(gMap, 'resize')
-                    }, 2000);
+                    }, 2000); // todo this is dumb. we should use a real callback
                 }
             }
 
@@ -483,7 +484,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.$on('OnLoadReportEvent', function (evt, data) {
                 if (data.siteID == undefined || data.siteID == "")
                     return;
-                                
+
                 s.onSelectSiteID(data.siteID);
             });
 
@@ -556,9 +557,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
             s.reset = function () {
-				// clear out the query string
-				if( $location.search().reportID ) $location.search('reportID', null);
-				if( $location.search().siteID ) $location.search('siteID', null);
+                // clear out the query string
+                if ($location.search().reportID) $location.search('reportID', null);
+                if ($location.search().siteID) $location.search('siteID', null);
 
                 s.filteredSites = s.initData.sites;
                 s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
@@ -631,9 +632,21 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.treeMarkers = [];
 
-            var initMap = _.throttle(function () {
+            var initMap = function () {
                 var deferred = $q.defer();
-                // alert("map called");
+                gMapInitializer.mapsInitialized.then(function () {
+                    loadMap().then(function () {
+                        window.mapLoaded = true;
+                        deferred.resolve();
+                    });
+                });
+                return deferred.promise;
+            }
+
+			var loadMap = function() {
+			console.debug("load map ");
+                var deferred = $q.defer();
+				try{
                 google.load(
                     "maps",
                     "3",
@@ -641,7 +654,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                         other_params: 'sensor=false&libraries=places',
                         callback:
                             function () {
-                                var myOptions = { zoom: 1, tilt: 0, center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',scrollwheel: false, panControl: false };
+						console.debug("		-- google map callback ");
+                                var myOptions = { 
+										zoom: 1, tilt: 0, 
+										center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
+										scrollwheel: false, panControl: false 
+									};
                                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                                 gMap = new google.maps.Map($('#' + map_id)[0], myOptions);
                                 google.maps.event.addListener(gMap, 'click', function () {
@@ -656,14 +674,22 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 //initClicktoMap();
                                 initSearchBox();
 
+								// do we really need this? ... this was here before
                                 $timeout(function () {
                                     deferred.resolve();
+									mapLoaded=true;
                                 }, 1000);
+
                             }
                     }
                 );
+				}catch(err){
+					
+					console.debug("ERROR LOADING MAP! ");
+					console.debug(err);
+				}
                 return deferred.promise;
-            }, 2000);
+            }
 
 
             //var initClicktoMap = _.throttle(function () {
@@ -725,6 +751,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
+                console.debug("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
@@ -1103,7 +1130,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             var getTreeTemplate = function (itm) {
-                var ratingD = (itm.ratingID > 0 && itm.ratingID<6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                var ratingD = (itm.ratingID > 0 && itm.ratingID < 6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
                 var o = '<div class="mapWindowContainer">'
                      + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
                      + '<div class="mwcBody">'

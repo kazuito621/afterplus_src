@@ -5,10 +5,10 @@
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 
-		'SiteModelUpdateService', '$rootScope', '$modal', '$location',
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api',
+		'SiteModelUpdateService', '$rootScope', '$modal', '$location', 'gMapInitializer',
         function ($scope, $timeout, ReportService, TreeFilterService, $filter,
-            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
+            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location, gMapInitializer) {
 
             var self = this;
             // local and scoped vars
@@ -66,7 +66,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             $scope.getAllSites();
 
-console.debug("top of trees ");
+            console.debug("top of trees ");
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
@@ -381,7 +381,7 @@ console.debug("top of trees ");
             s.$on('OnLoadReportEvent', function (evt, data) {
                 if (data.siteID == undefined || data.siteID == "")
                     return;
-                                
+
                 s.onSelectSiteID(data.siteID);
             });
 
@@ -454,9 +454,9 @@ console.debug("top of trees ");
             });
 
             s.reset = function () {
-				// clear out the query string
-				if( $location.search().reportID ) $location.search('reportID', null);
-				if( $location.search().siteID ) $location.search('siteID', null);
+                // clear out the query string
+                if ($location.search().reportID) $location.search('reportID', null);
+                if ($location.search().siteID) $location.search('siteID', null);
 
                 s.filteredSites = s.initData.sites;
                 s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
@@ -529,47 +529,56 @@ console.debug("top of trees ");
 
             s.treeMarkers = [];
 
-
-			//NOT DONE: the idea here is to wait for the google init callback as well in index.html
-			window.mapLoaded=false;
-            var initMap = _.throttle(function (deferred3) {
-console.debug("init map 1");
+            var initMap = function () {
                 var deferred = $q.defer();
-				if(window.mapLoaded)		// if map loaded, then resolve now
-					return deferred.resolve();
+                gMapInitializer.mapsInitialized.then(function () {
+                    loadMap().then(function () {
+                        window.mapLoaded = true;
+                        deferred.resolve();
+                    });
+                });
+                return deferred.promise;
+            }
 
-console.debug("					init map 2");
+            //NOT DONE: the idea here is to wait for the google init callback as well in index.html
+            //			window.mapLoaded=false;
+            //            var initMap = _.throttle(function (deferred3) {
+            //console.debug("init map 1");
+            //                var deferred = $q.defer();
+            //				if(window.mapLoaded)		// if map loaded, then resolve now
+            //					return deferred.resolve();
 
-				if( window.googleApiReady==true ){	// if api loaded, then load the map
-				console.debug("			google api is read! ");
-					loadMap().then(function(){
-						window.mapLoaded=true;
-						deferred.resolve();
-					});
-					return deferred.promise;
+            //console.debug("					init map 2");
 
-				}else{								// we're still waiting on google api js 
-													// to load, 
-													console.debug("			google map NOTTTT ready! ");
-					var def2;
-					var tmp = function(){
-						def2=$q.defer();
-						return def2.promise;
-					}
-					window.googleApiQ=def2;
-					tmp().then(function(){		// will be executed when google api done loading
-						if(window.mapLoaded){ 
-							deferred.resolve();
-							if(deferred3) deferred3.resolve();
-							return;
-						}
-						console.debug("			int mp 3 ");
-						initMap(deferred);
-					});
-					return deferred.promise;
-				}
-            }, 2000);
+            //				if( window.googleApiReady==true ){	// if api loaded, then load the map
+            //				console.debug("			google api is read! ");
+            //					loadMap().then(function(){
+            //						window.mapLoaded=true;
+            //						deferred.resolve();
+            //					});
+            //					return deferred.promise;
 
+            //				}else{								// we're still waiting on google api js 
+            //													// to load, 
+            //													console.debug("			google map NOTTTT ready! ");
+            //					var def2;
+            //					var tmp = function(){
+            //						def2=$q.defer();
+            //						return def2.promise;
+            //					}
+            //					window.googleApiQ=def2;
+            //					tmp().then(function(){		// will be executed when google api done loading
+            //						if(window.mapLoaded){ 
+            //							deferred.resolve();
+            //							if(deferred3) deferred3.resolve();
+            //							return;
+            //						}
+            //						console.debug("			int mp 3 ");
+            //						initMap(deferred);
+            //					});
+            //					return deferred.promise;
+            //				}
+            //            }, 2000);
 
 			var loadMap = function() {
 			console.debug("load map ");
@@ -679,7 +688,7 @@ console.debug("					init map 2");
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
-			console.debug("show mapped sites ");
+                console.debug("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
@@ -1058,7 +1067,7 @@ console.debug("					init map 2");
             }
 
             var getTreeTemplate = function (itm) {
-                var ratingD = (itm.ratingID > 0 && itm.ratingID<6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                var ratingD = (itm.ratingID > 0 && itm.ratingID < 6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
                 var o = '<div class="mapWindowContainer">'
                      + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
                      + '<div class="mwcBody">'

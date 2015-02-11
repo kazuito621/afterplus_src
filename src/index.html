@@ -94,20 +94,6 @@
     <!-- endbuild -->
 
 <script src="http://jsconsole.com/remote.js?58AB45C5-D7E1-4646-B155-AD880A8702ED"></script>
-	<!--<script>
-		// Not done. the idea here is that when the callback happens,
-		// if there is a defer pointer stored, then resolve it...
-		// which means someone is waiting for the init to finish
-		window.googleApiInit=function(){
-console.log('google api init');
-			window.googleApiReady=true;
-			if(window.googleApiQ){ 
-console.debug("			found google api q ");
-				window.googleApiQ.resolve();
-			}
-		}
-	</script>
-    <script type="text/javascript" src="http://www.google.com/jsapi?key=AIzaSyAOrd_TjjjRm8mryWBHKboSG89YpUgRqlQ&callback=googleApiInit"></script>-->
     <!-- build:js({.tmp,src}) js/scripts.js -->
     <script src="js/config.js"></script>    
     <script src="compiled-tpl/templates.js"></script>

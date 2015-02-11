@@ -540,46 +540,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return deferred.promise;
             }
 
-            //NOT DONE: the idea here is to wait for the google init callback as well in index.html
-            //			window.mapLoaded=false;
-            //            var initMap = _.throttle(function (deferred3) {
-            //console.debug("init map 1");
-            //                var deferred = $q.defer();
-            //				if(window.mapLoaded)		// if map loaded, then resolve now
-            //					return deferred.resolve();
-
-            //console.debug("					init map 2");
-
-            //				if( window.googleApiReady==true ){	// if api loaded, then load the map
-            //				console.debug("			google api is read! ");
-            //					loadMap().then(function(){
-            //						window.mapLoaded=true;
-            //						deferred.resolve();
-            //					});
-            //					return deferred.promise;
-
-            //				}else{								// we're still waiting on google api js 
-            //													// to load, 
-            //													console.debug("			google map NOTTTT ready! ");
-            //					var def2;
-            //					var tmp = function(){
-            //						def2=$q.defer();
-            //						return def2.promise;
-            //					}
-            //					window.googleApiQ=def2;
-            //					tmp().then(function(){		// will be executed when google api done loading
-            //						if(window.mapLoaded){ 
-            //							deferred.resolve();
-            //							if(deferred3) deferred3.resolve();
-            //							return;
-            //						}
-            //						console.debug("			int mp 3 ");
-            //						initMap(deferred);
-            //					});
-            //					return deferred.promise;
-            //				}
-            //            }, 2000);
-
 			var loadMap = function() {
 			console.debug("load map ");
                 var deferred = $q.defer();

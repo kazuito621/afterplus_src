@@ -108,7 +108,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
                 if(idx>=0) {
                     estimates.splice(idx, 1);
                 }
-                s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+                s.setAlert('Deleted successfully.',{type:'ok',time:5});
             }
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});

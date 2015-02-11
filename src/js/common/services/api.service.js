@@ -4,8 +4,8 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage',
-function (Rest, $rootScope, $q, $location, storage) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage','$http',
+function (Rest, $rootScope, $q, $location, storage,$http) {
     'use strict';
     window.Api = this;
     var initData = {};
@@ -273,6 +273,12 @@ function (Rest, $rootScope, $q, $location, storage) {
             
             //(elemFunction, this)("post", undefined, params, undefined, headers);
             return Rest.one('tree', tree.treeID).post(undefined, params);
+        },
+        getGoogleAddress:function(params){
+            return $http.get(
+                'http://maps.googleapis.com/maps/api/geocode/json',
+                {params: params}
+            )
         }
     };
 }]);

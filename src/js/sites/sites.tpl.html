@@ -63,8 +63,6 @@
                        class='fa fa-user olive hand' bs-tooltip title='A CUSTOMER contact exists. Click to edit.'></a>
                     <a ng-show="s.userSalesCount>0" site-users-edit-modal site="s"
                        class='fa fa-user red hand' bs-tooltip title='A SALES contact exists. Click to edit.'></a>
-                    <a ng-show="s.userInvCount>0" site-users-edit-modal site="s"
-                       class='fa fa-user gray hand' bs-tooltip title='A INVENTORY contact exists. Click to edit.'></a>
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
 					<a ng-show="s.userCustCount<1 || s.userStaffCount<1" site-users-edit-modal site="s" 

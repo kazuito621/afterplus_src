@@ -24,8 +24,6 @@ var ReportCtrl = app.controller(
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
 
-            var jumpedToAnotherReport=false;
-
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
 //                filebrowserUploadUrl: '/uploader/upload.php',
@@ -58,7 +56,6 @@ var ReportCtrl = app.controller(
 
             s.$watch('rdata.recentReportID', function (ID) {
                 reportBackUp=undefined;
-                jumpedToAnotherReport=true;
 
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
@@ -123,27 +120,24 @@ var ReportCtrl = app.controller(
 				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.report.actionButton=0;
 			}
-
+            var discard=false;
             s.$on('$locationChangeStart', function (event, next, current) {
                 if(
-                    (
-                        (Auth.isAtleast('inventory') && reportBackUp=='new')==false) && // If report is newly created
-                    (
-                        !Auth.isAtleast('inventory') ||
-                        reportBackUp==undefined ||
-                        ReportService.isChanged(reportBackUp, s.report) == false
-                        )
-                    ) {
-                    reportBackUp=undefined;
-                    jumpedToAnotherReport=false;
+                    s.data.mode()!=="trees"
+                    || !Auth.isAtleast('inventory')
+                    || reportBackUp==undefined
+                    || discard == true
+                    || !((reportBackUp=='new') ||  ReportService.isChanged(reportBackUp, s.report))
+                ){
                     return;
-                };
+                }
 
                 $location.url($location.url(next).hash());
                 event.preventDefault();
                 var sm= s.$new();
                 sm.leaveCurrentPage=function(){
                     reportBackUp=undefined;
+                    discard=true;
                     $location.url($location.url(next).hash());
                 }
                 sm.stayOnCurrentPage=function(){

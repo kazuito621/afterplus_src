@@ -443,3 +443,16 @@ footer
 		}
 	}
 }
+
+.table-header
+{
+	margin-top: 5px;
+	margin-bottom: 15px;
+
+	h1
+	{
+		font-size: $base-font-size * 3;
+		line-height: $base-font-size * 3.2;
+		margin-top: 10px;
+	}
+}

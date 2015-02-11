@@ -1,15 +1,18 @@
 <div class='container' ng-controller="ClientsCtrl">
 
-	<button type="button"
-	ng:cloak
-	data-placement="center"
-	ng-click="newClientModalOpen()"
-	class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
-    style="max-width: 100%; width: auto;"
-	data-animation="am-fade-and-scale" >New Client</button>
+    <div class="table-header">
+        <h1 class="pull-left">Clients</h1>
+        <button type="button"
+        ng:cloak
+        data-placement="center"
+        ng-click="newClientModalOpen()"
+        class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+        style="max-width: 100%; width: auto;"
+        data-animation="am-fade-and-scale" >New Client</button>
+        <div class="clearfix"></div>
+    </div>
 
 	<div class='table-responsive' ng-if="displayedClients.length > 0">
-		<h1>Clients</h1>
 		<table class='table table-striped'>
 			<thead>
 				<tr>

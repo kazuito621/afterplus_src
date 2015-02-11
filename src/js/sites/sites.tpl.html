@@ -1,15 +1,18 @@
 <div class='container' ng-controller="SitesCtrl">
-    <button type="button"
-            ng:cloak
-            data-placement="center"
-            class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
-            style="max-width: 100%; width: auto;"
-            site-edit-modal
-            on-save="refreshSites"
-            clients="initData.clients"
-            mode="new"
-            data-animation="am-fade-and-scale">New Property</button>
-	<br>
+    <div class="table-header">
+        <h1 class="pull-left">Properties</h1>
+         <button type="button"
+                ng:cloak
+                data-placement="center"
+                class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+                style="max-width: 100%; width: auto;"
+                site-edit-modal
+                on-save="refreshSites"
+                clients="initData.clients"
+                mode="new"
+                data-animation="am-fade-and-scale">New Property</button>
+        <div class="clearfix"></div>
+    </div>
 	<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
 	<a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''" class='fa fa-times _red _size5 hand'></a>
 	<span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>

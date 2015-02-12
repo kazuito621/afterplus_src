@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body"> <!-- //// BODY START ///// -->
                 <form class="form-inline" ng-submit="emailEstimate()">
-                    <label>Name of estimate</label><input type="text" ng-model="estimateName" placeholder="Name" style="margin-left: 20px;"></br></br>
+                    <label>Name of estimate</label><input type="text" ng-model="emailRpt.estimateName" placeholder="Name" style="margin-left: 20px;"></br></br>
                     <table cellpadding='3'>
                         <thead>
                         <tr>
@@ -33,13 +33,6 @@
                                             <span class="pull-right hover-action" >
                                                  <a ng-click="removeUser(user,site.users)"  href><i class="fa fa-times fa-fw"></i></a>
                                             </span>
-                                            <!--
-                                             If the ellipsis is added for the email & cross button functions correctly, then use this
-                                             <span class="your_class">{{{user.fname+" "+user.lname}}</span>
-                                             & remove those 2 lines (no ng-if is needed)
-                                             <span ng-if="user.email.length<10">{{user.fname+" "+user.lname}}</span>
-                                            <span ng-if="user.email.length>=10">{{(user.fname+" "+user.lname).slice(0,11)}}..</span>
-                                            -->
                                             <span ng-if="user.fName">{{user.fName}} {{user.lName}}</span>
                                             <span ng-if="!user.fName">{{user.email.split("@")[0]}}</span>
                                         </span>

@@ -1069,14 +1069,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                 res.sitesInfo=[];
                 res.modalTitle = "Bulk estimate";
                 res.emailRpt = {
-                    subject: 'A Plus Tree Estimate',
+                    subject: 'A Plus Tree Estimate - ',
                     message: ReportService.email.message,
                     senderEmail: Auth.data().email,
-                    selectedSites:[]
+                    selectedSites:[],
+                    sendTestEmail:false,
+                    estimateName:''
                 };
                 res.emailRpt.sendBtnText= 'Send to '+res.emailRpt.selectedSites.length+" properties"
 
-                res.type = 'bulk';
+                res.type = 'bulkEstimate';
                 res.siteNames = [];
 
                 return res;
@@ -1148,6 +1150,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 hideFn();
                 self.contactPropertyModalScope.emailRpt.sendBtnText= 'Send to '+self.contactPropertyModalScope.emailRpt.selectedSites.length+" properties";
                 self.contactPropertyModalScope.modalTitle= 'Bulk estimate'+self.contactPropertyModalScope.emailRpt.selectedSites.length+" sites";
+                self.contactPropertyModalScope.emailRpt.subject+=self.contactPropertyModalScope.emailRpt.estimateName;
                 console.log('Creating bulk estimates for', s.bulkEstimates);
                 self.bulkModal = $modal({
                     scope: self.contactPropertyModalScope,
@@ -1181,11 +1184,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.updateBulkEstimatePrice({ sites: s.TFSdata.filteredSiteIDs });
             };
 
-            s.sendReport=function (hideFn, showFn){
+            s.sendBulkEstimate=function (hideFn, showFn){
                 var postObj={};
-                postObj.title='';
-                postObj.message='';
-                postObj.testEmail='';
+                postObj.title=self.contactPropertyModalScope.emailRpt.estimateName;
+                postObj.message=self.contactPropertyModalScope.emailRpt.message;
+                if(self.contactPropertyModalScope.emailRpt.sendTestEmail==true)
+                    postObj.testEmail=self.contactPropertyModalScope.emailRpt.senderEmail;
                 postObj.sites=[];
                 _.each(self.contactPropertyModalScope.emailRpt.selectedSites,function(site){
                     var userIDs= _.pluck(site.users,'userID');
@@ -1193,9 +1197,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
                 var param={};
                 param.bulkTreatment=s.bulkEstimates.overrideTreatmentCodes.toString();
-                param.speciesID=s.bulkEstimates.overrideTreatmentCodes.toString();
-                Api.setBulkEstimate(param,postObj).then(function(){
-
+                param.speciesID = _(s.filters.species)
+                    .filter(function(item) { return item.selected==true; })
+                    .pluck('speciesID')
+                    .value();
+                param.speciesID=param.speciesID.toString();
+                Api.setBulkEstimate(postObj,param).then(function(){
                     hideFn();
                     s.setAlert('Estimate sent',{type:'ok'})
                 });

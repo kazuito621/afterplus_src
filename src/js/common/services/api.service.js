@@ -136,8 +136,9 @@ function (Rest, $rootScope, $q, $location, storage) {
 
             return $q.all(promises);
         },
-        setBulkEstimate:function(param,obj){
-            return Rest.one('todoApi',param).post(obj);
+        setBulkEstimate:function(postObj,param){
+            // POST /bulkEstimate?speciesID=355&bulkTreatment=25
+            return Rest.all('bulkEstimate?speciesID='+param.speciesID.toString()+'&bulkTreatment='+param.bulkTreatment.toString()).post(postObj);
         },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {

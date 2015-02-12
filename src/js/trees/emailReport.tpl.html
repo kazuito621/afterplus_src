@@ -10,7 +10,13 @@
 
 			<form class="form-inline" ng-submit="emailEstimate()">
 				<table cellpadding='2'>
-					 <tr ng-if="type === 'bulk'">
+					 <tr ng-if="type === 'bulkEstimate'">
+                         <td>
+                             <input type="checkbox" ng-model="emailRpt.sendTestEmail"/>
+                         </td>
+                         <td><label>Test send all estimates to me</label></td>
+                     </tr>
+                    <tr ng-if="type === 'bulkEstimate'">
                          <td>Sites:</td>
                          <!--<td>
 							 <div class="label label-primary" ng-repeat="site in emailRpt.selectedSites" style="margin-right: 5px; font-size: 13px; float: left; margin-bottom: 5px;">{{site.siteName}}</div>
@@ -20,7 +26,7 @@
                              <a href="" ng-click="goToPropertyContacts($hide, $show)" style="color:blue">Edit</a>
                          </td>
                      </tr>
-					 <tr ng-if="type !== 'bulk'">
+					 <tr ng-if="type !== 'bulkEstimate'">
                          <td>To:</td>
                          <td>
                              <br><tags-input ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
@@ -50,11 +56,13 @@
                          <td>&nbsp;</td>
                          <td>
                              <textarea form style='width:450px; height:220px;' ng-model="emailRpt.message"></textarea><BR>
-					 	<span style='color:#f33; font-weight:bold;'>The link will automatically be included in the email</span><BR>
-				 		<label>
-                            <input type="checkbox" ng-model="emailRpt.sendCopy" >
-							Send me a copy
-                        </label>
+					 	<span ng-if="type !== 'bulkEstimate'">
+                            <span style='color:#f33; font-weight:bold;'>The link will automatically be included in the email</span><BR>
+				 		    <label>
+                                <input type="checkbox" ng-model="emailRpt.sendCopy" >
+                                Send me a copy
+                            </label>
+                        </span>
 					 	</td>
                      </tr>
 				</table>
@@ -63,9 +71,11 @@
 
 			</div><!-- }}}} .modal-body -->
 			<div class="modal-footer">
-			<button type="button" class="btn btn-primary" ng-click="goToPropertyContacts($hide, $show)">Edit Contacts</button>
+			<button type="button" class="btn btn-primary" ng-if="type === 'bulkEstimate'" ng-click="goToPropertyContacts($hide, $show)">Edit Contacts</button>
 			<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
-			<button type="button" class="btn btn-primary" ng-click="sendReport($hide, $show)"
+			<button type="button" class="btn btn-primary" ng-if="type === 'bulkEstimate'" ng-click="sendBulkEstimate($hide, $show)"
+					ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
+            <button type="button" class="btn btn-primary" ng-if="type !== 'bulkEstimate'" ng-click="sendReport($hide, $show)"
 					ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
 			</div>
 		</div>

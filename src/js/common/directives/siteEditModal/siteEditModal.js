@@ -28,6 +28,9 @@ app.directive('siteEditModal',
                 func();
             }
         };
+        scope.updateAddess=function(address){
+            scope.site=address;
+        };
 
         //when user creates new property and selects Client:
         //system should copy address fields from Client to new property

@@ -1,14 +1,117 @@
 /*
  See treefilter.service.js for detailed diagram of filter interactions
 
- */
+
+      EVENTS BASED ON DROPDOWNS
+	  How this interacts with the TreeController:
+
+
+                                            +---------+                                                  
+                                            |  Api    |                                                  
+                                            |         |                                                  
+                                            +----+----+                                                  
+                                                 |                                                       
+ +------------------------+                      |                                                       
+ |filter clients dropdown |  when user selects   |                                                       
+ |                        |    clienttype        |                                                       
+ |filter the site dropdown|  OnChange()          |                                                       
+ |                        | <------+             |                                                       
+ |Update map with Sites   |        |             |                                                       
+ |                        |        |             +                                                       
+ |Reset all filters       |        |     Selected[]array                                                 
+ +------------------------+        |             +                                                       
+                                   |             |                                                       
+                                   |             +----------------+                                      
+                                   |                              |                                      
+                                   |                              |                                      
+                                   +-----------------------+      |$scope.selected                       
+                                   | Select ClientType     | <----+   .ClientTypeID                      
+                                   +-----------------------+      |                                      
+                                   |-----------------------|      | $scope.selected                      
+                                   +-----------------------+      |    .clientID                         
+                                   | Select ClientType     | <----+$scope.selected                       
+                                   +-----------------------+      |    .ClientTypeID                     
+       when user selects client    |-----------------------+      | $scope.selected                      
+              +--------------------++Select Client         | <----+   .clientID                          
+              |     OnChange()      +----------------------+      |                                      
+              |                     +----------------------+      | $scope.selected                      
+              |                     |Select Site           | <----+   .SiteID                            
+              |                     +--+-------------------+                                             
+              |                        |                                                                 
+              |                        |                                                                 
+              |                        |                                                                 
+              |                        |                                                                 
+              |                        |when user selects                                                
+              |                        |a site                                                           
+              |                        |OnChange()                                                       
+              |                        |                                                                 
+              |                        |                                                                 
++-------------+---------------+        |                                                                 
+|filter sites dropdown        |        |                                                                 
+|                             |        |                                                                 
+|filter  clientTypeID         |     +--+                                                                 
+|                             |     |                                                                    
+|Update the map with Sites    |     |                                                                    
+|                             |     |           +---------+---------+   LoadRecent()                     
+|Reset all filters            |     |           |ReportService      +---------+                        
++-----------------------------+     |           |                   |         |                          
+                                    |           +-----+-------------+         |                          
+                                    |                 |                       |                          
+                                    |                 |                       |                          
+     +------------------------------v---+             |                       |                          
+     |Set clientID and clientTypeID     |             |                       |                          
+     |                                  +-------------+                       |                          
+     |with corresponding ^alues         |                       +-------------+--------+                 
+     |                                  |                       |RecentEstimateDropDown|                 
+     |Get trees for this site           |  +------------------+ |                      |                 
+     |                                  |  |LoadReport()Based | |                      |                 
+     |$watch will update the map        |  |                  | +---------+------------+                 
+     |                                  |  |On Selection & Url|           |                              
+     |with TREES                        |  |                  |           | OnChange()                   
+     +                                  |  |Changes to        |           |                              
+                                        |  |                  |    <------+                              
+     +----------------------------------+  |#/trees?reportID= |                                          
+                                           |                  |                                          
+                                           |xxxx              |                                          
+                                           |and 3 dropdown and|                                          
+                                           |                  |                                          
+                                           |Corresponding Tree|                                          
+                                           |                  |                                          
+                                           |Changes           |                                          
+                                           |                  |                                          
+                                           +------------------+                                          
+
+
+
+Description of Performance Improvements (parm)
+=======================================
+            
+Begore my performance improvements fixes we are loading all data in one request using init() method in api service.
+which is crashing whole page due to lot of data being get and then render through angular. 
+So to overcome this problem we implement two api methods one will get clients and client types and other will get sites only.
+because sites have lot of data in it so we seprated it out in other method called "loadsites()".
+
+Afte that we face a new rendering problem which is related to tree list on right side bar.
+because we have almost 1000 tress in one site so load this much of data at once thru angular slow down the page and almost crashes it.
+So to overcome this issue I edited tree.list directive and attach a controller in it.
+Now I fetch all data from API but load 100 by 100 with each seconds until all records have been loaded in. It save a lot of rendering issue.
+
+Then we found the same issue in estmation grid below on page and I did the same in it too and I think it almost speed up application rendering process to 50%.
+
+Now the only problem left with rendering is we are loading lot of directives on page and these directives contains their templates.
+so angular issue a ajax get request to load them and it slow down the page so to overcome it I use "HTML2JS" task in grunt when we run it,
+It wil automatically put all templates in one template.js file and also out those templates in cache of angular so angular don't have to issue a get request.
+It load template from cache. I think it saves a lot of time while rendering and solve almost 80% of speed issue.
+
+*/
+
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 
-		'SiteModelUpdateService', '$rootScope', '$modal', '$location',
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api',
+		'SiteModelUpdateService', '$rootScope', '$modal', '$location', 'gMapInitializer',
         function ($scope, $timeout, ReportService, TreeFilterService, $filter,
-            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
+            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location, gMapInitializer) {
 
             var self = this;
             // local and scoped vars
@@ -66,6 +169,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             $scope.getAllSites();
 
+            console.debug("top of trees ");
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
@@ -187,7 +291,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     $timeout(function () { 			// not sure if this is needed
                         if (google && google.maps)
                             google.maps.event.trigger(gMap, 'resize')
-                    }, 2000);
+                    }, 2000); // todo this is dumb. we should use a real callback
                 }
             }
 
@@ -323,8 +427,12 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.onSelectSiteID = function (id) {
                 s.selected.siteID = id;
                 ReportService.setSiteID(id);
+
+                if (s.data.mode() != 'trees') return;
+
+                ReportService.loadRecent();
+
                 if (id && id > 0) {
-                    console.log('On select site id', id);
                     if (s.data.mode() == 'trees') {
                         ReportService.loadRecent();
                     }
@@ -370,13 +478,17 @@ var TreesCtrl = app.controller('TreesCtrl',
             //    if (s.data.mode() == 'trees') ReportService.loadRecent();
             //});
 
+
+
             //Wil be fired when user select report id from recent drop down.
             s.$on('OnLoadReportEvent', function (evt, data) {
                 if (data.siteID == undefined || data.siteID == "")
                     return;
-                                
+
                 s.onSelectSiteID(data.siteID);
             });
+
+
 
             // When the trees[] array changes because of a filter event... update the ui.
             // This also may be triggered when site dropdown is selected (via getTreeListings())
@@ -445,9 +557,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
             s.reset = function () {
-				// clear out the query string
-				if( $location.search().reportID ) $location.search('reportID', null);
-				if( $location.search().siteID ) $location.search('siteID', null);
+                // clear out the query string
+                if ($location.search().reportID) $location.search('reportID', null);
+                if ($location.search().siteID) $location.search('siteID', null);
 
                 s.filteredSites = s.initData.sites;
                 s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
@@ -520,9 +632,21 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.treeMarkers = [];
 
-            var initMap = _.throttle(function () {
+            var initMap = function () {
                 var deferred = $q.defer();
-                // alert("map called");
+                gMapInitializer.mapsInitialized.then(function () {
+                    loadMap().then(function () {
+                        window.mapLoaded = true;
+                        deferred.resolve();
+                    });
+                });
+                return deferred.promise;
+            }
+
+			var loadMap = function() {
+			console.debug("load map ");
+                var deferred = $q.defer();
+				try{
                 google.load(
                     "maps",
                     "3",
@@ -530,7 +654,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                         other_params: 'sensor=false&libraries=places',
                         callback:
                             function () {
-                                var myOptions = { zoom: 1, tilt: 0, center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',scrollwheel: false, panControl: false };
+						console.debug("		-- google map callback ");
+                                var myOptions = { 
+										zoom: 1, tilt: 0, 
+										center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
+										scrollwheel: false, panControl: false 
+									};
                                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                                 gMap = new google.maps.Map($('#' + map_id)[0], myOptions);
                                 google.maps.event.addListener(gMap, 'click', function () {
@@ -545,14 +674,22 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 //initClicktoMap();
                                 initSearchBox();
 
+								// do we really need this? ... this was here before
                                 $timeout(function () {
                                     deferred.resolve();
+									mapLoaded=true;
                                 }, 1000);
+
                             }
                     }
                 );
+				}catch(err){
+					
+					console.debug("ERROR LOADING MAP! ");
+					console.debug(err);
+				}
                 return deferred.promise;
-            }, 2000);
+            }
 
 
             //var initClicktoMap = _.throttle(function () {
@@ -614,6 +751,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
+                console.debug("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
@@ -992,7 +1130,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             var getTreeTemplate = function (itm) {
-                var ratingD = (itm.ratingID > 0 && itm.ratingID<6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                var ratingD = (itm.ratingID > 0 && itm.ratingID < 6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
                 var o = '<div class="mapWindowContainer">'
                      + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
                      + '<div class="mwcBody">'
@@ -1017,25 +1155,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
                     var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
                     if (Auth.isAtleast('inventory')) {
-                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'
-						+ '<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'.format(editPositionClick);
+                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'.format(editPositionClick)
+						+ '<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'
                         +'<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick)
                     	+ '</div>';
                     } else {
                         o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">View Details</a><BR>'.format(editTreeClick)
 						  + '</div>';
                     }
-
-                    //if (Auth.isAtleast('inventory')) {
-                    //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                    //}
-                    //else {
-                    //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
-                    //}
-                    //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                    //o += '</div><BR>'
-                    // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
                 }
+                
                 return o;
             }
 

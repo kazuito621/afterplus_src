@@ -76,12 +76,18 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 s.displayedClients = s.displayedClients.concat(addon);
             };
 
+            var streetAddress=''
+            s.updateAddess=function(address){
+                s.client=address;
+            };
 			s.saveClient = function(mode){
 				if(!mode) mode = s.mode;
 				if( mode == 'edit' ){
 					var obj = s.client;
 					obj.post().then(function () {
-						Api.refreshInitData();
+                        Api.refreshInitData().then(function (data) {
+                            s.displayedClients = s.initData.clients.slice(0, s.displayedClients.length);
+                        });
 					});
 				}else{
 					if (!s.client.clientTypeID) {
@@ -91,10 +97,10 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 					Api.saveNewClient(s.client).then(function (data) {
 						console.log(s.client);
 						console.log("Post new client response:");
-						console.dir(data);
+                        Api.refreshInitData().then(function (data) {
+                            s.displayedClients = s.initData.clients.slice(0, s.displayedClients.length);
+                        });
 					});
-
-                	Api.refreshInitData();
 				}
 				clientEditModal.hide();
 			}

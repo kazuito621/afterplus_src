@@ -23,7 +23,7 @@ app.service('ReportService',
 		// when reportID changes, update the report Link
 		$rootScope.$watch(function(){ return that.report.reportID}, function(){ 
 				var t=that.report.token || that.report.reportID;
-				that.report.reportLink='http://app.arborplus.com/#/estimate/'+t;
+				that.report.reportLink=window.cfg.host()+'/#/estimate/'+t;
 			});
 		// when items in report change, get a new total
 		var onChg=function(){ that.setGrandTotal(); }
@@ -326,7 +326,7 @@ app.service('ReportService',
 	
 	this.setReportLink=function(){
 		var t=this.report.token || this.report.reportID
-		this.report.reportLink='http://app.arborplus.com/#/estimate/'+t
+		this.report.reportLink=window.cfg.host()+'/#/estimate/'+t
 	}
 
 	// Grabs list of recent reports.. based on siteID or clientID.. else all

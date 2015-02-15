@@ -350,23 +350,19 @@ var ReportCtrl = app.controller(
             }
 
             // Remove treatment from estimate
-            s.removeTreatmentFromEstimate = function (treeIndex, treatmentIndex) {
+            s.removeTreatmentFromEstimate = function (treeID, treatmentTypeCode) {
                 // Remove treatment only if there is more than one treatment. Otherwise remove the item
-//                console.log('Tree index: %s, treatment index: %s', treeIndex, treatmentIndex);
+//                console.log('Tree index: %s, treatment index: %s', treeID, treatmentTypeCode);
 
-//                console.log(
-//                    'Removing treatment from a tree',
-//                    s.groupedItems[treeIndex],
-//                    s.groupedItems[treeIndex].treatments[treatmentIndex]
-//                );
 
-                var tree = s.groupedItems[treeIndex];
-
+                var tree=_.findObj(s.groupedItems, 'treeID', treeID);
+                var indexOfTree=_.findIndex(s.groupedItems, function(t) { return t.treeID == treeID; })
                 if (tree.treatments.length && tree.treatments.length > 1) { // remove only selected treatment
-                    tree.treatments.splice(treatmentIndex, 1);
-                    s.groupedItems[treeIndex] = tree;
+                    var idx=_.findIndex(tree.treatments, function(t) { return t.treatmentTypeCode == treatmentTypeCode; })
+                    tree.treatments.splice(idx, 1);
+                    s.groupedItems[indexOfTree] = tree;
                 } else { // remove item
-                    s.groupedItems.splice(treeIndex, 1);
+                    s.groupedItems.splice(indexOfTree, 1);
                 }
 
                 s.report.items = ReportService.ungroupReportItems();

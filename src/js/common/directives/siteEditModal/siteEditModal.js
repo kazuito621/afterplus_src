@@ -29,7 +29,10 @@ app.directive('siteEditModal',
             }
         };
         scope.updateAddess=function(address){
-            scope.site=address;
+            scope.site.street=address.street;
+            scope.site.state=address.state;
+            scope.site.city=address.city;
+            scope.site.zip=address.zip;
         };
 
         //when user creates new property and selects Client:

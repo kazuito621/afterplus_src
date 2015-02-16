@@ -8,22 +8,24 @@ app.directive('addressAutoComplete', function (Api,$interval) {
     var linker = function (scope, el, attrs) {
         var autocompleteData = [];
         var callback = scope.$parent[attrs.addressAutoComplete] || angular.noop;
-        var address=scope.$parent[attrs.address];
-        scope.addressLookup = function (address) {
-            if(address=="" && scope.site.street!='' && scope.site.street!=undefined){ // It is true when the modal is openend in edit mode.
+        var address=angular.copy(scope.$eval(attrs.address));
+        scope.addressLookup = function (str) {
+            if(str=="" && address.street!='' && address.street!=undefined){ // It is true when the modal is opened in edit mode.
                 var stop=$interval(function() {
-                    if(el.val()==scope.site.street){
+                    if(el.val()==address.street){
                         $interval.cancel(stop);
+                        address.street=undefined; // So that it can not again enter this block
                     }
                     else {
-                        el.val(scope.site.street);
+                        el.val(address.street);  // Updates bs-typeahead !!
                     }
                 }, 100);
             }
-            if (!address || address.length < 1) { return []; }
+            if (!str || str.length < 1) { return []; }
 
             var params = {
-                address: address
+                address: str,
+                components:'country:USA'
             };
 
             return Api.getGoogleAddress(params).then(function (data) {
@@ -34,44 +36,45 @@ app.directive('addressAutoComplete', function (Api,$interval) {
         };
 
         scope.$on('$typeahead.select', function (event, email, index) {
-            address.street='';
-            address.state='';
-            address.city='';
-            address.zip='';
+
+            var selectedAddress={};
+            selectedAddress.street='';
+            selectedAddress.state='';
+            selectedAddress.city='';
+            selectedAddress.zip='';
             var i=0;
             _.each(autocompleteData[index].address_components,function(item){
                 i++;
                 if((i==1 || i==2 || i==3) && item.types.toString()!="locality,political" && item.types.indexOf('administrative_area_level_1')==-1){
                     // First 3 levels of details address(if exists) except the city,state name
                    if(i>1){
-                       address.street+=', ';
+                       selectedAddress.street+=', ';
                    }
-                   address.street += item.long_name+" ";
+                    selectedAddress.street += item.long_name+" ";
                    return;
                 }
                 if(item.types.toString()=="locality,political"){
-                    address.city = item.long_name;
+                    selectedAddress.city = item.long_name;
                     return;
                 }
                 else if(item.types.toString()=="administrative_area_level_1,political"){
-                    address.state = item.short_name;
+                    selectedAddress.state = item.short_name;
                     return;
                 }
                 else if(item.types.toString()=="postal_code"){
-                    address.zip = item.long_name;
+                    selectedAddress.zip = item.long_name;
                     return;
                 }
             });
-            callback(address);
+            callback(selectedAddress);
             var stop=$interval(function() {
-                if(el.val()==address.street){
+                if(el.val()==selectedAddress.street){
                     $interval.cancel(stop);
                 }
                 else {
-                    el.val(address.street);
+                    el.val(selectedAddress.street); // Updates bs-typeahead to street address instead of full address!!
                 }
             }, 100);
-
         });
     };
 

@@ -16,6 +16,10 @@ app.directive('siteEditModal',
         if (angular.isDefined(attrs.mode)) {
             scope.mode = attrs.mode;
         }
+        scope.isCheckForNewValue=false;
+        if (angular.isDefined(attrs.checkForNewValue)) {
+            scope.isCheckForNewValue = attrs.checkForNewValue;
+        }
 
         var modal;
         var newSite = {clientID: ''};
@@ -123,6 +127,11 @@ app.directive('siteEditModal',
         var init = function () {
             el.on('click', function (event) {
                 event.preventDefault();
+                if (scope.isCheckForNewValue) {
+                // In some places (center.top.block) in same DOM the site-id gets changed with time to time.
+                // So we have to get the updated value of site-id each time. Use check-for-new-value="true" for those DOMs
+                    scope.siteId = scope.$eval(attrs.siteId);
+                }
                 scope.openModal(scope.siteId);
             });
         };

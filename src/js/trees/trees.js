@@ -678,7 +678,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 								// do we really need this? ... this was here before
                                 $timeout(function () {
                                     deferred.resolve();
-									mapLoaded=true;
+									window.mapLoaded=true;
                                 }, 1000);
 
                             }

@@ -45,9 +45,11 @@ app.directive('addressAutoComplete', function (Api,$interval) {
             var i=0;
             _.each(autocompleteData[index].address_components,function(item){
                 i++;
-                if((i==1 || i==2 || i==3) && item.types.toString()!="locality,political" && item.types.indexOf('administrative_area_level_1')==-1){
+                if((i==1 || i==2 || i==3) && item.types.toString()!="locality,political" 
+					&& item.types.indexOf('administrative_area_level_1')==-1)
+				{
                     // First 3 levels of details address(if exists) except the city,state name
-                   if(i>1){
+                   if(i>2){
                        selectedAddress.street+=', ';
                    }
                     selectedAddress.street += item.long_name+" ";

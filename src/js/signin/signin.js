@@ -43,7 +43,7 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 					// document.location.reload();
 				}
 				else s.goTrees();
-			}, function err(err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
+			}, function (err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
 									//that could possibly throw errors
 				s.login.btnDisabled=false;
 			})

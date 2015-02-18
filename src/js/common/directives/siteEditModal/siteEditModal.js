@@ -16,6 +16,10 @@ app.directive('siteEditModal',
         if (angular.isDefined(attrs.mode)) {
             scope.mode = attrs.mode;
         }
+        scope.isCheckForNewValue=false;
+        if (angular.isDefined(attrs.checkForNewValue)) {
+            scope.isCheckForNewValue = attrs.checkForNewValue;
+        }
 
         var modal;
         var newSite = {clientID: ''};
@@ -27,6 +31,9 @@ app.directive('siteEditModal',
             if (funcName && angular.isFunction(func)) {
                 func();
             }
+        };
+        scope.updateAddess=function(address){
+            scope.site=address;
         };
 
         //when user creates new property and selects Client:
@@ -51,10 +58,7 @@ app.directive('siteEditModal',
         }
 
         scope.openModal = function (id) {
-
-            if (!modal) {
-                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
-            }
+            modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
             scope.site = angular.copy(newSite);
             if (id) {
                 Api.updateSite(id).then(function (data) {
@@ -66,8 +70,13 @@ app.directive('siteEditModal',
                     });
                 });
             }
-
-
+            else{
+                modal.$promise.then(function () {
+                    modal.show();
+                    // setup ESCAPE key
+                    $(document).keyup(hideOnEscape);
+                });
+            }
         };
 
         scope.saveSite = function (cb, nohide) {
@@ -84,14 +93,14 @@ app.directive('siteEditModal',
             } else {
                 Api.saveNewSite(scope.site).then(function (data) {
                     console.log('New site created', data);
-
-                    scope.site = data;
-                    scope.siteId = data.siteID;
+                    scope.site = {};
+                   // scope.site = data;
+                    //scope.siteId = data.siteID;
 
                     modal.hide();
 
                     if (cb) {
-                        scope.openModal(data.siteID);
+                        //scope.openModal(data.siteID);
                         $timeout(function () {
                             cb(data);
                         }, 250);
@@ -118,6 +127,11 @@ app.directive('siteEditModal',
         var init = function () {
             el.on('click', function (event) {
                 event.preventDefault();
+                if (scope.isCheckForNewValue) {
+                // In some places (center.top.block) in same DOM the site-id gets changed with time to time.
+                // So we have to get the updated value of site-id each time. Use check-for-new-value="true" for those DOMs
+                    scope.siteId = scope.$eval(attrs.siteId);
+                }
                 scope.openModal(scope.siteId);
             });
         };

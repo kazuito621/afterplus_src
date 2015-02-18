@@ -101,12 +101,23 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         if (!s.activePopover.itemID) return;
 		var itemID=s.activePopover.itemID;
         Api.removeEstimateById(itemID).then(function () {
-			$("table#estimatesList tr#item_"+itemID).hide();
-			var idx=_.findObj(estimates, 'reportID', itemID, true);
-			if(idx>=0) estimates.splice(idx, 1);
+            if(false){ //TODO  if msg don't  indicates success,
+                s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
+            }
+            else {
+                if(idx>=0) {
+                    estimates.splice(idx, 1);
+                }
+                s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+            }
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
         });
+
+        var idx=_.findObj(estimates, 'reportID', itemID, true);
+        if(idx>=0) {
+            s.displayedEstimates.splice(idx, 1);
+        }
         s.activePopover.elem.hide();
         delete s.activePopover.itemID;
     };
@@ -189,6 +200,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	s.sh = {
 		sortByColumn: function (col) {
 			applyFilter();
+            self.sh.setData(estFiltered);
 			estFiltered = self.sh.sortByColumn(col);
 			s.displayedEstimates = estFiltered.slice(0, 49);
 		},
@@ -208,7 +220,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             return;
         }
 
-        var addon = estimates.slice(count, count + 50);
+        var addon = estFiltered.slice(count, count + 50);
         s.displayedEstimates = s.displayedEstimates.concat(addon);
     };
 

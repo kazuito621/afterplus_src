@@ -1,13 +1,117 @@
 /*
  See treefilter.service.js for detailed diagram of filter interactions
 
- */
+
+      EVENTS BASED ON DROPDOWNS
+	  How this interacts with the TreeController:
+
+
+                                            +---------+                                                  
+                                            |  Api    |                                                  
+                                            |         |                                                  
+                                            +----+----+                                                  
+                                                 |                                                       
+ +------------------------+                      |                                                       
+ |filter clients dropdown |  when user selects   |                                                       
+ |                        |    clienttype        |                                                       
+ |filter the site dropdown|  OnChange()          |                                                       
+ |                        | <------+             |                                                       
+ |Update map with Sites   |        |             |                                                       
+ |                        |        |             +                                                       
+ |Reset all filters       |        |     Selected[]array                                                 
+ +------------------------+        |             +                                                       
+                                   |             |                                                       
+                                   |             +----------------+                                      
+                                   |                              |                                      
+                                   |                              |                                      
+                                   +-----------------------+      |$scope.selected                       
+                                   | Select ClientType     | <----+   .ClientTypeID                      
+                                   +-----------------------+      |                                      
+                                   |-----------------------|      | $scope.selected                      
+                                   +-----------------------+      |    .clientID                         
+                                   | Select ClientType     | <----+$scope.selected                       
+                                   +-----------------------+      |    .ClientTypeID                     
+       when user selects client    |-----------------------+      | $scope.selected                      
+              +--------------------++Select Client         | <----+   .clientID                          
+              |     OnChange()      +----------------------+      |                                      
+              |                     +----------------------+      | $scope.selected                      
+              |                     |Select Site           | <----+   .SiteID                            
+              |                     +--+-------------------+                                             
+              |                        |                                                                 
+              |                        |                                                                 
+              |                        |                                                                 
+              |                        |                                                                 
+              |                        |when user selects                                                
+              |                        |a site                                                           
+              |                        |OnChange()                                                       
+              |                        |                                                                 
+              |                        |                                                                 
++-------------+---------------+        |                                                                 
+|filter sites dropdown        |        |                                                                 
+|                             |        |                                                                 
+|filter  clientTypeID         |     +--+                                                                 
+|                             |     |                                                                    
+|Update the map with Sites    |     |                                                                    
+|                             |     |           +---------+---------+   LoadRecent()                     
+|Reset all filters            |     |           |ReportService      +---------+                        
++-----------------------------+     |           |                   |         |                          
+                                    |           +-----+-------------+         |                          
+                                    |                 |                       |                          
+                                    |                 |                       |                          
+     +------------------------------v---+             |                       |                          
+     |Set clientID and clientTypeID     |             |                       |                          
+     |                                  +-------------+                       |                          
+     |with corresponding ^alues         |                       +-------------+--------+                 
+     |                                  |                       |RecentEstimateDropDown|                 
+     |Get trees for this site           |  +------------------+ |                      |                 
+     |                                  |  |LoadReport()Based | |                      |                 
+     |$watch will update the map        |  |                  | +---------+------------+                 
+     |                                  |  |On Selection & Url|           |                              
+     |with TREES                        |  |                  |           | OnChange()                   
+     +                                  |  |Changes to        |           |                              
+                                        |  |                  |    <------+                              
+     +----------------------------------+  |#/trees?reportID= |                                          
+                                           |                  |                                          
+                                           |xxxx              |                                          
+                                           |and 3 dropdown and|                                          
+                                           |                  |                                          
+                                           |Corresponding Tree|                                          
+                                           |                  |                                          
+                                           |Changes           |                                          
+                                           |                  |                                          
+                                           +------------------+                                          
+
+
+
+Description of Performance Improvements (parm)
+=======================================
+            
+Begore my performance improvements fixes we are loading all data in one request using init() method in api service.
+which is crashing whole page due to lot of data being get and then render through angular. 
+So to overcome this problem we implement two api methods one will get clients and client types and other will get sites only.
+because sites have lot of data in it so we seprated it out in other method called "loadsites()".
+
+Afte that we face a new rendering problem which is related to tree list on right side bar.
+because we have almost 1000 tress in one site so load this much of data at once thru angular slow down the page and almost crashes it.
+So to overcome this issue I edited tree.list directive and attach a controller in it.
+Now I fetch all data from API but load 100 by 100 with each seconds until all records have been loaded in. It save a lot of rendering issue.
+
+Then we found the same issue in estmation grid below on page and I did the same in it too and I think it almost speed up application rendering process to 50%.
+
+Now the only problem left with rendering is we are loading lot of directives on page and these directives contains their templates.
+so angular issue a ajax get request to load them and it slow down the page so to overcome it I use "HTML2JS" task in grunt when we run it,
+It wil automatically put all templates in one template.js file and also out those templates in cache of angular so angular don't have to issue a get request.
+It load template from cache. I think it saves a lot of time while rendering and solve almost 80% of speed issue.
+
+*/
+
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 'SiteModelUpdateService', '$rootScope', '$modal', '$location',
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api',
+		'SiteModelUpdateService', '$rootScope', '$modal', '$location', 'gMapInitializer',
         function ($scope, $timeout, ReportService, TreeFilterService, $filter,
-            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location) {
+            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location, gMapInitializer) {
 
             var self = this;
             // local and scoped vars
@@ -51,15 +155,21 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.filteredSites = [];//s.initData.sites;
 
-            //Load sites now.
-            Api.getAllSites().then(function (data) {
-                if (data !== undefined) {
-                    s.initData.sites = data.sites;
-                    s.filteredSites = data.sites;
-                }
-            });
+            $scope.getAllSites = function () {
 
+                Api.getAllSites().then(function (data) {
+                    if (data !== undefined) {
+                        s.initData.sites = data.sites;
+                        s.filteredSites = data.sites;
+                        $timeout(function () { onUserNav(); }, 1000);
+                    }
+                });
 
+            }
+
+            $scope.getAllSites();
+
+            console.debug("top of trees ");
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
@@ -90,22 +200,26 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //search component for google map
             s.searchBox = [];
+            s.clickToAddtree = [];
             //array to store marker objects for search box
             s.searchMarkers = [];
 
             //            s.$watch('selected', function (newVal, oldVal) {
             //                console.log('Selected changed\n', oldVal, newVal);
             //            }, true);
-
+            s.isBindRightClick = false;
 
             var loadEstimate = function () {
                 var rptHash = s.renderPath[1];
+
                 if (!rptHash) return;
                 ReportService.loadReport(rptHash, { getTreeDetails: 1 })
 					.then(function (data) {
 					    if (Auth && Auth.requestedReportID) delete Auth.requestedReportID;
 					    s.report = data;
-					    if (data && data.siteID) s.selected.siteID = data.siteID;
+					    if (data && data.siteID)
+					        s.selected.siteID = data.siteID;
+
 					    showMappedTrees();
 
 					    // todo - find a better place for this.... should happen after
@@ -119,19 +233,39 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             if (s.data.mode() == 'estimate') loadEstimate();
-            s.$on('nav', function (e, data) {
-                if (data.new == 'trees') {
-                    loadEstimate()
-                    if (s.selected.siteID && s.selected.siteID > 0) {
-                        var siteObj = s.getSiteByID(s.selected.siteID);
-                        s.selected.clientID = siteObj.clientID;
-                        s.selected.clientTypeID = siteObj.clientTypeID;
-                        getTreeListings()
-                    } else {				// no site selected, so go back to site view, not tree view
-                        s.onSelectClientID();
-                    }
-                };
-            });
+
+            //#*#*# Commented this cause, inside trees page if user clicks on any item that has \trees href, it does not fire this nav.
+            //s.$on('nav', function (e, data) {
+            //    if (data.new == 'trees') {
+            //        loadEstimate()
+            //        if (s.selected.siteID && s.selected.siteID > 0) {
+            //            var siteObj = s.getSiteByID(s.selected.siteID);
+            //            s.selected.clientID = siteObj.clientID;
+            //            s.selected.clientTypeID = siteObj.clientTypeID;
+            //            //getTreeListings()
+            //        } else {				// no site selected, so go back to site view, not tree view
+            //            s.onSelectClientID();
+            //        }
+            //    };
+            //});
+            //
+
+            s.gotoTreesPage = function () {
+                s.selected.siteID = '';
+                TFS.clearFilters(true);
+                s.openTreesOrSites();
+            }
+
+            s.openTreesOrSites = function () {
+                if (s.initData.sites.length == 1) { // If only site, open that site in satellite view.
+                    s.selected.siteID = s.initData.sites[0].siteID;
+                    getTreeListings();
+                }
+                else { //else show all sites in map.
+                    s.trees = [];
+                    showMappedSites();
+                }
+            }
 
             if (s.data.mode() == 'trees') {
                 setTimeout(function () {
@@ -157,7 +291,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     $timeout(function () { 			// not sure if this is needed
                         if (google && google.maps)
                             google.maps.event.trigger(gMap, 'resize')
-                    }, 2000);
+                    }, 2000); // todo this is dumb. we should use a real callback
                 }
             }
 
@@ -165,7 +299,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             var showSite = function (id) {
                 console.log('Showing site', id);
-                s.selected.siteID = id;
+
+                //$timeout(function () {
+
+                s.selected.siteID = id
+
+                //}, 1000);
+                //s.selected.siteID = id;
+
                 s.selected.clientTypeID = '';
                 s.selected.clientID = '';
                 s.onSelectSiteID(id);
@@ -204,7 +345,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             $timeout(function () {
                 storage.bind(s, 'selected', { defaultValue: { clientTypeID: '', clientID: '', siteID: '', treatmentIDs: [] } });
                 s.selected.treatmentIDs = [];
-                onUserNav();
+                //  onUserNav();
                 if (!s.selected.siteID && s.data.mode() != 'estimate') showMappedSites();
             }, 1);
 
@@ -245,10 +386,11 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. filter the sites dropdown, and set selected.siteID = null
             //		3. Update the map with Sites
             //      4. Reset all filters
-            s.onSelectClientTypeID = function () {
+            s.onSelectClientTypeID = function (typeId) {
+                s.selected.clientTypeID = typeId ? typeId : "";
+                s.selected.clientID = s.selected.siteID = '';
                 filterClients();
                 filterSitesByClients();
-                s.selected.clientID = s.selected.siteID = '';
                 showMappedSites();
                 TFS.clearFilters(true);
             };
@@ -259,13 +401,20 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		3. Update the map with Sites
             //      4. Reset all filters
             s.onSelectClientID = function (id) {
+                ReportService.setClientID(id);
+                ReportService.setSiteID('');
+                s.selected.clientID = id;
+                s.selected.siteID = '';
+                if (s.data.mode() == 'trees') ReportService.loadRecent();
+
                 if (id && id > 0) {
-                    filterSitesByClients();
-                    s.selected.siteID = '';
+                    filterSitesByClients(id);
                     var clientObj = s.getClientByID(s.selected.clientID);
                     s.selected.clientTypeID = clientObj.clientTypeID;
                     showMappedSites();
                     TFS.clearFilters(true);
+                    var url = cfg.hostAndPort() + '/#/trees';
+                    document.location = url;
                 } else {					//else, go back to showing clientType
                     s.onSelectClientTypeID();
                 }
@@ -275,17 +424,27 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		1. ACTIVE: Set clientID and clientTypeID with corresponding values
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
+            var lastSiteID=-1;
             s.onSelectSiteID = function (id) {
+                if(lastSiteID==id) return; // Prevents loading same things twice
+                else lastSiteID=id;
+                s.selected.siteID = id;
+                ReportService.setSiteID(id);
+
+                if (s.data.mode() != 'trees') return;
 
                 if (id && id > 0) {
-                    console.log('On select site id', id);
+                    if (s.data.mode() == 'trees') {
+                        ReportService.loadRecent();
+                    }
                     var siteObj = s.getSiteByID(id);
                     s.selected.clientID = siteObj.clientID;
                     s.selected.clientTypeID = siteObj.clientTypeID;
                     getTreeListings()
                 } else {				// no site selected, so go back to site view, not tree view
-                    s.onSelectClientID();
+                    s.onSelectClientID(s.selected.clientID);
                 }
+                SiteModelUpdateService.setSites(s.filteredSites);
             }
 
             s.onSelectSiteIDFromMap = s.safeApplyFn(function (id) {
@@ -301,21 +460,36 @@ var TreesCtrl = app.controller('TreesCtrl',
             //When the selected.siteID model changes (not necessarily forced by user) then:
             //		1. if set to null, then show SITES on map
             //   	2. ELSE, if siteID exists, show TREES on the map
-            s.$watch('selected.siteID', function (ID, oldID) {
-                SiteModelUpdateService.setSites(s.filteredSites);
-                ReportService.setSiteID(ID);
-                if (s.data.mode() == 'trees') {
-                    ReportService.loadRecent();
-                    if (ID && ID > 0) getTreeListings();
-                    // todo -- else zoom in on the selected Site...
-                    // zoomMap(lat, long)?
-                }
+            //s.$watch('selected.siteID', function (ID, oldID) {
+            //    SiteModelUpdateService.setSites(s.filteredSites);
+            //    ReportService.setSiteID(ID);
+            //    if (s.data.mode() == 'trees') {
+            //        ReportService.loadRecent();
+            //        if (ID && ID > 0) {
+            //
+            //            getTreeListings();
+            //        }
+            //        // todo -- else zoom in on the selected Site...
+            //        // zoomMap(lat, long)?
+            //    }
+            //});
+
+            //s.$watch('selected.clientID', function (ID, oldID) {
+            //    ReportService.setClientID(ID);
+            //    if (s.data.mode() == 'trees') ReportService.loadRecent();
+            //});
+
+
+
+            //Wil be fired when user select report id from recent drop down.
+            s.$on('OnLoadReportEvent', function (evt, data) {
+                if (data.siteID == undefined || data.siteID == "")
+                    return;
+
+                s.onSelectSiteID(data.siteID);
             });
 
-            s.$watch('selected.clientID', function (ID, oldID) {
-                ReportService.setClientID(ID);
-                if (s.data.mode() == 'trees') ReportService.loadRecent();
-            });
+
 
             // When the trees[] array changes because of a filter event... update the ui.
             // This also may be triggered when site dropdown is selected (via getTreeListings())
@@ -384,16 +558,29 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
 
             s.reset = function () {
-                ReportService.getBlankReport();
+                // clear out the query string
+                if ($location.search().reportID) $location.search('reportID', null);
+                if ($location.search().siteID) $location.search('siteID', null);
+
+                s.filteredSites = s.initData.sites;
+                s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
                 TFS.clearFilters(true);
+                filterClients();
                 //todo - this action jacks up the selection of the sites dropdown by changing the model
                 // so instead of making a copy... do we need to make a copy? try not doing that
                 // or instead of creating a filteredSites array, maybe we should just set sites[0].hide=true;
                 //		and use hte original array;
                 //s.filteredSites=angular.copy(s.initData.sites);
-                s.filteredSites = s.initData.sites;  //-- fixed a dropdown ng-model issuet 
                 showMappedSites();
-                s.selected.clientTypeID = s.selected.clientID = s.selected.siteID = '';
+                //s.onSelectSiteID('');
+                //s.onSelectClientID('');
+                ReportService.setClientID('');
+                ReportService.setSiteID('');
+                s.selected.clientID = '';
+                s.selected.siteID = '';
+                s.selected.clientTypeID = '';
+                ReportService.loadRecent();
+                ReportService.getBlankReport();
             }
 
             s.onTreeImageRollover = function (treeID) {
@@ -444,9 +631,23 @@ var TreesCtrl = app.controller('TreesCtrl',
                 showSearchMarker();
             }
 
-            var initMap = _.throttle(function () {
-                var deferred = $q.defer();
+            s.treeMarkers = [];
 
+            var initMap = function () {
+                var deferred = $q.defer();
+                gMapInitializer.mapsInitialized.then(function () {
+                    loadMap().then(function () {
+                        window.mapLoaded = true;
+                        deferred.resolve();
+                    });
+                });
+                return deferred.promise;
+            }
+
+			var loadMap = function() {
+			console.debug("load map ");
+                var deferred = $q.defer();
+				try{
                 google.load(
                     "maps",
                     "3",
@@ -454,24 +655,74 @@ var TreesCtrl = app.controller('TreesCtrl',
                         other_params: 'sensor=false&libraries=places',
                         callback:
                             function () {
-                                var myOptions = { zoom: 1, tilt: 0, center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid', panControl: false };
+						console.debug("		-- google map callback ");
+                                var myOptions = { 
+										zoom: 1, tilt: 0, 
+										center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
+										scrollwheel: false, panControl: false 
+									};
                                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                                 gMap = new google.maps.Map($('#' + map_id)[0], myOptions);
                                 google.maps.event.addListener(gMap, 'click', function () {
                                     dbg(s, 'click');
                                     if (infowindow && infowindow.setMap) infowindow.setMap(null);
+                                    //In case user is editing a tree and change its location by droping it 
+                                    //on anywhere in map and after that he did not click on confirm location or cancel
+                                    //button. He simply click on map then broadcast this event so that we can recieve it 
+                                    //anywhere and make changes.
+                                    s.$broadcast('onMapClicked');
                                 });
-
+                                //initClicktoMap();
                                 initSearchBox();
 
+								// do we really need this? ... this was here before
                                 $timeout(function () {
                                     deferred.resolve();
+									window.mapLoaded=true;
                                 }, 1000);
+
                             }
                     }
                 );
+				}catch(err){
+					
+					console.debug("ERROR LOADING MAP! ");
+					console.debug(err);
+				}
                 return deferred.promise;
-            }, 2000);
+            }
+
+
+            //var initClicktoMap = _.throttle(function () {
+
+            //    //// Create search panel
+            //    //var clickmaptoaddtree = document.getElementById('clickmaptoaddtree');
+            //    //gMap.controls[google.maps.ControlPosition.TOP_CENTER].push(clickmaptoaddtree);
+
+            //    //var buttonClicktoAddTree = document.getElementById('buttonClicktoAddTree');
+            //    //s.clickToAddtree = new google.maps.ImageMapType(buttonClicktoAddTree);
+
+            //    //$(clickmaptoaddtree).show();
+
+            //    s.setAlert("Click on map to add tree.", { type: 'ok', time: 10 });
+            //});
+
+            s.editMode = false;
+            s.editModeCss = "fa-plus";
+            s.setStatus = function (editMode) {
+                if (s.editMode) {
+                    s.cancelMarker(s.treeMarkers.length - 1, true);
+                    s.editMode = false;
+                    s.editModeCss = "fa-plus";
+                }
+                else {
+                    //initClicktoMap();
+                    s.setAlert("Click on map to add tree.", { type: 'ok', time: 10 });
+                    s.editMode = true;
+                    s.editModeCss = "fa-minus";
+                }
+                return s.editMode;
+            }
 
             var initSearchBox = _.throttle(function () {
 
@@ -501,6 +752,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
+                console.debug("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
@@ -522,7 +774,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                     else numSpecies = 0;
                     var _siteObj = _.findObj(s.initData.sites, 'siteID', site.siteID);
                     var _clientObj = _.findObj(s.initData.clients, 'clientID', _siteObj.clientID);
+
                     var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
+
                     site.info = '<div id="content">' +
                         '<h1 id="firstHeading" class="firstHeading">' + site.siteName + '</h1>' +
                         '<div id="bodyContent">' +
@@ -593,7 +847,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var base = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
                 var num = '';
 
-                if (site.species && site.species.length > 0) {
+                if (site.species && site.species[0]) {
                     bg = 'FE7569';
                     fg = '000000';
                 }
@@ -623,7 +877,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         id: a,
                         info: arr[a].info,
                         siteID: arr[a].siteID,
-                        treeID: arr[a].treeID
+                        treeID: arr[a].treeID,
+                        tree: arr[a],
+                        draggable: false,
                         //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
                     });
 
@@ -703,17 +959,350 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+            //Find the marker that user clicked after Edit Tree button.
+            s.findEditableMarkerAndChangeOthers = function (treeId, reverse) {
+                var currentEditableMarker = null;
+
+                for (var i = 0; i < markers_singleSite.length; i++) {
+                    var marker = markers_singleSite[i];
+                    if (reverse) {
+                        if (marker.prevIcon !== undefined)
+                            marker.setIcon(marker.prevIcon);
+                    }
+                    else {
+                        if (marker.treeID == treeId) {
+                            currentEditableMarker = marker;//.setDraggable(true);
+                        }
+                        else {
+                            marker.prevIcon = marker.icon;
+                            marker.setIcon('https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|d2d2d2|000000');
+                        }
+                    }
+                }
+
+                for (var i = 0; i < markers_allSites.length; i++) {
+                    var marker = markers_allSites[i];
+                    if (reverse) {
+                        if (marker.prevIcon !== undefined)
+                            marker.setIcon(marker.prevIcon);
+                    } else {
+                        if (marker.treeID == treeId) {
+                            currentEditableMarker = marker;//.setDraggable(true);
+                        }
+                        else {
+                            marker.prevIcon = marker.icon;
+                            marker.setIcon('https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|d2d2d2|000000');
+                        }
+                    }
+                }
+                return currentEditableMarker;
+            }
+
+            //Fire when user click on edit tree from infowindow in map.
+            //It contains all methods which we are using to edit a tree.
+            s.editCurrentTree = function (treeId) {
+
+                s.currentEditableMarker = s.findEditableMarkerAndChangeOthers(treeId, false);
+
+                s.currentEditableMarker.currentPosition = s.currentEditableMarker.position;
+
+                s.cancelEditing = function (moveToCurrentPosition) {
+                    if (moveToCurrentPosition === undefined) {
+                        moveToCurrentPosition = true;
+                    }
+                    if (infowindow) {
+                        infowindow.close();
+                    }
+                    if (s.currentEditableMarker != null) {
+
+                        //If we found moveToCurrentPosition true it means user did not edit
+                        //so fallback to previous position.
+                        if (moveToCurrentPosition)
+                            s.currentEditableMarker.setPosition(s.currentEditableMarker.currentPosition);
+
+                        s.currentEditableMarker.setDraggable(false);
+                        s.findEditableMarkerAndChangeOthers(0, true);
+
+                        //Update click event of current markers so that when user again click 
+                        //on it we will show him old info popup.
+                        google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
+                            if (!infowindow)
+                                infowindow = new google.maps.InfoWindow();
+                            infowindow.setContent(this.info);
+                            infowindow.open(gMap, this);
+                        });
+                    }
+
+                    s.currentEditableMarker = null;
+                };
+
+                s.$on('onMapClicked', function () {
+                    if (s.currentEditableMarker != null)
+                        s.cancelEditing(true);
+                });
+
+                s.confirmEditing = function () {
+
+                    if (s.currentEditableMarker != null) {
+                        s.setAlert('Updating Location', { busy: true, time: "false" });
+
+                        var tree = s.currentEditableMarker.tree;
+                        var position = s.currentEditableMarker.position;
+                        tree.longitude = position.lng();
+                        tree.lattitude = position.lat();
+                        tree.lat = position.lat();
+                        tree.lng = position.lng();
+
+                        Api.updateTree(tree).then(function (response) {
+                            s.hideAllAlert();
+                            //$location.path('tree_edit/' + tree.treeID);
+                            s.cancelEditing(false);
+                        });
+                    }
+                }
+
+                var click = "angular.element(this).scope().cancelEditing()";
+                var confirmclick = "angular.element(this).scope().confirmEditing()";
+
+                var markertemplate = "<div style=\"height:60px;width:240px;\">" +
+                                         "<div class=\"\">" +
+                                            "<span>Drag pin to change the location of tree.</span><br/><br/>" +
+                                            "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
+                                                    .format(confirmclick) +
+                                            "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
+                                            "Cancel" +
+                                          "</button>" +
+                                        "</div></div>";
+
+                s.currentEditableMarker.setDraggable(true);
+
+                google.maps.event.addListener(s.currentEditableMarker, 'click', function (event) {
+                    if (!infowindow)
+                        infowindow = new google.maps.InfoWindow();
+                    infowindow.setContent(markertemplate);
+                    infowindow.open(gMap, this);
+
+
+
+                    google.maps.event.addListener(infowindow, 'closeclick', function () {
+                        if (s.currentEditableMarker != null)
+                            s.cancelEditing(true);
+                    });
+                });
+
+                google.maps.event.trigger(s.currentEditableMarker, 'click');
+
+            }
+
+            s.MarkerAdded = false;
+
+            s.cancelMarker = function (index, switchOfAddMode) {
+
+                if (switchOfAddMode === undefined)
+                    switchOfAddMode = false;
+
+                if (infowindow) {
+                    infowindow.close();
+                }
+
+                if (s.treeMarkers[index] !== undefined) {
+                    s.treeMarkers[index].setMap(null);
+                    delete s.treeMarkers[index];
+                }
+                if (switchOfAddMode) {
+                    //Also turn off edit mode.
+                    s.editMode = false;
+                    if (!s.$$phase) {
+                        s.$apply(function () {
+                            s.editModeCss = "fa-plus";
+                        });
+                    }
+                    else {
+                        s.editModeCss = "fa-plus";
+                    }
+                    s.hideAllAlert();
+                }
+            }
+
+            s.editExistingTree = function (treeId) {
+                var treeEl = angular.element(document.getElementById('tree-anchor-' + treeId));
+                if (treeEl !== undefined && treeEl.length > 0)
+                    treeEl.click();
+            }
+
+            var getTreeTemplate = function (itm) {
+                var ratingD = (itm.ratingID > 0 && itm.ratingID < 6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                var o = '<div class="mapWindowContainer">'
+                     + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
+                     + '<div class="mwcBody">'
+                     + '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
+                     + '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
+                         itm.treeID, $filter('dbhID2Name')(itm.dbhID, s));
+                if (itm.ratingID) o += '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID, ratingD);
+                o += '<div>';
+                if (itm.caDamage == 'yes') o += '<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
+                if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
+                if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
+                if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
+
+                // todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
+                // then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
+                // similar to the items in the tree results list. ... ie
+                // <span class='textIconBlock-red'>2014</span>
+                // .... or ...textIconBlock-grey
+                //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
+
+                if (s.data.mode() === 'trees') {
+                    var editPositionClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+                    var editTreeClick = "angular.element(this).scope().editExistingTree({0})".format(itm.treeID);
+                    if (Auth.isAtleast('inventory')) {
+                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">'.format(editPositionClick)
+						+ '<i class="fa fa-arrows-alt"></i></a>&nbsp;&nbsp;'
+                        +'<a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;"><i class="fa fa-pencil"></i></a><BR>'.format(editTreeClick)
+                    	+ '</div>';
+                    } else {
+                        o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">View Details</a><BR>'.format(editTreeClick)
+						  + '</div>';
+                    }
+                }
+                
+                return o;
+            }
+
             //Define function to show site specific trees in map
             var showMappedTrees = _.throttle(function (treeSet) {
 
                 var gMapID = '';
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID = gMap.getDiv().id;
+                // TODO NEED TO CHECK
+                // It's not working for TreeMap
                 if (gMapID !== map_id) {
                     return initMap().then(function () {
                         showMappedTrees(treeSet);
                     });
                 }
+                if (gMapID == 'treeMap' && Auth.isAtleast('inventory')) // Auth.isAtleast('inventory') && 
+                {
+                    if (!s.isBindRightClick) {
+                        google.maps.event.addListener(gMap, 'click', function (event) {
+
+                            if (!s.editMode)
+                                return;
+
+                            if (s.MarkerAdded) {
+                                s.cancelMarker(s.treeMarkers.length - 1, false);
+                                s.MarkerAdded = false;
+                            }
+
+                            s.$on('onMapClicked', function () {
+                                if (s.MarkerAdded)
+                                    s.cancelMarker(s.treeMarkers.length - 1, false);
+                            });
+
+                            s.confirmLocation = function (markerIndex) {
+
+                                s.setAlert('Saving tree', { busy: true, time: "false" });
+                                var marker = s.treeMarkers[markerIndex];
+
+                                var position = marker.position;
+
+                                var tree = {
+                                    siteID: s.selected.siteID,
+                                    longitude: position.lng(),
+                                    lattitude: position.lat(),
+                                    lat: position.lat(),
+                                    lng: position.lng()
+                                };
+
+                                Api.saveTree(tree).then(function (response) {
+                                    s.hideAllAlert();
+
+                                    var lastInsertedMarker = s.treeMarkers[s.treeMarkers.length - 1];
+
+                                    lastInsertedMarker.treeID = response.treeID;
+                                    lastInsertedMarker.siteID = tree.siteID;
+
+                                    lastInsertedMarker.tree = tree;
+                                    lastInsertedMarker.info = getTreeTemplate(response);
+                                    lastInsertedMarker.setIcon(setIconColor(response));
+                                    markers_singleSite.push(lastInsertedMarker);
+                                    s.trees.push(response);
+
+                                    if (infowindow) {
+                                        infowindow.close();
+                                    }
+                                    var timeOut = setTimeout(function () {
+                                        var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
+                                        if (treeEl !== undefined && treeEl.length > 0)
+                                            treeEl.click();
+
+                                        clearTimeout(timeOut);
+                                    }, 1000);
+
+                                    google.maps.event.clearListeners(marker, 'click');
+
+                                    google.maps.event.addListener(marker, 'click', function (event) {
+                                        if (!infowindow)
+                                            infowindow = new google.maps.InfoWindow();
+                                        infowindow.setContent(this.info);
+                                        infowindow.open(gMap, this);
+
+                                        google.maps.event.clearListeners(infowindow, 'closeclick');
+
+                                        google.maps.event.addListener(infowindow, 'closeclick', function (event) {
+                                            if (infowindow) {
+                                                infowindow.close();
+                                            }
+                                        });
+                                    });
+                                    s.MarkerAdded = false;
+
+                                });
+                            }
+
+                            var marker = new google.maps.Marker({
+                                position: event.latLng,
+                                map: gMap,
+                                title: 'Add Tree',
+                                draggable: true,
+                                icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=1|006256|000000'
+                                //'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
+                            });
+
+                            s.MarkerAdded = true;
+                            s.treeMarkers.push(marker);
+
+                            var click = "angular.element(this).scope().cancelMarker({0},{1})".format(s.treeMarkers.length - 1, true);
+                            var confirmclick = "angular.element(this).scope().confirmLocation({0})".format(s.treeMarkers.length - 1);
+
+                            var markertemplate = "<div style=\"height:35px;width:210px;\">" +
+                                                     "<div class=\"\">" +
+                                                        "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
+                                                                .format(confirmclick) +
+                                                        "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
+                                                        "Cancel" +
+                                                      "</button>" +
+                                                    "</div></div>";
+
+                            google.maps.event.addListener(marker, 'click', function (event) {
+                                if (!infowindow)
+                                    infowindow = new google.maps.InfoWindow();
+                                infowindow.setContent(markertemplate);
+                                infowindow.open(gMap, this);
+                                google.maps.event.addListener(infowindow, 'closeclick', function (event) {
+                                    s.cancelMarker(s.treeMarkers.length - 1);
+                                });
+                            });
+
+                            google.maps.event.trigger(marker, 'click');
+
+                        });
+                        s.isBindRightClick = true;
+                    }
+                }
+
+
 
                 if (s.data.mode() == 'estimate' && s.report && s.report.items) treeSet = s.report.items;
                 clearMarkers();
@@ -723,32 +1312,40 @@ var TreesCtrl = app.controller('TreesCtrl',
                     if (!itm || itm.hide) return;
                     if (itm.commonName == null || itm.commonName == 'null' || !itm.commonName) itm.commonName = ' ';
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
-                        ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
-                        o = '<div class="mapWindowContainer">'
-                            + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
-                            + '<div class="mwcBody">'
-							+ '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
-							+ '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
-                                itm.treeID, $filter('dbhID2Name')(itm.dbhID, s));
-                        if (itm.ratingID) o += '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID, ratingD);
-                        o += '<div>';
-                        if (itm.caDamage == 'yes') o += '<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
-                        if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
-                        if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
-                        if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
-                        // todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
-                        // then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
-                        // similar to the items in the tree results list. ... ie
-                        // <span class='textIconBlock-red'>2014</span>
-                        // .... or ...textIconBlock-grey
-                        //	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-                        if (s.data.mode() === 'trees') {
-                            o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                            //o += '</div><BR>'
-                            // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
-                        }
-
-                        itm.info = o;
+                        itm.info = getTreeTemplate(itm);
+                        //ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+                        //o = '<div class="mapWindowContainer">'
+                        //    + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
+                        //    + '<div class="mwcBody">'
+                        //	+ '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
+                        //	+ '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
+                        //        itm.treeID, $filter('dbhID2Name')(itm.dbhID, s));
+                        //if (itm.ratingID) o += '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID, ratingD);
+                        //o += '<div>';
+                        //if (itm.caDamage == 'yes') o += '<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        //if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
+                        //if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
+                        //if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
+                        //// todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
+                        //// then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
+                        //// similar to the items in the tree results list. ... ie
+                        //// <span class='textIconBlock-red'>2014</span>
+                        //// .... or ...textIconBlock-grey
+                        ////	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
+                        //var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
+                        //if (s.data.mode() === 'trees') {
+                        //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                        //    //if (Auth.isAtleast('inventory')) {
+                        //    //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                        //    //}
+                        //    //else {
+                        //    //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
+                        //    //}
+                        //    //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
+                        //    //o += '</div><BR>'
+                        //    // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
+                        //}
+                        //itm.info = o;
                     }
                     setIconColor(itm);
                     set2.push(itm)
@@ -792,6 +1389,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
                 itm.colorID = idx;
                 itm.iconType = base + num + '|' + bg + '|' + fg;
+
+                return itm.iconType;
             }
 
             //Define function to get specific treatment types (string) by ID
@@ -810,10 +1409,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 var diam = _.extract(found, 'diameter');
                 return diam;
             }
-
-
-
-
 
 
             // ----------------------------------------------------- EVENTS for Tree Results List
@@ -1089,10 +1684,13 @@ var TreesCtrl = app.controller('TreesCtrl',
             // if selected.clientID, filter based on that,
             // else if selected.clientTypeID filter based on clientTypeID
             // else show all
-            var filterSitesByClients = _.throttle(function () {
+            var filterSitesByClients = _.throttle(function (clientId) {
                 var siteIDs = s.TFSdata.filteredSiteIDs;
                 var treeCountMap = s.TFSdata.treeCountMap;
                 if (!siteIDs || !siteIDs.length || !(siteIDs.length > 0)) siteIDs = false;
+                if (clientId !== undefined) {
+                    s.selected.clientID = clientId;
+                }
                 if (s.selected.clientID) {
                     s.filteredSites = _.filter(s.initData.sites, function (obj) {
                         if (obj.clientID == s.selected.clientID) {
@@ -1177,11 +1775,14 @@ var TreesCtrl = app.controller('TreesCtrl',
             var getTreeListings = function () {
                 if (s.selected.siteID <= 0)
                     return;
+
+                console.log('Loading tree for Site #' + s.selected.siteID);
+
                 // reset selected trees to prevent duplicates
                 s.selectedTrees = [];
                 s.setAlert('Loading Trees', { busy: true, time: "false" });
                 Api.getTrees(s.selected.siteID)
-                    .then(function (data) {                        
+                    .then(function (data) {
                         TFS.setTreeResults(data);		// after this, the trees get
                         // set back on $scope via $on('onTreeFilterUpdate')
                         //s.setAlert(false);
@@ -1264,19 +1865,28 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Watch for init data here.
             s.$watch('initData.sites', function (data) {
+                // alert("watch called");
+                //  //if (data === undefined && data === null)
+                //  //   return;
 
-                if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
-                    console.log('Map not initialized in $onInitData event');
-                    initMap().then(function () {
-                        console.log('Map initialized in $onInitData event');
-                        showMappedSites();
-                    })
+                // // console.log('On init data in sites');
+                if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {// Parms solution to fix the double map load... (and comment out the following)
+
+                    if (!gMap && !$location.search().reportID && !$location.search().reportID) { // Imdad's solution to fix the double map load
+                        ////            // This if condition is blocking to override the satellite view.
+                        console.log('Map not initialized in $onInitData event');
+                        s.openTreesOrSites();
+                    }
+                    ////        /*initMap().then(function () {
+                    ////            console.log('Map initialized in $onInitData event');
+                    ////            showMappedSites();
+                    ////        })*/
                 }
-            })
+            });
 
             //Broadcast is not occuring.
             s.$on('onInitData', function (e, data) {
-                //                console.log('On init data in trees');
+                console.log('On init data in trees');
 
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {
                     console.log('Map not initialized in $onInitData event');
@@ -1287,7 +1897,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             });
 
-            s.$on('$routeChangeSuccess', onUserNav);
+            //  s.$on('$routeChangeSuccess', onUserNav);
         }]);	// }}} TreesCtrl
 
 

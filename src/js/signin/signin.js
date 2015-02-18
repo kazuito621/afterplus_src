@@ -36,7 +36,11 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 				if(q.redirect){ 
 					var url=cfg.hostAndPort() + '/#' + q.redirect;
 					document.location=url;
-					document.location.reload();
+					// in the past before we changed the old div/hide method back to 
+					// traditional angular routeProvider, this reload was here because
+					// the map would not load when the div was hidden... so when we signed in, the map was blank
+					// but i think this is not necessary now
+					// document.location.reload();
 				}
 				else s.goTrees();
 			}, function err(err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places

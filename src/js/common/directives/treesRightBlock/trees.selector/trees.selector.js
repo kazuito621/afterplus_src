@@ -5,6 +5,7 @@ app.directive('treesSelector',
 
         var linker = function (scope) {
             scope.thisYear = moment().format('YYYY');
+		 scope.auth=Auth;
         };
 
         return {
@@ -14,9 +15,11 @@ app.directive('treesSelector',
             templateUrl: 'js/common/directives/treesRightBlock/trees.selector/trees.selector.tpl.html',
             scope: {
                 toggleCheckedTrees: '&', // func (opt)
+                setStatus: '&',
                 selectedTrees: '=',
-                count: '=' // TFSdata.treeResultsCount
+                count: '=', // TFSdata.treeResultsCount
+                editModeCss: "@"
             },
-            link: linker
+            link: linker            
         };
     }]);

@@ -57,7 +57,7 @@ var EditClientCtrl = app.controller('EditClientCtrl',
                 } else { //if specified => edit client
                     if (s.userToken && s.userToken.length) { // need to log in first
                         $rootScope.isMobile = true;
-                        Api.user.get({ token: s.userToken }).then(self.getUserCB);
+                        Api.user.get({ userToken: s.userToken }).then(self.getUserCB);
                     } else {
                         self.getClient();
                     }

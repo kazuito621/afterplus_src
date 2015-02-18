@@ -4,8 +4,8 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage',
-function (Rest, $rootScope, $q, $location, storage) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage','$http',
+function (Rest, $rootScope, $q, $location, storage,$http) {
     'use strict';
     window.Api = this;
     var initData = {};
@@ -20,7 +20,11 @@ function (Rest, $rootScope, $q, $location, storage) {
         var deferred = $q.defer();
         if (!isSignedIn()) {
             deferred.resolve();
-        } else {
+        }
+        else if (!_.isEmpty(initData.sites)) {
+            deferred.resolve(initData);
+        }
+        else {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
             Rest.one('init?siteonly=1').get().then(function (data) {
                 initData.sites = data;
@@ -41,11 +45,13 @@ function (Rest, $rootScope, $q, $location, storage) {
             sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
             Rest.one('init?nosite=1').get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-                if (data.filters){
-                    data.filters.hazards = { 'building': { selected: false }, 'caDamage': { selected: false }, 
-						'caDamagePotential': { selected: false }, 'powerline': { selected: false } };
-				}
-                
+                if (data.filters) {
+                    data.filters.hazards = {
+                        'building': { selected: false }, 'caDamage': { selected: false },
+                        'caDamagePotential': { selected: false }, 'powerline': { selected: false }
+                    };
+                }
+
                 initData = data;
                 $rootScope.initData = data;
 
@@ -107,9 +113,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         getRecentReports: function (opt) {
             return Rest.all('estimate').getList(opt);
         },
-		getEmailTemplate: function(opt){
-			return Rest.one('template/emailReport').get(opt);
-		},
+        getEmailTemplate: function (opt) {
+            return Rest.one('template/emailReport').get(opt);
+        },
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...
             if (reportObj.post && typeof reportObj.post === 'function') {
@@ -155,22 +161,22 @@ function (Rest, $rootScope, $q, $location, storage) {
         },
 
         // Auth via customer token
-		// @param context - scope of where the callback resides
-		// @param callback - FUNCTION
+        // @param context - scope of where the callback resides
+        // @param callback - FUNCTION
         signInCustToken: function (token, context, callback) {
             var deferred = $q.defer();
             if (!token) {
                 deferred.reject('Invalid token');
                 return deferred.promise;
             }
-			if(context && callback){
-				Rest.one('signincusttoken').get({ custToken: token })
+            if (context && callback) {
+                Rest.one('signincusttoken').get({ custToken: token })
 					.then(angular.bind(context, callback, deferred));
-			}else{
-				return Rest.one('signincusttoken').get({ custToken: token })
-			}
+            } else {
+                return Rest.one('signincusttoken').get({ custToken: token })
+            }
 
-           	return deferred.promise;
+            return deferred.promise;
         },
         signIn: function (email, password, context, callback) {
             var deferred = $q.defer();
@@ -251,6 +257,32 @@ function (Rest, $rootScope, $q, $location, storage) {
                 }
                 return Rest.all('user').getList(params);
             }
+        },
+
+        saveTree: function (tree) {
+            return Rest.all('tree').post(tree);
+        },
+
+        deleteTree: function (treeId) {
+            return Rest.one('tree', treeId).post('delete');
+        },
+
+        updateTree: function (tree) {
+            var params = {};
+            params.longitude = tree.longitude;
+            params.lattitude = tree.lattitude;
+            params.lat = tree.lat;
+            params.lng = tree.lng;
+            params.siteID = tree.siteID;
+            
+            //(elemFunction, this)("post", undefined, params, undefined, headers);
+            return Rest.one('tree', tree.treeID).post(undefined, params);
+        },
+        getGoogleAddress:function(params){
+            return $http.get(
+                'http://maps.googleapis.com/maps/api/geocode/json',
+                {params: params}
+            )
         }
     };
 }]);

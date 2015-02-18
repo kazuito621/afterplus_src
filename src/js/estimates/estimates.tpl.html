@@ -1,11 +1,22 @@
 <div ng-include="'js/trees/action.tpl.html'" ng-if="auth.is('customer')"></div>
-<div class='container' ng-controller="EstimatesListCtrl">    
+<div class='container' ng-controller="EstimatesListCtrl">
+
+    <div class="table-header">
+        <h1 class="pull-left">Estimates</h1>
+         <button type="button"
+                class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
+                style="max-width: 100%; width: auto;"><i class="fa fa-plus "></i> 
+				New Estimate</button>
+        <div class="clearfix"></div>
+    </div>
 
 	<div ng-if="auth.isAtleast('inventory')">
 		<div class='pull-right topMargin5'>
 			<div class="btn-group" bs-radio-group id="estimatesFilters" ng-model="status_filters_2">
 				<label ng-click="setStatusFilter('all')"class="btn btn-default">
                     <input type="radio" value="all"> All</label>
+                <label ng-click="setStatusFilter('draft')" class="btn btn-default">
+                    <input type="radio" value="draft"> Draft</label>
 				<label ng-click="setStatusFilter('sent')" class="btn btn-default">
                     <input type="radio" value="sent"> Sent</label>
 				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
@@ -60,7 +71,7 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates" class='hoverHotspot' id='item_{{e.reportID}}'>
+                <tr ng-repeat="e in displayedEstimates track by $index" class='hoverHotspot' id='item_{{e.reportID}}'>
                     <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
                         <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)" ng-click="toggleEstimateSelection(e.reportID)">
                     </td>

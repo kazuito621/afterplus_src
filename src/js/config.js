@@ -5,6 +5,7 @@ window.cfg={
     hostAndPort:function(){
         return 'http://'+window.location.host;
         }
+	// @return hostname ie. "http://app.aplustree.com"
     ,host: function(){
         return 'http://'+window.location.host.replace(/:[0-9]+$/, '');
         }
@@ -21,15 +22,31 @@ window.cfg={
             var h=this.host()||'';
 			if(h.match(/app.aplus/)) return 2;
 			if(h.match(/joseph/)) return 3;
-			if(h.match(/woodie/)) return 4;
+			if(h.match(/woodie|woody/)) return 4;
+			if(h.match(/hendricks/)) return 5;
+			if(h.match(/shreiner/)) return 7;
+			if(h.match(/acme/)) return 6;
+			if(h.match(/medallion/)) return 8;
+			if(h.match(/padilla/)) return 9;
 			return 1;	// default to dev.aplustree
 		}
 	,getEntity: function(){
 			var ent=[];
-			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus'};
-			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph'};
+			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus',afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
+			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph',afiliations:"tcia.png,ctsp.png,isa_arb.jpg,isa_memb.jpg"};
+			ent[4]={name:'Big Woodys Tree Service', medname:'Big Woodys Tree', shortname:'bigwoodys',afiliations:''};
+			ent[5]={name:'Hendrickson Tree Care', medname:'Hendrickson Tree', shortname:'hendrickson',afiliations:'wcisa.png'};
+			ent[7]={name:'Shreiner Tree Care', medname:'Shreiner Tree', shortname:'shreiner',afiliations:'wcisa.png'};
+			ent[8]={name:"Medallion Landscape Management, Inc.",medname:"Medallion Landscape Mgmt",shortname:"medallion",afiliations:""};
+			ent[9]={name:"Padilla Group Inc.",medname:"Padilla Group",shortname:"padilla",afiliations:""};
+
 			var eid=this.getEntityID();
-			return ent[eid];
+			var ent = ent[eid];
+			if(!ent){
+				console.debug("ERROR! No entity found for EID "+eid);
+				return {name:'Tree Company', medname:'Tree Company', shortname:''}
+			}
+			return ent;
 		}
     };
 

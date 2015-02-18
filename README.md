@@ -52,11 +52,7 @@ Entities
 
 How to add an entity
 --------------------
-  - Add to entity table
-  - Add to /etc/httpd/conf/httpd.conf file (ServerAlias)
-  - Add to js/config.js
-  - Run misc/generateViews.php
-
+See notes in arborplus_php repo README file
 
 
 History

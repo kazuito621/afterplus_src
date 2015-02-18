@@ -4,7 +4,7 @@
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
-     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main']);
+     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer']);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
@@ -63,12 +63,12 @@ app.config(['$routeProvider', '$locationProvider',
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
-            .when("/tree_edit/:treeID", {
-                templateUrl: "js/trees/edit.tpl.html"
-                ,auth:true, reloadOnSearch:false
-                ,resolve: {
-                    deps:['Api', function(Api){  return Api.getPromise(); }]
-                }})
+            //.when("/tree_edit/:treeID", {
+            //    templateUrl: "js/trees/edit.tpl.html"
+            //    ,auth:true, reloadOnSearch:false
+            //    ,resolve: {
+            //        deps:['Api', function(Api){  return Api.getPromise(); }]
+            //    }})
             .when("/estimates", {
                 templateUrl: "js/estimates/estimates.tpl.html"
                 ,auth:true, reloadOnSearch:false

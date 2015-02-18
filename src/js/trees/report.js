@@ -24,8 +24,6 @@ var ReportCtrl = app.controller(
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
 
-            var jumpedToAnotherReport=false;
-
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
 //                filebrowserUploadUrl: '/uploader/upload.php',
@@ -58,7 +56,6 @@ var ReportCtrl = app.controller(
 
             s.$watch('rdata.recentReportID', function (ID) {
                 reportBackUp=undefined;
-                jumpedToAnotherReport=true;
 
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
@@ -123,27 +120,24 @@ var ReportCtrl = app.controller(
 				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.report.actionButton=0;
 			}
-
+            var discard=false;
             s.$on('$locationChangeStart', function (event, next, current) {
                 if(
-                    (
-                        (Auth.isAtleast('inventory') && reportBackUp=='new')==false) && // If report is newly created
-                    (
-                        !Auth.isAtleast('inventory') ||
-                        reportBackUp==undefined ||
-                        ReportService.isChanged(reportBackUp, s.report) == false
-                        )
-                    ) {
-                    reportBackUp=undefined;
-                    jumpedToAnotherReport=false;
+                    s.data.mode()!=="trees"
+                    || !Auth.isAtleast('inventory')
+                    || reportBackUp==undefined
+                    || discard == true
+                    || !((reportBackUp=='new') ||  ReportService.isChanged(reportBackUp, s.report))
+                ){
                     return;
-                };
+                }
 
                 $location.url($location.url(next).hash());
                 event.preventDefault();
                 var sm= s.$new();
                 sm.leaveCurrentPage=function(){
                     reportBackUp=undefined;
+                    discard=true;
                     $location.url($location.url(next).hash());
                 }
                 sm.stayOnCurrentPage=function(){
@@ -247,6 +241,13 @@ var ReportCtrl = app.controller(
 
 
             s.saveReport = function () {
+
+                var allTreatmentsSaved = s.checkAllTreatmentCodeSaved();
+                if (!allTreatmentsSaved) {
+                    s.setAlert("Please Select Treatments First", { type: 'd' });
+                    return;
+                }
+
                 var saveRequest = RS.saveReport();
                 saveRequest.then(function (data) {
                     data.reportID += '';
@@ -356,23 +357,19 @@ var ReportCtrl = app.controller(
             }
 
             // Remove treatment from estimate
-            s.removeTreatmentFromEstimate = function (treeIndex, treatmentIndex) {
+            s.removeTreatmentFromEstimate = function (treeID, treatmentTypeCode) {
                 // Remove treatment only if there is more than one treatment. Otherwise remove the item
-//                console.log('Tree index: %s, treatment index: %s', treeIndex, treatmentIndex);
+//                console.log('Tree index: %s, treatment index: %s', treeID, treatmentTypeCode);
 
-//                console.log(
-//                    'Removing treatment from a tree',
-//                    s.groupedItems[treeIndex],
-//                    s.groupedItems[treeIndex].treatments[treatmentIndex]
-//                );
 
-                var tree = s.groupedItems[treeIndex];
-
+                var tree=_.findObj(s.groupedItems, 'treeID', treeID);
+                var indexOfTree=_.findIndex(s.groupedItems, function(t) { return t.treeID == treeID; })
                 if (tree.treatments.length && tree.treatments.length > 1) { // remove only selected treatment
-                    tree.treatments.splice(treatmentIndex, 1);
-                    s.groupedItems[treeIndex] = tree;
+                    var idx=_.findIndex(tree.treatments, function(t) { return t.treatmentTypeCode == treatmentTypeCode; })
+                    tree.treatments.splice(idx, 1);
+                    s.groupedItems[indexOfTree] = tree;
                 } else { // remove item
-                    s.groupedItems.splice(treeIndex, 1);
+                    s.groupedItems.splice(indexOfTree, 1);
                 }
 
                 s.report.items = ReportService.ungroupReportItems();
@@ -474,5 +471,34 @@ var ReportCtrl = app.controller(
                     s.report = RS.getBlankReport();
                 }
             }
+
+            // add New TreatmentCode
+            s.addNewTreatment = function (treatments) {
+                treatments.push({
+                    treatmentTypeCode: "Select TreatmentCode",
+                    price: "$0.00"
+                });
+            };
+
+            s.checkAllTreatmentCodeSaved = function () {
+                var isAllSavedTreatments = true;
+                for (var index = 0; index <= s.groupedItems.length - 1; index++) {
+                    var item = s.groupedItems[index];
+                    for (var innerIndex = 0; innerIndex <= item.treatments.length - 1; innerIndex++) {
+                        var treatMent = item.treatments[innerIndex];
+                        if (treatMent.treatmentTypeCode !== undefined &&
+                            treatMent.treatmentTypeCode.toString().toLocaleLowerCase() === "select treatmentcode") {
+                            isAllSavedTreatments = false;
+                        }
+                        //Break Inner loop if there is any un-saved treatment exist
+                        if (!isAllSavedTreatments)
+                            break;
+                    }
+                    //Break Outer loop if there is any un-saved treatment exist
+                    if (!isAllSavedTreatments)
+                        break;
+                }
+                return isAllSavedTreatments;
+            };
         }]
 );

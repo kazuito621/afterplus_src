@@ -30,7 +30,23 @@ app.directive('adjustPrice',
                                     item.price=parseFloat(v.toFixed(2));
                                 }
                             });
-                            scope.$parent.groupedItems = ReportService.groupReportItems();
+                            _.each(scope.$parent.groupedItems,function(groupedItem){
+                                _.each(groupedItem.treatments,function(item){
+                                    var v=parseFloat(item.price)*(1+scope.popover.$scope.adjustPercentage/100);
+                                    if(doRoundPrice){
+                                        if((v - Math.floor(v))<0.5){
+                                            v=Math.floor(v);
+                                        }
+                                        else {
+                                            v=Math.ceil(v);
+                                        }
+                                        item.price=v;
+                                    }
+                                    else {
+                                        item.price=parseFloat(v.toFixed(2));
+                                    }
+                                })
+                            });
                             scope.popover.hide();
                             scope.adjustPercentage=0;
                             scope.popover.$scope.adjustPercentage=0;

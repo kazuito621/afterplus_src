@@ -247,6 +247,13 @@ var ReportCtrl = app.controller(
 
 
             s.saveReport = function () {
+
+                var allTreatmentsSaved = s.checkAllTreatmentCodeSaved();
+                if (!allTreatmentsSaved) {
+                    s.setAlert("Please Select Treatments First", { type: 'd' });
+                    return;
+                }
+
                 var saveRequest = RS.saveReport();
                 saveRequest.then(function (data) {
                     data.reportID += '';
@@ -474,5 +481,34 @@ var ReportCtrl = app.controller(
                     s.report = RS.getBlankReport();
                 }
             }
+
+            // add New TreatmentCode
+            s.addNewTreatment = function (treatments) {
+                treatments.push({
+                    treatmentTypeCode: "Select TreatmentCode",
+                    price: "$0.00"
+                });
+            };
+
+            s.checkAllTreatmentCodeSaved = function () {
+                var isAllSavedTreatments = true;
+                for (var index = 0; index <= s.groupedItems.length - 1; index++) {
+                    var item = s.groupedItems[index];
+                    for (var innerIndex = 0; innerIndex <= item.treatments.length - 1; innerIndex++) {
+                        var treatMent = item.treatments[innerIndex];
+                        if (treatMent.treatmentTypeCode !== undefined &&
+                            treatMent.treatmentTypeCode.toString().toLocaleLowerCase() === "select treatmentcode") {
+                            isAllSavedTreatments = false;
+                        }
+                        //Break Inner loop if there is any un-saved treatment exist
+                        if (!isAllSavedTreatments)
+                            break;
+                    }
+                    //Break Outer loop if there is any un-saved treatment exist
+                    if (!isAllSavedTreatments)
+                        break;
+                }
+                return isAllSavedTreatments;
+            };
         }]
 );

@@ -13,8 +13,13 @@ module.exports = function(config) {
     files: [
 	//bower:js
       'src/bower_components/angular/angular.js',
+      'src/bower_components/angular-bindonce/bindonce.js',
+      'src/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
+      'src/bower_components/ng-tags-input/ng-tags-input.js',
+      'src/bower_components/ng-ckeditor/libs/ckeditor/ckeditor.js',
+      'src/bower_components/ng-ckeditor/ng-ckeditor.js',
       'src/bower_components/angular-mocks/angular-mocks.js',
-	  'src/bower_components/jquery/jquery.js',
+	  'src/bower_components/jquery/dist/jquery.js',
   	  'src/bower_components/angular/angular.js',
   	  'src/bower_components/bootstrap/dist/js/bootstrap.js',
   	  'src/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
@@ -33,8 +38,9 @@ module.exports = function(config) {
       'src/js/*.js',
       'src/js/**/*.js',
       'test/mock/**/*.js',
-      'test/spec/**/*.js'
+      'test/spec/**/*.js',
 	//endbower
+      'public/compiled-tpl/templates.js'
     ],
 
     // list of files / patterns to exclude

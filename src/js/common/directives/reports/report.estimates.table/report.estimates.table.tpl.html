@@ -18,7 +18,7 @@
             <!-- todo-bindonce - i removed it from below... cuz it broke editing of values...
                 if we can get rebind to work, then we need to rebind if the user is an admin (and they want to edit)
                 and leave bindonce if the user is a customer t-->
-            <tr ng-repeat="item in groupedItems | limitTo : limit" ng-if="report.items.length>0"
+            <tr ng-repeat="item in groupedItems | limitTo : limit track by item.treeID" ng-if="report.items.length>0"
                 ng-init="itemIndex = $index"
                 ng-class="rowHighlightClass(item)"
                 class='hoverHotspot'
@@ -67,7 +67,7 @@
                             </td>
 
                             <td data-title="listing_options" class="td-action">
-                                <a href ng-click="removeTreatmentFromEstimate(itemIndex, treatmentIndex)" class='row-action' ng-if="auth.is('admin')">
+                                <a href ng-click="removeTreatmentFromEstimate(item.treeID, treatment.treatmentTypeCode)" class='row-action' ng-if="auth.is('admin')">
                                     <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
                                 </a>
                             </td>

@@ -1134,7 +1134,7 @@ footer {
 
 /* line 447, ../scss/partials/_common.scss */
 .table-header {
-  margin-top: 5px;
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 /* line 452, ../scss/partials/_common.scss */
@@ -1142,6 +1142,7 @@ footer {
   font-size: 39px;
   line-height: 41.6px;
   margin-top: 10px;
+  font-weight: bold;
 }
 
 /* line 3, ../scss/partials/_estimate.scss */

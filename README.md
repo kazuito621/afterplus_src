@@ -1,6 +1,6 @@
 arborplus_angular
 =================
-Angular/JS/Frontend repo for arbor app
+AngulariJS/Frontend repo for the ArborPlus product
 
 
 Installation
@@ -15,6 +15,7 @@ After cloning this repository onto your local machine:
  - npm install
  - bower install
  - grunt build
+ - grunt test  (make sure tests run ok)
  - grunt serve
 
 Goto browser: http://localhost:9000
@@ -24,38 +25,44 @@ Use this test account:
    pass: asdf
 
 
+Developer Contribution Guidelines
+==============
 
-Contributing
-============
-Please create a new branch for each new feature you are working on.
-Branch names should follow this pattern:
-      <yourName>/##_<featureName>
+Please follow these guidelines strictly.
 
-For example:
+Git Branching
+---------
 
-      tim/01_adding_invite_button
-	  tim/02_bugfix_image_rotation
+ - **Proper Naming** - At the beginning of each task, create a new branch from master named:
+   
+       yourname/XX_task_name
+        
+       // for example:
+       tim/01_fix_email_bug
+       tim/02_new_popup_for_user_edit
 
-*When a feature is completed:*
-  - Create a pull request
-  - Note the branch name in the Trello card related to the bug/feature
-  - Move the trello car to the "done" list
-  - Note the hours it took to complete at the bottom of the Trello card description
- 
+ - **Minimize Conflicts** - If your task takes more than a few days, be sure to merge from `master` often so that you're branch doesn't diverge to much.
+ - **Dev Branch for small changes** - If the task is very small, like only a few lines of code, you do not need to create a new branch, you can keep your own separate `dev` branch for small bugs/features.
 
+      tim/dev
 
-Entities
-========
-  This project is now able to be "white-labeled", so that multiple companies can use it as their tree management service.
-  This is controlled by "entities". Each company is an entity, that is listed in the entity database table.
-  Some things are currently being hardcoded for now.
-
-How to add an entity
---------------------
-See notes in arborplus_php repo README file
+ - **Keep your dev branch up to date** - Before starting any work in your dev branch be sure to merge from `master` to keep it up to date
 
 
-History
-========
-This project was broken up from a larger repository, and now only contains the javascript/html frontend portion of the project.
+Task Completion
+----------
+When you're done with a task:
+
+ - Create a Pull Request 
+   - https://help.github.com/articles/creating-a-pull-request/
+
+ - If you're linked into the Trello task tracking system, then:
+   - Drag the trello card to DONE
+   - Write the `git branch` and `hours worked` at the bottom of the task description:
+     
+      Branch: tim/03_tree_edit_bug
+      Hours: 5
+
+
+
 

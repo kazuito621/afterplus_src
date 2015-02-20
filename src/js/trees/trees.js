@@ -155,6 +155,9 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.filteredSites = [];//s.initData.sites;
 
+            s.activePopover = { elem: {}, itemID: undefined };
+           
+
             $scope.getAllSites = function () {
 
                 Api.getAllSites().then(function (data) {

@@ -1134,7 +1134,7 @@ footer {
 
 /* line 447, ../scss/partials/_common.scss */
 .table-header {
-  margin-top: 5px;
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 /* line 452, ../scss/partials/_common.scss */
@@ -1142,6 +1142,7 @@ footer {
   font-size: 39px;
   line-height: 41.6px;
   margin-top: 10px;
+  font-weight: bold;
 }
 
 /* line 3, ../scss/partials/_estimate.scss */
@@ -1562,47 +1563,58 @@ footer {
   		}
   	}
   } */
-}
-/* line 429, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table tr td {
-  text-align: center;
-}
-/* line 434, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table tr td.td-image {
-  min-width: 100px;
-}
-/* line 439, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table tr td.td-id {
-  min-width: 50px;
-}
-/* line 444, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table tr td.td-name {
-  min-width: 300px;
-  text-align: left;
-}
-/* line 450, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table tr td.td-treatment {
-  min-width: 200px;
-}
-/* line 455, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table tr td.td-bid {
-  min-width: 50px;
-}
-/* line 460, ../scss/partials/_estimate.scss */
-.clients-estimate-report-table table.table tr td.td-treatment-bid {
-  min-width: 350px;
+  		/*
+  		tr 
+  		{
+  			td
+  			{
+  				text-align: center;
+  			}
+  
+  			td.td-image
+  			{
+  				min-width: 100px;
+  			}
+  
+  			td.td-id
+  			{
+  				min-width: 50px;
+  			}
+  
+  			td.td-name
+  			{
+  				min-width: 300px;
+  				text-align: left;
+  			}
+  
+  			td.td-treatment
+  			{
+  				min-width: 200px;
+  			}
+  
+  			td.td-bid
+  			{
+  				min-width: 50px;
+  			}
+  
+  			td.td-treatment-bid
+  			{
+  				min-width: 350px;
+  			}
+  		}
+  		/**/
 }
 
-/* line 468, ../scss/partials/_estimate.scss */
+/* line 469, ../scss/partials/_estimate.scss */
 .table-container {
   margin-bottom: 30px;
 }
-/* line 473, ../scss/partials/_estimate.scss */
+/* line 474, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-4 {
   float: right;
 }
 @media (max-width: 991px) {
-  /* line 473, ../scss/partials/_estimate.scss */
+  /* line 474, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-4 {
     display: block;
     float: none;
@@ -1618,12 +1630,12 @@ footer {
     clear: both;
   }
 }
-/* line 486, ../scss/partials/_estimate.scss */
+/* line 487, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-md-8 {
   float: left;
 }
 @media (max-width: 991px) {
-  /* line 486, ../scss/partials/_estimate.scss */
+  /* line 487, ../scss/partials/_estimate.scss */
   .table-container .row-table .col-md-8 {
     display: block;
     float: none;
@@ -1639,7 +1651,7 @@ footer {
     clear: both;
   }
 }
-/* line 499, ../scss/partials/_estimate.scss */
+/* line 500, ../scss/partials/_estimate.scss */
 .table-container .row-table .col-info-trees {
   width: 100%;
   display: block;
@@ -1655,57 +1667,57 @@ footer {
 .table-container .row-table .col-info-trees:after {
   clear: both;
 }
-/* line 512, ../scss/partials/_estimate.scss */
+/* line 513, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate {
   position: relative;
 }
-/* line 516, ../scss/partials/_estimate.scss */
+/* line 517, ../scss/partials/_estimate.scss */
 .table-container .map-container.mode_estimate.affix {
   position: fixed;
   top: 100px;
 }
 @media (max-width: 991px) {
-  /* line 516, ../scss/partials/_estimate.scss */
+  /* line 517, ../scss/partials/_estimate.scss */
   .table-container .map-container.mode_estimate.affix {
     position: relative;
     top: 0;
     margin-bottom: 15px;
   }
 }
-/* line 531, ../scss/partials/_estimate.scss */
+/* line 532, ../scss/partials/_estimate.scss */
 .table-container .table {
   border: 1px solid #acaead;
 }
-/* line 537, ../scss/partials/_estimate.scss */
+/* line 538, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-image, .table-container .table tr .td-id, .table-container .table tr .td-name {
   vertical-align: middle;
 }
-/* line 542, ../scss/partials/_estimate.scss */
+/* line 543, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment {
   width: 300px;
   text-align: left;
 }
-/* line 547, ../scss/partials/_estimate.scss */
+/* line 548, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-bid {
   min-width: 60px;
   text-align: right;
 }
-/* line 553, ../scss/partials/_estimate.scss */
+/* line 554, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-action {
   min-width: 45px;
   text-align: right;
 }
-/* line 559, ../scss/partials/_estimate.scss */
+/* line 560, ../scss/partials/_estimate.scss */
 .table-container .table tr .td-treatment-bid {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
 }
-/* line 569, ../scss/partials/_estimate.scss */
+/* line 570, ../scss/partials/_estimate.scss */
 .table-container .table thead tr {
   border-color: #acaead;
 }
-/* line 572, ../scss/partials/_estimate.scss */
+/* line 573, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1717,19 +1729,19 @@ footer {
   border-bottom: 1px solid #acaead;
   white-space: normal !important;
 }
-/* line 580, ../scss/partials/_estimate.scss */
+/* line 581, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td.amount {
   text-align: right;
 }
-/* line 585, ../scss/partials/_estimate.scss */
+/* line 586, ../scss/partials/_estimate.scss */
 .table-container .table thead tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 595, ../scss/partials/_estimate.scss */
+/* line 596, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr {
   border-color: #acaead;
 }
-/* line 598, ../scss/partials/_estimate.scss */
+/* line 599, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td {
   border: none;
   border-bottom: 1px solid #acaead;
@@ -1740,19 +1752,19 @@ footer {
   color: #646665;
   line-height: 20px;
 }
-/* line 606, ../scss/partials/_estimate.scss */
+/* line 607, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .light {
   color: #a8a8a8;
 }
-/* line 611, ../scss/partials/_estimate.scss */
+/* line 612, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td.amount {
   text-align: right;
 }
-/* line 616, ../scss/partials/_estimate.scss */
+/* line 617, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td:last-child {
   border-right: 1px solid #acaead;
 }
-/* line 621, ../scss/partials/_estimate.scss */
+/* line 622, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action {
   opacity: 0.8;
   -webkit-transition: all linear 0.4s;
@@ -1761,55 +1773,55 @@ footer {
   font-size: 12px;
   margin-right: 5px;
 }
-/* line 628, ../scss/partials/_estimate.scss */
+/* line 629, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:hover, .table-container .table tbody tr td .row-action:focus, .table-container .table tbody tr td .row-action:active {
   opacity: 1;
 }
-/* line 633, ../scss/partials/_estimate.scss */
+/* line 634, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action:last-child {
   margin-right: 0;
 }
-/* line 638, ../scss/partials/_estimate.scss */
+/* line 639, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-primary {
   color: #333333;
 }
-/* line 643, ../scss/partials/_estimate.scss */
+/* line 644, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td .row-action .clr-danger {
   color: #f84540;
 }
-/* line 649, ../scss/partials/_estimate.scss */
+/* line 650, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table {
   width: 100%;
   border: none;
 }
-/* line 656, ../scss/partials/_estimate.scss */
+/* line 657, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td {
   padding: 8px;
   border-right: none;
   background: none !important;
   border-bottom: 1px solid #CCCCCC;
 }
-/* line 663, ../scss/partials/_estimate.scss */
+/* line 664, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr td:last-child {
   border-right: none;
 }
-/* line 671, ../scss/partials/_estimate.scss */
+/* line 672, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr td table tr:last-child td {
   border-bottom: none;
 }
-/* line 682, ../scss/partials/_estimate.scss */
+/* line 683, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(odd) td {
   background: #fafcfb;
 }
-/* line 690, ../scss/partials/_estimate.scss */
+/* line 691, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:nth-child(even) td {
   background: #f2f3f5;
 }
-/* line 698, ../scss/partials/_estimate.scss */
+/* line 699, ../scss/partials/_estimate.scss */
 .table-container .table tbody tr:hover td, .table-container .table tbody tr:focus td, .table-container .table tbody tr:active td {
   background: #eaeaea;
 }
-/* line 707, ../scss/partials/_estimate.scss */
+/* line 708, ../scss/partials/_estimate.scss */
 .table-container .total-amount {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 24px;
@@ -1819,7 +1831,7 @@ footer {
   text-align: right;
 }
 
-/* line 714, ../scss/partials/_estimate.scss */
+/* line 715, ../scss/partials/_estimate.scss */
 .section-container {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1827,7 +1839,7 @@ footer {
   color: #000;
   line-height: 18px;
 }
-/* line 716, ../scss/partials/_estimate.scss */
+/* line 717, ../scss/partials/_estimate.scss */
 .section-container .section-sub-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -1835,7 +1847,7 @@ footer {
   color: #000;
   line-height: 18px;
 }
-/* line 721, ../scss/partials/_estimate.scss */
+/* line 722, ../scss/partials/_estimate.scss */
 .section-container .section-mini-title {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -1845,20 +1857,20 @@ footer {
   margin-top: 10px;
 }
 
-/* line 730, ../scss/partials/_estimate.scss */
+/* line 731, ../scss/partials/_estimate.scss */
 .logo-container {
   display: block;
   border-top: 1px solid #BBB;
   margin-top: 20px;
   padding-top: 15px;
 }
-/* line 738, ../scss/partials/_estimate.scss */
+/* line 739, ../scss/partials/_estimate.scss */
 .logo-container .logo {
   height: 50px;
   width: auto;
   display: inline-block;
 }
-/* line 744, ../scss/partials/_estimate.scss */
+/* line 745, ../scss/partials/_estimate.scss */
 .logo-container .logo img {
   height: 85px;
   width: auto;
@@ -1866,17 +1878,17 @@ footer {
 }
 
 @media print {
-  /* line 755, ../scss/partials/_estimate.scss */
+  /* line 756, ../scss/partials/_estimate.scss */
   .action-container {
     display: none;
   }
 
-  /* line 762, ../scss/partials/_estimate.scss */
+  /* line 763, ../scss/partials/_estimate.scss */
   .estimate-container .estimate-summary {
     border: 1px solid #000;
   }
 
-  /* line 770, ../scss/partials/_estimate.scss */
+  /* line 771, ../scss/partials/_estimate.scss */
   .table-container .map-container {
     display: block;
     width: 100% !important;

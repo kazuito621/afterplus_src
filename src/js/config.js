@@ -32,13 +32,18 @@ window.cfg={
 		}
 	,getEntity: function(){
 			var ent=[];
-			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus',afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
-			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph',afiliations:"tcia.png,ctsp.png,isa_arb.jpg,isa_memb.jpg"};
+			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus',
+						afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
+			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph',
+						afiliations:"tcia.png,ctsp.png,isa_arb.jpg,isa_memb.jpg"};
 			ent[4]={name:'Big Woodys Tree Service', medname:'Big Woodys Tree', shortname:'bigwoodys',afiliations:''};
 			ent[5]={name:'Hendrickson Tree Care', medname:'Hendrickson Tree', shortname:'hendrickson',afiliations:'wcisa.png'};
-			ent[7]={name:'Shreiner Tree Care', medname:'Shreiner Tree', shortname:'shreiner',afiliations:'wcisa.png'};
-			ent[8]={name:"Medallion Landscape Management, Inc.",medname:"Medallion Landscape Mgmt",shortname:"medallion",afiliations:""};
-			ent[9]={name:"Padilla Group Inc.",medname:"Padilla Group",shortname:"padilla",afiliations:""};
+			ent[7]={name:'Shreiner Tree Care', medname:'Shreiner Tree', shortname:'shreiner',
+						afiliations:"tcia.png,ctsp.png,isa_arb.jpg,bcma.jpg"};
+			ent[8]={name:"Medallion Landscape Management, Inc.",medname:"Medallion Landscape Mgmt",
+						shortname:"medallion",afiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
+			ent[9]={name:"Padilla Group Inc.",medname:"Padilla Group",shortname:"padilla",
+						afiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
 
 			var eid=this.getEntityID();
 			var ent = ent[eid];

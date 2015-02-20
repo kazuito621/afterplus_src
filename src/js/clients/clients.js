@@ -76,9 +76,11 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 s.displayedClients = s.displayedClients.concat(addon);
             };
 
-            var streetAddress=''
             s.updateAddess=function(address){
-                s.client=address;
+                s.client.street=address.street;
+                s.client.state=address.state;
+                s.client.city=address.city;
+                s.client.zip=address.zip;
             };
 			s.saveClient = function(mode){
 				if(!mode) mode = s.mode;

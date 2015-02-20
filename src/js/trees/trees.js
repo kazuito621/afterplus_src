@@ -424,13 +424,14 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		1. ACTIVE: Set clientID and clientTypeID with corresponding values
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
+            var lastSiteID=-1;
             s.onSelectSiteID = function (id) {
+                if(lastSiteID==id) return; // Prevents loading same things twice
+                else lastSiteID=id;
                 s.selected.siteID = id;
                 ReportService.setSiteID(id);
 
                 if (s.data.mode() != 'trees') return;
-
-                ReportService.loadRecent();
 
                 if (id && id > 0) {
                     if (s.data.mode() == 'trees') {
@@ -677,7 +678,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 								// do we really need this? ... this was here before
                                 $timeout(function () {
                                     deferred.resolve();
-									mapLoaded=true;
+									window.mapLoaded=true;
                                 }, 1000);
 
                             }

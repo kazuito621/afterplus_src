@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}">
+    <table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}" ng-hide="data.mode()=='estimate' && groupedItems.length==0">
         <thead>
             <tr id="estimate_table_heading">
                 <td class="td-image">Tree</td>

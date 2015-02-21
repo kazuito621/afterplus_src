@@ -113,6 +113,18 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
             t.treatmentTypeCode = treatment.code;
         };
 
+        s.deleteTree = function (treeId) {
+            s.setAlert('Deleting tree', { busy: true, time: "false" });
+            Api.deleteTree(treeId).then(function () {
+                s.hideAllAlert();
+                $location.path('trees');
+            });
+            $(document).unbind('keyup', cancelOnEscape);
+            modal.hide();
+
+        };
+
+       
         s.onCancel = function () {
             $(document).unbind('keyup', cancelOnEscape);
             modal.hide();

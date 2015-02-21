@@ -374,7 +374,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 newActiveRow.toggleClass('highlighted-row');
 
-                var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+				var nar=newActiveRow.offset(); 
+				var lco=listContainer.offset();
+				if(nar && nar.top && lco && lco.top)
+                	var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+				else
+					return;
 
                 scrollTo(scrollValue);
             };

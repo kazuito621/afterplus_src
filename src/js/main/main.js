@@ -11,8 +11,13 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     s.whoami = 'MainCtrl'
     s.alertBox;
     s.localStore = {};
-    storage.bind(s, 'localStore', { defaultValue: { token: false } });
+    
+    var dynamicTitle = cfg.getEntity();
+    $("html").find("title").text(dynamicTitle.name);
+  
 
+    storage.bind(s, 'localStore', { defaultValue: { token: false } });
+   
     // links for $scope to Auth class (so templates can use them)
     s.auth = {
         is: angular.bind(Auth, Auth.is)

@@ -378,7 +378,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 newActiveRow.toggleClass('highlighted-row');
 
-                var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+				var nar=newActiveRow.offset(); 
+				var lco=listContainer.offset();
+				if(nar && nar.top && lco && lco.top)
+                	var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+				else
+					return;
 
                 scrollTo(scrollValue);
             };
@@ -505,7 +510,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.colors.nextColorID = 0;
                 s.safeApply();	// this is needed because of _throttle being used in tree filter service
                 if(s.trees.length==0){
-                    s.setAlert('No tree results, or trees do not have GPS locations', { type: 'd', time: 5 });
+                    s.setAlert('No trees found on this property', { type: 'd', time: 5 });
                     var site=_.findObj(s.filteredSites, 'siteID', s.selected.siteID);
                     showSingleSite(site); // Can not use show mapped tree
                 }
@@ -1407,7 +1412,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
                 set2 = filterOutIconDups(set2);
                 if (set2.length > 0) addMarkers(set2, 'singleSite');
-                else s.setAlert('No tree results, or trees do not have GPS locations', { type: 'd', time: 5 });
+                else s.setAlert('No trees found on this property', { type: 'd', time: 5 });
             }, 1000);
 
             // When tree icons are grouped in estimate, there will be duplicates... always take the lower locatTreeID number

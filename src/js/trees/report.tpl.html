@@ -137,7 +137,7 @@
 
         <div class="table-container">
             <div class="row row-table">
-                <div class="col-md-4" ng-if="data.mode()=='estimate'">
+                <div class="col-md-4" ng-if="data.mode()=='estimate' && groupedItems.length>0">
                     <div id="treeMap_estimate" class="map-container mode_{{data.mode()}}">
                         <div id="treeMap2" class="mode_{{data.mode()}}"></div>
                     </div>

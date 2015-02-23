@@ -255,6 +255,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.gotoTreesPage = function () {
                 s.selected.siteID = '';
+                ReportService.setSiteID('');
                 TFS.clearFilters(true);
                 s.openTreesOrSites();
             }

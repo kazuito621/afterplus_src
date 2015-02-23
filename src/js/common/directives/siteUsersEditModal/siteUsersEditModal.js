@@ -122,6 +122,14 @@ app.directive('siteUsersEditModal',
 	            scope.showAddNewSiteContact = false;
 
 	            var tmp = angular.copy(scope.newContact);
+	            var isvalid = validateEmail(tmp.email);
+	            if (isvalid === true) {
+	               
+	            }
+	            else {
+	                $("#newContactEmail").val(' ');
+	                return;
+	            }
 	            var user = { role: tmp.role, email: tmp.email };
 
 	            user.fName = tmp.fName;
@@ -142,6 +150,17 @@ app.directive('siteUsersEditModal',
 	            });
 	        };
 
+	        function validateEmail(sEmail) {
+	            var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+	            if (filter.test(sEmail)) {
+	                return true;
+	            }
+	            else {
+	                return false;
+	            }
+
+	        }
+
 	        scope.addNewSiteRep = function (event) {
 
 	            event.preventDefault();
@@ -150,7 +169,14 @@ app.directive('siteUsersEditModal',
 	            scope.showAddNewSiteRep = false;
 
 	            var tmp = angular.copy(scope.newRep);
-
+	            var isvalid = validateEmail(tmp.email);
+	            if (isvalid === true) {
+	               
+	            }
+	            else {
+	                $("#newRepEmail").val(' ');
+	                return;
+	            }
 	            var user = { role: tmp.role, email: tmp.email };
 
 	            user.fName = tmp.fName;

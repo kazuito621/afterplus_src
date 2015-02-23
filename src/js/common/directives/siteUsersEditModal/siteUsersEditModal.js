@@ -122,6 +122,11 @@ app.directive('siteUsersEditModal',
 	            scope.showAddNewSiteContact = false;
 
 	            var tmp = angular.copy(scope.newContact);
+	            var isvalid = validateEmail(tmp.email);
+	            if (isvalid !== true) {
+            		scope.setAlert('Email address is invalid', { type:'d' });            
+	                return;
+	            }
 	            var user = { role: tmp.role, email: tmp.email };
 
 	            user.fName = tmp.fName;
@@ -142,6 +147,12 @@ app.directive('siteUsersEditModal',
 	            });
 	        };
 
+	        function validateEmail(sEmail) {
+	            var filter = /^[a-zA-Z0-9].*@.*\..*/;
+	            if (filter.test(sEmail)) return true;
+	         	return false;
+	        }
+
 	        scope.addNewSiteRep = function (event) {
 
 	            event.preventDefault();
@@ -150,7 +161,14 @@ app.directive('siteUsersEditModal',
 	            scope.showAddNewSiteRep = false;
 
 	            var tmp = angular.copy(scope.newRep);
-
+	            var isvalid = validateEmail(tmp.email);
+	            if (isvalid === true) {
+	               
+	            }
+	            else {
+	                $("#newRepEmail").val(' ');
+	                return;
+	            }
 	            var user = { role: tmp.role, email: tmp.email };
 
 	            user.fName = tmp.fName;

@@ -123,11 +123,8 @@ app.directive('siteUsersEditModal',
 
 	            var tmp = angular.copy(scope.newContact);
 	            var isvalid = validateEmail(tmp.email);
-	            if (isvalid === true) {
-	               
-	            }
-	            else {
-	                $("#newContactEmail").val(' ');
+	            if (isvalid !== true) {
+            		scope.setAlert('Email address is invalid', { type:'d' });            
 	                return;
 	            }
 	            var user = { role: tmp.role, email: tmp.email };
@@ -151,14 +148,9 @@ app.directive('siteUsersEditModal',
 	        };
 
 	        function validateEmail(sEmail) {
-	            var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-	            if (filter.test(sEmail)) {
-	                return true;
-	            }
-	            else {
-	                return false;
-	            }
-
+	            var filter = /^[a-zA-Z0-9].*@.*\..*/;
+	            if (filter.test(sEmail)) return true;
+	         	return false;
 	        }
 
 	        scope.addNewSiteRep = function (event) {

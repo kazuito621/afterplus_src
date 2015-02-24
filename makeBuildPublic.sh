@@ -11,18 +11,18 @@ fi
 
 ## Get directories
 
-NEXTBUILDDIR=$1
-THISDIR=$PWD
+NEXTBUILDDIR=$1		## relative dir of next build
+THISDIR=$PWD		## this current working dir
 
 cd `dirname $0`
-BASEDIR=$PWD
+BASEDIR=$PWD		## base dir of where script is located
 cd ../php/public
-PHPPUBDIR=$PWD
+PHPPUBDIR=$PWD		## php public dir
 
 ## Setup links
 cd $THISDIR
 cd $NEXTBUILDDIR
-HARDBUILDDIR=$PWD
+HARDBUILDDIR=$PWD	## hard linked path to build dir (ie. of $NEXTBUILDDIR)
 echo "Setting next build public:"
 echo $HARDBUILDDIR
 

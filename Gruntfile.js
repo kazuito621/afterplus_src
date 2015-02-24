@@ -9,6 +9,8 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
+var path = require('path');
+
 module.exports = function (grunt) {
 
     // Load grunt tasks automatically
@@ -360,7 +362,7 @@ module.exports = function (grunt) {
             command: 'npm install'
           },
           update_webdriver: {
-            command: 'node_modules/protractor/bin/webdriver-manager update'
+            command: 'node ' + path.join('node_modules/protractor/bin', 'webdriver-manager') + ' update'
           }
         },
 
@@ -468,7 +470,7 @@ module.exports = function (grunt) {
       'copy:dist',
       'cdnify',
       'cssmin',
-      //'uglify',
+      'uglify',
       'rev',
       'usemin',
       'htmlmin',

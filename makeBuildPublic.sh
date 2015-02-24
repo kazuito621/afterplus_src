@@ -10,19 +10,26 @@ if [ "$1" == "" ] || [ ! -e $1 ];then
 fi
 
 ## Get directories
-
-NEXTBUILDDIR=$1
-THISDIR=$PWD
+NEXTBUILDDIR=$1		## relative dir of next build
 
 cd `dirname $0`
-BASEDIR=$PWD
+[ ! -d $NEXTBUILDDIR ] && echo "Cant find $NEXTBUILDDIR. Must be relative path to this script" && exit 1;
+
+BASEDIR=$PWD		## base dir of where script is located
 cd ../php/public
-PHPPUBDIR=$PWD
+PHPPUBDIR=$PWD		## php public dir
 
 ## Setup links
-cd $THISDIR
+cd $BASEDIR
 cd $NEXTBUILDDIR
-HARDBUILDDIR=$PWD
+HARDBUILDDIR=$PWD	## hard linked path to build dir (ie. of $NEXTBUILDDIR)
+
+## Make sure js and css files exists
+[ ! -e js/*.vendor.js ] && echo "Missing vendor.js file!" && exit 1;
+[ ! -e js/*.scripts.js ] && echo "Missing scripts.js file!" && exit 1;
+[ ! -e css/*.main.css ] && echo "Missing main.css file!" && exit 1;
+[ ! -e css/*.vendor.css ] && echo "Missing vendor.css file!" && exit 1;
+
 echo "Setting next build public:"
 echo $HARDBUILDDIR
 

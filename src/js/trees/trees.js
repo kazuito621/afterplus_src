@@ -155,6 +155,9 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.filteredSites = [];//s.initData.sites;
 
+            s.activePopover = { elem: {}, itemID: undefined };
+           
+
             $scope.getAllSites = function () {
 
                 Api.getAllSites().then(function (data) {
@@ -252,6 +255,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.gotoTreesPage = function () {
                 s.selected.siteID = '';
+                ReportService.setSiteID('');
                 TFS.clearFilters(true);
                 s.openTreesOrSites();
             }
@@ -373,7 +377,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 newActiveRow.toggleClass('highlighted-row');
 
-                var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+				var nar=newActiveRow.offset(); 
+				var lco=listContainer.offset();
+				if(nar && nar.top && lco && lco.top)
+                	var scrollValue = listContainer.scrollTop() + newActiveRow.offset().top - listContainer.offset().top;
+				else
+					return;
 
                 scrollTo(scrollValue);
             };
@@ -499,7 +508,13 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.colors.assignment = [];
                 s.colors.nextColorID = 0;
                 s.safeApply();	// this is needed because of _throttle being used in tree filter service
-                showMappedTrees(s.trees);
+                if(s.trees.length==0){
+                    s.setAlert('No trees found on this property', { type: 'd', time: 5 });
+                    var site=_.findObj(s.filteredSites, 'siteID', s.selected.siteID);
+                    showSingleSite(site); // Can not use show mapped tree
+                }
+                else
+                    showMappedTrees(s.trees);
             });
 
             //make tree update after its edited
@@ -801,6 +816,51 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 replaceMarkers(s.siteLocs, 'allSites');
             }, 1500);
+
+
+            var showSingleSite = _.throttle(function (site) {
+                console.debug("show mapped sites ");
+                var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
+                var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
+                if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
+
+                if (gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID = gMap.getDiv().id;
+                if (gMapID !== map_id) {
+                    return initMap().then(function () {
+                        showMappedSites();
+                    });
+                }
+
+                s.siteLocs = [];
+
+                if (!site.lng || site.lng == 0 || !site.lat || site.lat == 0) return noLoc++;
+
+                if (site.species && site.species.length > 0) numSpecies = site.species.length; else numSpecies = 0;
+                var _siteObj = _.findObj(s.initData.sites, 'siteID', site.siteID);
+                var _clientObj = _.findObj(s.initData.clients, 'clientID', _siteObj.clientID);
+
+                var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
+
+                site.info = '<div id="content">' + '<h1 id="firstHeading" class="firstHeading">' + site.siteName + '</h1>' + '<div id="bodyContent">' + '<p><strong>SiteID:' + site.siteID + '</strong></p>' + '<p><strong>Client:' + _clientObj.clientName + '</strong></p>' + '<p><strong>Trees:' + (site.treeCount ? site.treeCount : 0) + '</strong></p>';
+                if (site.treeCount > 0)site.info += '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
+                site.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+
+                // add color to site marker
+                setSiteColor(site);
+                s.siteLocs.push(site);
+
+                if (!infowindow) infowindow = new google.maps.InfoWindow();
+
+                if (!s.siteLocs.length) {
+                    if (noLoc > 0)
+                        s.setAlert(noLoc + " site(s) are missing lat/long, and cannot be displayed", { type: 'd', pri: 2 })
+                    return clearMarkers();
+                }
+
+                replaceMarkers(s.siteLocs, 'singleSite');
+            }, 1500);
+
+
 
             var showSearchMarker = _.throttle(function () {
                 var places = s.searchBox.getPlaces();
@@ -1351,7 +1411,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
                 set2 = filterOutIconDups(set2);
                 if (set2.length > 0) addMarkers(set2, 'singleSite');
-                else s.setAlert('No tree results, or trees do not have GPS locations', { type: 'd', time: 5 });
+                else s.setAlert('No trees found on this property', { type: 'd', time: 5 });
             }, 1000);
 
             // When tree icons are grouped in estimate, there will be duplicates... always take the lower locatTreeID number

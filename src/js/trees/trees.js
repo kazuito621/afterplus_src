@@ -351,7 +351,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
 
-
             var highlightResultRow = function (treeID) {
                 if (s.data.mode() !== 'trees') {
                     return;
@@ -1506,9 +1505,12 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 // this is to combat a bug in which even a seemingly blank estimate, still gave an error: "You are mixing trees from different sites"
                 var isNewReportNeeded = ReportService.checkIfNewReportNeeded(trees);
-                if (isNewReportNeeded == 1) { //refresh report with prompt
+                //var asd=ReportService.isChanged(ReportService.reportBackup,ReportService.report);
+                if (isNewReportNeeded == 1 &&  ReportService.isChanged(ReportService.reportBackup, ReportService.report)) { //refresh report with prompt
+               // if (isNewReportNeeded == 1 ) { //refresh report with prompt
                     return $modal({ scope: s, template: 'js/common/directives/templates/newEstimatePromptModal.tpl.html', show: true });
-                } else if (isNewReportNeeded === 0) {
+                }
+                else if (isNewReportNeeded === 0 || isNewReportNeeded === 1) {
                     ReportService.getBlankReport();
                 }
 

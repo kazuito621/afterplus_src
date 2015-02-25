@@ -120,7 +120,8 @@
             </button>
             &nbsp;
             <span ng-if="report.reportID">
-                <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
+                <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}' 
+				target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
                 <a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'
                    onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
             </span>

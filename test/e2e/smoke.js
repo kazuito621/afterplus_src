@@ -5,7 +5,7 @@ describe('app', function() {
   });
 
   xit('should have a title', function() {
-    expect(browser.getTitle()).toEqual('ArborPlus Tree Management');
+    expect(browser.getTitle()).toBeDefined();
   });
 
   it('should let user to login', function() {

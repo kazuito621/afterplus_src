@@ -5,12 +5,24 @@ if [ "$1" == "" ] || [ ! -e $1 ];then
 	ME=`basename $0`
 	[ ! -e $1 ] && echo "Directory does not exist";
 	echo "Usage: $ME path/to/build-directory"
+	echo "Usage: #ME dist   -- will copy dist over to build-<timestamp> and make it public"
 	echo "   ie. $ME builds/build-12345"
 	exit 255
 fi
 
-## Get directories
 NEXTBUILDDIR=$1		## relative dir of next build
+
+## if it's "dist" then copy it over
+if [ "$NEXTBUILDDIR" == "dist" ];then
+	tstamp=`date +%s`;
+	NEXTBUILDDIR="builds/build-$tstamp";
+	echo "Copying dist to $NEXTBUILDDIR"
+	mkdir -p $NEXTBUILDDIR 2>/dev/null
+	cp -a dist/* $NEXTBUILDDIR/
+fi
+
+
+
 
 cd `dirname $0`
 [ ! -d $NEXTBUILDDIR ] && echo "Cant find $NEXTBUILDDIR. Must be relative path to this script" && exit 1;
@@ -22,7 +34,6 @@ PHPPUBDIR=$PWD		## php public dir
 ## Setup links
 cd $BASEDIR
 cd $NEXTBUILDDIR
-HARDBUILDDIR=$PWD	## hard linked path to build dir (ie. of $NEXTBUILDDIR)
 
 ## Make sure js and css files exists
 [ ! -e js/*.vendor.js ] && echo "Missing vendor.js file!" && exit 1;
@@ -31,7 +42,7 @@ HARDBUILDDIR=$PWD	## hard linked path to build dir (ie. of $NEXTBUILDDIR)
 [ ! -e css/*.vendor.css ] && echo "Missing vendor.css file!" && exit 1;
 
 echo "Setting next build public:"
-echo $HARDBUILDDIR
+echo $NEXTBUILDDIR
 
 ln -sf $PHPPUBDIR/api
 ln -sf $PHPPUBDIR/go
@@ -51,7 +62,7 @@ cd $BASEDIR
 	&& mv -f public lastPublicBuild && echo "Backedup last build: lastPublicDir --> $(readlink lastPublicDir)"
 
 ## Set as live dir
-ln -sf $HARDBUILDDIR public
+ln -sf $NEXTBUILDDIR public
 
 ## Check that it all worked
 [ ! -e public/favicon.ico ] ||  [ ! -e public/index.html ] \

@@ -209,6 +209,18 @@ module.exports = function (grunt) {
         usemin: {
             html: ['<%= yeoman.dist %>/{,*/}*.html'],
             css: ['<%= yeoman.dist %>/css/{,*/}*.css'],
+            //options: {
+            //    dest: '<%= yeoman.dist %>',
+            //    flow: {
+            //        html: {
+            //            steps: {
+            //                js: ['concat', 'uglifyjs'],
+            //                css: ['cssmin']
+            //            },
+            //            post: {}
+            //        }
+            //    }
+            //}
             options: {
                 assetsDirs: ['<%= yeoman.dist %>']
             }
@@ -260,7 +272,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: '.tmp/concat/js',
                     src: '*.js',
-                    dest: '.tmp/concat/js'
+                    dest: '<%= yeoman.dist %>/js'
                 }]
             }
         },
@@ -293,7 +305,8 @@ module.exports = function (grunt) {
                       'patch/**/*',
                       //'img/*',
                       'fonts/*',
-                      'compiled-tpl/*'
+                      'compiled-tpl/*',
+                      '.tmp/concat/*.js'
                     ]
                 }
         /*
@@ -324,6 +337,12 @@ module.exports = function (grunt) {
                     src: 'api/*.*'
                   },
             */
+            js: {
+                expand: true,
+                cwd: '.tmp/concat/js',
+                dest: '<%= yeoman.dist %>/js',
+                src: '{,*/}*.js'
+            },
             css: {
                 expand: true,
                 cwd: '<%= yeoman.app %>/css',

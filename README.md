@@ -6,6 +6,11 @@ AngulariJS/Frontend repo for the ArborPlus product
 Installation
 ============
 
+ - Prerequistes:
+   - for Apple Mac/OSX
+     - Install [XCode](https://developer.apple.com/xcode/downloads/)
+   - for Windows
+
 After cloning this repository onto your local machine:
 
  - Install NodeJS

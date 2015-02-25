@@ -97,7 +97,7 @@
 
                 <div class="col-md-3 col pull-right">
                     <div class="bid-info">
-                        <div class="logos">
+                        <div class="logos" ng-if="data.isTcia">
                             <span class="logo"><img src="img/afil/tcia.png"></span>
                         </div>
                         <p class="bid">Total Bid: ${{(report.total.grand || 0)|formatPrice}}</p>

@@ -124,6 +124,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.tree_cachebuster = '?ts=' + moment().unix();
             s.data = {
                 showTreeDetails: false
+				, isTcia: cfg.getEntity().isTcia
                 , showMap: true			// not needed now? since new routing technique
                 , showTreatmentList: false
                 , overrideTreatmentCodes: []		// array of treatment codes user selected in multi-box

@@ -1,6 +1,10 @@
 #!/bin/sh
 #
 
+PUBDIR=public
+DISTDIR=dist
+
+
 if [ "$1" == "" ] || [ ! -e $1 ];then
 	ME=`basename $0`
 	[ ! -e $1 ] && echo "Directory does not exist";
@@ -13,12 +17,12 @@ fi
 NEXTBUILDDIR=$1		## relative dir of next build
 
 ## if it's "dist" then copy it over
-if [ "$NEXTBUILDDIR" == "dist" ];then
+if [ "$NEXTBUILDDIR" == "$DISTDIR" ];then
 	tstamp=`date +%s`;
 	NEXTBUILDDIR="builds/build-$tstamp";
-	echo "Copying dist to $NEXTBUILDDIR"
+	echo "Copying $DISTDIR to $NEXTBUILDDIR"
 	mkdir -p $NEXTBUILDDIR 2>/dev/null
-	cp -a dist/* $NEXTBUILDDIR/
+	cp -a $DISTDIR/* $NEXTBUILDDIR/
 fi
 
 
@@ -58,20 +62,50 @@ echo "Symlinks verified"
 
 ## Backup last build dir, if the next build dir is not the same as current public
 cd $BASEDIR
-[ -e public ] && [ "$(readlink public)" != "$NEXTBUILDDIR" ] \
-	&& mv -f public lastPublicBuild && echo "Backedup last build: lastPublicDir --> $(readlink lastPublicDir)"
+if [ -e $PUBDIR ] && [ "$(readlink public)" != "$NEXTBUILDDIR" ]; then
+	unlink lastPublicBuild
+	mv -f $PUBDIR lastPublicBuild 
+	echo "Backedup last build: lastPublicDir --> $(readlink lastPublicDir)"
+fi
 
 ## Set as live dir
-ln -sf $NEXTBUILDDIR public
+ln -sf $NEXTBUILDDIR $PUBDIR
 
 ## Check that it all worked
-[ ! -e public/favicon.ico ] ||  [ ! -e public/index.html ] \
+[ ! -e $PUBDIR/favicon.ico ] ||  [ ! -e $PUBDIR/index.html ] \
 	&& echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT: api" && exit 1
-[ ! -e public/api/apptop.php ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT: api" && exit 1
-[ ! -e public/go/tpl ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT:" && exit 1
-[ ! -e public/import/tmp ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT:" && exit 1
-[ ! -e public/tree_images/default.jpg ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT: tree_images" && exit 1
+[ ! -e $PUBDIR/api/apptop.php ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT: api" && exit 1
+[ ! -e $PUBDIR/go/tpl ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT:" && exit 1
+[ ! -e $PUBDIR/import/tmp ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT:" && exit 1
+[ ! -e $PUBDIR/tree_images/default.jpg ] && echo "FATAL - BAD BUILD! - SYMLINK DIDNT SET RIGHT: tree_images" && exit 1
 echo "Set public successfully and verified"
+
+
+## Now create old symlinks for the hashed files, ie xxxxx.script.js, xxxxxx.vendor.js, etc
+# usage: makeSym <dir> <filename> <lastPubDir>
+makeSym () {
+	dir=$1; fn=$2; lastPub=$3;
+	newFile=`ls $dir | grep ".\.$fn"`
+	oldFile=`ls $lastPub/$dir | grep ".\.$fn"`
+	if [ "$newFile" != "" ] && [ "$oldFile" != "" ] \
+		&& [ "$newFile" != "$oldFile" ];then
+			cd $dir
+			ln -s $newFile $oldFile
+			echo "$oldFile --> $newFile"
+			cd - >/dev/null
+	fi
+}
+
+cd lastPublicBuild
+LPB=$PWD
+cd ..
+cd $PUBDIR
+makeSym js vendor.js $LPB 
+makeSym js scripts.js $LPB
+makeSym css vendor.css $LPB
+makeSym css main.css $LPB
+
+
 
 exit 0
 

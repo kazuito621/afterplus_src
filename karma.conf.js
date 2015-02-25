@@ -40,7 +40,7 @@ module.exports = function(config) {
       'test/mock/**/*.js',
       'test/spec/**/*.js',
 	//endbower
-      'public/compiled-tpl/templates.js'
+      'dist/compiled-tpl/templates.js'
     ],
 
     // list of files / patterns to exclude

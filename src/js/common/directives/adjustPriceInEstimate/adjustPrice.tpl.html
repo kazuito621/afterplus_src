@@ -7,8 +7,8 @@
                     <span>
                         <button class="button" ng-mousedown='mouseDown("down")' ng-mouseup='mouseUp()' ng-mouseleave="mouseUp()">
                            <i class="fa fa-minus"></i>
-                       </button>
-                       <input id="adjustPercentage" style="width: 50px" ng-model="adjustPercentage" ng-change="change()" type="text"/>
+                       </button>&nbsp;
+                       <input id="adjustPercentage" style="width: 50px" ng-model="adjustPercentage" ng-change="change()" type="text"/>%
                         <button class="button" ng-mousedown='mouseDown("up")' ng-mouseup='mouseUp()' ng-mouseleave="mouseUp()">
                             <i class="fa fa-plus"></i>
                         </button>
@@ -16,13 +16,13 @@
                     <br>
                     <br>
                     <div style="width: 100%;margin: 2px">
-                        <label class="pull-left" >Current SubTotal</label>
-                        <label class="pull-right">{{report.total.items|formatPrice}}</label>
+                        <label class="pull-left" >Current Total</label>
+                        <label class="pull-right">${{report.total.items|formatPrice}}</label>
                     </div>
                     </br>
                     <div style="width: 100%;margin: 2px">
-                        <label class="pull-left">New SubTotal</label>
-                        <label class="pull-right">{{newTotal|formatPrice}}</label>
+                        <label class="pull-left">New Total</label>
+                        <label class="pull-right">${{newTotal|formatPrice}}</label>
                     </div>
                     <div style="width: 100%;margin: 2px">
                         <br><br>

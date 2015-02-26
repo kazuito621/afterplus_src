@@ -30,11 +30,13 @@ var ReportCtrl = app.controller(
             };
 
             s.getRecentReportTitle = function (report) {
-                var res = '';
-                if (report.status=='approved') 
-                    res += '[APPROVED] ';
+                var res = '(' + report.reportID + ') ' + report.name + ' - ';
+				if(report.total_price) res+='$'+report.total_price+' - ';
+				res += report.tstamp_updated;
 
-                res += report.name + ' - ' + report.tstamp_updated;
+                if (report.status)
+                    res += ' [' + report.status.toUpperCase() + ']';
+				
                 return res;
             };
 

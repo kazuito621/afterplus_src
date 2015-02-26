@@ -8,7 +8,7 @@ app.directive('adjustPrice',
                 restrict: 'EA',
                 link: function (scope, el, attrs) {
                     scope.adjustPercentage=0;
-                    scope.doRoundPrice=false;
+                    scope.doRoundPrice=true;
                     scope.ok=function(){
                         scope.newTotal=0;
                         var doRoundPrice=this.doRoundPrice;

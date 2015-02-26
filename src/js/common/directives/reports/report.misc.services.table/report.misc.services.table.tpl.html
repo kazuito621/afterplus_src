@@ -2,7 +2,7 @@
 <div class="table-responsive">
     <table class="table ng-scope ng-table" ng-if="data.mode()=='trees' || report.services.length > 0 ">
         <thead>
-        <tr>
+        <tr ng-hide="groupedItems.length==0">
             <td colspan="4">Misc. Services</td>
         </tr>
         <tr>

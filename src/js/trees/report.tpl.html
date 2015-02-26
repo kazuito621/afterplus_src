@@ -53,15 +53,15 @@
                             </dd>
                         </dl>
 
-                        <dl ng-if="report.clientName!='Residential Clients'">
+                        <dl ng-if="report.clientName!='Residential Clients' && report.clientName">
                             <dt>Client: </dt>
                             <dd ng-bind='report.clientName'></dd>
                         </dl>
-                        <dl>
+                        <dl ng-if="report.siteName">
                             <dt>Property: </dt>
                             <dd ng-bind="report.siteName"></dd>
                         </dl>
-                        <dl>
+                        <dl ng-if="report.street">
                             <dt>Address: </dt>
                             <dd ng-if="report.reportID!=undefined" ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip">
                             </dd>

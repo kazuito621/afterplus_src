@@ -24,3 +24,5 @@ php
 *.sass-cache
 Thumbs.db
 tree_images
+lastPublicBuild
+*.pdi

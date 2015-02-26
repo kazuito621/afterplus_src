@@ -19,9 +19,9 @@ var ReportCtrl = app.controller(
             s.siteOfReport={};
             var changedItems = [];
             
-
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
+			s.estimate_links=cfg.getEntity().estimate_links;
 
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',

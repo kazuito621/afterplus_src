@@ -86,7 +86,15 @@ app.config(['$routeProvider', '$locationProvider',
                 ,auth:true, reloadOnSearch:false
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
-                }})
+                }
+            })
+             .when("/fullcalender", {
+                 templateUrl: "js/calender/calender.html"
+                , auth: true, reloadOnSearch: false
+                , resolve: {
+                    deps: ['Api', function (Api) { return Api.getPromise(); }]
+                }
+             })
             .otherwise({redirectTo: "/signin"});
 	}])
 	.run(['Restangular', '$rootScope',

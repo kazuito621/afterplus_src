@@ -31,6 +31,9 @@
     <!-- build:css({.tmp,src}) css/main.css -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/app-style.css">
+    <link href="js/calender/css/fullcalendar.css" rel="stylesheet" />
+    <link href="js/calender/css/fullcalendar.print.css" rel="stylesheet" media='print' />
+
     <!-- endbuild -->
 </head>
 <body ng-app="arborPlusApp" ng-controller="MainCtrl">
@@ -74,8 +77,12 @@
 
     <!-- build:js js/vendor.js -->
     <!-- bower:js -->
+    <script src="js/calender/js/moment.min.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="js/calender/js/jquery-ui.custom.min.js"></script>
+    <script src="js/calender/js/fullcalendar.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+
     <script src="bower_components/json3/lib/json3.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
@@ -152,6 +159,7 @@
     <script src="js/common/directives/reports/report.misc.services.table/report.misc.services.table.js"></script>
 
     <script src="js/common/directives/adjustPriceInEstimate/adjustPrice.js"></script>
+    <script src="js/calender/calenderdirective.js"></script>
 
     <script src="js/filters.js"></script>
     <script src="js/lib/checklist-model.js"></script>

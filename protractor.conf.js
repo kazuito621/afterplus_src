@@ -5,8 +5,8 @@ exports.config = {
   capabilities: {
     'browserName': 'chrome'
   },
-  allScriptsTimeout: 20000, // 20 sec. TODO: fix me once we have performance optimization completed
+  allScriptsTimeout: 50000, // 50 sec. TODO: fix me once we have performance optimization completed
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 60000 // 60 sec. TODO: fix me once we have performance optimization completed
+    defaultTimeoutInterval: 100000 // 100 sec. TODO: fix me once we have performance optimization completed
   }
 }

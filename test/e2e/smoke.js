@@ -1,14 +1,14 @@
 describe('app', function() {
     beforeEach(function() {
         browser.manage().timeouts().implicitlyWait(25000);
-        browser.get('http://localhost:9000');
+        browser.get('http://0.0.0.0:9000');
     });
 
     it('should have a title', function() {
         expect(browser.getTitle()).toMatch(/tree/i);
     });
 
-    it('should let user to login', function() {
+    it('login & create estimate & check new estimate in estimate tab & navigate other tabs', function() { // Have to separate these 'it' functions. Studying.
         // do login
         var email = element(by.model('login.email'));
         email.sendKeys('timhon@gmail.com');

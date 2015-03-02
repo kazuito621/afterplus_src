@@ -10,4 +10,9 @@
 				<label for='drop-remove'>remove after drop</label>
 			</p>
 		</div>
+<div><span>Search Job:</span><input type="text" id="searchJob"  ng-model="serhtxt" ng-keyUp="search(serhtxt)"/></div>
 <div id='calendar'></div>
+<div id="eventContent" title="Event Details" style="display:none;" >
+    <span>{{jobdescription}}</span><br>
+    <p id="eventInfo"></p>
+</div>

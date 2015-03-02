@@ -17,7 +17,6 @@ var ReportCtrl = app.controller(
             s.estimateTreatmentCodes = [];
             s.treatmentDescriptions = [];
             s.siteOfReport={};
-            var reportBackUp;
             var changedItems = [];
             
 
@@ -31,11 +30,13 @@ var ReportCtrl = app.controller(
             };
 
             s.getRecentReportTitle = function (report) {
-                var res = '';
-                if (report.status=='approved') 
-                    res += '[APPROVED] ';
+                var res = '(' + report.reportID + ') ' + report.name + ' - ';
+				if(report.total_price) res+='$'+report.total_price+' - ';
+				res += report.tstamp_updated;
 
-                res += report.name + ' - ' + report.tstamp_updated;
+                if (report.status)
+                    res += ' [' + report.status.toUpperCase() + ']';
+				
                 return res;
             };
 
@@ -55,7 +56,7 @@ var ReportCtrl = app.controller(
             // when a recent report is selected
 
             s.$watch('rdata.recentReportID', function (ID) {
-                reportBackUp=undefined;
+                RS.reportBackup=undefined;
 
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
@@ -94,7 +95,7 @@ var ReportCtrl = app.controller(
 
                 if(s.report.siteID==undefined || s.report.siteID=="") return;
 
-                reportBackUp= angular.copy(s.report);
+                RS.reportBackup=angular.copy(s.report);
 
                 getSiteBySiteID();
                 getSiteCustomers();
@@ -125,9 +126,9 @@ var ReportCtrl = app.controller(
                 if(
                     s.data.mode()!=="trees"
                     || !Auth.isAtleast('inventory')
-                    || reportBackUp==undefined
+                    || RS.reportBackup==undefined
                     || discard == true
-                    || !((reportBackUp=='new') ||  ReportService.isChanged(reportBackUp, s.report))
+                    || !((RS.reportBackup=='new') ||  ReportService.isChanged(RS.reportBackup, s.report))
                 ){
                     return;
                 }
@@ -136,7 +137,7 @@ var ReportCtrl = app.controller(
                 event.preventDefault();
                 var sm= s.$new();
                 sm.leaveCurrentPage=function(){
-                    reportBackUp=undefined;
+                    RS.reportBackup=undefined;
                     discard=true;
                     $location.url($location.url(next).hash());
                 }
@@ -153,8 +154,8 @@ var ReportCtrl = app.controller(
             }
 
             s.$on('itemsAddedToReport', function () {
-                if(reportBackUp==undefined)
-                    reportBackUp= 'new';
+                if(RS.reportBackup==undefined)
+                    RS.reportBackup= 'new';
                 s.groupedItems = ReportService.groupReportItems();
                 if(s.report.customers.length==0){
                     getSiteCustomers();
@@ -251,14 +252,14 @@ var ReportCtrl = app.controller(
                 var saveRequest = RS.saveReport();
                 saveRequest.then(function (data) {
                     data.reportID += '';
-                    reportBackUp= angular.copy(s.report);
+                    RS.reportBackup= angular.copy(s.report);
                     // If you change the value of s.report,make sure that
-                    // reportBackUp must be reinitialized after all change in s.report has done AND before $location call.
+                    // RS.reportBackup must be reinitialized after all change in s.report has done AND before $location call.
                     if (data && data.reportID && $location.search().reportID !== data.reportID) {
                         $location.search({ reportID: data.reportID});
                     }
                 });
-                reportBackUp= angular.copy(s.report); // This is for faster case save and navigate instantly.
+                RS.reportBackup= angular.copy(s.report); // This is for faster case save and navigate instantly.
             };
 
             s.initEmailModal = function () {

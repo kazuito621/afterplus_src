@@ -75,7 +75,7 @@
                     <td>
 						<span ng-if="auth.isAtleast('inventory')">
 							<a href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>&nbsp;
-							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.reportID}}' bs-tooltip title='{{e.saveCount}} revisions'><i class='fa fa-clock-o gray'></i></a>
+							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' bs-tooltip title='{{e.saveCount}} revisions'><i class='fa fa-clock-o gray'></i></a>
 						</span>
 						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
 					</td>

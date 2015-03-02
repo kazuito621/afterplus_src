@@ -215,8 +215,13 @@ app.directive('siteUsersEditModal',
 	                scope.openModal(site.siteID);
 	            }, 500);
 	        };
+            scope.validateEmail=function (email) {
+                var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(email);
+            }
 
-	        scope.hide = function () {
+
+            scope.hide = function () {
 	            $(document).unbind('keyup', hideOnEscape);
 	            modal.hide();
 	        }

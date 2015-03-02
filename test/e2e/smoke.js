@@ -4,8 +4,8 @@ describe('app', function() {
     browser.get('http://0.0.0.0:9000');
   });
 
-  xit('should have a title', function() {
-    expect(browser.getTitle()).toEqual('ArborPlus Tree Management');
+  it('should have a title', function() {
+    expect(browser.getTitle()).toMatch(/tree/i);
   });
 
   it('should let user to login', function() {

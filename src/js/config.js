@@ -49,7 +49,7 @@ window.cfg={
 			var eid=this.getEntityID();
 			var ent = ent[eid];
 			if(!ent){
-				console.debug("ERROR! No entity found for EID "+eid);
+				console.log("ERROR! No entity found for EID "+eid);
 				return {name:'Tree Company', medname:'Tree Company', shortname:''}
 			}
 			return ent;

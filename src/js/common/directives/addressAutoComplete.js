@@ -43,7 +43,6 @@ app.directive('addressAutoComplete', function (Api,$interval) {
             selectedAddress.city='';
             selectedAddress.zip='';
 
-			console.debug(autocompleteData[index]);
             var i=0;
             _.each(autocompleteData[index].address_components,function(item){
                 i++;

@@ -171,7 +171,9 @@
 							<img src='img/afil/{{af}}'>
 						</span>
                     </div>
-
+					<div ng-repeat="el in estimate_links" style='padding-top:1em;'>
+						<a href='{{el.link}}' ng-bind='el.text'></a>
+					</div>
                 </div>
             </div>
         </div>

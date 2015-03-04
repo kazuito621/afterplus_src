@@ -173,7 +173,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             $scope.getAllSites();
 
-            console.debug("top of trees ");
+            console.log("top of trees ");
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
@@ -660,7 +660,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
 			var loadMap = function() {
-			console.debug("load map ");
+			console.log("load map ");
                 var deferred = $q.defer();
 				try{
                 google.load(
@@ -670,7 +670,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                         other_params: 'sensor=false&libraries=places',
                         callback:
                             function () {
-						console.debug("		-- google map callback ");
+						console.log("		-- google map callback ");
                                 var myOptions = { 
 										zoom: 1, tilt: 0, 
 										center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
@@ -700,9 +700,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     }
                 );
 				}catch(err){
-					
-					console.debug("ERROR LOADING MAP! ");
-					console.debug(err);
+					console.log("ERROR LOADING MAP! ");
 				}
                 return deferred.promise;
             }
@@ -767,7 +765,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
-                console.debug("show mapped sites ");
+                console.log("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
@@ -820,7 +818,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
 
             var showSingleSite = _.throttle(function (site) {
-                console.debug("show mapped sites ");
+                console.log("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;

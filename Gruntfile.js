@@ -63,6 +63,13 @@ module.exports = function (grunt) {
                   '<%= yeoman.app %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ],
                 tasks: ['html2js'],
+            },
+            e2eTest: {
+                files: ['test/e2e/{,*/}*.js'],
+                tasks: [
+                  'protractor_webdriver:start',
+                  'protractor:test'
+                ]
             }
         },
 
@@ -444,6 +451,11 @@ module.exports = function (grunt) {
       'connect:test',
       'karma',
       'e2e'
+    ]);
+
+    grunt.registerTask('test:e2e_dev', [
+      'e2e',
+      'watch'
     ]);
 
     grunt.registerTask('e2e', [ 

@@ -223,11 +223,35 @@
                     console.log(event);
                 },
             
+                eventClick: function (data, jsEvent, view) {
 
+                    $scope.jobdescription = data.description;
+                    $scope.$apply();
+                    $("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
+                }
 
             });
         
-
+             $scope.search = function (serhtxt) {
+                if (serhtxt != null) {
+                    $scope.job = [];
+                    angular.forEach($scope.events, function (item) {
+                        var titletxt = item.title;
+                        if (titletxt !== undefined) {
+                            if (titletxt.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0) {
+                                $("#eventwrapper").fadeIn();
+                                $('#calendar').fullCalendar('removeEvents');
+                                $scope.job.push(item);
+                              
+                            }
+                        }
+                    });
+                    $('#calendar').fullCalendar('addEventSource', $scope.job);
+                }
+                else {
+                    $('#calendar').fullCalendar('addEventSource', $scope.events);
+                }
+            };
 
         },
 

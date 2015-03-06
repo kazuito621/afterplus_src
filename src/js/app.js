@@ -90,7 +90,7 @@ app.config(['$routeProvider', '$locationProvider',
             })
              .when("/fullcalender", {
                  templateUrl: "js/calender/calender.html"
-                , auth: true, reloadOnSearch: false
+                , auth: false, reloadOnSearch: false
                 , resolve: {
                     deps: ['Api', function (Api) { return Api.getPromise(); }]
                 }

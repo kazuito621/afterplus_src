@@ -32,11 +32,11 @@
                                    | Select ClientType     | <----+$scope.selected                       
                                    +-----------------------+      |    .ClientTypeID                     
        when user selects client    |-----------------------+      | $scope.selected                      
-              +--------------------++Select Client         | <----+   .clientID                          
-              |     OnChange()      +----------------------+      |                                      
-              |                     +----------------------+      | $scope.selected                      
-              |                     |Select Site           | <----+   .SiteID                            
-              |                     +--+-------------------+                                             
+              +--------------------+ Select Client         | <----+   .clientID                          
+              |     OnChange()     +-----------------------+      |                                      
+              |                    +-----------------------+      | $scope.selected                      
+              |                    | Select Site           | <----+   .SiteID                            
+              |                    +---+-------------------+                                             
               |                        |                                                                 
               |                        |                                                                 
               |                        |                                                                 
@@ -68,8 +68,8 @@
      |$watch will update the map        |  |                  | +---------+------------+                 
      |                                  |  |On Selection & Url|           |                              
      |with TREES                        |  |                  |           | OnChange()                   
-     +                                  |  |Changes to        |           |                              
-                                        |  |                  |    <------+                              
+     |                                  |  |Changes to        |           |                              
+     |                                  |  |                  |    <------+                              
      +----------------------------------+  |#/trees?reportID= |                                          
                                            |                  |                                          
                                            |xxxx              |                                          

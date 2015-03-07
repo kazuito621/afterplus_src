@@ -193,7 +193,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		,currentTstampHeader:'Last Updated'
         ,tstampItems:[
             {viewValue:'Created',value:'tstamp_created'},
-            {viewValue:'Update',value:'tstamp_updated'},
+            {viewValue:'Updated',value:'tstamp_updated'},
             {viewValue:'Sent',value:'tstamp_sent'},
             {viewValue:'Approved',value:'tstamp_approved'},
             {viewValue:'Completed',value:'tstamp_completed'},

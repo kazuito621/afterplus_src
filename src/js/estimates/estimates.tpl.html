@@ -58,7 +58,7 @@
                     <th class="clickable-header" ng-click="sh.sortByColumn('status')">
                         Status <i ng-class="sh.columnClass('status')" class='silver'></i>
                     </th>
-                    <th ng-if="auth.isAtleast('inventory')" class="clickable-header">
+                    <th ng-if="auth.isAtleast('inventory')" class="clickable-header" style="min-width: 124px;">
                         <button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+getTstampHeaderClass()"
                                 ng-model="data.currentTstamp"
                                 ng-options="s.value as s.viewValue for s in data.tstampItems"
@@ -66,7 +66,7 @@
                         </button>
                         <i ng-class="getDateColClass()" class='silver' ng-click="sortDateCol()"></i>
                     </th>
-                    <th style="min-width: 75px;"></th>
+                    <th style="min-width: 55px;"></th>
                 </tr>
             </thead>
 
@@ -110,11 +110,11 @@
 					</td>
                     <td>
                         <a href="#" editable-text="e[data.currentTstamp]" onbeforesave="validateDate($data)" onaftersave="updateEstimateTime(e)">
-                            {{ e[data.currentTstamp] || 'HHHH-MM-dd' }}
+                            {{ e[data.currentTstamp]}}
                         </a>
                     </td>
                     <td>
-                        <a ng-if="auth.isAtleast('inventory')"
+                        <a ng-if="auth.isAtleast('inventory') && e.status=='draft'"
                            delete-with-confirm-button
                            type="estimate"
                            item-id="{{e.reportID}}"

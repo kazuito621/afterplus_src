@@ -9,6 +9,8 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
+var path = require('path');
+
 module.exports = function (grunt) {
 
     // Load grunt tasks automatically
@@ -26,7 +28,7 @@ module.exports = function (grunt) {
         yeoman: {
             // configurable paths
             app: require('./bower.json').appPath || 'src',
-            dist: 'public'
+            dist: 'dist', 
         },
 
         // Watches files for changes and runs tasks based on the changed files
@@ -355,6 +357,15 @@ module.exports = function (grunt) {
             },
         },
 
+        shell: {
+          npm_install: {
+            command: 'npm install'
+          },
+          update_webdriver: {
+            command: 'node ' + path.join('node_modules/protractor/bin', 'webdriver-manager') + ' update'
+          }
+        },
+
         // By default, your `index.html`'s <!-- Usemin block --> will take care of
         // minification. These next options are pre-configured if you do not wish
         // to use the Usemin blocks.
@@ -387,6 +398,20 @@ module.exports = function (grunt) {
                 configFile: 'karma.conf.js',
                 singleRun: true
             }
+        },
+
+        protractor_webdriver: {
+          start: {}
+        },
+
+        protractor: {
+          options: {
+            configFile: "protractor.conf.js"
+          },
+          test: {
+            // it needs at least one target
+            args: {}
+          }
         }
     });
 
@@ -417,10 +442,23 @@ module.exports = function (grunt) {
       'concurrent:test',
       'autoprefixer',
       'connect:test',
-      'karma'
+      'karma',
+      'e2e'
+    ]);
+
+    grunt.registerTask('e2e', [ 
+      'clean:server',
+      'bower-install',
+      'concurrent:server',
+      'autoprefixer',
+      'html2js',
+      'connect:livereload',
+      'protractor_webdriver:start',
+      'protractor:test'
     ]);
 
     grunt.registerTask('build', [
+      'update',
       'clean:dist',
       'bower-install',      
       'useminPrepare',
@@ -443,5 +481,10 @@ module.exports = function (grunt) {
       'newer:jshint',
       'test',
       'build'
+    ]);
+
+    grunt.registerTask('update', [
+      'shell:npm_install',
+      'shell:update_webdriver'
     ]);
 };

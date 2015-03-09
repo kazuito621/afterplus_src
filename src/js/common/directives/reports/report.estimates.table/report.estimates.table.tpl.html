@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}">
+    <table class="table table-striped table-bordered table-hover ng-scope ng-table mode_{{data.mode()}}" ng-hide="data.mode()=='estimate' && groupedItems.length==0">
         <thead>
             <tr id="estimate_table_heading">
                 <td class="td-image">Tree</td>
@@ -54,9 +54,9 @@
                                     <i class="fa fa-plus black _size6 hoverDisplay"></i>
                                 </a>
                             </td>
-                           <!-- <td ng-if="auth.is('customer')">
+                           <td ng-if="auth.is('customer')">
                                 <span ng-bind="treatment.treatmentTypeCode|treatmentTypeCode2Name:this"></span>
-                            </td>-->
+                            </td>
                            
                              <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_price" class="td-bid">&#36;
                                 <a href editable-text='treatment.price' onshow="onShowEditItem(item.$$hashKey)"

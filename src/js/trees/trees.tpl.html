@@ -140,7 +140,7 @@
 									</table>
 								</div>
 
-								<div class="table-responsive" ng-if="trees.length > 0">
+								<div class="table-responsive" ng-if="selected.siteID">
                                     <div trees-selector ng-if="auth.isAtleast('inventory')"
                                          toggle-checked-trees="toggleCheckedTrees(opt)"
                                          selected-trees="selectedTrees"

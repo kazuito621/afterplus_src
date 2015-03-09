@@ -110,9 +110,6 @@
                                             </a>
                                         </td>
                                         <td>
-                                                        <span ng-if="!auth.isAtleast('inventory')" ng-show="o.price !== null && o.price">
-                                                            ${{o.price|formatPrice}}
-                                                        </span>
                                             <a ng-if="auth.isAtleast('inventory')" href editable-text='o.price' ng-show="o.price !== null && o.price">
                                                 ${{o.price|formatPrice}}
                                             </a>
@@ -131,6 +128,7 @@
                     <button delete-with-confirm-button
                             type="tree"
                             item-id="{{tree.treeID}}"
+                            active-popover="activePopover"
                             on-confirm-callback="deleteTree(tree.treeID)"
                             class="navButton"
                             bs-tooltip title="Delete" ng-if="auth.isAtleast('inventory')">

@@ -17,6 +17,7 @@ app.service('ReportService',
 	this.lastReportMd5;
 	this.emailRpt = {};
     this.groupedItems = [];
+    this.reportBackup={};
 
 	this.init=function(){
 		this.getBlankReport();
@@ -167,8 +168,8 @@ app.service('ReportService',
 	//				 - if error mixing trees from different sites, return "-1"
 	this.addItems = function(trees, treatmentCodes, selectedFilters) {
 		// dont let them add trees to a report that has a different siteID
-		if(this.report.siteID && this.siteID && this.report.siteID!=this.siteID)
-				return -1;
+		//if(this.report.siteID && this.siteID && this.report.siteID!=this.siteID)
+		//		return -1;
 
 		if(!this.report.siteID) this.report.siteID=this.siteID;
 
@@ -264,6 +265,8 @@ app.service('ReportService',
 	}
 
     this.isChanged=function(backupReport,report){
+        if(backupReport=='new')return true;
+        if(backupReport==undefined)return false;
         // The $$haskey of service items updated in UI when rendered, but not in backupreport.
         //So have to update the $$haskey of backupreport also.
         if(backupReport.services.length==report.services.length){
@@ -271,15 +274,16 @@ app.service('ReportService',
                 backupReport.services[i].$$hashKey=report.services[i].$$hashKey;
             }
         }
-        var items=_.extract(backupReport, 'items');
-        if( !items || !items.length ) return '';
-        var str=JSON.stringify(items) + JSON.stringify(backupReport.services)
+        var items1=_.extract(backupReport, 'items');
+        var items2=_.extract(report,'items');
+
+        var str=JSON.stringify(items1) + JSON.stringify(backupReport.services)
             +backupReport.name+backupReport.sales_userID;
         var report1Report = md5.createHash(str);
 
-        items=_.extract(report,'items');
-        if( !items || !items.length ) return '';
-        var str=JSON.stringify(items) + JSON.stringify(report.services)
+
+        if( !items2 || !items2.length ) return '';
+        var str=JSON.stringify(items2) + JSON.stringify(report.services)
             +report.name+report.sales_userID;
         var report2Report = md5.createHash(str);
 

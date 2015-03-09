@@ -1,4 +1,6 @@
+dist
 /nbproject/
+public
 /.idea/
 #/vendor/
 composer.lock
@@ -21,3 +23,6 @@ nohup.out
 php
 *.sass-cache
 Thumbs.db
+tree_images
+lastPublicBuild
+*.pdi

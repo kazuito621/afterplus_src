@@ -4,7 +4,7 @@
     <div ng-if="data.mode()=='trees' && !auth.is('customer')" style="margin-bottom: 15px;">
         <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
         <br><br>
-        <button ng-if="report.siteID" class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
+        <button ng-if="selected.siteID" class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
     </div>
 
     <div class="touch-boundry">
@@ -53,15 +53,15 @@
                             </dd>
                         </dl>
 
-                        <dl ng-if="report.clientName!='Residential Clients'">
+                        <dl ng-if="report.clientName!='Residential Clients' && report.clientName">
                             <dt>Client: </dt>
                             <dd ng-bind='report.clientName'></dd>
                         </dl>
-                        <dl>
+                        <dl ng-if="report.siteName">
                             <dt>Property: </dt>
                             <dd ng-bind="report.siteName"></dd>
                         </dl>
-                        <dl>
+                        <dl ng-if="report.street">
                             <dt>Address: </dt>
                             <dd ng-if="report.reportID!=undefined" ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip">
                             </dd>
@@ -97,7 +97,7 @@
 
                 <div class="col-md-3 col pull-right">
                     <div class="bid-info">
-                        <div class="logos">
+                        <div class="logos" ng-if="data.isTcia">
                             <span class="logo"><img src="img/afil/tcia.png"></span>
                         </div>
                         <p class="bid">Total Bid: ${{(report.total.grand || 0)|formatPrice}}</p>
@@ -120,11 +120,12 @@
             </button>
             &nbsp;
             <span ng-if="report.reportID">
-                <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}' target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
+                <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}' 
+				target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
                 <a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'
                    onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
             </span>
-            <a ng-if='report.reportID && report.saveCount>1' href='/go/estimate/revisions/{{report.reportID}}' target=_new>Past Revisions</a>
+            <a ng-if='report.reportID && report.saveCount>1' href='/go/estimate/revisions/{{report.token}}{{tree_cachebuster}}' target=_new>Past Revisions</a>
 
             <div class="clearfix"></div>
         </div>
@@ -137,7 +138,7 @@
 
         <div class="table-container">
             <div class="row row-table">
-                <div class="col-md-4" ng-if="data.mode()=='estimate'">
+                <div class="col-md-4" ng-if="data.mode()=='estimate' && groupedItems.length>0">
                     <div id="treeMap_estimate" class="map-container mode_{{data.mode()}}">
                         <div id="treeMap2" class="mode_{{data.mode()}}"></div>
                     </div>
@@ -170,7 +171,9 @@
 							<img src='img/afil/{{af}}'>
 						</span>
                     </div>
-
+					<div ng-repeat="el in estimate_links" style='padding-top:1em;'>
+						<a href='{{el.link}}' ng-bind='el.text'></a>
+					</div>
                 </div>
             </div>
         </div>

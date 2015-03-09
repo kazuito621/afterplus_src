@@ -42,17 +42,22 @@ app.directive('addressAutoComplete', function (Api,$interval) {
             selectedAddress.state='';
             selectedAddress.city='';
             selectedAddress.zip='';
+
             var i=0;
             _.each(autocompleteData[index].address_components,function(item){
                 i++;
-                if((i==1 || i==2 || i==3) && item.types.toString()!="locality,political" 
-					&& item.types.indexOf('administrative_area_level_1')==-1)
+                if((i==1 || i==2) && item.types.toString()!="locality,political" 
+					&& item.types.indexOf('administrative_area_level_1')==-1
+					&& item.types.indexOf('administrative_area_level_3')==-1
+					&& item.types.indexOf('neighborhood')==-1
+				  )
 				{
-                    // First 3 levels of details address(if exists) except the city,state name
-                   if(i>2){
-                       selectedAddress.street+=', ';
-                   }
-                    selectedAddress.street += item.long_name+" ";
+                   // First 3 levels of details address(if exists) except the city,state name
+				   // this was only needed if we wanted to use admin_area_level_3 in i==3,
+				   // which for most test cases in the US didnt seem right
+                   //if(i>2) selectedAddress.street+=', ';
+
+                   selectedAddress.street += item.long_name+" ";
                    return;
                 }
                 if(item.types.toString()=="locality,political"){

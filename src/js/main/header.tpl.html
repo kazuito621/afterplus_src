@@ -1,6 +1,17 @@
 <div class="header-inner">
-	<div class="cnt-logo"><img src="img/entity/logo-{{entityID}}.png"></div>
-	<div class="nav-container">
+	<div class="dropdown-toggle-container">
+	    <button id="btn_toggle_navbar" class="btn">
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	    </button>
+	</div>
+	<div class="cnt-logo">
+		<div class="cnt-logo-wrapper">
+			<img src="img/entity/logo-{{entityID}}.png">
+		</div>
+	</div>
+	<div class="nav-container clearfix" id="main_navbar">
 		<div ng-if="!auth.is('customer') && auth.isSignedIn()">
 			<div ng-include="'js/main/nav.staff.tpl.html'"></div>
 		</div>
@@ -24,3 +35,31 @@
 	</div>	
 	<div class="clearfix"></div>
 </div>
+
+<script>
+	$(document).ready(function()
+	{
+		main_navbar_handler();
+	});
+
+	$(window).resize(function()
+	{
+		main_navbar_handler();
+	});
+
+	function main_navbar_handler()
+	{
+		if ($(window).width() <= 767)
+		{
+			$('#main_navbar').hide();
+		}
+		else
+		{
+			$('#main_navbar').show();
+		}
+
+		$('#btn_toggle_navbar').bind('click', function() {
+			$('#main_navbar').slideToggle('fast');
+		});
+	}
+</script>

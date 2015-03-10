@@ -12,6 +12,17 @@
 			    // I bind the JavaScript events to the scope.
 			    function link(scope, element, attributes) {
 
+			        scope.$on('$routeChangeStart', function (scope, next, current) {
+			            element.show();
+			        });
+
+			        scope.$on('$routeChangeSuccess', function (scope, next, current) {
+			            var timer = setTimeout(function () {
+			                element.hide();
+			                clearTimeout(timer);
+			            }, 1100);
+			        });
+			        
 			        // Due to the way AngularJS prevents animation during the bootstrap 
 			        // of the application, we can't animate the top-level container; but,
 			        // since we added "ngAnimateChildren", we can animated the inner 
@@ -23,10 +34,11 @@
 						function cleanupAfterAnimation() {
 
 						    // Remove the root directive element.
-						    element.remove();
+						    //element.remove();
+						    element.hide();
 
 						    // Clear the closed-over variable references.
-						    scope = element = attributes = null;
+						    // scope = element = attributes = null;
 
 						}
 					);

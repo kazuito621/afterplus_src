@@ -13,6 +13,7 @@ Coding Style
  - Take pride in your work, write beautiful code!
 
 
+
 Commenting
 ----------
 Good naming conventions make some commenting unnecessary.
@@ -27,7 +28,7 @@ HOW you do something.
 
 Git Branching
 -------------
- - At the beginning of each task, make sure you are working in a new branch labeled:
+ - **Naming** - Branch from `master` and name it like so:
 ```
        yourname/XX_task_name
         
@@ -35,12 +36,17 @@ Git Branching
        tim/01_fix_email_bug
        tim/02_new_popup_for_user_edit
 ```
- - Be sure to merge from `master` or create branch from `master` so you are working off the latest code
- - If the work is very small, you do not need to create a new branch, you can keep your own separate `dev` branch for small bugs/features.
+ - **Minimize Conflicts** - If your task takes more than a few days, be sure to merge from `master` often so that you're branch doesn't diverge much.
+ - **Dev Branch for small changes** - If the task is very small, like only a few lines of code, you do not need to create a new branch, you can keep your own separate `dev` branch for small bugs/features.
 ```
-       tim/dev
-       // remember to merge from master each time so you have the latest code
+      tim/dev
 ```
+ - **Keep your dev branch up to date** - Before starting any work in your dev branch be sure to merge from `master` to keep it up to date
+ 
+ 
+
+
+
 
 When you are done with a task
 -----------------------------

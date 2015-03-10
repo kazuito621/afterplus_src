@@ -36,7 +36,7 @@ Use this test account:
 
 Developer's Guide
 =================
-Please read and understand the [Developer's Guide](DEVELOPER_GUIDE.md]) before continuing.
+Please read and understand the [Developer's Guide](DEVELOPER_GUIDE.md) before continuing.
 
 
 

@@ -256,7 +256,7 @@ app.service('ReportService',
 
 		_.each(this.report.services, function(itm){
 			if( itm.price ){
-				p=Number(itm.price*itm.quantity);
+				p=Number(itm.price);
 				services_total+=p;
 			}
 		})

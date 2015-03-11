@@ -19,6 +19,7 @@
     "momentjs": "~2.8.4",
     "angularLocalStorage": "~0.2.0",
     "angular-md5": "~0.1.7",
+    "angulartics": "~0.17.2",
     "font-awesome-bower": "~4.2.0",
     "ng-ckeditor": "~0.2.1",
     "angular-bindonce": "~0.3.3",

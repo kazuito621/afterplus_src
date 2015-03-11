@@ -4,7 +4,9 @@
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
-     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer']);
+         'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer',
+         'angulartics', 'angulartics.google.analytics'
+        ]);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {

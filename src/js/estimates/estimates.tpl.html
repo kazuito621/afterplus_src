@@ -109,8 +109,10 @@
 								 onclick="return false;">{{ e.status | statusText }}</button>
 					</td>
                     <td>
-                        <a href="#" editable-text="e[data.currentTstamp]" onbeforesave="validateDate($data)" onaftersave="updateEstimateTime(e)">
-                            {{ e[data.currentTstamp]}}
+                        <a href="#" editable-text="e[data.currentTstamp]" 
+									bs-tooltip title="{{e[data.currentTstamp]}}"
+									onbeforesave="validateDate($data)" onaftersave="updateEstimateTime(e)">
+                           	{{ e[data.currentTstamp] | formatDateFromNow }}
                         </a>
                     </td>
                     <td>

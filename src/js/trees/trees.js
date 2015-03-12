@@ -32,11 +32,11 @@
                                    | Select ClientType     | <----+$scope.selected                       
                                    +-----------------------+      |    .ClientTypeID                     
        when user selects client    |-----------------------+      | $scope.selected                      
-              +--------------------++Select Client         | <----+   .clientID                          
-              |     OnChange()      +----------------------+      |                                      
-              |                     +----------------------+      | $scope.selected                      
-              |                     |Select Site           | <----+   .SiteID                            
-              |                     +--+-------------------+                                             
+              +--------------------+ Select Client         | <----+   .clientID                          
+              |     OnChange()     +-----------------------+      |                                      
+              |                    +-----------------------+      | $scope.selected                      
+              |                    | Select Site           | <----+   .SiteID                            
+              |                    +---+-------------------+                                             
               |                        |                                                                 
               |                        |                                                                 
               |                        |                                                                 
@@ -68,8 +68,8 @@
      |$watch will update the map        |  |                  | +---------+------------+                 
      |                                  |  |On Selection & Url|           |                              
      |with TREES                        |  |                  |           | OnChange()                   
-     +                                  |  |Changes to        |           |                              
-                                        |  |                  |    <------+                              
+     |                                  |  |Changes to        |           |                              
+     |                                  |  |                  |    <------+                              
      +----------------------------------+  |#/trees?reportID= |                                          
                                            |                  |                                          
                                            |xxxx              |                                          
@@ -563,6 +563,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (!s.trees || !s.trees.length || s.trees.length < 1) {
                     //s.filteredSites=angular.copy(s.initData.sites); 
                     s.filteredSites = s.initData.sites;		//-- fixed a dropdown ng-model issue
+                    s.selected.clientTypeID = '';
+                    s.selected.clientID = '';
                     showMappedSites();
                 }
             }
@@ -1110,6 +1112,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                         tree.lattitude = position.lat();
                         tree.lat = position.lat();
                         tree.lng = position.lng();
+                        
 
                         Api.updateTree(tree).then(function (response) {
                             s.hideAllAlert();

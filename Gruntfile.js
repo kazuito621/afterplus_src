@@ -168,7 +168,7 @@ module.exports = function (grunt) {
             }
             /*
                   ,test: {
-                    src: 'karma.conf.js',
+                    src: 'test/karma.conf.js',
                     fileTypes: {
                         js: {	
                             block: /(([\s\t]*)\/\/\s*bower:*(\S*))(\n|\r.)*?(\/\/\s*endbower)/gi
@@ -421,7 +421,7 @@ module.exports = function (grunt) {
         // Test settings
         karma: {
             unit: {
-                configFile: 'karma.conf.js',
+                configFile: 'test/karma.conf.js',
                 singleRun: true
             }
         },
@@ -432,7 +432,7 @@ module.exports = function (grunt) {
 
         protractor: {
           options: {
-            configFile: "protractor.conf.js"
+            configFile: "test/protractor.conf.js"
           },
           test: {
             // it needs at least one target

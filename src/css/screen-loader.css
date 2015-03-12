@@ -5,7 +5,7 @@
 			}
 
 			div.arbor-plus-app-loading div.animated-container {
-				background-color: #333333 ;
+				background-color: #eee ;
 				bottom: 0px ;
 				left: 0px ;
 				opacity: 1.0 ;
@@ -28,7 +28,7 @@
 			}
 
 			div.arbor-plus-app-loading div.messaging {
-				color: #FFFFFF ;
+				color: #ccc ;
 				font-family: monospace ;
 				left: 0px ;
 				margin-top: -37px ;

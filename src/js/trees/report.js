@@ -477,7 +477,7 @@ var ReportCtrl = app.controller(
             s.addNewTreatment = function (treatments) {
                 treatments.push({
                     treatmentTypeCode: "Select TreatmentCode",
-                    price: "$0.00"
+                    price: "0.00"
                 });
             };
 

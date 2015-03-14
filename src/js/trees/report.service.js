@@ -255,7 +255,12 @@ app.service('ReportService',
 		})
 
 		_.each(this.report.services, function(itm){
-			if( itm.price ){
+            if(/.+%/g.test(itm.price)){
+                var perc=Number(itm.price.split("%")[0]);
+                p=Number(perc *.01 * items_total);
+                services_total+=p;
+            }
+			else if( itm.price ){
 				p=Number(itm.price*itm.quantity);
 				services_total+=p;
 			}

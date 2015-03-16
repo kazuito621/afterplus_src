@@ -72,7 +72,7 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates track by $index" class='hoverHotspot' id='item_{{e.reportID}}'>
+                <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}'>
                     <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
                         <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)" ng-click="toggleEstimateSelection(e.reportID)">
                     </td>

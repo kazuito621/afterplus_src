@@ -8,7 +8,7 @@ describe('app', function() {
     expect(browser.getTitle()).toMatch(/tree/i);
   });
 
-  it('should let user to login', function() {
+  it('should open all pages', function() {
     // do login
     var email = element(by.model('login.email'));
     email.sendKeys('timhon@gmail.com');
@@ -25,15 +25,16 @@ describe('app', function() {
     });
     var speciesChkBox = element(speciesChkBoxLocator).click();
     expect(speciesChkBox.isSelected()).toBe(true);
+    element(speciesChkBoxLocator).click();
     expect(element(by.css('[filter-search-species] h3')).getText()).toEqual('SPECIES');
     //check Species list has at least 5 values in it
     expect(element.all(by.repeater('speciesType in initDataSpecies')).count()).toBeGreaterThan(5);
     //check Treatments list has at least 5 values in it
     expect(element.all(by.repeater('t in initDataTreatments')).count()).toBeGreaterThan(5);
-    // check Client Type dropdown list has 16 exactly client types
-    expect(element.all(by.repeater('clientType in data')).count()).toBe(16);
-    // check Client dropbown has at least 5 values in it
-    expect(element.all(by.repeater('client in data')).count()).toBeGreaterThan(5);
+    // check Client Type dropdown list has at least 10 client types
+    expect(element.all(by.repeater('clientType in data')).count()).toBeGreaterThan(10);
+    // check Client dropbown has at least 1 value
+    expect(element.all(by.repeater('client in data')).count()).toBeGreaterThan(1);
     // check Property dropdown list has at least 5 values in it
     expect(element.all(by.repeater('site in data')).count()).toBeGreaterThan(5);
     //check Google Maps have loaded
@@ -41,7 +42,6 @@ describe('app', function() {
       return browser.executeScript('return window.mapLoaded')
     });
     expect(element(by.css('#treeMap')).isPresent()).toBe(true);
-
 
     //check estimates page
     element(by.css('.fa-dollar')).click();

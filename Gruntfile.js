@@ -1,5 +1,4 @@
 // TODO: exclude .spec.js and assets/*.js
-
 // Generated on 2014-03-01 using generator-angular 0.7.1
 'use strict';
 
@@ -279,7 +278,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: '.tmp/concat/js',
                     src: '*.js',
-                    dest: '<%= yeoman.dist %>/js'
+                    dest: '.tmp/concat/js'
                 }]
             }
         },
@@ -436,7 +435,14 @@ module.exports = function (grunt) {
           },
           test: {
             // it needs at least one target
-            args: {}
+            options: {}
+          },
+          testfirefox: {
+            options: {
+              args: {
+                browser: "firefox"
+              }
+            }
           }
         }
     });
@@ -477,15 +483,24 @@ module.exports = function (grunt) {
       'watch'
     ]);
 
-    grunt.registerTask('e2e', [ 
+    grunt.registerTask('e2e-prepare', [ 
       'clean:server',
       'bower-install',
       'concurrent:server',
       'autoprefixer',
       'html2js',
       'connect:livereload',
-      'protractor_webdriver:start',
+      'protractor_webdriver:start'
+    ]);
+
+    grunt.registerTask('e2e', [
+      'e2e-prepare',
       'protractor:test'
+    ]);
+
+    grunt.registerTask('e2e-firefox', [
+      'e2e-prepare',
+      'protractor:testfirefox'
     ]);
 
     grunt.registerTask('build', [

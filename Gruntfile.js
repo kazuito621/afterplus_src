@@ -1,5 +1,4 @@
 // TODO: exclude .spec.js and assets/*.js
-
 // Generated on 2014-03-01 using generator-angular 0.7.1
 'use strict';
 
@@ -63,6 +62,13 @@ module.exports = function (grunt) {
                   '<%= yeoman.app %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ],
                 tasks: ['html2js'],
+            },
+            e2eTest: {
+                files: ['test/e2e/{,*/}*.js'],
+                tasks: [
+                  'protractor_webdriver:start',
+                  'protractor:test'
+                ]
             }
         },
 
@@ -161,7 +167,7 @@ module.exports = function (grunt) {
             }
             /*
                   ,test: {
-                    src: 'karma.conf.js',
+                    src: 'test/karma.conf.js',
                     fileTypes: {
                         js: {	
                             block: /(([\s\t]*)\/\/\s*bower:*(\S*))(\n|\r.)*?(\/\/\s*endbower)/gi
@@ -414,7 +420,7 @@ module.exports = function (grunt) {
         // Test settings
         karma: {
             unit: {
-                configFile: 'karma.conf.js',
+                configFile: 'test/karma.conf.js',
                 singleRun: true
             }
         },
@@ -425,11 +431,18 @@ module.exports = function (grunt) {
 
         protractor: {
           options: {
-            configFile: "protractor.conf.js"
+            configFile: "test/protractor.conf.js"
           },
           test: {
             // it needs at least one target
-            args: {}
+            options: {}
+          },
+          testfirefox: {
+            options: {
+              args: {
+                browser: "firefox"
+              }
+            }
           }
         }
     });
@@ -465,15 +478,29 @@ module.exports = function (grunt) {
       'e2e'
     ]);
 
-    grunt.registerTask('e2e', [ 
+    grunt.registerTask('test:e2e_dev', [
+      'e2e',
+      'watch'
+    ]);
+
+    grunt.registerTask('e2e-prepare', [ 
       'clean:server',
       'bower-install',
       'concurrent:server',
       'autoprefixer',
       'html2js',
       'connect:livereload',
-      'protractor_webdriver:start',
+      'protractor_webdriver:start'
+    ]);
+
+    grunt.registerTask('e2e', [
+      'e2e-prepare',
       'protractor:test'
+    ]);
+
+    grunt.registerTask('e2e-firefox', [
+      'e2e-prepare',
+      'protractor:testfirefox'
     ]);
 
     grunt.registerTask('build', [

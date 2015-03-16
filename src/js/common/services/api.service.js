@@ -125,6 +125,9 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
             dbg(reportObj, "save rep ");
             return Rest.all('estimate').post(reportObj);
         },
+        updateEstimateTime:function(reportID,tstamp){
+            return Rest.all('estimate/'+reportID).post(tstamp);
+        },
         setReportStatus: function (rptID, status) {
             return Rest.one('estimate', rptID).post(status);
         },

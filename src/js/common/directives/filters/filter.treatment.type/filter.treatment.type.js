@@ -12,6 +12,11 @@ app.directive('filterTreatmentType',
                 filterSearchTreatments: '=',    //    filterSearch.treatments
                 initDataTreatments: '=',         //    initData.filters.treatments
                 onFilterChange: '&'             //    onFilterChange('treatments', t.treatmentTypeID, t.selected)
+            },
+            controller: function ($scope) {
+                $scope.filterSearchTreatmentsClk = function () {
+                    $scope.filterSearchTreatments = "";
+                }
             }
         };
     }]);

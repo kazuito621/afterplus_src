@@ -29,7 +29,7 @@
 
                     <tree-image-popover item="item" cache-buster="tree_cachebuster" />
                 </td>
-                <td data-title="listing_ID" class="td-id">{{item.localTreeID}}</td>
+                <td data-title="listing_ID" class="td-id">{{$index+1}}</td>
                 <td data-title="listing_species" class="td-name">{{item.dbhID | dbhID2Name:this }}
                     {{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
                     <span class="light" bo-text="'[' + item.treeID + ']'"></span>

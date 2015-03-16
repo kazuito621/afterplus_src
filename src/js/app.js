@@ -155,7 +155,9 @@ app.run(function(editableOptions){
 });
 
 
-
+angular.element(document).ready(function () {
+    angular.bootstrap(document, ['arborPlusApp']);
+});
 
 // ----------------------------------------------- global helper funcs
 

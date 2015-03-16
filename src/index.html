@@ -19,6 +19,7 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- fontawesome must stay out of the build block, or the icons get messed up -->
     <link rel="stylesheet" href="bower_components/font-awesome-bower/css/font-awesome.css" />
+    
     <!-- build:css css/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
@@ -31,9 +32,10 @@
     <!-- build:css({.tmp,src}) css/main.css -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/app-style.css">
+    <link rel="stylesheet" href="css/screen-loader.css"  />
     <!-- endbuild -->
 </head>
-<body ng-app="arborPlusApp" ng-controller="MainCtrl">
+<body  ng-controller="MainCtrl">
 <noscript>
 	<div style='background:#f33; color:#fff; font-size:16pt; padding:1em; text-align:center;'>
 		Error: You have javascript disabled! &nbsp; 
@@ -49,8 +51,26 @@
 </div>
 <![endif]-->
 
-
+    
     <header ng-include="'js/main/header.tpl.html'" ng-if="!isMobile"></header>
+    <div class="arbor-plus-app-loading" ng-animate-children>
+
+		<!--
+			HACKY CODE WARNING: I'm putting Style block inside directive so that it 
+			will be removed from the DOM when we remove the directive container.
+		-->
+
+		<!-- BEGIN: Actual animated container. -->
+		<div class="animated-container">
+			<div class="messaging">
+				<h1>
+					Loading...
+				</h1>
+			</div>
+		</div>
+		<!-- END: Actual animated container. -->
+
+	</div>
     <div ng-view></div>
 
     <!--
@@ -163,6 +183,7 @@
     <script src="js/common/directives/reports/report.misc.services.table/report.misc.services.table.js"></script>
 
     <script src="js/common/directives/adjustPriceInEstimate/adjustPrice.js"></script>
+    <script src="js/common/directives/loadingScreen/loadingScreen.js"></script>
 
     <script src="js/filters.js"></script>
     <script src="js/lib/checklist-model.js"></script>

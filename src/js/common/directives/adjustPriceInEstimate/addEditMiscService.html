@@ -1,0 +1,64 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="margin-left: 20%;width: 50%">
+        <div class="modal-content" style="width:80%;overflow: auto">
+            <div class="modal-header">
+                <button class="close" ng-click="hide()" type="button">×</button>
+                <h4 class="modal-title ng-binding">Misc service Present.</h4>
+            </div>
+            <div class='panel-body'>
+                <table class="table ng-scope">
+                    <thead>
+                    <tr>
+                        <td colspan="2">Name</td>
+                        <td>Price</td>
+                        <td>Action</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="svc in services track by $index" class="hoverHotspot">
+                        <td colspan="2" data-title="service_desc">
+                            <a href editable-text='svc.name' onaftersave="editService(svc)">{{svc.name}}</a>
+                            </br>
+                            <a href editable-textarea='svc.descript' e-rows="1" onaftersave="editService(svc)">{{svc.descript}}</a>
+                         </td>
+                        <td data-title="service_quantity">
+                            <a href editable-text='svc.price' onaftersave="editService(svc)">{{svc.price | currency}}</a>
+                        </td>
+                        <td>
+                            <a delete-with-confirm-button
+                               type="estimate"
+                               active-popover="activePopover"
+                               on-confirm-callback="deleteCurrentItem(svc.miscServiceID)"
+                               class="fa fa-times _red _size7 hand hoverDisplay"
+                               bs-tooltip title="Delete"
+                               style="text-decoration: none;"></a>
+                        </td>
+                    </tr>
+                    <tr class="hoverHotspot">
+                        <td colspan="2" data-title="service_desc">
+                            <input type="text" placeholder="Name of new service" style="width:80%;" ng-model="newsvc.name"/>
+                            <textarea placeholder="Description" style="width:80%;"  cols="30" rows="1" ng-model="newsvc.descript"></textarea>
+                        </td>
+                        <td data-title="service_quantity">
+                            <input type="text" ng-model="newsvc.price" placeholder="Price $$"/>
+                        </td>
+                        <td>
+                            <button type="button" ng-click="addNewService()" class="btn btn-red clr-white">
+                                <i class="fa fa-plsu"></i>
+                                Add Present
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="pull-right">
+                    <button type="button" ng-click="hide()" style="margin: 10px;" class="btn btn-default">
+                        <i class="fa fa-plsu"></i>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -162,6 +162,18 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({ id: ids.toString() });
         },
+        getServiceDesc: function () {
+            return Rest.one('service_desc').get();
+        },
+        addNewMiscService: function (obj) {
+            return Rest.all('service_desc').post(obj);
+        },
+        editServiceDesc: function (id,obj) {
+            return Rest.all('service_misc/'+id).post(obj);
+        },
+        deleteServiceById: function (id) {
+            return Rest.one('service_misc', id).post('delete');
+        },
 
         // Auth via customer token
         // @param context - scope of where the callback resides

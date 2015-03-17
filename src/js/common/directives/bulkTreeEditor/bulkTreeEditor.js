@@ -133,9 +133,9 @@ app.directive('bulkTreeEditor',
                         param.year=scope.selected.year;
                     }
 
-                    //Api.getBulkEditInfo(param).then(function(data){
-                    //    var a=1;
-                    //});
+                    Api.getBulkEditInfo(param).then(function(data){
+                        var a=1;
+                    });
                 }
                 scope.closeModal = function () {
                     modal.hide();
@@ -143,8 +143,6 @@ app.directive('bulkTreeEditor',
 
                 scope.SaveUser = function (event) {
                 };
-
-
                 scope.hide = function(){
                     $(document).unbind('keyup', hideOnEscape);
                     modal.hide();
@@ -161,7 +159,7 @@ app.directive('bulkTreeEditor',
 
                         if (angular.isDefined(attrs.siteId)) {
                             scope.siteID= scope.$eval(attrs.siteId);
-                            scope.siteID='1495';
+                            scope.siteID='94';
                         }
                         if (angular.isDefined(attrs.treatments)) {
                             scope.allTreatments= scope.$eval(attrs.treatments);

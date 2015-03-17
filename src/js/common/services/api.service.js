@@ -117,7 +117,7 @@ function (Rest, $rootScope, $q, $location, storage) {
             return Rest.one('template/emailReport').get(opt);
         },
         getBulkEditInfo:function(opt){
-            return Rest.all('bulkEdit').getList(opt);
+            return Rest.all('bulkedit').getList(opt);
         },
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...

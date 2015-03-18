@@ -117,7 +117,23 @@ function (Rest, $rootScope, $q, $location, storage) {
             return Rest.one('template/emailReport').get(opt);
         },
         getBulkEditInfo:function(opt){
-            return Rest.all('bulkedit').getList(opt);
+            return Rest.one('bulkedit').get(opt);
+        },
+        getBulkItemSummary:function(obj){
+            var type;
+            var id;
+            if(obj.reportID){
+                id=obj.reportID;
+                type='estimate'
+            }
+            else if(obj.siteID){
+                id=obj.siteID;
+                type='site';
+            }
+            return Rest.one(type+'/'+id+'/bulk_item_summary').get();
+        },
+        modifyBulkEditInfo : function(param,obj){
+            return Rest.one('bulkedit').post(obj,[param]);
         },
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...

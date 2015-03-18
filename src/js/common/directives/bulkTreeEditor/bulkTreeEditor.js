@@ -1,7 +1,4 @@
 /**
- * Created by usert on 28-Jan-15.
- */
-/**
  * Created by Imdadul Huq on 11-Jan-15.
  */
 app.directive('bulkTreeEditor',
@@ -13,85 +10,93 @@ app.directive('bulkTreeEditor',
                 var modal;
                 window.sues = scope;
                 scope.newContact={};
-                scope.addedSites=[];
-                scope.allTreatments=[];
+                //scope.addedSites=[];
+                scope.allTreatments=[]; // Should show all the treatmens
                 scope.selected={};
                 var treatmentTypeIDs=[];
                 var dbh=[];
                 var species=[];
                 scope.singleTreatmentSelected=false;
-                scope.openModal = function () {
+                scope.yearRecommendation=[];
+
+
+                scope.currentInfo={};
+
+                var initVars=function(){
                     scope.species=[];
                     scope.treatments=[];
                     scope.dbh=[];
                     scope.years=[];
-
-                    Api.getTrees(scope.siteID).then(function(data){
-
-                        _.each(data,function(item){
-
-                            _.each(item.history,function(i){
-                                treatmentTypeIDs.push(i.treatmentTypeID);
-                                scope.years.push(i.year);
-                            });
-
-                            species.push(item.speciesID);
-
-                            dbh.push(item.dbhID);
-                        });
-
-                        treatmentTypeIDs = _.uniq(angular.copy(treatmentTypeIDs));
-                        dbh = _.uniq(angular.copy(dbh));
-                        species = _.uniq(species);
-                        scope.years = _.uniq(scope.years);
-
-                        _.each(treatmentTypeIDs,function(id){
-                            scope.treatments.push({
-                                treatmentType:filter('getTreatmentTypeName')(id,scope),
-                                treatmentTypeID:id
-                            });
-                        });
-
-                        _.each(species,function(id){
-                            scope.species.push({
-                                commonName:filter('speciesID2Name')(id,'',scope),
-                                speciesID:id
-                            });
-                        });
-                        _.each(dbh,function(id){
-                            scope.dbh.push({
-                                dbh:filter('dbhID2Name')(id,scope),
-                                dbhID:id
-                            });
-                        });
+                    treatmentTypeIDs=[];
+                    dbh=[];
+                    species=[];
+                    scope.selected={};
+                    scope.selected.isTreatmentSelected=false;
+                    scope.selected.isSpeciesSelected=false;
+                    if (scope.mode='site') scope.selected.isDbhSelected=false;
+                    scope.selected.isYearSelected=false;
+                    scope.selected.chgPriceBy=true;
+                }
+                scope.openModal = function () {
+                    var param={};
+                    if(scope.siteID){
+                        param.siteID=scope.siteID;
+                    }
+                    else if(scope.reportID){
+                        param.reportID=scope.reportID;
+                    }
+                    Api.getBulkItemSummary(param).then(function(data){
+                        scope.treatments=data.treatments;
+                        scope.species=data.species;
+                        scope.dbh=data.dbh;
+                        scope.years=data.year;
 
                         scope.treatments=filter('orderBy')(scope.treatments,'+treatmentType');
                         scope.species=filter('orderBy')(scope.species,'+commonName');
                         scope.dbh=filter('orderBy')(scope.dbh,'+dbh');
                         scope.species=filter('orderBy')(scope.species,"+''.toString()");
 
-                        scope.treatments.unshift({
-                            treatmentType:  'All',
-                            treatmentTypeID:-1
-                        });
-                        scope.species.unshift({
-                            commonName:'All',
-                            speciesID: -1
-                        });
-                        scope.dbh.unshift({
-                            dbh:    'All',
-                            dbhID:  -1
-                        });
-                        scope.years.unshift('All');
+
+                        scope.allTreatments=scope.treatments; // should show all the treatmenst in 'ADD TREATNEBT RECOMMENDATION'
+
+
 
                         scope.selected.treatment=scope.treatments[0];
                         scope.selected.species=scope.species[0];
                         scope.selected.dbh=scope.dbh[0];
                         scope.selected.year=scope.years[0];
 
-                    });
+                        scope.selected.changeTreatmentTo=scope.treatments[0];
+                        scope.selected.addedTreatRecom=scope.treatments[0];
 
+                        scope.selected.IschgPrice=1;
+                        scope.selected.chgPriceBy=1;
+                        scope.selected.chgPriceByPercent=1;
 
+                        var currentYear=new Date().getFullYear();
+                        for(var i=1;i<=5;i++){
+                            currentYear++;
+                            scope.yearRecommendation.push(currentYear);
+                        }
+                        scope.selected.changeYearTo=scope.yearRecommendation[0];
+                        scope.selected.addedTreatRecomYear=scope.yearRecommendation[0];
+
+                        scope.selectionChanged();
+                    })
+
+                        //scope.treatments.unshift({
+                        //    treatmentType:  'All',
+                        //    treatmentTypeID:-1
+                        //});
+                        //scope.species.unshift({
+                        //    commonName:'All',
+                        //    speciesID: -1
+                        //});
+                        //scope.dbh.unshift({
+                        //    dbh:    'All',
+                        //    dbhID:  -1
+                        //});
+                        //scope.years.unshift('All');
 
                     if (!modal) {
                         modal = $modal({scope: scope, template: '/js/common/directives/bulkTreeEditor/bulkTreeEditor.tpl.html', show: false});
@@ -102,23 +107,48 @@ app.directive('bulkTreeEditor',
                         // setup ESCAPE key
                         $(document).keyup(hideOnEscape);
                     });
-
-
                 };
 
-                scope.selectionChanged=function(){
-                    if(scope.selected.treatment.treatmentTypeID==-1){
-                        scope.singleTreatmentSelected=false;
+                scope.ok=function(){
+                    var param=createParam();
+                    var post={};
+                    if(scope.singleTreatmentSelected && scope.selected.IsSetPrice){
+                        post.setPrice=scope.selected.setPrice;
                     }
-                    else{
-                        scope.singleTreatmentSelected=true;
+                    if(scope.selected.isPriceAdjusted){
+                        if(scope.selected.IschgPriceBy)
+                            post.chgPriceBy=scope.selected.chgPriceBy;
+                        if(scope.selected.IschgPriceByPercent)
+                            post.chgPriceByPercent=scope.selected.chgPriceByPercent;
                     }
+                    if(scope.selected.removeFromRecommendation) post.remove=1; else post.remove=0;
+                    if(scope.selected.IsChangeToTreatment){
+                        post.chgTreatment=scope.selected.changeTreatmentTo.treatmentTypeID;
+                    }
+
+                    if(scope.selected.IsChangeToYear){
+                        post.chgYear=scope.selected.changeYearTo;
+                    }
+
+                    if(scope.selected.IsTreatmentRecommendationAdded){
+                        post.addTreatment=scope.selected.addedTreatRecom.treatmentTypeID;
+                        post.addTreamentYear=scope.selected.addedTreatRecomYear;
+                    }
+                    if(scope.selected.IsNoteAdded){
+                        post.addNote=scope.selected.note;
+                    }
+                    Api.modifyBulkEditInfo(param,post).then(function(data){
+                        var a=1;
+                    })
+                }
+                var createParam=function(){
                     var param={};
-                    if(scope.mode=='site'){
+
+                    if(scope.siteID){
                         param.siteID=scope.siteID;
                     }
                     else{
-                        param.reportID=scope.siteID;
+                        param.reportID=scope.reportID;
                     }
                     if(scope.selected.isTreatmentSelected){
                         param.treatmentTypeID=scope.selected.treatment.treatmentTypeID;
@@ -130,18 +160,29 @@ app.directive('bulkTreeEditor',
                         param.dbhID=scope.selected.dbh.dbhID;
                     }
                     if(scope.selected.isYearSelected){
-                        param.year=scope.selected.year;
+                        param.year=scope.selected.year.year;
                     }
 
+                    return param;
+                }
+                scope.selectionChanged=function(){
+                    if(scope.selected.isTreatmentSelected && !scope.selected.isSpeciesSelected
+                        && !scope.selected.isDbhSelected && !scope.selected.isYearSelected){
+                        scope.singleTreatmentSelected=true;
+                    }
+                    else{
+                        scope.singleTreatmentSelected=false;
+                    }
+                    var param=createParam();
                     Api.getBulkEditInfo(param).then(function(data){
-                        var a=1;
+                        scope.currentInfo.treeCount=data.treeCount;
+                        scope.currentInfo.treatmentCount=data.treatmentCount;
+                        scope.currentInfo.price=data.price;
                     });
                 }
+
                 scope.closeModal = function () {
                     modal.hide();
-                };
-
-                scope.SaveUser = function (event) {
                 };
                 scope.hide = function(){
                     $(document).unbind('keyup', hideOnEscape);
@@ -155,17 +196,18 @@ app.directive('bulkTreeEditor',
                 var init = function () {
                     el.on('click', function (event) {
                         event.preventDefault();
-                        scope.addedSites=[];
-
-                        if (angular.isDefined(attrs.siteId)) {
-                            scope.siteID= scope.$eval(attrs.siteId);
-                            scope.siteID='94';
-                        }
-                        if (angular.isDefined(attrs.treatments)) {
-                            scope.allTreatments= scope.$eval(attrs.treatments);
-                        }
-                        scope.mode=attrs.mode;
-                        // TO REMOVE
+                        //scope.addedSites=[];
+                        initVars();
+                        scope.siteID='86';
+                        scope.mode='site';
+                        //if (scope.siteId) {
+                        //    //scope.siteID= scope.$eval(attrs.siteId);
+                        //    //scope.siteID='86';
+                        //}
+                        //else {
+                        //    //scope.reportId= scope.$eval(attrs.reportId);
+                        //    //scope.siteID='86';
+                        //}
                         scope.openModal();
                     });
                 };

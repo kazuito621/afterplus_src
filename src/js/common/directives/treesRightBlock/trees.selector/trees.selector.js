@@ -18,7 +18,8 @@ app.directive('treesSelector',
                 setStatus: '&',
                 selectedTrees: '=',
                 count: '=', // TFSdata.treeResultsCount
-                editModeCss: "@"
+                editModeCss: "@",
+                siteID:'@siteId'
             },
             link: linker            
         };

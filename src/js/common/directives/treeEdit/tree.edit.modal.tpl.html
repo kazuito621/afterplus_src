@@ -1,6 +1,6 @@
 <div class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" style="margin-left: 20%;width: 50%">
-        <div class="modal-content">
+        <div class="modal-content" style="width:113%;">
             <div class="treeEditBox edit-tree-container">
                 <div class="row">
                     <div class="col-md-5">
@@ -110,9 +110,6 @@
                                             </a>
                                         </td>
                                         <td>
-                                                        <span ng-if="!auth.isAtleast('inventory')" ng-show="o.price !== null && o.price">
-                                                            ${{o.price|formatPrice}}
-                                                        </span>
                                             <a ng-if="auth.isAtleast('inventory')" href editable-text='o.price' ng-show="o.price !== null && o.price">
                                                 ${{o.price|formatPrice}}
                                             </a>
@@ -127,6 +124,16 @@
 
                             <div ng-if="tree.mode!='rollover'" class=''>
                                 <button class='navButton' ng-click="save();">Save</button>
+                    &nbsp;
+                    <button delete-with-confirm-button
+                            type="tree"
+                            item-id="{{tree.treeID}}"
+                            active-popover="activePopover"
+                            on-confirm-callback="deleteTree(tree.treeID)"
+                            class="navButton"
+                            bs-tooltip title="Delete" ng-if="auth.isAtleast('inventory')">
+                        Delete This Tree
+                    </button>
                                 &nbsp;<a ng-click="onCancel()" bs-tooltip class='hand' title="Hotkey: Press Escape to cancel">Cancel</a>
                             </div>
                         </div>

@@ -1,5 +1,4 @@
 // TODO: exclude .spec.js and assets/*.js
-
 // Generated on 2014-03-01 using generator-angular 0.7.1
 'use strict';
 
@@ -8,6 +7,8 @@
 // 'test/spec/{,*/}*.js'
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
+
+var path = require('path');
 
 module.exports = function (grunt) {
 
@@ -26,7 +27,7 @@ module.exports = function (grunt) {
         yeoman: {
             // configurable paths
             app: require('./bower.json').appPath || 'src',
-            dist: 'public'
+            dist: 'dist', 
         },
 
         // Watches files for changes and runs tasks based on the changed files
@@ -61,6 +62,13 @@ module.exports = function (grunt) {
                   '<%= yeoman.app %>/img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ],
                 tasks: ['html2js'],
+            },
+            e2eTest: {
+                files: ['test/e2e/{,*/}*.js'],
+                tasks: [
+                  'protractor_webdriver:start',
+                  'protractor:test'
+                ]
             }
         },
 
@@ -159,7 +167,7 @@ module.exports = function (grunt) {
             }
             /*
                   ,test: {
-                    src: 'karma.conf.js',
+                    src: 'test/karma.conf.js',
                     fileTypes: {
                         js: {	
                             block: /(([\s\t]*)\/\/\s*bower:*(\S*))(\n|\r.)*?(\/\/\s*endbower)/gi
@@ -207,6 +215,18 @@ module.exports = function (grunt) {
         usemin: {
             html: ['<%= yeoman.dist %>/{,*/}*.html'],
             css: ['<%= yeoman.dist %>/css/{,*/}*.css'],
+            //options: {
+            //    dest: '<%= yeoman.dist %>',
+            //    flow: {
+            //        html: {
+            //            steps: {
+            //                js: ['concat', 'uglifyjs'],
+            //                css: ['cssmin']
+            //            },
+            //            post: {}
+            //        }
+            //    }
+            //}
             options: {
                 assetsDirs: ['<%= yeoman.dist %>']
             }
@@ -291,7 +311,8 @@ module.exports = function (grunt) {
                       'patch/**/*',
                       //'img/*',
                       'fonts/*',
-                      'compiled-tpl/*'
+                      'compiled-tpl/*',
+                      '.tmp/concat/*.js'
                     ]
                 }
         /*
@@ -322,6 +343,12 @@ module.exports = function (grunt) {
                     src: 'api/*.*'
                   },
             */
+            js: {
+                expand: true,
+                cwd: '.tmp/concat/js',
+                dest: '<%= yeoman.dist %>/js',
+                src: '{,*/}*.js'
+            },
             css: {
                 expand: true,
                 cwd: '<%= yeoman.app %>/css',
@@ -355,6 +382,15 @@ module.exports = function (grunt) {
             },
         },
 
+        shell: {
+          npm_install: {
+            command: 'npm install'
+          },
+          update_webdriver: {
+            command: 'node ' + path.join('node_modules/protractor/bin', 'webdriver-manager') + ' update'
+          }
+        },
+
         // By default, your `index.html`'s <!-- Usemin block --> will take care of
         // minification. These next options are pre-configured if you do not wish
         // to use the Usemin blocks.
@@ -384,9 +420,30 @@ module.exports = function (grunt) {
         // Test settings
         karma: {
             unit: {
-                configFile: 'karma.conf.js',
+                configFile: 'test/karma.conf.js',
                 singleRun: true
             }
+        },
+
+        protractor_webdriver: {
+          start: {}
+        },
+
+        protractor: {
+          options: {
+            configFile: "test/protractor.conf.js"
+          },
+          test: {
+            // it needs at least one target
+            options: {}
+          },
+          testfirefox: {
+            options: {
+              args: {
+                browser: "firefox"
+              }
+            }
+          }
         }
     });
 
@@ -417,10 +474,37 @@ module.exports = function (grunt) {
       'concurrent:test',
       'autoprefixer',
       'connect:test',
-      'karma'
+      'karma',
+      'e2e'
+    ]);
+
+    grunt.registerTask('test:e2e_dev', [
+      'e2e',
+      'watch'
+    ]);
+
+    grunt.registerTask('e2e-prepare', [ 
+      'clean:server',
+      'bower-install',
+      'concurrent:server',
+      'autoprefixer',
+      'html2js',
+      'connect:livereload',
+      'protractor_webdriver:start'
+    ]);
+
+    grunt.registerTask('e2e', [
+      'e2e-prepare',
+      'protractor:test'
+    ]);
+
+    grunt.registerTask('e2e-firefox', [
+      'e2e-prepare',
+      'protractor:testfirefox'
     ]);
 
     grunt.registerTask('build', [
+      'update',
       'clean:dist',
       'bower-install',      
       'useminPrepare',
@@ -443,5 +527,10 @@ module.exports = function (grunt) {
       'newer:jshint',
       'test',
       'build'
+    ]);
+
+    grunt.registerTask('update', [
+      'shell:npm_install',
+      'shell:update_webdriver'
     ]);
 };

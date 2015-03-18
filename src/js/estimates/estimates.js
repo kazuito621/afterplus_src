@@ -101,22 +101,34 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         if (!s.activePopover.itemID) return;
 		var itemID=s.activePopover.itemID;
         Api.removeEstimateById(itemID).then(function () {
-			$("table#estimatesList tr#item_"+itemID).hide();
-			var idx=_.findObj(estimates, 'reportID', itemID, true);
-			if(idx>=0) estimates.splice(idx, 1);
+            if(false){ //TODO  if msg don't  indicates success,
+                s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
+            }
+            else {
+                if(idx>=0) {
+                    estimates.splice(idx, 1);
+                }
+                s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+            }
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
         });
+
+        var idx=_.findObj(estimates, 'reportID', itemID, true);
+        if(idx>=0) {
+            s.displayedEstimates.splice(idx, 1);
+        }
         s.activePopover.elem.hide();
         delete s.activePopover.itemID;
     };
 
 	// based on the filter, also change which date is actually shown in the list.
 	// ie. if Sent is chosen, then date columb should be tstamp_sent
+
 	s.setStatusFilter=function(status){
 		if(status=='all')status='';
 		if(status=='sent'||status=='completed'||status=='approved') {
-			s.data.currentTstamp='tstamp_'+status;
+            s.data.currentTstamp='tstamp_'+status;
 			s.data.currentTstampHeader=status.substr(0,1).toUpperCase() + status.substr(1) + ' Date';
 		}else{
 			s.data.currentTstamp='tstamp_updated';
@@ -125,12 +137,19 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		self.fh.setFilter({status:status});
 		applyFilter();
 	}
+    s.updateEstimateTime=function(e){
+        var postObj={};
+        postObj[s.data.currentTstamp]=e[s.data.currentTstamp];
+        Api.updateEstimateTime(e.reportID,postObj).then(function(res){
 
-	s.getTstamp = function(row){
-		if(row[s.data.currentTstamp]) return row[s.data.currentTstamp];
-		return row.tstamp_updated;
-	}
-
+        });
+    }
+    s.validateDate=function(data){
+        if(data==null) return 'Enter a valid datetime'
+        data=data.replace(' ','T')
+        var date=new Date(data);
+        if(date.getDate().toString()=='NaN') return 'Enter a valid datetime'
+    }
 	s.setReportStatus=function(rpt){
 		// todo -- we need a way for calls like this to know if a api calle failed.
 		// currently, both ok and fail, still calls the then()
@@ -172,8 +191,15 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 											// by different timestamp values in the list. For example, if were filtering by "sent"
 											// then we should display "tstamp_sent", not "tstamp_updated"
 		,currentTstampHeader:'Last Updated'
+        ,tstampItems:[
+            {viewValue:'Created',value:'tstamp_created'},
+            {viewValue:'Updated',value:'tstamp_updated'},
+            {viewValue:'Sent',value:'tstamp_sent'},
+            {viewValue:'Approved',value:'tstamp_approved'},
+            {viewValue:'Completed',value:'tstamp_completed'},
+            {viewValue:'Paid',value:'tstamp_paid'}
+        ]
 	};
-
 
 	s.sortDateCol=function(){
 		s.sh.sortByColumn(s.data.currentTstamp);
@@ -184,11 +210,14 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 	s.getDateColClass=function(){
 		return s.sh.columnClass(s.data.currentTstamp);
 	}
-
+    s.getTstampHeaderClass=function(){
+       return _.findObj(s.data.tstampItems, 'value', s.data.currentTstamp).viewValue.toLowerCase();
+    }
 
 	s.sh = {
 		sortByColumn: function (col) {
 			applyFilter();
+            self.sh.setData(estFiltered);
 			estFiltered = self.sh.sortByColumn(col);
 			s.displayedEstimates = estFiltered.slice(0, 49);
 		},
@@ -208,7 +237,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             return;
         }
 
-        var addon = estimates.slice(count, count + 50);
+        var addon = estFiltered.slice(count, count + 50);
         s.displayedEstimates = s.displayedEstimates.concat(addon);
     };
 

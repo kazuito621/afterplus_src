@@ -9,7 +9,7 @@
                 <label class="toggle-label">
                     <input type="checkbox"  value="{{h.value}}"
                            ng-model="initDataHazards[h.key].selected"
-                           ng-change="onFilterChange({ filterType: h.key', ID: '', value: initDataHazards[h.key].selected })" class="toggle-check">
+                           ng-change="onFilterChange({ filterType: h.key, ID: '', value: initDataHazards[h.key].selected })" class="toggle-check">
                     <span class="text btn btn-gray btn-xs" ng-class="{'active' : initDataHazards[h.key].selected}">
                         <i ng-class='h.class'></i> {{h.name}}
                         <span class='filterTypeCount' ng-if="tfsCounts[h.key]>0">({{tfsCounts[h.key]}})</span>

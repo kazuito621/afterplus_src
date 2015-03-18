@@ -8,7 +8,9 @@ app.directive('actionMenu',
             'use strict';
 
             var linker = function (scope, el, attrs){
-
+                var hideOnEscape = function(e){
+                    if(e.keyCode === 27) scope.actionMenuPopover.hide();
+                };
                  $(el).click(function () {
                      scope.reportID=scope.report.reportID;
                      if (scope.actionMenuPopover && typeof scope.actionMenuPopover.hide === 'function') {
@@ -26,6 +28,7 @@ app.directive('actionMenu',
                      //show popover
                      scope.actionMenuPopover.$promise.then(function () {
                          scope.actionMenuPopover.show();
+                         $(document).keyup(hideOnEscape);
                      });
                  });
             };

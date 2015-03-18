@@ -2,7 +2,7 @@
 <div class="table-responsive">
     <table class="table ng-scope ng-table" ng-if="data.mode()=='trees' || report.services.length > 0 ">
         <thead>
-        <tr>
+        <tr ng-hide="groupedItems.length==0">
             <td colspan="4">Misc. Services</td>
         </tr>
         <tr>
@@ -23,8 +23,8 @@
                 <span ng-if='!auth.isAtleast("inventory")'>{{item.quantity}}</span>
             </td>
             <td data-title="service_price" class="text-right">
-                <a href editable-text='item.price' ng-if='auth.isAtleast("inventory")'>{{item.price}}</a>
-                <span ng-if='!auth.isAtleast("inventory")'>{{item.price}}</span>
+                <a href editable-text='item.price' ng-if='auth.isAtleast("inventory")'>${{item.price}}</a>
+                <span ng-if='!auth.isAtleast("inventory")'>${{item.price}}</span>
             </td>
             <td ng-if="data.mode()=='trees'">
                 <div ng-if="auth.isAtleast('inventory')">

@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q',
-        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth,$modal,$q) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q','$rootScope',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth, $modal, $q, $rootScope) {
             'use strict';
 
             // local and scoped vars
@@ -17,13 +17,11 @@ var ReportCtrl = app.controller(
             s.estimateTreatmentCodes = [];
             s.treatmentDescriptions = [];
             s.siteOfReport={};
-            var reportBackUp;
             var changedItems = [];
-
+            
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
-
-            var jumpedToAnotherReport=false;
+			s.estimate_links=cfg.getEntity().estimate_links;
 
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
@@ -32,11 +30,13 @@ var ReportCtrl = app.controller(
             };
 
             s.getRecentReportTitle = function (report) {
-                var res = '';
-                if (report.status=='approved') 
-                    res += '[APPROVED] ';
+                var res = '(' + report.reportID + ') ' + report.name + ' - ';
+				if(report.total_price) res+='$'+report.total_price+' - ';
+				res += report.tstamp_updated;
 
-                res += report.name + ' - ' + report.tstamp_updated;
+                if (report.status)
+                    res += ' [' + report.status.toUpperCase() + ']';
+				
                 return res;
             };
 
@@ -56,8 +56,7 @@ var ReportCtrl = app.controller(
             // when a recent report is selected
 
             s.$watch('rdata.recentReportID', function (ID) {
-                reportBackUp=undefined;
-                jumpedToAnotherReport=true;
+                RS.reportBackup=undefined;
 
                 ID += '';
                 if (ID.length && $location.search().reportID !== ID) {
@@ -72,9 +71,16 @@ var ReportCtrl = app.controller(
 
             // When a new report is loaded, bind it to this scope
             s.$on('onLoadReport', function (evt, rpt) {
-                s.report = rpt;
-                s.siteOfReport={}
+                s.report = rpt;                
+                
+                //Use to load site on basis of recent selected report in tree.js
+                $rootScope.$broadcast('OnLoadReportEvent', { siteID: rpt.siteID });
+
+                s.siteOfReport = {}
                 s.report.customers=[]
+                if(s.report.sales_userID==undefined){
+                    setDefaultSalesRep();
+                }
                 // set email links
                 if (rpt.emailLogs) {
                     _.each(rpt.emailLogs, function (e) {
@@ -89,7 +95,7 @@ var ReportCtrl = app.controller(
 
                 if(s.report.siteID==undefined || s.report.siteID=="") return;
 
-                reportBackUp= angular.copy(s.report);
+                RS.reportBackup=angular.copy(s.report);
 
                 getSiteBySiteID();
                 getSiteCustomers();
@@ -115,19 +121,24 @@ var ReportCtrl = app.controller(
 				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.report.actionButton=0;
 			}
-
+            var discard=false;
             s.$on('$locationChangeStart', function (event, next, current) {
-                if(!Auth.isAtleast('inventory') || reportBackUp==undefined ||
-                    ReportService.isChanged(reportBackUp, s.report) == false) {
-                    reportBackUp=undefined;
-                    jumpedToAnotherReport=false;
+                if(
+                    s.data.mode()!=="trees"
+                    || !Auth.isAtleast('inventory')
+                    || RS.reportBackup==undefined
+                    || discard == true
+                    || !((RS.reportBackup=='new') ||  ReportService.isChanged(RS.reportBackup, s.report))
+                ){
                     return;
-                };
+                }
+
                 $location.url($location.url(next).hash());
                 event.preventDefault();
                 var sm= s.$new();
                 sm.leaveCurrentPage=function(){
-                    reportBackUp=undefined;
+                    RS.reportBackup=undefined;
+                    discard=true;
                     $location.url($location.url(next).hash());
                 }
                 sm.stayOnCurrentPage=function(){
@@ -135,8 +146,16 @@ var ReportCtrl = app.controller(
                 return $modal({ scope: sm, template: 'js/common/directives/templates/pageNavConfirm.tpl.html', show: true });
             });
 
+            var setDefaultSalesRep=function(){
+                s.report.sales_userID=Auth.authData.userID;
+                s.report.sales_email=Auth.authData.email;
+                s.report.sales_fname=Auth.authData.fName;
+                s.report.sales_lname=Auth.authData.lName;
+            }
 
             s.$on('itemsAddedToReport', function () {
+                if(RS.reportBackup==undefined)
+                    RS.reportBackup= 'new';
                 s.groupedItems = ReportService.groupReportItems();
                 if(s.report.customers.length==0){
                     getSiteCustomers();
@@ -214,20 +233,33 @@ var ReportCtrl = app.controller(
 
             s.newReport = function () {
                 RS.getBlankReport();
+
+				// clear out the query string
+				if( $location.search().reportID ) $location.search('reportID','');
+				if( $location.search().siteID ) $location.search('siteID','');
             };
 
 
 
             s.saveReport = function () {
+
+                var allTreatmentsSaved = s.checkAllTreatmentCodeSaved();
+                if (!allTreatmentsSaved) {
+                    s.setAlert("Please Select Treatments First", { type: 'd' });
+                    return;
+                }
+
                 var saveRequest = RS.saveReport();
                 saveRequest.then(function (data) {
                     data.reportID += '';
+                    RS.reportBackup= angular.copy(s.report);
+                    // If you change the value of s.report,make sure that
+                    // RS.reportBackup must be reinitialized after all change in s.report has done AND before $location call.
                     if (data && data.reportID && $location.search().reportID !== data.reportID) {
                         $location.search({ reportID: data.reportID});
                     }
-                    reportBackUp= angular.copy(s.report);
                 });
-                reportBackUp= s.report;
+                RS.reportBackup= angular.copy(s.report); // This is for faster case save and navigate instantly.
             };
 
             s.initEmailModal = function () {
@@ -273,11 +305,7 @@ var ReportCtrl = app.controller(
 				Api.getEmailTemplate().then(function(res){
 					if(res){
 						s.emailRpt.message = res;
-						if (Auth.data().fname) 
-							s.emailRpt.message += Auth.data().fname;
-						s.emailRpt.message+="\n"+cfg.getEntity().name;
 					}
-
 				});
             };
 
@@ -330,23 +358,19 @@ var ReportCtrl = app.controller(
             }
 
             // Remove treatment from estimate
-            s.removeTreatmentFromEstimate = function (treeIndex, treatmentIndex) {
+            s.removeTreatmentFromEstimate = function (treeID, treatmentTypeCode) {
                 // Remove treatment only if there is more than one treatment. Otherwise remove the item
-//                console.log('Tree index: %s, treatment index: %s', treeIndex, treatmentIndex);
+//                console.log('Tree index: %s, treatment index: %s', treeID, treatmentTypeCode);
 
-//                console.log(
-//                    'Removing treatment from a tree',
-//                    s.groupedItems[treeIndex],
-//                    s.groupedItems[treeIndex].treatments[treatmentIndex]
-//                );
 
-                var tree = s.groupedItems[treeIndex];
-
+                var tree=_.findObj(s.groupedItems, 'treeID', treeID);
+                var indexOfTree=_.findIndex(s.groupedItems, function(t) { return t.treeID == treeID; })
                 if (tree.treatments.length && tree.treatments.length > 1) { // remove only selected treatment
-                    tree.treatments.splice(treatmentIndex, 1);
-                    s.groupedItems[treeIndex] = tree;
+                    var idx=_.findIndex(tree.treatments, function(t) { return t.treatmentTypeCode == treatmentTypeCode; })
+                    tree.treatments.splice(idx, 1);
+                    s.groupedItems[indexOfTree] = tree;
                 } else { // remove item
-                    s.groupedItems.splice(treeIndex, 1);
+                    s.groupedItems.splice(indexOfTree, 1);
                 }
 
                 s.report.items = ReportService.ungroupReportItems();
@@ -448,5 +472,34 @@ var ReportCtrl = app.controller(
                     s.report = RS.getBlankReport();
                 }
             }
+
+            // add New TreatmentCode
+            s.addNewTreatment = function (treatments) {
+                treatments.push({
+                    treatmentTypeCode: "Select TreatmentCode",
+                    price: "0.00"
+                });
+            };
+
+            s.checkAllTreatmentCodeSaved = function () {
+                var isAllSavedTreatments = true;
+                for (var index = 0; index <= s.groupedItems.length - 1; index++) {
+                    var item = s.groupedItems[index];
+                    for (var innerIndex = 0; innerIndex <= item.treatments.length - 1; innerIndex++) {
+                        var treatMent = item.treatments[innerIndex];
+                        if (treatMent.treatmentTypeCode !== undefined &&
+                            treatMent.treatmentTypeCode.toString().toLocaleLowerCase() === "select treatmentcode") {
+                            isAllSavedTreatments = false;
+                        }
+                        //Break Inner loop if there is any un-saved treatment exist
+                        if (!isAllSavedTreatments)
+                            break;
+                    }
+                    //Break Outer loop if there is any un-saved treatment exist
+                    if (!isAllSavedTreatments)
+                        break;
+                }
+                return isAllSavedTreatments;
+            };
         }]
 );

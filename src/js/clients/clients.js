@@ -31,11 +31,22 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 if (!s.activePopover.itemID) return;
 
                 Api.removeClientById(s.activePopover.itemID).then(function () {
-                    Api.refreshInitData();
+                    if(false){ //TODO  if msg don't  indicates success,
+                        s.setAlert("There was an error deleting the property.",{type:'d',time:5});
+                    }
+                    else {
+                        if(idx>=0) {
+                            s.initData.clients.splice(idx, 1);
+                        }
+                        s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+                    }
                 }, function err(){
                     s.setAlert("Client can't be deleted, try again later.",{type:'d',time:5});
                 });
-                Api.refreshInitData();
+                var idx=_.findObj(s.initData.clients, 'clientID', s.activePopover.itemID, true);
+                if(idx>=0) {
+                    s.displayedClients.splice(idx, 1);
+                }
                 s.activePopover.elem.hide();
                 delete s.activePopover.itemID;
             };
@@ -65,12 +76,20 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                 s.displayedClients = s.displayedClients.concat(addon);
             };
 
+            s.updateAddess=function(address){
+                s.client.street=address.street;
+                s.client.state=address.state;
+                s.client.city=address.city;
+                s.client.zip=address.zip;
+            };
 			s.saveClient = function(mode){
 				if(!mode) mode = s.mode;
 				if( mode == 'edit' ){
 					var obj = s.client;
 					obj.post().then(function () {
-						Api.refreshInitData();
+                        Api.refreshInitData().then(function (data) {
+                            s.displayedClients = s.initData.clients.slice(0, s.displayedClients.length);
+                        });
 					});
 				}else{
 					if (!s.client.clientTypeID) {
@@ -80,10 +99,10 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 					Api.saveNewClient(s.client).then(function (data) {
 						console.log(s.client);
 						console.log("Post new client response:");
-						console.dir(data);
+                        Api.refreshInitData().then(function (data) {
+                            s.displayedClients = s.initData.clients.slice(0, s.displayedClients.length);
+                        });
 					});
-
-                	Api.refreshInitData();
 				}
 				clientEditModal.hide();
 			}

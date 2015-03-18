@@ -4,8 +4,8 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage',
-function (Rest, $rootScope, $q, $location, storage) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage','$http',
+function (Rest, $rootScope, $q, $location, storage,$http) {
     'use strict';
     window.Api = this;
     var initData = {};
@@ -20,6 +20,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         var deferred = $q.defer();
         if (!isSignedIn()) {
             deferred.resolve();
+        }
+        else if (!_.isEmpty(initData.sites)) {
+            deferred.resolve(initData);
         }
         else {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
@@ -143,6 +146,9 @@ function (Rest, $rootScope, $q, $location, storage) {
             //else, its a new one
             dbg(reportObj, "save rep ");
             return Rest.all('estimate').post(reportObj);
+        },
+        updateEstimateTime:function(reportID,tstamp){
+            return Rest.all('estimate/'+reportID).post(tstamp);
         },
         setReportStatus: function (rptID, status) {
             return Rest.one('estimate', rptID).post(status);
@@ -292,6 +298,12 @@ function (Rest, $rootScope, $q, $location, storage) {
             
             //(elemFunction, this)("post", undefined, params, undefined, headers);
             return Rest.one('tree', tree.treeID).post(undefined, params);
+        },
+        getGoogleAddress:function(params){
+            return $http.get(
+                'http://maps.googleapis.com/maps/api/geocode/json',
+                {params: params}
+            )
         }
     };
 }]);

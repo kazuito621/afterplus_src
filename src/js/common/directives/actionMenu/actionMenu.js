@@ -8,7 +8,9 @@ app.directive('actionMenu',
             'use strict';
 
             var linker = function (scope, el, attrs){
+
                  $(el).click(function () {
+                     scope.reportID=scope.report.reportID;
                      if (scope.actionMenuPopover && typeof scope.actionMenuPopover.hide === 'function') {
                          scope.actionMenuPopover.hide();
                      }

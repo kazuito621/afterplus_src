@@ -9,36 +9,30 @@ app.directive('bulkTreeEditor',
             var linker = function (scope, el, attrs) {
                 var modal;
                 window.sues = scope;
-                scope.newContact={};
-                //scope.addedSites=[];
                 scope.allTreatments=[]; // Should show all the treatmens
                 scope.selected={};
-                var treatmentTypeIDs=[];
-                var dbh=[];
-                var species=[];
                 scope.singleTreatmentSelected=false;
                 scope.yearRecommendation=[];
-
-
                 scope.currentInfo={};
-
                 var initVars=function(){
                     scope.species=[];
                     scope.treatments=[];
                     scope.dbh=[];
                     scope.years=[];
-                    treatmentTypeIDs=[];
-                    dbh=[];
-                    species=[];
                     scope.selected={};
                     scope.selected.isTreatmentSelected=false;
                     scope.selected.isSpeciesSelected=false;
                     if (scope.mode='site') scope.selected.isDbhSelected=false;
                     scope.selected.isYearSelected=false;
                     scope.selected.chgPriceBy=true;
+                    scope.yearRecommendation=[];
                 }
                 scope.openModal = function () {
+                    if(scope.siteID) scope.mode='site';
+                    else if(scope.reportID) scope.mode='report';
+
                     var param={};
+
                     if(scope.siteID){
                         param.siteID=scope.siteID;
                     }
@@ -49,7 +43,7 @@ app.directive('bulkTreeEditor',
                         scope.treatments=data.treatments;
                         scope.species=data.species;
                         scope.dbh=data.dbh;
-                        scope.years=data.year;
+                        if(scope.mode=='site')scope.years=data.year;
 
                         scope.treatments=filter('orderBy')(scope.treatments,'+treatmentType');
                         scope.species=filter('orderBy')(scope.species,'+commonName');
@@ -64,7 +58,8 @@ app.directive('bulkTreeEditor',
                         scope.selected.treatment=scope.treatments[0];
                         scope.selected.species=scope.species[0];
                         scope.selected.dbh=scope.dbh[0];
-                        scope.selected.year=scope.years[0];
+                        if(scope.mode=='site')
+                            scope.selected.year=scope.years[0];
 
                         scope.selected.changeTreatmentTo=scope.treatments[0];
                         scope.selected.addedTreatRecom=scope.treatments[0];
@@ -112,13 +107,14 @@ app.directive('bulkTreeEditor',
                 scope.ok=function(){
                     var param=createParam();
                     var post={};
+
                     if(scope.singleTreatmentSelected && scope.selected.IsSetPrice){
                         post.setPrice=scope.selected.setPrice;
                     }
                     if(scope.selected.isPriceAdjusted){
-                        if(scope.selected.IschgPriceBy)
+                        if(scope.selected.IschgPrice==1) // by $$
                             post.chgPriceBy=scope.selected.chgPriceBy;
-                        if(scope.selected.IschgPriceByPercent)
+                        else if(scope.selected.IschgPrice==0) // by %
                             post.chgPriceByPercent=scope.selected.chgPriceByPercent;
                     }
                     if(scope.selected.removeFromRecommendation) post.remove=1; else post.remove=0;
@@ -132,7 +128,8 @@ app.directive('bulkTreeEditor',
 
                     if(scope.selected.IsTreatmentRecommendationAdded){
                         post.addTreatment=scope.selected.addedTreatRecom.treatmentTypeID;
-                        post.addTreamentYear=scope.selected.addedTreatRecomYear;
+                        if(scope=='site')
+                            post.addTreamentYear=scope.selected.addedTreatRecomYear;
                     }
                     if(scope.selected.IsNoteAdded){
                         post.addNote=scope.selected.note;
@@ -196,18 +193,8 @@ app.directive('bulkTreeEditor',
                 var init = function () {
                     el.on('click', function (event) {
                         event.preventDefault();
-                        //scope.addedSites=[];
+
                         initVars();
-                        scope.siteID='86';
-                        scope.mode='site';
-                        //if (scope.siteId) {
-                        //    //scope.siteID= scope.$eval(attrs.siteId);
-                        //    //scope.siteID='86';
-                        //}
-                        //else {
-                        //    //scope.reportId= scope.$eval(attrs.reportId);
-                        //    //scope.siteID='86';
-                        //}
                         scope.openModal();
                     });
                 };

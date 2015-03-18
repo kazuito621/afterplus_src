@@ -133,7 +133,7 @@ function (Rest, $rootScope, $q, $location, storage) {
             return Rest.one(type+'/'+id+'/bulk_item_summary').get();
         },
         modifyBulkEditInfo : function(param,obj){
-            return Rest.one('bulkedit').post(obj,[param]);
+            return Rest.all('bulkedit').post(obj,param);
         },
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...

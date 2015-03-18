@@ -36,9 +36,9 @@
                                 {{report.name}}
                             </span>
                         </p>
-                        <dl class="client-contact">
+                        <dl ng-show="report.customers.length>0" class="client-contact">
                             <dt>Contact: </dt>
-                            <dd ng-if="report.customers.length>0">
+                            <dd>
                                 <div style="margin-right: 5px"  ng-repeat="c in report.customers">
                                     <a href='mailto:{{c.email}}' target=_new>
                                         <span ng-hide="c.fName==undefined || c.fName==''" ng-bind="c.fName+' '+c.lName"></span>
@@ -53,15 +53,15 @@
                             </dd>
                         </dl>
 
-                        <dl ng-if="report.clientName!='Residential Clients' && report.clientName">
+                        <dl ng-show="report.clientName!='Residential Clients' && report.clientName">
                             <dt>Client: </dt>
                             <dd ng-bind='report.clientName'></dd>
                         </dl>
-                        <dl ng-if="report.siteName">
+                        <dl ng-show="report.siteName">
                             <dt>Property: </dt>
                             <dd ng-bind="report.siteName"></dd>
                         </dl>
-                        <dl ng-if="report.street">
+                        <dl ng-show="report.street || report.city || report.state">
                             <dt>Address: </dt>
                             <dd ng-if="report.reportID!=undefined" ng-bind="report.street + ', ' + report.city + ',' + report.state + ' ' + report.zip">
                             </dd>

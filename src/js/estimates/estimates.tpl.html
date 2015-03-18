@@ -72,7 +72,7 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}'>
+                <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}' ng-style="e.delete==1?{'background-color':'#bbb'}:''">
                     <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
                         <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)" ng-click="toggleEstimateSelection(e.reportID)">
                     </td>
@@ -116,7 +116,7 @@
                         </a>
                     </td>
                     <td>
-                        <a ng-if="auth.isAtleast('inventory') && e.status=='draft'"
+                        <a ng-if="auth.isAtleast('inventory') && e.status=='draft' && e.delete!=1"
                            delete-with-confirm-button
                            type="estimate"
                            item-id="{{e.reportID}}"

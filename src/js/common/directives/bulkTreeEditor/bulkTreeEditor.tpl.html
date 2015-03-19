@@ -1,3 +1,9 @@
+<style>
+	div.beBlock{
+		line-height:1.52em;
+		}
+</style>
+
 <div class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -8,37 +14,61 @@
             <div>
                 <form class="form-inline">
                     <div class='panel panel-default bottomMargin0'>
-                        <div class='panel-body'>
-                            <h3>Edit all trees where</h3>
+                        <div class='panel-body' style='padding:2em;'>
+                            <h1 style='color:#f33; font-weight:bold; font-size:1.4em;'>Tree Selection...</h1>
                             <div class="containter">
-                                <div class="row" style="margin: 15px 2px 10px 5px;">
-                                    <input type="checkbox" ng-model="selected.isTreatmentSelected" ng-change="selectionChanged()"/>
-                                    <label ng-if="mode=='report'" class="" style="font-weight: bold;width: 30%">Treatment</label>
-                                    <label ng-if="mode=='site'" class="" style="font-weight: bold;width: 30%">Recommendation</label>
-                                    <select ng-model="selected.treatment" style="width: 40%" ng-change="selectionChanged()"  ng-options="t.treatmentType for t in treatments" required>
-                                    </select> &nbsp;</br>
+                                <div class="row beBlock" style="margin: 15px 2px 10px 20px;">
+
+                                    <label class="beItem" style="font-weight: bold;">
+                                    	<input type="checkbox" ng-model="selected.isAllSelected" ng-change="selectionChanged()"/>
+													<span ng-if="mode=='report'">All Trees in this estimate</span>
+													<span ng-if="mode=='site'">All Trees on this property</span>
+												</label><BR>
+
+												<div>
+													<label ng-if="mode=='report'" class="" style="font-weight: bold;">
+														 <input type="checkbox" ng-model="selected.isTreatmentSelected" ng-change="selectionChanged()"/>
+														Treatment <span ng-if="mode=='site'">Recommendation</span>
+													</label>
+													<select ng-model="selected.treatment" style="width: 40%" ng-change="selectionChanged()"  
+														ng-options="t.treatmentType for t in treatments" required>
+													</select>
+												</div>
+												<br>
+
                                     <input type="checkbox" ng-model="selected.isSpeciesSelected" ng-change="selectionChanged()"/>
                                     <label class="" style="font-weight: bold;width: 30%">Species</label>
                                     <select ng-model="selected.species" style="width: 40%" ng-change="selectionChanged()" ng-options="s.commonName for s in species" required>
-                                    </select> &nbsp;</br>
+                                    </select>
+												<BR>
+
                                     <input type="checkbox" ng-model="selected.isDbhSelected" ng-change="selectionChanged()"/>
                                     <label class="" style="font-weight: bold;width: 30%">dbh</label>
                                     <select ng-model="selected.dbh" style="width: 40%" ng-change="selectionChanged()" ng-options="d.diameter for d in dbh" required>
-                                    </select> &nbsp;
-                                    </br>
+                                    </select>
+                                    <br>
+
                                     <span ng-if="mode=='site'">
                                         <input type="checkbox" ng-change="selectionChanged()" ng-model="selected.isYearSelected"/>
                                         <label class="" style="font-weight: bold;width: 30%;pointer-eve">Year</label>
-                                        <select ng-if="mode='site'" ng-model="selected.year" style="width: 40%" ng-change="selectionChanged()" ng-options="y.year for y in years" required>
+                                        <select ng-if="mode='site'" ng-model="selected.year" style="width: 40%" ng-change="selectionChanged()" 
+													 		ng-options="y.year for y in years" required>
                                         </select> &nbsp;</br>
                                     </span>
                                 </div>
-                                <div clas="row" style="margin: 10px; height: 50px;background-color: #808080">
-                                    <span style="font-size: large;margin-left: 40px;margin-top: 5px;;position: absolute;">
+                                <div clas="row" style="margin: 2em 0; background-color: #aaa; padding:1.5em; color:#fff; font-wieght:bold; font-size:1.3em;">
+                                   <!-- <span style="font-size: large;margin-left: 40px;margin-top: 5px;;position: absolute;">-->
                                         {{currentInfo.treeCount}} trees selected</br>
                                         {{currentInfo.treatmentCount}} Treatments @ {{currentInfo.price | currency}}
-                                    </span>
+                                    <!--</span>-->
                                 </div>
+
+
+
+
+
+                            		<h1 style='color:#f33; font-weight:bold; font-size:1.4em;'>What do you want to do to them?</h1>
+
                                 <div clas="row" style="margin: 15px 2px 10px 5px;">
                                     <span ng-style="singleTreatmentSelected?'':{'pointer-events':'none','color':'grey'}">
                                         </br><input type="checkbox" ng-model="selected.IsSetPrice"/>
@@ -49,8 +79,10 @@
                                         </br><input type="checkbox" ng-model="selected.isPriceAdjusted"/>
                                         <label class="" style="font-weight: bold;width: 40%">Increase/Decrease price</label></br>
                                         <span>
-                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice" value="1"/>By $$ <input type="number" ng-model="selected.chgPriceBy"> </br>
-                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice" value="0"/>By <input type="number" min="-99" max="99" ng-model="selected.chgPriceByPercent"> %
+                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice" value="1"/>
+														  		By Amount: $<input type="number" style='width:4em;' ng-model="selected.chgPriceBy"> </br>
+                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice" value="0"/>
+														  		By Percentage: <input type="number" style='width:4em;' min="-99" max="99" ng-model="selected.chgPriceByPercent"> %
                                         </span>
                                         &nbsp;</br>
                                     </span>
@@ -61,17 +93,32 @@
                                         <label ng-if="mode=='report'"  style="font-weight: bold">Remove from Estimate</label>
                                     </br>
                                     <span ng-style="singleTreatmentSelected?'':{'pointer-events':'none','color':'grey'}">
-                                        <input type="checkbox" ng-model="selected.IsChangeToTreatment"/>
-                                        <label ng-if="mode=='site'"  style="font-weight: bold">Change Recommendation to</label>
-                                        <label ng-if="mode=='report'" style="font-weight: bold">Change treatment to</label></br>
-                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
-                                        </select> &nbsp;</br>
+													<label ng-if="mode=='site'"  style="font-weight: bold">
+                                        	<input type="checkbox" ng-model="selected.IsChangeToTreatment"/>
+                                        	Change Recommendation to
+													</label>
+                                      	<label ng-if="mode=='report'" style="font-weight: bold; color:#000;">
+														Change treatment to
+													</label>
+													</br>
+													<div>
+                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%"  
+															ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
+                                        </select> 
+													 </div>
+													 
+													 &nbsp;</br>
                                     </span>
                                     </br>
-                                    <input type="checkbox" ng-model="selected.IsChangeToYear"/>
-                                    <label style="font-weight: bold">Change year to</label>
-                                    <select ng-model="selected.changeYearTo" class="pull-right"  style="width: 40%;margin-right: 25%"   ng-options="y for y in yearRecommendation" required>
-                                    </select> &nbsp;</br>
+                                    <span ng-if="mode=='site'">
+													<label style="font-weight: bold">
+                                    		<input type="checkbox" ng-model="selected.IsChangeToYear"/>
+                                    		Change year to
+													</label>
+                                    	<select ng-model="selected.changeYearTo" class="pull-right"  
+														style="width: 40%;margin-right: 25%"   ng-options="y for y in yearRecommendation" required>
+                                    	</select> &nbsp;</br>
+												</span>
                                     </br>
                                 </div>
 

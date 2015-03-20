@@ -4,12 +4,15 @@
 
 app.directive('actionMenu',
     ['$popover',
-        function ($popover) {
+        function ($modal) {
             'use strict';
 
             var linker = function (scope, el, attrs){
                 var hideOnEscape = function(e){
-                    if(e.keyCode === 27) scope.actionMenuPopover.hide();
+                    if(e.keyCode === 27){
+                        $(document).unbind('keyup', hideOnEscape);
+                        scope.actionMenuPopover.hide();
+                    }
                 };
                  $(el).click(function () {
                      scope.reportID=scope.report.reportID;
@@ -18,7 +21,7 @@ app.directive('actionMenu',
                      }
                      // create new one
                      if(!scope.actionMenuPopover)
-                         scope.actionMenuPopover = $popover(el, {
+                         scope.actionMenuPopover = $modal(el, {
                              scope: scope,
                              template: '/js/common/directives/actionMenu/actionMenu.tpl.html',
                              animation: 'am-flip-x',

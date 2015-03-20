@@ -7,9 +7,17 @@
                 <td class="td-name">Name</td>
                 <td class="td-treatment">Treatments</td>
                 <td class="td-bid">
-                    Bid ($)
+                    <!--Bid
 					<a ng-if="auth.isAtleast('inventory')" action-menu href="">
                         <i class="fa fa-gear"></i>
+                    </a>-->
+                    Bid &nbsp;
+					<a ng-if="auth.isAtleast('inventory')" bulk-tree-editor
+                       report-id="report.reportID" treatments="initData.filters.treatments" saved-report-check="isChanged()" href="">
+                        <i class="fa fa-gear"></i>
+                    </a>
+                    <a ng-if="auth.isAtleast('inventory')" adjust-price href="">
+                        <i class="fa" style="font-weight: bolder;">&nbsp;%</i>
                     </a>
                 </td>
                 <td class="td-action"></td>

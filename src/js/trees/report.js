@@ -121,8 +121,9 @@ var ReportCtrl = app.controller(
 				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.report.actionButton=0;
 			}
-            var discard=false;
-            s.$on('$locationChangeStart', function (event, next, current) {
+
+
+            s.isChanged=function(){
                 if(
                     s.data.mode()!=="trees"
                     || !Auth.isAtleast('inventory')
@@ -130,8 +131,13 @@ var ReportCtrl = app.controller(
                     || discard == true
                     || !((RS.reportBackup=='new') ||  ReportService.isChanged(RS.reportBackup, s.report))
                 ){
-                    return;
+                    return false;
                 }
+                return true;
+            }
+            var discard=false;
+            s.$on('$locationChangeStart', function (event, next, current) {
+                if(s.isChanged()==false) return;
 
                 $location.url($location.url(next).hash());
                 event.preventDefault();

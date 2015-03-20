@@ -2,10 +2,9 @@
  * Created by Imdadul Huq on 11-Jan-15.
  */
 app.directive('bulkTreeEditor',
-    ['$modal', 'SiteModelUpdateService', 'Api','$filter',
-        function ($modal, SiteModelUpdateService, Api,filter) {
+    ['$modal','Api','$filter',
+        function ($modal , Api,filter) {
             'use strict';
-
             var linker = function (scope, el, attrs) {
                 var modal;
                 window.sues = scope;
@@ -20,12 +19,15 @@ app.directive('bulkTreeEditor',
                     scope.dbh=[];
                     scope.years=[];
                     scope.selected={};
+                    scope.selected.isAllSelected = true;
                     scope.selected.isTreatmentSelected=false;
                     scope.selected.isSpeciesSelected=false;
-                    if (scope.mode='site') scope.selected.isDbhSelected=false;
+                    scope.selected.isSetPrice=false;
+                    if (scope.mode =='site') scope.selected.isDbhSelected=false;
                     scope.selected.isYearSelected=false;
                     scope.selected.chgPriceBy=true;
                     scope.yearRecommendation=[];
+                    scope.contiueToEdit=false;
                 }
                 scope.openModal = function () {
                     if(scope.siteID) scope.mode='site';
@@ -51,7 +53,7 @@ app.directive('bulkTreeEditor',
                         scope.species=filter('orderBy')(scope.species,"+''.toString()");
 
 
-                        scope.allTreatments=scope.treatments; // should show all the treatmenst in 'ADD TREATNEBT RECOMMENDATION'
+                        //scope.allTreatments=scope.treatments; // should show all the treatmenst in 'ADD TREATNEBT RECOMMENDATION'
 
 
 
@@ -61,8 +63,8 @@ app.directive('bulkTreeEditor',
                         if(scope.mode=='site')
                             scope.selected.year=scope.years[0];
 
-                        scope.selected.changeTreatmentTo=scope.treatments[0];
-                        scope.selected.addedTreatRecom=scope.treatments[0];
+                        scope.selected.changeTreatmentTo=scope.allTreatments[0];
+                        scope.selected.addedTreatRecom=scope.allTreatments[0];
 
                         scope.selected.IschgPrice=1;
                         scope.selected.chgPriceBy=1;
@@ -108,7 +110,7 @@ app.directive('bulkTreeEditor',
                     var param=createParam();
                     var post={};
 
-                    if(scope.singleTreatmentSelected && scope.selected.IsSetPrice){
+                    if(scope.singleTreatmentSelected && scope.selected.isPriceAdjusted){
                         post.setPrice=scope.selected.setPrice;
                     }
                     if(scope.selected.isPriceAdjusted){
@@ -162,7 +164,49 @@ app.directive('bulkTreeEditor',
 
                     return param;
                 }
+                var anyCategorySelected=function(){
+                    if(scope.selected.isTreatmentSelected || scope.selected.isSpeciesSelected ||
+                        scope.selected.isYearSelected || (scope.mode =='site' && scope.selected.isDbhSelected) ){
+                        return true;
+                    }
+                    else return false;
+                }
+                scope.allselected=function(){
+                    scope.selected.isTreatmentSelected=false;
+                    scope.selected.isSpeciesSelected=false;
+                    if (scope.mode=='site') scope.selected.isDbhSelected=false;
+                    scope.selected.isYearSelected=false;
+
+                    scope.selectionChanged();
+                }
+
+                var timer;
+                scope.pricyTyping=function(){
+                    if(scope.selected.isSetPrice==false){
+                        scope.selected.isSetPrice=true;
+                        scope.selected.isPriceAdjusted=false;
+                    }
+                    //if(timer==undefined || (timer && timer.$$state.status!=0)){
+                    //    timer= $timeout(function() {
+                    //        scope.selectionChanged();
+                    //        $timeout.cancel(timer);
+                    //    }, 1000);
+                    //}
+                }
+
+                scope.priceAdjustmentSelected = function(v){
+                    if(v==0){
+                        scope.selected.isPriceAdjusted=false;
+                    }
+                    else if(v==1){
+                        scope.selected.isSetPrice=false;
+                    }
+                    scope.selectionChanged();
+                }
+
                 scope.selectionChanged=function(){
+                    if(scope.selected.isAllSelected == true && anyCategorySelected()==true) scope.selected.isAllSelected = false;
+
                     if(scope.selected.isTreatmentSelected && !scope.selected.isSpeciesSelected
                         && !scope.selected.isDbhSelected && !scope.selected.isYearSelected){
                         scope.singleTreatmentSelected=true;
@@ -193,7 +237,22 @@ app.directive('bulkTreeEditor',
                 var init = function () {
                     el.on('click', function (event) {
                         event.preventDefault();
+                        if (angular.isDefined(attrs.reportId)) {
+                            scope.reportID = scope.$eval(attrs.reportId);
+                        }
+                        if (angular.isDefined(attrs.siteId)) {
+                            scope.siteID = scope.$eval(attrs.siteId);
+                        }
+                        if (angular.isDefined(attrs.treatments)) {
+                            scope.allTreatments = scope.$eval(attrs.treatments);
+                        }
+                        if (angular.isDefined(attrs.savedReportCheck)) {
+                            scope.savedReportCheck = scope.$eval(attrs.savedReportCheck);
+                        }
 
+                        if( scope.savedReportCheck==true){
+                            return $modal({ scope: scope, template: 'js/common/directives/templates/OpenEditConfirmation.tpl.html', show: true });
+                        }
                         initVars();
                         scope.openModal();
                     });

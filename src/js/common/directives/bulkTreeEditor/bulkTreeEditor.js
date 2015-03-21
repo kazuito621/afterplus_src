@@ -23,8 +23,8 @@ app.directive('bulkTreeEditor',
                     scope.selected.isTreatmentSelected=false;
                     scope.selected.isSpeciesSelected=false;
                     scope.selected.isSetPrice=false;
-                    if (scope.mode =='site') scope.selected.isDbhSelected=false;
-                    scope.selected.isYearSelected=false;
+                    if (scope.mode =='site') scope.selected.isYearSelected=false;
+                    scope.selected.isDbhSelected=false;
                     scope.selected.chgPriceBy=true;
                     scope.yearRecommendation=[];
                     scope.contiueToEdit=false;
@@ -149,16 +149,16 @@ app.directive('bulkTreeEditor',
                     else{
                         param.reportID=scope.reportID;
                     }
-                    if(scope.selected.isTreatmentSelected){
+                    if(scope.selected.isTreatmentSelected && scope.selected.treatment){
                         param.treatmentTypeID=scope.selected.treatment.treatmentTypeID;
                     }
-                    if(scope.selected.isSpeciesSelected){
+                    if(scope.selected.isSpeciesSelected && scope.selected.species){
                         param.speciesID=scope.selected.species.speciesID;
                     }
-                    if(scope.selected.isDbhSelected){
+                    if(scope.selected.isDbhSelected && scope.selected.dbh){
                         param.dbhID=scope.selected.dbh.dbhID;
                     }
-                    if(scope.selected.isYearSelected){
+                    if(scope.selected.isYearSelected && scope.selected.year){
                         param.year=scope.selected.year.year;
                     }
 
@@ -166,32 +166,38 @@ app.directive('bulkTreeEditor',
                 }
                 var anyCategorySelected=function(){
                     if(scope.selected.isTreatmentSelected || scope.selected.isSpeciesSelected ||
-                        scope.selected.isYearSelected || (scope.mode =='site' && scope.selected.isDbhSelected) ){
+                        scope.selected.isDbhSelected || (scope.mode =='site' && scope.selected.isYearSelected) ){
                         return true;
                     }
                     else return false;
                 }
                 scope.allselected=function(){
-                    scope.selected.isTreatmentSelected=false;
-                    scope.selected.isSpeciesSelected=false;
-                    if (scope.mode=='site') scope.selected.isDbhSelected=false;
-                    scope.selected.isYearSelected=false;
-
+                    scope.selected.isTreatmentSelected = false;
+                    scope.selected.isSpeciesSelected = false;
+                    if (scope.mode=='site') scope.selected.isYearSelected = false;
+                    scope.selected.isDbhSelected = false;
+                    scope.selected.isSetPrice = false
+                    scope.selected.IsChangeToTreatment = false
+                    scope.singleTreatmentSelected = false;
                     scope.selectionChanged();
                 }
 
                 var timer;
-                scope.pricyTyping=function(){
-                    if(scope.selected.isSetPrice==false){
+                scope.pricyTyping=function(v){
+                    if(v==1 && scope.selected.isSetPrice==false){
                         scope.selected.isSetPrice=true;
                         scope.selected.isPriceAdjusted=false;
                     }
-                    //if(timer==undefined || (timer && timer.$$state.status!=0)){
-                    //    timer= $timeout(function() {
-                    //        scope.selectionChanged();
-                    //        $timeout.cancel(timer);
-                    //    }, 1000);
-                    //}
+                    else if(v==2){
+                        scope.selected.IschgPrice=1;
+                        scope.selected.isSetPrice=false;
+                        scope.selected.isPriceAdjusted=true;
+                    }
+                    else if(v==3){
+                        scope.selected.IschgPrice=0;
+                        scope.selected.isSetPrice=false;
+                        scope.selected.isPriceAdjusted=true;
+                    }
                 }
 
                 scope.priceAdjustmentSelected = function(v){
@@ -205,13 +211,17 @@ app.directive('bulkTreeEditor',
                 }
 
                 scope.selectionChanged=function(){
-                    if(scope.selected.isAllSelected == true && anyCategorySelected()==true) scope.selected.isAllSelected = false;
+                    if(scope.selected.isAllSelected == true && anyCategorySelected()==true) {
+                        scope.selected.isAllSelected = false;
+                    }
 
                     if(scope.selected.isTreatmentSelected && !scope.selected.isSpeciesSelected
                         && !scope.selected.isDbhSelected && !scope.selected.isYearSelected){
                         scope.singleTreatmentSelected=true;
                     }
                     else{
+                        scope.selected.isSetPrice = false
+                        scope.selected.IsChangeToTreatment = false
                         scope.singleTreatmentSelected=false;
                     }
                     var param=createParam();

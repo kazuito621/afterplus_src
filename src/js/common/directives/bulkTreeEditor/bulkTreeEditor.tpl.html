@@ -79,7 +79,7 @@
                                             <input type="checkbox" ng-change="priceAdjustmentSelected(0)" ng-model="selected.isSetPrice" />
                                             Set price to
                                         </label>
-                                        <input type="number" ng-model="selected.setPrice" ng-change="pricyTyping()" placeholder="Enter a price"/> &nbsp;</br>
+                                        <input type="number" ng-model="selected.setPrice" ng-change="pricyTyping(1)" placeholder="Enter a price"/> &nbsp;</br>
                                     </span>
                                     <span>
                                         </br>
@@ -87,10 +87,10 @@
                                             <input type="checkbox" ng-change="priceAdjustmentSelected(1)" ng-model="selected.isPriceAdjusted"/>
                                             Increase/Decrease price</label></br>
                                         <span>
-                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice" value="1"/>
-														  		By Amount: $<input type="number" style='width:4em;' ng-model="selected.chgPriceBy"> </br>
-                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice" value="0"/>
-														  		By Percentage: <input type="number" style='width:4em;' min="-99" max="99" ng-model="selected.chgPriceByPercent"> %
+                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="1"/>
+														  		By Amount: $<input type="number" style='width:4em;' ng-model="selected.chgPriceBy" ng-change="pricyTyping(2)"> </br>
+                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="0"/>
+														  		By Percentage: <input type="number" style='width:4em;' min="-99" max="99" ng-model="selected.chgPriceByPercent" ng-change="pricyTyping(3)"> %
                                         </span>
                                         &nbsp;</br>
                                     </span>
@@ -111,7 +111,7 @@
 										</label>
                                         </br>
                                         <div>
-                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%"
+                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%" ng-change="selected.IsChangeToTreatment=true"
 												ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                         </select> 
 										</div>
@@ -120,11 +120,11 @@
                                     </br>
                                     <span ng-if="mode=='site'">
 										<label style="font-weight: bold">
-                                    	    <input type="checkbox" ng-model="selected.IsChangeToYear"/>
+                                    	    <input type="checkbox" ng-model="selected.IsChangeToYear" />
                                     	    Change year to
 										</label>
-                                    	<select ng-model="selected.changeYearTo" class="pull-right"  
-														style="width: 40%;margin-right: 25%"   ng-options="y for y in yearRecommendation" required>
+                                    	<select ng-model="selected.changeYearTo" class="pull-right" ng-change="selected.IsChangeToYear=true"
+                                                style="width: 40%;margin-right: 25%"   ng-options="y for y in yearRecommendation" required>
                                     	</select> &nbsp;</br>
 												</span>
                                     </br>
@@ -137,9 +137,9 @@
                                         <span ng-if="mode=='site'" style="font-weight: bold">Add Treatment Recommendation</span>
                                     </label>
 
-                                    <select ng-model="selected.addedTreatRecom"  class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
+                                    <select ng-model="selected.addedTreatRecom" ng-change="selected.IsTreatmentRecommendationAdded=true"  class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                     </select> &nbsp;</br>
-                                    <select class="pull-right"  style="width: 40%;margin-right: 25%"  ng-if="mode=='site'" ng-model="selected.addedTreatRecomYear"   ng-options="y for y in yearRecommendation" required>
+                                    <select class="pull-right"  style="width: 40%;margin-right: 25%"  ng-if="mode=='site'" ng-model="selected.addedTreatRecomYear"  ng-change="selected.IsTreatmentRecommendationAdded=true"  ng-options="y for y in yearRecommendation" required>
                                     </select> &nbsp;</br>
                                     <label>
                                         <input type="checkbox" ng-model="selected.removeFromRecommendation"/>
@@ -154,7 +154,7 @@
 
 
 
-                                    <textarea ng-model="selected.note" id="" class="pull-right"  style="width: 40%;margin-right: 25%" placeholder="Add Notes" cols="30" rows="10"></textarea>
+                                    <textarea ng-model="selected.note"  ng-change="selected.IsNoteAdded=true" id="" class="pull-right"  style="width: 40%;margin-right: 25%" placeholder="Add Notes" cols="30" rows="10"></textarea>
                                 </div>
                                 <div style="margin-top: 5px">
 

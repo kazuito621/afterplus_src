@@ -4,8 +4,8 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage','$http',
-function (Rest, $rootScope, $q, $location, storage,$http) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage','$http','storedData',
+function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
     'use strict';
     window.Api = this;
     var initData = {};
@@ -16,6 +16,7 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
         return (authData && authData.userID > 0);
     };
 
+    var t=storedData.getInitTimeStamp();
     var loadSites = function () {
         var deferred = $q.defer();
         if (!isSignedIn()) {
@@ -26,7 +27,8 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
         }
         else {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
-            Rest.one('init?siteonly=1').get().then(function (data) {
+            Rest.one('init?siteonly=1&timestamp='+t).get().then(function (data) {
+                storedData.setInitData(data);
                 initData.sites = data;
                 //$rootScope.initData.sites = data;
                 deferred.resolve(data);
@@ -43,8 +45,10 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
             deferred.resolve();
         } else {
             sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
-            Rest.one('init?nosite=1').get().then(function (data) {
+            Rest.one('init?nosite=1&timestamp='+t).get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
+                storedData.setInitData(data);
+                data.sites=undefined; //
                 if (data.filters) {
                     data.filters.hazards = {
                         'building': { selected: false }, 'caDamage': { selected: false },
@@ -71,6 +75,9 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
         getInitData: function () { return initData; },
         // returns a promise... for .then() when refresh is done
         refreshInitData: function () { return init(true); },
+        getEmailPortalLink:function(){ //GET /template/emailPortalLink
+            return  Rest.one('template/emailPortalLink').get();
+        },
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },
@@ -155,6 +162,9 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
         },
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
+        },
+        sendEmailPortalLink: function (rpt) {
+            return Rest.all('sendPortalLink').post(rpt);
         },
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');

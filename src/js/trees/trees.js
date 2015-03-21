@@ -262,7 +262,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             s.openTreesOrSites = function () {
-                if (s.initData.sites.length == 1) { // If only site, open that site in satellite view.
+                if (s.initData.sites && s.initData.sites.length == 1) { // If only site, open that site in satellite view.
                     s.selected.siteID = s.initData.sites[0].siteID;
                     getTreeListings();
                 }
@@ -1700,7 +1700,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     siteNames: self.getSelectedSitesNames(),
                     sendBtnText: 'Send bulk estimate'
                 };
-                res.type = 'bulk';
+                res.type = 'bulkEstimate';
                 res.siteNames = [];
 
                 return res;

@@ -29,7 +29,7 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
             if (e.keyCode === 27) { s.onCancel(); }
         };
         var hideOnEscape = function(e){
-            if(e.keyCode === 27) scope.hide();
+            if(e.keyCode === 27) modal.hide();
         };
         s.openModal=function(){
             modal = $modal({scope: s, template: '/js/common/directives/treeEdit/tree.edit.modal.tpl.html', show: false});

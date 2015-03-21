@@ -26,3 +26,5 @@ Thumbs.db
 tree_images
 lastPublicBuild
 *.pdi
+*.pid
+config.local.js

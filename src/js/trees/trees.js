@@ -1699,7 +1699,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     siteNames: self.getSelectedSitesNames(),
                     sendBtnText: 'Send bulk estimate'
                 };
-                res.type = 'bulk';
+                res.type = 'bulkEstimate';
                 res.siteNames = [];
 
                 return res;

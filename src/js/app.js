@@ -61,7 +61,13 @@ app.config(['$routeProvider', '$locationProvider',
                 templateUrl: "js/trees/trees.tpl.html"
                 ,auth:true, reloadOnSearch:false
                 ,resolve: {
-                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                    deps:['Api','$route', function(Api,$route){
+                        var token=$route.current.params.token;
+                        if(token)
+                            return Auth.signInCustToken(token, true);
+
+                        return Api.getPromise();
+                    }]
                 }})
             //.when("/tree_edit/:treeID", {
             //    templateUrl: "js/trees/edit.tpl.html"

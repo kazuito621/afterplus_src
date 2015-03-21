@@ -71,6 +71,9 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
         getInitData: function () { return initData; },
         // returns a promise... for .then() when refresh is done
         refreshInitData: function () { return init(true); },
+        getEmailPortalLink:function(){ //GET /template/emailPortalLink
+            return  Rest.one('template/emailPortalLink').get();
+        },
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },
@@ -133,6 +136,9 @@ function (Rest, $rootScope, $q, $location, storage,$http) {
         },
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
+        },
+        sendEmailPortalLink: function (rpt) {
+            return Rest.all('sendPortalLink').post(rpt);
         },
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');

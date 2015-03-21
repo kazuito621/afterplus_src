@@ -102,22 +102,16 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		var itemID=s.activePopover.itemID;
         Api.removeEstimateById(itemID).then(function () {
             if(false){ //TODO  if msg don't  indicates success,
-                s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
+                 s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
             }
-            else {
-                if(idx>=0) {
-                    estimates.splice(idx, 1);
-                }
-                s.setAlert('Property deleted successfully.',{type:'ok',time:5});
-            }
+             else {
+                 s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+             }
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
         });
-
-        var idx=_.findObj(estimates, 'reportID', itemID, true);
-        if(idx>=0) {
-            s.displayedEstimates.splice(idx, 1);
-        }
+        var obj=_.findObj(estimates, 'reportID', itemID);
+        obj.delete=1;
         s.activePopover.elem.hide();
         delete s.activePopover.itemID;
     };

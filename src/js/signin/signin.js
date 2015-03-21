@@ -62,4 +62,9 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 		document.location.reload();
 	}
 
+	// if customer is signed in, forward to trees
+	if(Auth.isSignedIn() && Auth.is('customer')){
+		s.goTrees();	
+	}
+
 }]);

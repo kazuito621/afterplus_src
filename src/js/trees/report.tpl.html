@@ -31,14 +31,14 @@
                     <div class="estimate-info">
                         <dl class="small">
                             <dt>
-                                <span ng-show="report.tstamp_updated">Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;</span>
-                                <span ng-show="report.reportID">Estimate ID: <span ng-bind="report.reportID"></span></span>
+                                Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
+                                Estimate ID: <span ng-bind="report.reportID"></span>
                             </dt>
                         </dl>
                         <h1 class="title" ng-bind="'Estimate for ' + report.siteName"></h1>
                         <p class="name">
                             <span ng-if="data.mode() === 'trees'">
-                                <a href e-select-on-init editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
+                                <a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
                             </span>
                             <span ng-if="data.mode() !== 'trees'">
                                 {{report.name}}

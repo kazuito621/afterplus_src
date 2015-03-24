@@ -16,7 +16,6 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         return (authData && authData.userID > 0);
     };
 
-    var t=storedData.getInitTimeStamp();
     var loadSites = function () {
         var deferred = $q.defer();
         if (!isSignedIn()) {
@@ -27,8 +26,10 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         }
         else {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
+            var t=storedData.getSiteOnlyTimeStamp();
             Rest.one('init?siteonly=1&timestamp='+t).get().then(function (data) {
-                storedData.setInitData(data);
+                storedData.setInitData(data,t);
+                storedData.setSiteOnlyTimeStamp(data.timestamp);
                 initData.sites = data;
                 //$rootScope.initData.sites = data;
                 deferred.resolve(data);
@@ -45,9 +46,11 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             deferred.resolve();
         } else {
             sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
+            var t=storedData.getNoSiteTimeStamp();
             Rest.one('init?nosite=1&timestamp='+t).get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-                storedData.setInitData(data);
+                storedData.setInitData(data,t);
+                storedData.setNoSiteTimeStamp(data.timestamp);
                 data.sites=undefined; //
                 if (data.filters) {
                     data.filters.hazards = {

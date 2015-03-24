@@ -11,8 +11,11 @@ app.service('storedData',
             'use strict';
             var self = this;
             this.storedData=null;
+            this.noSiteTimeStamp=null;
+            this.siteOnlyTimeStamp=null;
             this.initialized = false;
             var propertiesToCheck=['clients','sites','filters.treatments','filters.treatmentPrices','filters.species'];
+
             this.getInitData=function(){
                 self.storedData=storage.get('initData');
                 if(self.storedData==null){ // For the first time in life
@@ -32,10 +35,10 @@ app.service('storedData',
                 return self.storedData;
             }
 
-            this.setInitData=function(data){
+            this.setInitData=function(data,lastTimeStamp){
                 self.getInitData();
                 _.each(propertiesToCheck,function(item){
-                    if(data.partial_data.indexOf(item)==-1){ // if item name not exist in changed item list (partial_data), take from localstorage
+                    if(data.partial_data.indexOf(item)==-1 && lastTimeStamp!==1){ // if item name not exist in changed item list (partial_data), take from localstorage
                         if(item.indexOf('.')!=-1){
                             var parts=item.split('.'); //  'filters.treatments','filters.treatmentPrices','filters.species'
                             if(data[parts[0]]==undefined || data[parts[0]][parts[1]]==undefined)
@@ -68,25 +71,42 @@ app.service('storedData',
                         }
                     }
                 });
-                storage.set('initData', this.storedData);
-                self.setInitTimeStamp(data.timestamp);
+                storage.set('initData', self.storedData);
             }
 
-            this.getInitTimeStamp=function(){
-                //return new Date().getTime();
-                var initTimeStamp = storage.get('initTimeStamp');
-                if(initTimeStamp){
-                    return initTimeStamp;
+            this.getNoSiteTimeStamp=function(){
+                self.noSiteTimeStamp = storage.get('noSiteTimeStamp');
+                if(self.noSiteTimeStamp){
+                    return self.noSiteTimeStamp;
                 }
-                //return 1;
-                return new Date().getTime();
+                self.noSiteTimeStamp=1;
+                return self.noSiteTimeStamp;
+                //return new Date().getTime();
             };
 
-            this.setInitTimeStamp=function(value){
-                storage.set('initTimeStamp',value);
+            this.getSiteOnlyTimeStamp=function(){
+                self.siteOnlyTimeStamp = storage.get('siteOnlyTimeStamp');
+                if(self.siteOnlyTimeStamp){
+                    return self.siteOnlyTimeStamp;
+                }
+                self.siteOnlyTimeStamp=1;
+                return self.siteOnlyTimeStamp;
+            }
+
+            this.setSiteOnlyTimeStamp=function(value){
+                self.siteOnlyTimeStamp = value;
+                storage.set('siteOnlyTimeStamp',value);
             };
+            this.setNoSiteTimeStamp=function(value){
+                self.noSiteTimeStamp = value;
+                storage.set('noSiteTimeStamp',value);
+            };
+
             $(window).unload(function() {
-                self.setInitTimeStamp(null);
+                self.noSiteTimeStamp=null;
+                self.siteOnlyTimeStamp=null;
+                self.setSiteOnlyTimeStamp(null);
+                self.setNoSiteTimeStamp(null);
             });
 
         }]);

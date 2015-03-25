@@ -73,9 +73,9 @@
                             		<h1 style='color:#f33; font-weight:bold; font-size:1.4em;'>What do you want to do to them?</h1>
 
                                 <div clas="row" style="margin: 15px 2px 10px 5px;">
-                                    <span ng-style="singleTreatmentSelected?'':{'pointer-events':'none','color':'grey'}">
+                                    <span ng-style="singleTreatmentSelected?'':{'pointer-events':'none','color':'silver'}">
                                         </br>
-                                        <label class=""  ng-classstyle="font-weight: bold;width: 33%">
+                                        <label class="" style="font-weight: bold;width: 33%">
                                             <input type="checkbox" ng-change="priceAdjustmentSelected(0)" ng-model="selected.isSetPrice" />
                                             Set price to
                                         </label>
@@ -103,7 +103,7 @@
                                     </label>
 
                                     </br>-->
-                                    <span ng-style="singleTreatmentSelected?'':{'pointer-events':'none','color':'grey'}">
+                                    <span ng-style="singleTreatmentSelected?'':{'pointer-events':'none','color':'silver'}">
                                         <label style="font-weight: bold">
                                         	<input type="checkbox" ng-model="selected.IsChangeToTreatment"/>
                                         	<span ng-if="mode=='site'">Change Recommendation to</span>
@@ -144,17 +144,18 @@
                                     <label>
                                         <input type="checkbox" ng-model="selected.removeFromRecommendation"/>
                                         <span ng-if="mode=='site'"  style="font-weight: bold">Remove from Recommendation</span>
-                                        <span ng-if="mode=='report'"  style="font-weight: bold">Remove from Estimate</span>
+                                        <span ng-if="mode=='report'"  style="font-weight: bold">Remove Tree from Estimate</span>
                                     </label>
                                     </br></br></br>
 
                                     <label style="font-weight: bold">
-                                        <input type="checkbox" ng-model="selected.IsNoteAdded"/> Add Note
+                                        <input type="checkbox" ng-model="selected.IsNoteAdded"/> Add Notes
                                     </label>
 
 
 
-                                    <textarea ng-model="selected.note"  ng-change="selected.IsNoteAdded=true" id="" class="pull-right"  style="width: 40%;margin-right: 25%" placeholder="Add Notes" cols="30" rows="10"></textarea>
+                                    <textarea ng-model="selected.note"  ng-change="selected.IsNoteAdded=true" id="" class="pull-right"  
+													style="width: 40%;margin-right: 25%" placeholder="Add Notes to Tree" cols="30" rows="5"></textarea>
                                 </div>
                                 <div style="margin-top: 5px">
 
@@ -163,8 +164,8 @@
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
-                        <button type="button" class="btn btn-default" ng-click="ok();">OK</button>
-                        <button type="button" class="btn btn-default" ng-click="hide();">CLOSE</button>
+                        <button type="button" class="btn btn-primary" ng-click="ok();">Apply Changes</button>
+                        <button type="button" class="btn btn-default" ng-click="hide();">Close</button>
                     </div>
                 </form>
             </div>

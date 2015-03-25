@@ -1,6 +1,6 @@
 var EstimatesListCtrl = app.controller('EstimatesListCtrl', 
-['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
-function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
+['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper','storedData',
+function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper,storedData) {
     'use strict';
     var s = window.ecs = $scope;
 	var myStateID='estimates',
@@ -70,7 +70,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     var init = function (cb) {
         var search = $location.search();
         cb = cb || angular.noop;
-        Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
+        Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
+            data=storedData.setEstimateData(data);
 			var isCust=Auth.is('customer');
 			_.each(data, function(d){
 				d.origStatus=d.status;

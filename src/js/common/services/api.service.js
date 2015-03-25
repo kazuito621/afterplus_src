@@ -196,6 +196,7 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         },
         signOut: function (Auth) {
             Auth.data({});
+            storedData.removeAllStoredData();
             Rest.one('signout').get();
             // TODO: clear init data some how maybe with an event onSignOut
             $location.url('/signin');

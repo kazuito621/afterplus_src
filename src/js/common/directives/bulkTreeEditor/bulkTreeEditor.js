@@ -110,7 +110,7 @@ app.directive('bulkTreeEditor',
                     var param=createParam();
                     var post={};
 
-                    if(scope.singleTreatmentSelected && scope.selected.isPriceAdjusted){
+                    if(scope.singleTreatmentSelected && scope.selected.isSetPrice){
                         post.setPrice=scope.selected.setPrice;
                     }
                     if(scope.selected.isPriceAdjusted){
@@ -119,7 +119,7 @@ app.directive('bulkTreeEditor',
                         else if(scope.selected.IschgPrice==0) // by %
                             post.chgPriceByPercent=scope.selected.chgPriceByPercent;
                     }
-                    if(scope.selected.removeFromRecommendation) post.remove=1; else post.remove=0;
+                    if(scope.selected.removeFromRecommendation == true) post.remove=1;
                     if(scope.selected.IsChangeToTreatment){
                         post.chgTreatment=scope.selected.changeTreatmentTo.treatmentTypeID;
                     }
@@ -130,15 +130,17 @@ app.directive('bulkTreeEditor',
 
                     if(scope.selected.IsTreatmentRecommendationAdded){
                         post.addTreatment=scope.selected.addedTreatRecom.treatmentTypeID;
-                        if(scope=='site')
+                        if(scope.mode=='site')
                             post.addTreamentYear=scope.selected.addedTreatRecomYear;
                     }
                     if(scope.selected.IsNoteAdded){
                         post.addNote=scope.selected.note;
                     }
                     Api.modifyBulkEditInfo(param,post).then(function(data){
-                        var a=1;
-                    })
+                        scope.hide();
+                        if(scope.onApplyChange != undefined) // mode = report
+                            scope.onApplyChange();
+                    });
                 }
                 var createParam=function(){
                     var param={};
@@ -207,7 +209,6 @@ app.directive('bulkTreeEditor',
                     else if(v==1){
                         scope.selected.isSetPrice=false;
                     }
-                    scope.selectionChanged();
                 }
 
                 scope.selectionChanged=function(){
@@ -260,6 +261,9 @@ app.directive('bulkTreeEditor',
                         }
                         if (angular.isDefined(attrs.savedReportCheck)) {
                             scope.savedReportCheck = scope.$eval(attrs.savedReportCheck);
+                        }
+                        if (angular.isDefined(attrs.onApplyChange)) {
+                            scope.onApplyChange = scope.$eval(attrs.onApplyChange);
                         }
 
                         if( scope.savedReportCheck==true){

@@ -13,7 +13,7 @@
                     </a>-->
                     Bid &nbsp;
 					<a ng-if="auth.isAtleast('inventory')" bulk-tree-editor
-                       report-id="report.reportID" treatments="initData.filters.treatments" saved-report-check="isChanged()" href="">
+                       report-id="report.reportID" treatments="initData.filters.treatments" saved-report-check="isChanged()" on-apply-change="reloadReport" href="">
                         <i class="fa fa-gear"></i>
                     </a>
                     <a ng-if="auth.isAtleast('inventory')" adjust-price href="">

@@ -255,6 +255,8 @@ app.directive('bulkTreeEditor',
                         }
                         if (angular.isDefined(attrs.treatments)) {
                             scope.allTreatments = scope.$eval(attrs.treatments);
+									 var noneEl={code:'none', treatmentTypeID:-99, treatmentType:'NONE (Remove Treatment'};
+									 scope.allTreatments.unshift(noneEl);
                         }
                         if (angular.isDefined(attrs.savedReportCheck)) {
                             scope.savedReportCheck = scope.$eval(attrs.savedReportCheck);

@@ -31,21 +31,23 @@
                                                         <span ng-if="mode=='site'">Recommendation</span>
                                                         <span ng-if="mode=='report'">Treatment</span>
 													</label>
-													<select ng-model="selected.treatment" style="width: 40%" ng-change="selectionChanged()"  
+													<select ng-model="selected.treatment" style="width: 40%" ng-change="selectionChanged({turnOn:'isTreatmentSelected'})"  
 														ng-options="t.treatmentType for t in treatments" required>
 													</select>
 												</div>
 												<br>
                                     <label class="" style="font-weight: bold;width: 33%">
-                                        <input type="checkbox" ng-model="selected.isSpeciesSelected" ng-change="selectionChanged()"/>Species
+                                        <input type="checkbox" ng-model="selected.isSpeciesSelected" ng-change="selectionChanged()"/> Species
                                     </label>
-                                    <select ng-model="selected.species" style="width: 40%" ng-change="selectionChanged()" ng-options="s.commonName for s in species" required>
+                                    <select ng-model="selected.species" style="width: 40%" ng-change="selectionChanged({turnOn:'isSpeciesSelected'})" 
+													ng-options="s.commonName for s in species" required>
                                     </select>
 												<BR>
                                     <label class="" style="font-weight: bold;width: 33%">
-                                        <input type="checkbox" ng-model="selected.isDbhSelected" ng-change="selectionChanged()"/>dbh
+                                        <input type="checkbox" ng-model="selected.isDbhSelected" ng-change="selectionChanged()"/> DBH
                                     </label>
-                                    <select ng-model="selected.dbh" style="width: 40%" ng-change="selectionChanged()" ng-options="d.diameter for d in dbh" required>
+                                    <select ng-model="selected.dbh" style="width: 40%" ng-change="selectionChanged({turnOn:'isDbhSelected'})" 
+													ng-options="d.diameter for d in dbh" required>
                                     </select>
                                     <br>
 
@@ -88,9 +90,11 @@
                                             Increase/Decrease price</label></br>
                                         <span>
                                             <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="1"/>
-														  		By Amount: $<input type="number" style='width:4em;' ng-model="selected.chgPriceBy" ng-change="pricyTyping(2)"> </br>
+														  		By Amount: $<input type="number" style='width:4em;' ng-model="selected.chgPriceBy" ng-change="pricyTyping(2)"> 
+																</br>
                                             <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="0"/>
-														  		By Percentage: <input type="number" style='width:4em;' min="-99" max="99" ng-model="selected.chgPriceByPercent" ng-change="pricyTyping(3)"> %
+														  		By Percentage: <input type="number" style='width:4em;' min="-99" max="99" 
+																	ng-model="selected.chgPriceByPercent" ng-change="pricyTyping(3)"> %
                                         </span>
                                         &nbsp;</br>
                                     </span>
@@ -111,7 +115,8 @@
 										</label>
                                         </br>
                                         <div>
-                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%" ng-change="selected.IsChangeToTreatment=true"
+                                        <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%" 
+													 	ng-change="selected.IsChangeToTreatment=true"
 												ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                         </select> 
 										</div>
@@ -137,17 +142,25 @@
                                         <span ng-if="mode=='site'" style="font-weight: bold">Add Treatment Recommendation</span>
                                     </label>
 
-                                    <select ng-model="selected.addedTreatRecom" ng-change="selected.IsTreatmentRecommendationAdded=true"  class="pull-right"  style="width: 40%;margin-right: 25%"  ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
+                                    <select ng-model="selected.addedTreatRecom" ng-change="selected.IsTreatmentRecommendationAdded=true"  class="pull-right"
+													style="width: 40%;margin-right: 25%"  
+													ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                     </select> &nbsp;</br>
-                                    <select class="pull-right"  style="width: 40%;margin-right: 25%"  ng-if="mode=='site'" ng-model="selected.addedTreatRecomYear"  ng-change="selected.IsTreatmentRecommendationAdded=true"  ng-options="y for y in yearRecommendation" required>
+                                    <select class="pull-right"  style="width: 40%;margin-right: 25%"  ng-if="mode=='site'" 
+													ng-model="selected.addedTreatRecomYear"  ng-change="selected.IsTreatmentRecommendationAdded=true"  
+													ng-options="y for y in yearRecommendation" required>
                                     </select> &nbsp;</br>
+
+												<!-- ... comment out until phase 2
                                     <label>
                                         <input type="checkbox" ng-model="selected.removeFromRecommendation"/>
                                         <span ng-if="mode=='site'"  style="font-weight: bold">Remove from Recommendation</span>
                                         <span ng-if="mode=='report'"  style="font-weight: bold">Remove Tree from Estimate</span>
-                                    </label>
-                                    </br></br></br>
+                                    </label> 
+                                    <br>
+												-->
 
+												<br><br>
                                     <label style="font-weight: bold">
                                         <input type="checkbox" ng-model="selected.IsNoteAdded"/> Add Notes
                                     </label>

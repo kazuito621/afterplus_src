@@ -211,7 +211,15 @@ app.directive('bulkTreeEditor',
                     }
                 }
 
-                scope.selectionChanged=function(){
+					// @param opt - optional object, may have: 
+					//	  {
+					//		  turnOn: STRING - if set, then selected[opt.turnOn] should be set to true
+					// 					    ie. if a certain dropdown is selected, we want to turn on the corresponding checkbox
+					//		}
+                scope.selectionChanged=function(opt){
+					 		if(opt && opt.turnOn && scope.selected[opt.turnOn]!=true) 
+								scope.selected[opt.turnOn]=true;
+
                     if(scope.selected.isAllSelected == true && anyCategorySelected()==true) {
                         scope.selected.isAllSelected = false;
                     }

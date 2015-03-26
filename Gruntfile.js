@@ -278,7 +278,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: '.tmp/concat/js',
                     src: '*.js',
-                    dest: '.tmp/concat/js'
+                    dest: '<%= yeoman.dist %>/js'
                 }]
             }
         },

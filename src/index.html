@@ -27,12 +27,15 @@
     <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css" />
     <link rel="stylesheet" href="bower_components/angular-motion/dist/angular-motion.css" />
     <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.min.css" />
+    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,src}) css/main.css -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/app-style.css">
     <link rel="stylesheet" href="css/screen-loader.css"  />
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.css"  />
+    
     <!-- endbuild -->
 </head>
 <body  ng-controller="MainCtrl">
@@ -101,12 +104,14 @@
     <![endif]-->
 
     <script src="patch/ng-ckeditor/libs/ckeditor/ckeditor.js"></script>
+    <link href="css/hint.css-master/hint.css" rel="stylesheet" />
 
     <!-- build:js js/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/json3/lib/json3.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/restangular/dist/restangular.js"></script>
@@ -125,6 +130,8 @@
     <script src="bower_components/angular-bindonce/bindonce.js"></script>
     <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
     <script src="bower_components/ng-tags-input/ng-tags-input.min.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -183,6 +190,7 @@
 
     <script src="js/common/directives/adjustPriceInEstimate/adjustPrice.js"></script>
     <script src="js/common/directives/loadingScreen/loadingScreen.js"></script>
+    <script src="js/calender/calenderdirective.js"></script>
 
     <script src="js/filters.js"></script>
     <script src="js/lib/checklist-model.js"></script>

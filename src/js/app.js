@@ -4,7 +4,7 @@
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
-     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer']);
+     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer', 'calenderdirective']);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
@@ -81,12 +81,13 @@ app.config(['$routeProvider', '$locationProvider',
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
-            .when("/clients", {
-                templateUrl: "js/clients/clients.tpl.html"
-                ,auth:true, reloadOnSearch:false
-                ,resolve: {
-                    deps:['Api', function(Api){  return Api.getPromise(); }]
-                }})
+            .when("/fullcalender", {
+                templateUrl: "js/calender/calender.html"
+                , auth: false, reloadOnSearch: false
+                , resolve: {
+                    deps: ['Api', function (Api) { return Api.getPromise(); }]
+                }
+            })
             .otherwise({redirectTo: "/signin"});
 	}])
 	.run(['Restangular', '$rootScope',

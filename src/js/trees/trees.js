@@ -1455,11 +1455,12 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             //Define function to get specific treatment types (string) by ID
-            s.getTreatmentType = function (ID) {
-                var t = _.extract(s, 'initData.filters.treatments');
-                var found = _.findObj(t, 'treatmentTypeID', ID);
-                return _.extract(found, 'treatmentType');
-            }
+            // This is unused.
+            //s.getTreatmentType = function (ID) {
+            //    var t = _.extract(s, 'initData.filters.treatments');
+            //    var found = _.findObj(t, 'treatmentTypeID', ID);
+            //    return _.extract(found, 'treatmentType');
+            //}
 
 
             //Define function to get specific tree sizes (string) by ID

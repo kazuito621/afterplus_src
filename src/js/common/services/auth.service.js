@@ -152,6 +152,11 @@ app.service('Auth',
                 return false;
             };
 
+				// Check if user has a permission
+				this.hasPerm = function(id) {
+					var p = this.data().perms || [];
+					return (p.indexOf(id) >= 0);
+				}
 
             this.getLoginName = function () {
                 if (this.isSignedIn()) {

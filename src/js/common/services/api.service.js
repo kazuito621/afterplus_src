@@ -96,6 +96,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         getTree: function (treeID) {
             return Rest.one('trees', treeID).get();
         },
+        getTreatmentPrice: function () {
+            return Rest.all('treatmentprice').getList();
+        },
         getSiteUsers: function (siteID, roles) {
             var params = {};
 
@@ -122,6 +125,25 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         },
         getEmailTemplate: function (opt) {
             return Rest.one('template/emailReport').get(opt);
+        },
+        getBulkEditInfo:function(opt){
+            return Rest.one('bulkedit').get(opt);
+        },
+        getBulkItemSummary:function(obj){
+            var type;
+            var id;
+            if(obj.reportID){
+                id=obj.reportID;
+                type='estimate'
+            }
+            else if(obj.siteID){
+                id=obj.siteID;
+                type='site';
+            }
+            return Rest.one(type+'/'+id+'/bulk_item_summary').get();
+        },
+        modifyBulkEditInfo : function(param,obj){
+            return Rest.all('bulkedit').post(obj,param);
         },
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...

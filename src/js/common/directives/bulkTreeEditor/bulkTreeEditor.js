@@ -137,7 +137,6 @@ app.directive('bulkTreeEditor',
                         post.addNote=scope.selected.note;
                     }
                     Api.modifyBulkEditInfo(param,post).then(function(data){
-                        scope.hide();
                         if(scope.onApplyChange != undefined) // mode = report
                             scope.onApplyChange();
                     });

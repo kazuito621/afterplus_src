@@ -56,7 +56,7 @@
                                             <input type="checkbox" ng-change="selectionChanged()" ng-model="selected.isYearSelected"/>
                                             Year
                                         </label>
-                                        <select ng-if="mode='site'" ng-model="selected.year" style="width: 40%" ng-change="selectionChanged()" 
+                                        <select ng-if="mode='site'" ng-model="selected.year" style="width: 40%" ng-change="selectionChanged({turnOn:'isYearSelected'})"
 													 		ng-options="y.year for y in years" required>
                                         </select> &nbsp;<br>
                                     </span>
@@ -89,10 +89,10 @@
                                             <input type="checkbox" ng-change="priceAdjustmentSelected(1)" ng-model="selected.isPriceAdjusted"/>
                                             Increase/Decrease price</label><br>
                                         <span>
-                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="1"/>
+                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="1" ng-change="pricyTyping(2)"/>
 														  		By Amount: $<input type="number" style='width:4em;' ng-model="selected.chgPriceBy" ng-change="pricyTyping(2)"> 
 																<br>
-                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="0"/>
+                                            <input style="margin-left: 40px" type="radio" ng-model="selected.IschgPrice"  value="0" ng-change="pricyTyping(3)"/>
 														  		By Percentage: <input type="number" style='width:4em;' min="-99" max="99" 
 																	ng-model="selected.chgPriceByPercent" ng-change="pricyTyping(3)"> %
                                         </span>

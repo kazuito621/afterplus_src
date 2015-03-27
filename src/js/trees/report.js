@@ -379,7 +379,8 @@ var ReportCtrl = app.controller(
                     });
                 $timeout(function(){ updateEmailLogs(); },2000);
                 $timeout(function(){ updateEmailLogs(); },4000);
-                $timeout(function(){ updateEmailLogs(); },10000);
+                $timeout(function(){ updateEmailLogs(); },12000);
+                $timeout(function(){ updateEmailLogs(); },30000);
             }
             s.sendReport = function (hideFn, showFn) {
                 s.emailRpt.disableSendBtn = true;
@@ -403,7 +404,8 @@ var ReportCtrl = app.controller(
                     });
 				$timeout(function(){ updateEmailLogs(); },2000);
 				$timeout(function(){ updateEmailLogs(); },4000);
-				$timeout(function(){ updateEmailLogs(); },10000);
+				$timeout(function(){ updateEmailLogs(); },12000);
+				$timeout(function(){ updateEmailLogs(); },30000);
             };
 
 			var updateEmailLogs = function(){

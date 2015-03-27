@@ -1,7 +1,10 @@
 ArborPlus Release Notes 
 =======================
 
-2015-03-21 (v2.3.7)
+
+had bug: builds/build-1427054055
+
+2015-03-21 (v2.3.7) - builds/build-1427054055
 -------------------
  - NEW: In Estimates List, user can edit approved/completed timestamps
  - NEW: In Estimates List, user can sort and change various status timestamps

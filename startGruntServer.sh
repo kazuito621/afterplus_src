@@ -5,26 +5,27 @@ cd `dirname $0`
 
 
 GRUNT=`which grunt`
+PID=/tmp/.arbor.grunt.pid
 
 case "$1" in
          ""|start)
          echo "Starting grunt..."
-         if [ -f ./.grunt.pid ]
+         if [ -f $PID ]
                 then
                 echo "Sorry, but grunt is already running here..."
                 exit 1
          fi
          nohup $GRUNT serve > /dev/null 2>/dev/null &
-         echo $! > ./.grunt.pid
+         echo $! > $PID
          echo "Done."
          ;;
 
         stop)
          echo "Stopping grunt..."
-         if [ -f ./.grunt.pid ]
+         if [ -f $PID ]
                 then
-                xargs kill -9 < ./.grunt.pid
-                rm ./.grunt.pid
+                xargs kill -9 < $PID
+                rm $PID
                 echo "Done."
                 exit 0
          fi

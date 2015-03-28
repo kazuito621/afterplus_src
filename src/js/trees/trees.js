@@ -650,8 +650,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.treeMarkers = [];
 
+			var initMapCalled=false;
+			var initMapDefer=null;
             var initMap = function () {
-                var deferred = $q.defer();
+					// dont let initmap get called twice
+					if(initMapCalled) return initMapDefer.promise;
+					initMapCalled=true;
+
+                var deferred = initMapDefer = $q.defer();
                 gMapInitializer.mapsInitialized.then(function () {
                     loadMap().then(function () {
                         window.mapLoaded = true;
@@ -662,9 +668,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
 			var loadMap = function() {
-			console.log("load map ");
-                var deferred = $q.defer();
+            var deferred = $q.defer();
 				try{
+					console.log("load map ");
                 google.load(
                     "maps",
                     "3",

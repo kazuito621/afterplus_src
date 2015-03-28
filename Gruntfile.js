@@ -283,6 +283,15 @@ module.exports = function (grunt) {
             }
         },
 
+
+        uglify: {
+		  		options:{
+					report: 'min',
+					mangle: false
+				}
+         },
+
+
         // Replace Google CDN references
         cdnify: {
             dist: {

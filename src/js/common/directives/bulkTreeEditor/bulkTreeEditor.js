@@ -119,7 +119,7 @@ app.directive('bulkTreeEditor',
                         else if(scope.selected.IschgPrice==0) // by %
                             post.chgPriceByPercent=scope.selected.chgPriceByPercent;
                     }
-                    if(scope.selected.removeFromRecommendation == true) post.remove=1;
+                    if(scope.selected.removeFromRecommendation == true) post.removeTreatment=1;
                     if(scope.selected.IsChangeToTreatment){
                         post.chgTreatment=scope.selected.changeTreatmentTo.treatmentTypeID;
                     }
@@ -216,18 +216,19 @@ app.directive('bulkTreeEditor',
 					// 					    ie. if a certain dropdown is selected, we want to turn on the corresponding checkbox
 					//		}
                 scope.selectionChanged=function(opt){
+					 		//if this selection changing, should turn on other options (ie. dropdown turns on checkbox)
 					 		if(opt && opt.turnOn && scope.selected[opt.turnOn]!=true) 
 								scope.selected[opt.turnOn]=true;
 
+							// turn off ALL TREES if any other is selected
                     if(scope.selected.isAllSelected == true && anyCategorySelected()==true) {
                         scope.selected.isAllSelected = false;
                     }
 
-                    if(scope.selected.isTreatmentSelected && !scope.selected.isSpeciesSelected
-                        && !scope.selected.isDbhSelected && !scope.selected.isYearSelected){
+					
+                    if(scope.selected.isTreatmentSelected){
                         scope.singleTreatmentSelected=true;
-                    }
-                    else{
+                    }else{
                         scope.selected.isSetPrice = false
                         scope.selected.IsChangeToTreatment = false
                         scope.singleTreatmentSelected=false;

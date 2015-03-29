@@ -38,7 +38,8 @@
                         <h1 class="title" ng-bind="'Estimate for ' + report.siteName"></h1>
                         <p class="name">
                             <span ng-if="data.mode() === 'trees'">
-                                <a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;
+                               <!-- <a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;-->
+                                <a href editable-text-popup="report.name" class='reportName'>{{report.name}}</a> &nbsp;
                             </span>
                             <span ng-if="data.mode() !== 'trees'">
                                 {{report.name}}

@@ -263,6 +263,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         s.data.filterTextEntry = '';
 
         applyFilter();
+       // storedData.setEstimateTimeStamp(null);
+        //init();
     };
 
     s.isEstimateSelected = function (id) {

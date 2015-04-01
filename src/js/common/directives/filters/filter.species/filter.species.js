@@ -12,6 +12,12 @@ app.directive('filterSpecies',
                 filterSearchSpecies: '=',   //    filterSearch.species
                 initDataSpecies: '=',       //    initData.filters.species
                 onFilterChange: '&'         //    onFilterChange('species', speciesType.speciesID, speciesType.selected)
+              
+            },
+            controller: function ($scope) {
+                $scope.filterSearchSpeciesClk = function () {
+                    $scope.filterSearchSpecies = "";
+                }
             }
         };
     }]);

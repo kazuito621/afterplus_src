@@ -5,7 +5,7 @@
     "angular-md5": "^0.1.7"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "^0.4.5",
     "grunt-autoprefixer": "~0.4.0",
     "grunt-bower-install": "~0.7.0",
     "grunt-concurrent": "~0.4.1",
@@ -26,8 +26,12 @@
     "grunt-karma": "^0.6.2",
     "grunt-newer": "~0.5.4",
     "grunt-ngmin": "~0.0.2",
+    "grunt-protractor-runner": "~1.2.0",
+    "grunt-protractor-webdriver": "~0.2.0",
     "grunt-rev": "~0.1.0",
+    "grunt-shell": "~0.7.0",
     "grunt-svgmin": "~0.2.0",
+    "grunt-update": "^0.2.3",
     "grunt-usemin": "~2.0.0",
     "jshint-stylish": "~0.1.3",
     "karma": "^0.10.9",
@@ -41,6 +45,7 @@
     "karma-phantomjs-launcher": "^0.1.2",
     "karma-requirejs": "^0.2.1",
     "karma-script-launcher": "^0.1.0",
+    "protractor": "1.6.1",
     "load-grunt-tasks": "~0.2.0",
     "requirejs": "^2.1.11",
     "time-grunt": "~0.2.1"

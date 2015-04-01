@@ -2,7 +2,7 @@
 	<div class="row row-action">
 		<div class="col-sm-2 col">
 			<div class="action-block action-block-1">
-				<a href="#/trees" class="btn btn-lg btn-red">HOME</a>
+				<a href="#/trees" ng-click="gotoTreesPage()" class="btn btn-lg btn-red">HOME</a>
 			</div>
 		</div>
 		<div class="col-sm-4 col">
@@ -14,14 +14,14 @@
 							<p class="text">Estimates</p>
 						</a>
 					</li>
-					<li class="col-xs-4" style="cursor: pointer;" bs-tooltip title='View All Properties'>
-						<a href="#/trees" class="stat">
+					<li class="col-xs-4" ng-click="gotoTreesPage()" style="cursor: pointer;" bs-tooltip title='View All Properties'>
+						<a href="#/trees"  class="stat">
 							<p class="number" ng-bind="initData.stats.siteCount"></p>
 							<p class="text">Properties</p>
 						</a>
 					</li>
-					<li class="col-xs-4" style="cursor: pointer;" bs-tooltip title='View All Trees'>
-						<a href="#/trees" class="stat">
+					<li class="col-xs-4" ng-click="gotoTreesPage()"style="cursor: pointer;" bs-tooltip title='View All Trees'>
+						<a href="#/trees"  class="stat">
 							<p class="number" ng-bind="initData.stats.treeCount"></p>
 							<p class="text">Trees</p>
 						</a>
@@ -50,7 +50,8 @@
 					</div>
 					<!-- hide for now, since the feature is not ready -->
 					<div class="col-xs-4 col" ng-if="report.token">
-						<a href="/go/estimate/pdf/{{report.token}}" target=_new class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
+						<a href="/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}" target=_new 
+						class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
 					</div>
 					
 				</div>

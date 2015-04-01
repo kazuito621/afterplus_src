@@ -102,7 +102,7 @@ app.service('Auth',
             };
 
             this.signInUserToken = function (token) {
-                return Api.user.get({ token: token }, this, this.onDataBackFromSignIn);
+                return Api.user.get({ userToken: token }, this, this.onDataBackFromSignIn);
             };
 
             this.signOut = function () {
@@ -152,11 +152,20 @@ app.service('Auth',
                 return false;
             };
 
+				// Check if user has a permission
+				this.hasPerm = function(id) {
+					var p = this.data().perms || [];
+					return (p.indexOf(id) >= 0);
+				}
 
             this.getLoginName = function () {
                 if (this.isSignedIn()) {
+					var fn=this.data().fName;
+					if(fn && fn.length>1) return fn;
                     if (this.data().email) {
-                        return this.data().email;
+						var em=this.data().email.match(/^[^@]*/);
+						if(em && em[0]) return em[0];
+						return this.data().email;
                     }
                     return "You are logged in.";
                 }

@@ -4,8 +4,8 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage',
-function (Rest, $rootScope, $q, $location, storage) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage','$http','storedData',
+function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
     'use strict';
     window.Api = this;
     var initData = {};
@@ -20,9 +20,16 @@ function (Rest, $rootScope, $q, $location, storage) {
         var deferred = $q.defer();
         if (!isSignedIn()) {
             deferred.resolve();
-        } else {
+        }
+        else if (!_.isEmpty(initData.sites)) {
+            deferred.resolve(initData);
+        }
+        else {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
-            Rest.one('init?siteonly=1').get().then(function (data) {
+            var t=storedData.getSiteOnlyTimeStamp();
+            Rest.one('init?siteonly=1&timestamp='+t).get().then(function (data) {
+                storedData.setInitData(data,t);
+                storedData.setSiteOnlyTimeStamp(data.timestamp);
                 initData.sites = data;
                 //$rootScope.initData.sites = data;
                 deferred.resolve(data);
@@ -39,13 +46,19 @@ function (Rest, $rootScope, $q, $location, storage) {
             deferred.resolve();
         } else {
             sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
-            Rest.one('init?nosite=1').get().then(function (data) {
+            var t=storedData.getNoSiteTimeStamp();
+            Rest.one('init?nosite=1&timestamp='+t).get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-                if (data.filters){
-                    data.filters.hazards = { 'building': { selected: false }, 'caDamage': { selected: false }, 
-						'caDamagePotential': { selected: false }, 'powerline': { selected: false } };
-				}
-                
+                storedData.setInitData(data,t);
+                storedData.setNoSiteTimeStamp(data.timestamp);
+                data.sites=undefined; //
+                if (data.filters) {
+                    data.filters.hazards = {
+                        'building': { selected: false }, 'caDamage': { selected: false },
+                        'caDamagePotential': { selected: false }, 'powerline': { selected: false }
+                    };
+                }
+
                 initData = data;
                 $rootScope.initData = data;
 
@@ -65,6 +78,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         getInitData: function () { return initData; },
         // returns a promise... for .then() when refresh is done
         refreshInitData: function () { return init(true); },
+        getEmailPortalLink:function(){ //GET /template/emailPortalLink
+            return  Rest.one('template/emailPortalLink').get();
+        },
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },
@@ -85,6 +101,9 @@ function (Rest, $rootScope, $q, $location, storage) {
         },
         getTree: function (treeID) {
             return Rest.one('trees', treeID).get();
+        },
+        getTreatmentPrice: function () {
+            return Rest.all('treatmentprice').getList();
         },
         getSiteUsers: function (siteID, roles) {
             var params = {};
@@ -110,9 +129,28 @@ function (Rest, $rootScope, $q, $location, storage) {
         getRecentReports: function (opt) {
             return Rest.all('estimate').getList(opt);
         },
-		getEmailTemplate: function(opt){
-			return Rest.one('template/emailReport').get(opt);
-		},
+        getEmailTemplate: function (opt) {
+            return Rest.one('template/emailReport').get(opt);
+        },
+        getBulkEditInfo:function(opt){
+            return Rest.one('bulkedit').get(opt);
+        },
+        getBulkItemSummary:function(obj){
+            var type;
+            var id;
+            if(obj.reportID){
+                id=obj.reportID;
+                type='estimate'
+            }
+            else if(obj.siteID){
+                id=obj.siteID;
+                type='site';
+            }
+            return Rest.one(type+'/'+id+'/bulk_item_summary').get();
+        },
+        modifyBulkEditInfo : function(param,obj){
+            return Rest.all('bulkedit').post(obj,param);
+        },
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...
             if (reportObj.post && typeof reportObj.post === 'function') {
@@ -122,11 +160,17 @@ function (Rest, $rootScope, $q, $location, storage) {
             dbg(reportObj, "save rep ");
             return Rest.all('estimate').post(reportObj);
         },
+        updateEstimateTime:function(reportID,tstamp){
+            return Rest.all('estimate/'+reportID).post(tstamp);
+        },
         setReportStatus: function (rptID, status) {
             return Rest.one('estimate', rptID).post(status);
         },
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
+        },
+        sendEmailPortalLink: function (rpt) {
+            return Rest.all('sendPortalLink').post(rpt);
         },
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');
@@ -158,22 +202,22 @@ function (Rest, $rootScope, $q, $location, storage) {
         },
 
         // Auth via customer token
-		// @param context - scope of where the callback resides
-		// @param callback - FUNCTION
+        // @param context - scope of where the callback resides
+        // @param callback - FUNCTION
         signInCustToken: function (token, context, callback) {
             var deferred = $q.defer();
             if (!token) {
                 deferred.reject('Invalid token');
                 return deferred.promise;
             }
-			if(context && callback){
-				Rest.one('signincusttoken').get({ custToken: token })
+            if (context && callback) {
+                Rest.one('signincusttoken').get({ custToken: token })
 					.then(angular.bind(context, callback, deferred));
-			}else{
-				return Rest.one('signincusttoken').get({ custToken: token })
-			}
+            } else {
+                return Rest.one('signincusttoken').get({ custToken: token })
+            }
 
-           	return deferred.promise;
+            return deferred.promise;
         },
         signIn: function (email, password, context, callback) {
             var deferred = $q.defer();
@@ -183,6 +227,7 @@ function (Rest, $rootScope, $q, $location, storage) {
         },
         signOut: function (Auth) {
             Auth.data({});
+            storedData.removeAllStoredData();
             Rest.one('signout').get();
             // TODO: clear init data some how maybe with an event onSignOut
             $location.url('/signin');
@@ -260,6 +305,32 @@ function (Rest, $rootScope, $q, $location, storage) {
             create:function(param){
                 return Rest.all('QWEsite/multi/users').post(param);
             }
+        },
+
+        saveTree: function (tree) {
+            return Rest.all('tree').post(tree);
+        },
+
+        deleteTree: function (treeId) {
+            return Rest.one('tree', treeId).post('delete');
+        },
+
+        updateTree: function (tree) {
+            var params = {};
+            params.longitude = tree.longitude;
+            params.lattitude = tree.lattitude;
+            params.lat = tree.lat;
+            params.lng = tree.lng;
+            params.siteID = tree.siteID;
+            
+            //(elemFunction, this)("post", undefined, params, undefined, headers);
+            return Rest.one('tree', tree.treeID).post(undefined, params);
+        },
+        getGoogleAddress:function(params){
+            return $http.get(
+                'http://maps.googleapis.com/maps/api/geocode/json',
+                {params: params}
+            )
         }
     };
 }]);

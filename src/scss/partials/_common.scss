@@ -49,8 +49,8 @@ header
 
 		img 
 		{
-			width: 150px;
-			height: auto;
+			height: 65px;
+			width: auto;
 		}
 	}
 
@@ -86,7 +86,7 @@ header
 					{
 						text-align: center;
 						display: block;
-						padding: 14px 40px;
+						padding: 19px 40px;
 
 						@media(max-width: 540px)
 						{
@@ -297,6 +297,24 @@ footer
 		margin-top: 20px;
 	}
 
+	@media(max-width: 1300px) {
+		padding: 8px 15px;
+		font-size: 25px;
+		margin-top: 0;
+	}
+
+	@media(max-width: 1100px) {
+		padding: 8px 10px;
+		font-size: 20px;
+	}
+
+	@media(max-width: 950px) {
+		padding: 8px 10px;
+		font-size: 20px;
+		margin: auto;
+		margin-bottom: 15px;
+	}
+
 
 	&.approved
 	{
@@ -397,5 +415,45 @@ footer
 	    padding: 0;
 	    position: absolute;
 	    width: 1px;
+	}
+}
+
+
+.modal
+{
+	.modal-dialog
+	{
+		.modal-content
+		{
+			form.form-inline
+			{
+				.panel
+				{
+					.panel-body
+					{
+						.silver
+						{
+							font-size: $base-font-size * 1.5;
+							line-height: $base-font-size * 2;
+							margin: 10px 0 5px 0;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.table-header
+{
+	margin-top: 15px;
+	margin-bottom: 15px;
+
+	h1
+	{
+		font-size: $base-font-size * 3;
+		line-height: $base-font-size * 3.2;
+		margin-top: 10px;
+		font-weight: bold;
 	}
 }

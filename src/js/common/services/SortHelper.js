@@ -87,6 +87,10 @@ app.factory('SortHelper', function () {
 
             return 'fa fa-sort-down';
         };
+
+        this.setData=function(data){
+            this.data=data;
+        }
     };
 
     return {

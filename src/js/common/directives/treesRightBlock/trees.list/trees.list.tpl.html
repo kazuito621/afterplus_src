@@ -2,7 +2,7 @@
 <div class="tree-list-outer" id="tree-list-container">
     <table class="tree-list-container">
         <tbody>
-            <tr bindonce ng-repeat="tree in trees | limitTo : limit" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}"
+            <tr bindonce ng-repeat="tree in trees | limitTo : limit track by tree.treeID" ng-if="tree.hide != true" id="tree-result-item-row-{{tree.treeID}}"
                 ng-mouseover="onTreeResultMouseOver(tree)" ng-mouseleave="onTreeResultMouseLeave(tree)">
                 <td class="td-check">
                     <input type="checkbox" checklist-model="selectedTrees" checklist-value="tree.treeID"
@@ -34,7 +34,7 @@
                 </td>
                 <td class="td-action" style="padding: 0px;">
                     <label for="tree-result-checkbox-{{tree.treeID}}">
-                        <a href='#/tree_edit/{{tree.treeID}}' bs-tooltip title="View/Edit Details" style="padding: 5px;">
+                        <a bs-tooltip title="View/Edit Details" id="tree-anchor-{{tree.treeID}}" tree-edit-modal="tree.treeID" style="padding: 5px;">
                             <i class="fa fa-pencil"></i>
                         </a>
                     </label>

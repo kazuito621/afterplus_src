@@ -17,7 +17,6 @@ app.directive('treeEdit', ['Api', '$location', function (Api, $location) {
         s.ynpOptions = ['yes', 'no', 'potential'];
         s.tree_cachebuster = '?ts=' + moment().unix();
         s.yearOptions = ["2012", "2013", "2014", "2015", "2016", "2017"];
-
         var initTreeData = function () {
             s.tree = {};
             s.tree.img = s.tree.imgSm = s.tree.imgMed = '/img/blank.gif';
@@ -115,6 +114,16 @@ app.directive('treeEdit', ['Api', '$location', function (Api, $location) {
         s.$on('nav', function (e, data) {
             if (data.new === myStateID) { init(); }
         });
+
+        s.activePopover = { elem: {}, itemID: undefined };
+
+        s.deleteTree = function (treeId) {
+            s.setAlert('Deleting tree', { busy: true, time: "false" });            
+            Api.deleteTree(treeId).then(function () {
+                s.hideAllAlert();
+                $location.path('trees');
+            });
+        };
 
         init();
     };

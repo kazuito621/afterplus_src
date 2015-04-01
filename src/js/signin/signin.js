@@ -36,10 +36,14 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 				if(q.redirect){ 
 					var url=cfg.hostAndPort() + '/#' + q.redirect;
 					document.location=url;
-					document.location.reload();
+					// in the past before we changed the old div/hide method back to 
+					// traditional angular routeProvider, this reload was here because
+					// the map would not load when the div was hidden... so when we signed in, the map was blank
+					// but i think this is not necessary now
+					// document.location.reload();
 				}
 				else s.goTrees();
-			}, function err(err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
+			}, function (err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
 									//that could possibly throw errors
 				s.login.btnDisabled=false;
 			})
@@ -56,6 +60,11 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 		// BUG TODO - why do we need this here? because if we dont have it,
 		// the google map wont load! 
 		document.location.reload();
+	}
+
+	// if customer is signed in, forward to trees
+	if(Auth.isSignedIn() && Auth.is('customer')){
+		s.goTrees();	
 	}
 
 }]);

@@ -50,15 +50,25 @@ var SitesCtrl = app.controller('SitesCtrl',
             //delete item method
             s.deleteCurrentItem = function () {
                 if (!s.activePopover.itemID) return;
-
-                Api.removeSiteById(s.activePopover.itemID).then(function () {
-                    s.refreshSites();
-                    Api.refreshInitData();
-                }, function err(){
+                Api.removeSiteById(s.activePopover.itemID).then(function (msg) {
+                    if(false){ //TODO  if msg don't  indicates success,
+                        s.setAlert("There was an error deleting the property.",{type:'d',time:5});
+                    }
+                    else {
+                        if(idx>=0) {
+                            sitesFiltered.splice(idx, 1);
+                        }
+                        s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+                    }
+                }, function err(e){
                     s.setAlert("Property can't be deleted, try again later.",{type:'d',time:5});
                 });
-                s.refreshSites();
-                Api.refreshInitData();
+
+                var idx=_.findObj(sitesFiltered, 'siteID', s.activePopover.itemID, true);
+                if(idx>=0) {
+                    s.displayedSites.splice(idx, 1);
+                }
+
                 s.activePopover.elem.hide();
                 delete s.activePopover.itemID;
             };

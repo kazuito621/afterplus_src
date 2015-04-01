@@ -17,13 +17,14 @@ app.service('ReportService',
 	this.lastReportMd5;
 	this.emailRpt = {};
     this.groupedItems = [];
+    this.reportBackup={};
 
 	this.init=function(){
 		this.getBlankReport();
 		// when reportID changes, update the report Link
 		$rootScope.$watch(function(){ return that.report.reportID}, function(){ 
 				var t=that.report.token || that.report.reportID;
-				that.report.reportLink='http://app.arborplus.com/#/estimate/'+t;
+				that.report.reportLink=window.cfg.host()+'/#/estimate/'+t;
 			});
 		// when items in report change, get a new total
 		var onChg=function(){ that.setGrandTotal(); }
@@ -167,8 +168,8 @@ app.service('ReportService',
 	//				 - if error mixing trees from different sites, return "-1"
 	this.addItems = function(trees, treatmentCodes, selectedFilters) {
 		// dont let them add trees to a report that has a different siteID
-		if(this.report.siteID && this.siteID && this.report.siteID!=this.siteID)
-				return -1;
+		//if(this.report.siteID && this.siteID && this.report.siteID!=this.siteID)
+		//		return -1;
 
 		if(!this.report.siteID) this.report.siteID=this.siteID;
 
@@ -254,16 +255,49 @@ app.service('ReportService',
 		})
 
 		_.each(this.report.services, function(itm){
-			if( itm.price ){
+            if(/.+%/g.test(itm.price)){
+                var perc=Number(itm.price.split("%")[0]);
+                p=Number(perc *.01 * items_total);
+                services_total+=p;
+            }
+			else if( itm.price ){
 				p=Number(itm.price*itm.quantity);
 				services_total+=p;
 			}
 		})
 
-		this.report.total={items:items_total, services:services_total, grand:(services_total+items_total)};
+		this.report.total={items:items_total.toFixed(2), services:services_total.toFixed(2), grand:(services_total+items_total).toFixed(2)};
 	}
 
+    this.isChanged=function(backupReport,report){
+        if(backupReport=='new')return true;
+        if(backupReport==undefined)return false;
+        // The $$haskey of service items updated in UI when rendered, but not in backupreport.
+        //So have to update the $$haskey of backupreport also.
+        if(backupReport.services.length==report.services.length){
+            for(var i=0;i<backupReport.services.length;i++){
+                backupReport.services[i].$$hashKey=report.services[i].$$hashKey;
+            }
+        }
+        var items1=_.extract(backupReport, 'items');
+        var items2=_.extract(report,'items');
 
+        var str=JSON.stringify(items1) + JSON.stringify(backupReport.services)
+            +backupReport.name+backupReport.sales_userID;
+        var report1Report = md5.createHash(str);
+
+
+        if( !items2 || !items2.length ) return '';
+        var str=JSON.stringify(items2) + JSON.stringify(report.services)
+            +report.name+report.sales_userID;
+        var report2Report = md5.createHash(str);
+
+        if(angular.equals(report1Report,report2Report)){
+            return false;
+        }
+        else
+            return true;
+    };
 
 	this.saveReport = function() {
 		if(!this.report.siteID) this.report.siteID=this.siteID;
@@ -301,7 +335,7 @@ app.service('ReportService',
 	
 	this.setReportLink=function(){
 		var t=this.report.token || this.report.reportID
-		this.report.reportLink='http://app.arborplus.com/#/estimate/'+t
+		this.report.reportLink=window.cfg.host()+'/#/estimate/'+t
 	}
 
 	// Grabs list of recent reports.. based on siteID or clientID.. else all

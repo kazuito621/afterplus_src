@@ -4,7 +4,7 @@
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
-     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main']);
+     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer']);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
@@ -61,14 +61,20 @@ app.config(['$routeProvider', '$locationProvider',
                 templateUrl: "js/trees/trees.tpl.html"
                 ,auth:true, reloadOnSearch:false
                 ,resolve: {
-                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                    deps:['Api','$route', function(Api,$route){
+                        var token=$route.current.params.token;
+                        if(token)
+                            return Auth.signInCustToken(token, true);
+
+                        return Api.getPromise();
+                    }]
                 }})
-            .when("/tree_edit/:treeID", {
-                templateUrl: "js/trees/edit.tpl.html"
-                ,auth:true, reloadOnSearch:false
-                ,resolve: {
-                    deps:['Api', function(Api){  return Api.getPromise(); }]
-                }})
+            //.when("/tree_edit/:treeID", {
+            //    templateUrl: "js/trees/edit.tpl.html"
+            //    ,auth:true, reloadOnSearch:false
+            //    ,resolve: {
+            //        deps:['Api', function(Api){  return Api.getPromise(); }]
+            //    }})
             .when("/estimates", {
                 templateUrl: "js/estimates/estimates.tpl.html"
                 ,auth:true, reloadOnSearch:false
@@ -95,8 +101,8 @@ app.config(['$routeProvider', '$locationProvider',
                 }})
             .otherwise({redirectTo: "/signin"});
 	}])
-	.run(['Restangular', '$rootScope',
-		function (RestProvider, rs) {
+	.run(['Restangular', '$rootScope','storedData',
+		function (RestProvider, rs, storedData) {
 			RestProvider
 				.setBaseUrl(cfg.apiBaseUrl())
 				//.setDefaultRequestParams({ apiKey: 'xx' })
@@ -117,7 +123,8 @@ app.config(['$routeProvider', '$locationProvider',
 						//if(!msg) msg='Error talking to the server';
 						type='danger';
 					}
-					if(msg) rs.$broadcast('alert', {msg:msg, type:type}); 
+					if(msg) rs.$broadcast('alert', {msg:msg, type:type});
+                    storedData.timeStampValInRespone=res.timestamp;
 					return res.data;
 				})
 				.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
@@ -148,7 +155,7 @@ app.config(['$routeProvider', '$locationProvider',
 
 			//var url;
 			//for (var i in $route.routes) {
-			//    if (url = $route.routes[i].templateUrl) {
+			//    if (url = $route.routes[i].templateUrl) {ngCookies
 			//        $http.get(url, { cache: $templateCache });
 			//    }
 			//}
@@ -161,7 +168,9 @@ app.run(function(editableOptions){
 });
 
 
-
+angular.element(document).ready(function () {
+    angular.bootstrap(document, ['arborPlusApp']);
+});
 
 // ----------------------------------------------- global helper funcs
 

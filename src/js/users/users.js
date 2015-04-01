@@ -24,7 +24,6 @@ var UserCtrl = app.controller('UserCtrl',
                 var search = $location.search();
                 cb = cb || angular.noop;
                 Api.getUsers().then(function (data) {
-                    var isCust=Auth.is('customer');
                     _.each(data, function(d){
                         if(d.fName){
                             d.name=d.fName;

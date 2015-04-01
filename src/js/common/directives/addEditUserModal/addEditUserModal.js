@@ -56,7 +56,7 @@ app.directive('addEditUserModal',
 
                 };
                 var getRoleIndex=function(){
-                    for(var i=0;i<)
+                   // for(var i=0;i<)
                 }
                 scope.closeModal = function () {
                     scope.showAddNewSiteContact = false;

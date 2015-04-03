@@ -62,8 +62,7 @@ app.directive('addEditUserModal',
                    // for(var i=0;i<)
                 }
                 scope.closeModal = function () {
-                    scope.showAddNewSiteContact = false;
-                    scope.showAddNewSiteRep = false;
+
                     modal.hide();
                 };
 
@@ -182,6 +181,8 @@ app.directive('addEditUserModal',
                     el.on('click', function (event) {
                         event.preventDefault();
                         scope.mode='new';
+                        scope.addedClients = [];
+                        scope.addedSites = [];
                         if (angular.isDefined(attrs.addEditUserModal)) {
                             scope.userID = scope.$eval(attrs.addEditUserModal);
                             scope.mode='edit';

@@ -306,7 +306,7 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
                 return Rest.all('user').getList(params);
             },
             create:function(param){
-                return Rest.all('QWEsite/multi/users').post(param);
+                return Rest.all('site/multi/users').post(param);
             },
             getUserById: function (param) {
                 return Rest.one('user').get(param);

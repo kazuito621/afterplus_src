@@ -100,7 +100,7 @@ app.directive('addEditUserModal',
                     JSON BODY: {userID:123, role:'sales', siteIDs:[123, 876, 432]}
                     */
                     Api.user.create(user).then(function (data) {
-                        var a=1;
+                        modal.hide();
                     });
                 };//
 

@@ -17,7 +17,7 @@ var UserCtrl = app.controller('UserCtrl',
             s.data={}; //overwritten later
 
             this.fh = FilterHelper.fh();
-            var filterGroups=[['userRole'],['email','name', 'role', 'sessionCount']];
+            var filterGroups=[['userRole','assignment'],['email','name', 'role', 'sessionCount']];
             this.fh.setFilterGroups(filterGroups);
 
             var init = function (cb) {
@@ -32,6 +32,15 @@ var UserCtrl = app.controller('UserCtrl',
                             d.name=d.name+' '+d.lName;
                         }
                         d.userRole= d.role;
+                        d.siteCount=Math.floor((Math.random() * 2) + 0);
+                        d.clientCount=Math.floor((Math.random() * 2) + 0);
+
+                        if(d.siteCount == 0 && d.clientCount == 0){
+                            d.assignment='unassigned';
+                        }
+                        else {
+                            d.assignment='assigned';
+                        }
                     });
                     users = userFiltered = data;
                     self.sh = SortHelper.sh(users, '', columnMap, colSortOrder);
@@ -48,10 +57,65 @@ var UserCtrl = app.controller('UserCtrl',
 
             s.setStatusFilter=function(role){
                 if(role=='All')role='';
-                self.fh.setFilter({userRole:role});
+                self.fh.setFilter({userRole:role,assignment:''});
                 applyFilter();
+            };
+
+            s.setAssignmentFilter = function(bool){
+                //self.fh.setFilter({userRole:''});
+                self.fh.setFilter({assignment:bool,userRole:''});
+                applyFilter();
+            };
+
+            s.sendPortalLink=function(user){
+                s.emailRpt={};
+                s.type = 'sendPortalLink';
+                s.modalTitle = "Email Portal Link";
+                s.emailRpt.contactEmails = [];
+                s.emailRpt.cc_email = '';
+
+                s.emailRpt.ccEmails = [];
+
+                s.emailRpt.senderEmail = Auth.data().email;
+
+                s.emailRpt.subject = 'Manage your trees - Portal Login';
+                s.emailRpt.disableSendBtn = false;
+                s.emailRpt.sendBtnText = 'Send';
+                s.emailRpt.contactEmails.push(user.email);
+                Api.getEmailPortalLink().then(function(data){
+                    s.emailRpt.message = data;
+                })
+            };
+
+            s.sendEmailPortalLink=function($hide, $show){
+                s.emailRpt.disableSendBtn = true;
+                s.emailRpt.sendBtnText = 'Sending...';
+
+                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
+
+                Api.sendEmailPortalLink(s.emailRpt)
+                    .then(function (msg) {
+                        s.emailRpt.disableSendBtn = false;
+                        s.emailRpt.sendBtnText = 'Send';
+                        $hide();
+                    });
             }
 
+
+            /*s.filterBy = function(type){
+              if(type=='unassigned'){
+                  userFiltered=[];
+                  _.each(users,function(user){
+                      if(user.siteCount == 0 && user.clientCount == 0){
+                          userFiltered.push(user);
+                      }
+                  });
+                  if(userFiltered.length==0) userFiltered=[{name:'No Results', email:'No Results', role:'No Results', sessionCount:'0'}]
+                  s.sh.applySort();
+                  s.displayedUsers = userFiltered.slice(0, 49);
+              }
+            },*/
             s.showMoreUsers = function () {
                 var count = s.displayedUsers.length;
                 if (count === users.length) {
@@ -75,6 +139,7 @@ var UserCtrl = app.controller('UserCtrl',
             s.sh = {
                 sortByColumn: function (col) {
                     applyFilter();
+                    self.sh.setData(userFiltered);
                     userFiltered = self.sh.sortByColumn(col);
                     s.displayedUsers = userFiltered.slice(0, 49);
                 },
@@ -89,7 +154,7 @@ var UserCtrl = app.controller('UserCtrl',
             };
 
             var clearFilter = function () {
-                self.fh.setFilter({userRole:''});
+                self.fh.setFilter({userRole:'',assignment:''});
                 self.fh.setFilter({email:'', name:'', role:'', sessionCount:''});
                 userFiltered = users;
                 s.sh.applySort();
@@ -110,6 +175,12 @@ var UserCtrl = app.controller('UserCtrl',
                 clearFilter();
                 applyFilter();
             };
+
+            s.sendLoginInfo=function(userID){
+                Api.sendLoginInfo(userID).then(function(data){
+
+                })
+            }
 
             s.$watch('data.filterTextEntry', function (txt, old) {
                 if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }

@@ -6,8 +6,7 @@
             style="max-width: 100%; width: auto;"
             add-edit-user-modal=""
             on-save="refreshSites"
-            clients="initData.clients"
-            mode="new"
+            sites="sites"
             data-animation="am-fade-and-scale">New user/customer</button>
     <br>
     <div>
@@ -21,6 +20,8 @@
                     <input type="radio" value="Staff"> Staff</label>
                 <label ng-click="setStatusFilter('customer')" class="btn btn-default">
                     <input type="radio" value="Customer"> Customer</label>
+                <label ng-click="setAssignmentFilter('unassigned')" class="btn btn-default">
+                    <input type="radio" value="Unassigned"> Unassigned</label>
                 <span class="lnk leftSpace10">
                     <a href ng-click='reset()' bs-tooltip title='Reset'>
                         <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>
@@ -51,19 +52,32 @@
                 <th class="clickable-header" ng-click="sh.sortByColumn('sessionCount')">
                     Login count <i ng-class="sh.columnClass('sessionCount')" class='silver'></i>
                 </th>
+                <th>
+                    Assigned <i class='silver'></i>
+                </th>
                 <th style="min-width: 75px;"></th>
             </tr>
             </thead>
             <tbody infinite-scroll="showMoreUsers()" infinite-scroll-distance="3">
             <tr ng-repeat="e in displayedUsers track by $index" class='hoverHotspot' id='item_{{e.reportID}}'>
-                <td  add-edit-user-modal="e.userID" sites="sites" on-save="refreshSites" style="text-decoration:underline;cursor: pointer">
-                    <span ng-bind="e.email"></span>
-                    <a href="" bs-tooltip=""><i class="fa fa-gear"></i></a>
+                <td  style="text-decoration:underline;cursor: pointer">
+                    <span ng-bind="e.email"  add-edit-user-modal="e.userID" sites="sites" on-save="refreshSites"></span>
+                    <a ng-if="e.role=='customer' && e.email!='No Results'" data-backdrop='static'
+                       data-keyboard=true
+                       bs-modal
+                       data-template="js/trees/emailReport.tpl.html"
+                       ng-click="sendPortalLink(e)" ><i  bs-tooltip title="Send user a portal login link" class="fa fa-gear"></i></a>
+                    <a ng-if="e.role!='customer' && e.email!='No Results'" ng-click="sendLoginInfo(e.userID)" bs-tooltip title="Send user their login information"><i class="fa fa-gear"></i></a>
                 </td>
                <!--<td ng-show="e.fName && e.lName" ng-bind="e.fName+' '+e.lName"></td>-->
                 <td  ng-bind="e.name"></td>
                 <td ng-bind="e.role"></td>
                 <td ng-bind="e.sessionCount"></td>
+                <td>
+                    <a href="" class="badge" style="background-color:blue" ng-bind="e.clientCount"></a>
+                    <a href="" class="badge" style="background-color:green" ng-bind="e.siteCount"></a>
+                </td>
+                <td ></td>
             </tr>
             </tbody>
         </table>

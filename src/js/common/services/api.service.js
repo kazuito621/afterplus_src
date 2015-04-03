@@ -172,6 +172,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         sendEmailPortalLink: function (rpt) {
             return Rest.all('sendPortalLink').post(rpt);
         },
+        sendLoginInfo: function (userID) {
+            return Rest.all('user/'+userID+'/sendLogin').post({});
+        },
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');
         },
@@ -304,7 +307,10 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             },
             create:function(param){
                 return Rest.all('QWEsite/multi/users').post(param);
-            }
+            },
+            getUserById: function (param) {
+                return Rest.one('user').get(param);
+            },
         },
 
         saveTree: function (tree) {

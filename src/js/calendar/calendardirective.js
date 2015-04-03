@@ -1,15 +1,15 @@
-﻿angular.module('calenderdirective', [])
-.directive('calenderFull', function () {
+﻿angular.module('calendardirective', [])
+.directive('calendar', function () {
     return {
         restrict: 'EA',
         replace: false,
-        templateUrl: '/js/calender/full_calender_tpl.html',
+        templateUrl: '/js/calendar/full_calendar_tpl.html',
         scope: {
             leftButtons: "@",
             rightButtons: "@",
-            editablefullcalender: "@",
-            dropablefullcalender: "@",
-            eventfullcalender: "@",
+            editablefullcalendar: "@",
+            dropablefullcalendar: "@",
+            eventfullcalendar: "@",
           
 
         },
@@ -34,10 +34,10 @@
                             });
 
                     }
-                    if (field.status == "draft" && field.name != null) {
+                    if (field.status == "completed") {
                         $scope.UnscheduledJobs.push(
                             {
-                                "title": field.name.trim(),
+                                "title": field.name.trim()?field.name.trim() : "Nil",
                                 "start": "2015-03-02",
                                 "price": "," + field.total_price
 
@@ -77,9 +77,9 @@
                         },
                         //defaultDate: '2015-02-12',
                         dropAccept: '.drop-accpted',
-                        editable: $scope.editablefullcalender,     // Under calender events drag start on true and vice-versa.
-                        droppable: $scope.dropablefullcalender,
-                        eventLimit: $scope.eventfullcalender,
+                        editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
+                        droppable: $scope.dropablefullcalendar,
+                        eventLimit: $scope.eventfullcalendar,
                         startEditable: true,
                         events: $scope.ScheduledJobs,
                         select: function (start, end) {
@@ -110,10 +110,10 @@
 
                         },
                         eventDrop: function (event, delta, revertFunc) {
-                            //console.log(event.start.format());
-                            //console.log(event.title);
-                            //console.log(event.start._i);
-                            //console.log(event.start._d);
+                            console.log(event.start.format());
+                            console.log(event.title);
+                            console.log(event.start._i);
+                            console.log(event.start._d);
 
 
                         },
@@ -141,7 +141,7 @@
                             }
                         },
                         eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
-
+                            console.log(event);
                             var html = $(view.el[0]).find(".fc-title").html();
                             html = html.replace("<br/>", "");
                             html = html.replace("<br>", "");

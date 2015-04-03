@@ -4,7 +4,7 @@
 var app = angular.module('arborPlusApp', 
 	['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
 	 'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
-     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer', 'calenderdirective']);
+     'ngCkeditor', 'pasvaz.bindonce', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer', 'calendardirective']);
 
 app.config(['$routeProvider', '$locationProvider',
 	function ($routeProvider, $locationProvider) {
@@ -81,8 +81,8 @@ app.config(['$routeProvider', '$locationProvider',
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
-            .when("/fullcalender", {
-                templateUrl: "js/calender/calender.html"
+            .when("/calendar", {
+                templateUrl: "js/calendar/calendar.html"
                 , auth: false, reloadOnSearch: false
                 , resolve: {
                     deps: ['Api', function (Api) { return Api.getPromise(); }]

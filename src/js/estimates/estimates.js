@@ -164,8 +164,10 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		statuses:function(s){
 			var o= [{id:'draft', txt:'DRAFT',selectable:true}, 
 					{id:'sent', txt:'SENT',selectable:false}, 
-					{id:'approved', txt:'APPROVED',selectable:true}, 
+					{id:'approved', txt:'APPROVED',selectable:true},
+					//{id:'Scheduled', txt:'SCHEDULED',selectable:true},
 					{id:'completed', txt:'COMPLETED',selectable:true}, 
+					//{id:'invoiced', txt:'INVOICED',selectable:true},
 					{id:'paid', txt:'PAID',selectable:true}]
 			if(s=='paid') return o.splice(4,1);			// if paid, only show COMPLETED and PAID
 			else if(s=='sent' || s=='approved') return o.splice(1,3);		// sent = show SENT, APPROVED, COMPLETED
@@ -191,7 +193,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             {viewValue:'Updated',value:'tstamp_updated'},
             {viewValue:'Sent',value:'tstamp_sent'},
             {viewValue:'Approved',value:'tstamp_approved'},
+            {viewValue:'Scheduled',value:'tstamp_scheduled'},
             {viewValue:'Completed',value:'tstamp_completed'},
+            {viewValue:'Invoiced',value:'tstamp_invoiced'},
             {viewValue:'Paid',value:'tstamp_paid'}
         ]
 	};

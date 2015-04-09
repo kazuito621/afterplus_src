@@ -3,6 +3,9 @@
 
     <div class="table-header">
         <h1 class="pull-left">Estimates</h1>
+        <div  class='pull-right topMargin5'  style="margin-right: 5%;" ng-if="auth.is('staff')">
+            <a class="btn btn-default" href="#/calender">Calender</a>
+        </div>
         <div class="clearfix"></div>
     </div>
 
@@ -17,8 +20,14 @@
                     <input type="radio" value="sent"> Sent</label>
 				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
                     <input type="radio" value="approved"> Approved</label>
+				<label ng-click="setStatusFilter('scheduled')" class="btn btn-default">
+                    <input type="radio" value="scheduled"> Scheduled</label>
 				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
                     <input type="radio" value="completed"> Completed</label>
+                <label ng-click="setStatusFilter('invoiced')" class="btn btn-default">
+                    <input type="radio" value="invoiced"> Invoiced</label>
+                <label ng-click="setStatusFilter('paid')" class="btn btn-default">
+                    <input type="radio" value="paid"> Paid</label>
                 <span class="lnk leftSpace10">
                     <a href ng-click='reset()' bs-tooltip title='Reset'>
                         <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>
@@ -99,19 +108,27 @@
                     </td>
                     <td>${{e.total_price|formatPrice}}</td>
                     <td>
-						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
+						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
 								ng-model="e.status" ng-change="setReportStatus(e,this)"
 								placeholder="{{e.status}}"
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">
-						</button> 
+						</button>
 						<button type='button' ng-if="auth.is('customer')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
 								 onclick="return false;">{{ e.status | statusText }}</button>
 					</td>
                     <td>
-                        <a href="#" editable-text="e[data.currentTstamp]" 
+                        <!--<a href="#" editable-text="e[data.currentTstamp]"
 									bs-tooltip title="{{e[data.currentTstamp]}}"
 									onbeforesave="validateDate($data)" onaftersave="updateEstimateTime(e)">
+                           	{{ e[data.currentTstamp] | formatDateFromNow }}
+                        </a>-->
+                        <a ng-if="auth.is('staff')" class="editable editable-click" status-dates="e"
+									bs-tooltip title="{{e[data.currentTstamp]}} " style="cursor: pointer;">
+                           	{{ e[data.currentTstamp] | formatDateFromNow }}
+                        </a>
+                        <a ng-if="auth.is('staff') == false" class="editable editable-click"
+									bs-tooltip title="{{e[data.currentTstamp]}}" style="cursor: pointer;">
                            	{{ e[data.currentTstamp] | formatDateFromNow }}
                         </a>
                     </td>

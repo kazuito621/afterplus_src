@@ -74,6 +74,13 @@ angular.module('arborPlusFilters', [])
 		};  
 	})
 
+    .filter('formatDateOnly', function(){
+		return function(input) {
+			if(!input) return '';
+			return moment(input).format('YYYY-MM-DD');
+		};
+	})
+
 	.filter('formatDateFromNow', function(){
 		return function(input) {  
 			if(!input) return '';

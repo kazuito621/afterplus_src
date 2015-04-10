@@ -162,14 +162,18 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		// determine which statuses to show based on current status
 		// @param s STRING - currennt status ID
 		statuses:function(s){
-			var o= [{id:'draft', txt:'DRAFT',selectable:true}, 
-					{id:'sent', txt:'SENT',selectable:false}, 
-					{id:'approved', txt:'APPROVED',selectable:true}, 
-					{id:'completed', txt:'COMPLETED',selectable:true}, 
+			var o= [{id:'draft', txt:'DRAFT',selectable:true},
+					{id:'sent', txt:'SENT',selectable:false},
+					{id:'approved', txt:'APPROVED',selectable:true},
+					{id:'scheduled', txt:'SCHEDULED',selectable:true},
+					{id:'completed', txt:'COMPLETED',selectable:true},
+					{id:'invoiced', txt:'INVOICED',selectable:true},
 					{id:'paid', txt:'PAID',selectable:true}]
-			if(s=='paid') return o.splice(4,1);			// if paid, only show COMPLETED and PAID
-			else if(s=='sent' || s=='approved') return o.splice(1,3);		// sent = show SENT, APPROVED, COMPLETED
-			else o.splice(1,1);							// if not sent, get rid of SENT
+			if(s=='paid') return o.splice(6,1);			// if paid PAID
+			else if(s=='sent' || s=='approved') return o.splice(1,4);		// sent = show SENT, APPROVED,SCHEDULED, COMPLETED
+			else if(s=='scheduled' || s=='completed') return o.splice(3,3);		// sent = show  SCHEDULED, COMPLETED, INVOICED
+			else if(s=='invoiced') return o.splice(5,2);		// INVOICED = show INVOICED, PAID
+			else o.splice(1,1);							// SHOW DRAFT
 
 			if(s=='draft') o.splice(3);					// DRAFT, APPR, COMPL
 			else if(s=='completed') return o.splice(2,2);		// COMPL,PAID
@@ -191,7 +195,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             {viewValue:'Updated',value:'tstamp_updated'},
             {viewValue:'Sent',value:'tstamp_sent'},
             {viewValue:'Approved',value:'tstamp_approved'},
+            {viewValue:'Scheduled',value:'tstamp_scheduled'},
             {viewValue:'Completed',value:'tstamp_completed'},
+            {viewValue:'Invoiced',value:'tstamp_invoiced'},
             {viewValue:'Paid',value:'tstamp_paid'}
         ]
 	};

@@ -1,7 +1,7 @@
 /**
  * Created by Imdadul Huq on 09-Apr-15.
  */
-app.directive('jumpToCalender',
+app.directive('jumpToCalendar',
     ['$popover', '$location',
         function ($popover,$location) {
             return {
@@ -15,7 +15,7 @@ app.directive('jumpToCalender',
                     scope.go=function(){
                         popover.hide();
                         scope.parentModal.hide();
-                        $location.path('/calender');
+                        $location.path('/calendar');
                     };
 
                     var popover;
@@ -29,7 +29,7 @@ app.directive('jumpToCalender',
                         // create new one
                         popover = $popover(el, {
                             scope: scope,
-                            template: '/js/common/directives/jumpToCalender/jumpToCalender.tpl.html',
+                            template: '/js/common/directives/jumpToCalendar/jumpToCalendar.tpl.html',
                             show: false,
                             animation: 'am-flip-x',
                             placement: 'left',

@@ -28,7 +28,7 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
             var t=storedData.getSiteOnlyTimeStamp();
             Rest.one('init?siteonly=1&timestamp='+t).get().then(function (data) {
-                storedData.setInitData(data,t);
+                storedData.setInitData(data,t,'siteOnly');
                 storedData.setSiteOnlyTimeStamp(data.timestamp);
                 initData.sites = data;
                 //$rootScope.initData.sites = data;
@@ -49,7 +49,7 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             var t=storedData.getNoSiteTimeStamp();
             Rest.one('init?nosite=1&timestamp='+t).get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-                storedData.setInitData(data,t);
+                storedData.setInitData(data,t,'nosite');
                 storedData.setNoSiteTimeStamp(data.timestamp);
                 data.sites=undefined; //
                 if (data.filters) {
@@ -311,6 +311,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             getUserById: function (param) {
                 return Rest.one('user').get(param);
             },
+            update:function(param,userID){
+                return Rest.all('user/'+userID).post(param);
+            }
         },
 
         saveTree: function (tree) {

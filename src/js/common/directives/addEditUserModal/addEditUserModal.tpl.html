@@ -26,6 +26,11 @@
                                     <select ng-model="newContact.role" ng-options="role.name for role in userRoles"  required>
                                         <option>{{role.name}}</option>
                                     </select> &nbsp;
+                                    <div class="row" style="margin: 5px 2px 10px 5px;" ng-if="user && user.role!='customer'">
+                                        <label class="col-sm-6" style="font-weight: bold;margin: 2px;">
+                                            <input type="checkbox" ng-model="newContact.showStatInDash" ng-change="selectionChanged()"/> Show user in dashboard
+                                        </label>
+                                    </div>
                                     <ul clas="row" style="margin: 2em 0; background-color: #aaa; padding:1.5em; color:#fff; font-wieght:bold; font-size:1.3em;">
                                         <li ng-repeat="roleDesc in newContact.role.permDesc">
                                             {{roleDesc}}
@@ -77,9 +82,9 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="row" style="margin: 5px 2px 10px 5px;" ng-style="isLoginDisabled==false?'':{'background-color':'red','color':'silver'}">
+                                <div class="row" style="margin: 5px 2px 10px 5px;" ng-style="newContact.isLoginDisabled==false?'':{'background-color':'red','color':'silver'}">
                                     <label class="col-sm-4" style="font-weight: bold;margin: 2px;">
-                                        <input type="checkbox" ng-model="isLoginDisabled" ng-change="selectionChanged()"/> Login Disabled
+                                        <input type="checkbox" ng-model="newContact.isLoginDisabled" ng-change="selectionChanged()"/> Login Disabled
                                     </label>
                                 </div>
                             </div>

@@ -9,15 +9,28 @@ app.directive('addEditUserModal',
             var linker = function (scope, el, attrs) {
                 var modal;
                 window.sues = scope;
+
                 scope.newContact={};
                 scope.addedSites=[];
                 scope.selectedClient={};
                 scope.selectedClient.email="";
                 scope.addedClients=[];
                 scope.addedSites=[];
-                scope.isLoginDisabled=false;
+                scope.newContact.isLoginDisabled=false;
                 scope.userRoles=[];
+
+                var init=function(){
+                    scope.newContact={};
+                    scope.addedSites=[];
+                    scope.selectedClient={};
+                    scope.selectedClient.email="";
+                    scope.addedClients=[];
+                    scope.addedSites=[];
+                    scope.newContact.isLoginDisabled=false;
+                    scope.userRoles=[];
+                }
                 scope.openModal = function () {
+                    //init();
                     if(scope.userRoles.length==0){
                         Api.getUserRoles().then(function(userRoles){
                             scope.userRoles = angular.copy(userRoles);
@@ -36,9 +49,9 @@ app.directive('addEditUserModal',
                         modal = $modal({scope: scope, template: '/js/common/directives/addEditUserModal/addEditUserModal.tpl.html', show: false});
                     }
 
-                    if(scope.userID){
+                    if(scope.user){
                         var param={
-                            id:scope.userID
+                            id:scope.user.userID
                         };
                         Api.user.getUserById(param).then(function(data){
                             scope.newContact.email=data.email;
@@ -46,9 +59,17 @@ app.directive('addEditUserModal',
                             scope.newContact.fName=data.fName;
                             scope.newContact.lName=data.lName;
                             scope.newContact.phone=data.phone;
+                            if(data.disabled == '1') scope.newContact.isLoginDisabled=true;
+                            else scope.newContact.isLoginDisabled=false;
+
+                            if(data.showStatInDash == '1') scope.newContact.showStatInDash=true;
+                            else scope.newContact.showStatInDash=false;
+
                             var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
                             scope.newContact.role={};
                             scope.newContact.role = scope.userRoles[idx];
+
+                            getSiteNames(data.siteIDs);
                         });
                     }
                     modal.$promise.then(function () {
@@ -85,12 +106,16 @@ app.directive('addEditUserModal',
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
+                    
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];
                     angular.forEach(scope.addedClients,function(item){
                         user.clientIDs.push(item.client.clientID);
                     });
-                    if(scope.isLoginDisabled) user.login_disabled=1;
+                    if(scope.newContact.isLoginDisabled) user.disabled=1;
+                    else user.disabled=0;
+                    if(scope.newContact.showStatInDash) user.showStatInDash=1;
+                    else user.showStatInDash=0;
                    /*
                     POST /site/multi/users
                     JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer',
@@ -99,9 +124,22 @@ app.directive('addEditUserModal',
                     or (for existing users)
                     JSON BODY: {userID:123, role:'sales', siteIDs:[123, 876, 432]}
                     */
-                    Api.user.create(user).then(function (data) {
-                        modal.hide();
-                    });
+                    if(scope.user){
+                        Api.user.update(user,scope.user.userID).then(function (data) {
+                            scope.user.email=user.email;
+                            scope.user.role=user.role;
+                            scope.user.fName=user.fName;
+                            scope.name=user.name+' '+user.lName;
+                            scope.user.lName=user.lName;
+                            scope.user.phone=user.phone;
+                            modal.hide();
+                        });
+                    }
+                    else{
+                        Api.user.create(user).then(function (data) {
+                            modal.hide();
+                        });
+                    }
                 };//
 
                 scope.addClientsProperty = function (event) {
@@ -130,6 +168,15 @@ app.directive('addEditUserModal',
                     });
 
                 };
+
+                var getSiteNames = function(siteIDs){
+                    siteIDs = siteIDs.split(',');
+                    _.each(siteIDs,function(siteID){
+                        var site = _.findObj(scope.initData.sites,'siteID',siteID);
+                        scope.addedSites.push(site);
+                    })
+                }
+
                 scope.addProperty=function(event){
                     event.preventDefault();
                     event.stopPropagation();
@@ -183,8 +230,9 @@ app.directive('addEditUserModal',
                         scope.mode='new';
                         scope.addedClients = [];
                         scope.addedSites = [];
+                        scope.userID=null;
                         if (angular.isDefined(attrs.addEditUserModal)) {
-                            scope.userID = scope.$eval(attrs.addEditUserModal);
+                            scope.user = scope.$eval(attrs.addEditUserModal);
                             scope.mode='edit';
                         }
                         scope.openModal();

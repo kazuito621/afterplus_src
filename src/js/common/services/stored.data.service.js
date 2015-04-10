@@ -39,9 +39,11 @@ app.service('storedData',
                 return self.storedData;
             }
 
-            this.setInitData=function(data,lastTimeStamp){
+            this.setInitData=function(data,lastTimeStamp,type){
                 self.getInitData();
                 _.each(propertiesToCheck,function(item){
+                    //if(type=='nosite' && item == 'sites') return;
+                    //if(type=='siteOnly' && item != 'sites') return;
                     if(data.partial_data.indexOf(item)==-1 && lastTimeStamp!==1){ // if item name not exist in changed item list (partial_data), take from localstorage
                         if(item.indexOf('.')!=-1){
                             var parts=item.split('.'); //  'filters.treatments','filters.treatmentPrices','filters.species'

@@ -32,8 +32,8 @@ var UserCtrl = app.controller('UserCtrl',
                             d.name=d.name+' '+d.lName;
                         }
                         d.userRole= d.role;
-                        d.siteCount=Math.floor((Math.random() * 2) + 0);
-                        d.clientCount=Math.floor((Math.random() * 2) + 0);
+                        //d.siteCount=Math.floor((Math.random() * 2) + 0);
+                        //d.clientCount=Math.floor((Math.random() * 2) + 0);
 
                         if(d.siteCount == 0 && d.clientCount == 0){
                             d.assignment='unassigned';
@@ -50,7 +50,13 @@ var UserCtrl = app.controller('UserCtrl',
 
                 Api.getSiteList().then(function (data) {
                     s.sites=data; // This will passed to add-edit-user directive
-                })
+                });
+
+                if(s.initData.sites==undefined){ // Will optimize this call . IMDAD
+                    Api.getAllSites().then(function(data){
+                        s.initData.sites=data.sites;
+                    })
+                }
             };
 
             s.activePopover = {elem:{}, itemID: undefined};

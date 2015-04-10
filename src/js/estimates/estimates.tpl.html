@@ -3,7 +3,7 @@
 
     <div class="table-header">
         <h1 class="pull-left">Estimates</h1>
-        <div  class='pull-right topMargin5'  style="margin-right: 5%;" ng-if="auth.is('staff')">
+        <div  class='pull-right topMargin5'  style="margin-right: 5%;" ng-if="auth.isAtleast('staff')">
             <a class="btn btn-default" href="#/calender">Calender</a>
         </div>
         <div class="clearfix"></div>
@@ -123,11 +123,11 @@
 									onbeforesave="validateDate($data)" onaftersave="updateEstimateTime(e)">
                            	{{ e[data.currentTstamp] | formatDateFromNow }}
                         </a>-->
-                        <a ng-if="auth.is('staff')" class="editable editable-click" status-dates="e"
+                        <a ng-if="auth.isAtleast('staff')" class="editable editable-click" status-dates="e"
 									bs-tooltip title="{{e[data.currentTstamp]}} " style="cursor: pointer;">
                            	{{ e[data.currentTstamp] | formatDateFromNow }}
                         </a>
-                        <a ng-if="auth.is('staff') == false" class="editable editable-click"
+                        <a ng-if="auth.isAtleast('staff') == false" class="editable editable-click"
 									bs-tooltip title="{{e[data.currentTstamp]}}" style="cursor: pointer;">
                            	{{ e[data.currentTstamp] | formatDateFromNow }}
                         </a>

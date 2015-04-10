@@ -7,12 +7,7 @@ app.directive('statusDates',
             return {
                 restrict: 'EA',
                 link: function (scope, el, attrs) {
-                    //scope.modal={};
-                    scope.cancel = function(){
-                        if (scope.modal && typeof scope.modal.hide === 'function') {
-                            scope.modal.hide();
-                        }
-                    };
+
 
                     var tstamp_props = ['tstamp_created','tstamp_updated' ,'tstamp_sent' , 'tstamp_approved','tstamp_scheduled' , 'tstamp_completed', 'tstamp_invoiced', 'tstamp_paid'];
                     var changedValues={};
@@ -40,6 +35,13 @@ app.directive('statusDates',
                             changedValues={};
                             scope.modal.hide();
                         });
+                    };
+
+                    scope.closeModal = function(){
+                        console.log('done');
+                        if (scope.modal && typeof scope.modal.hide === 'function') {
+                            scope.modal.hide();
+                        }
                     };
 
                     var hideOnEscape = function (e) {

@@ -105,7 +105,7 @@ app.config(['$routeProvider', '$locationProvider',
                 , resolve: {
                     deps: ['Api', function (Api) { return Api.getPromise(); }]
                 }
-            })
+             })
             .otherwise({redirectTo: "/signin"});
 	}])
 	.run(['Restangular', '$rootScope','storedData',

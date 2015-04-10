@@ -1,0 +1,37 @@
+﻿<style type="text/css">
+    .search {
+        background: none repeat scroll 0 0 #eee;
+        border: 1px solid #ccc;
+        float: left;
+        padding: 0 10px;
+        text-align: left;
+        width: 150px;
+        position:absolute;
+    }
+    #searchJob {
+        width:129px;
+        margin-left:0%;
+        margin-top:2%;
+        margin-bottom:2%;
+    }
+</style>
+<div class="search">
+    <span>Search Job:</span><br /><input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)"  /></div>
+    <div id='external-events' style="margin-top:52px;">
+        <h4>Draggable Jobs</h4>
+        <div class='fc-event'>Job 1</div>
+        <div class='fc-event'>Job 2</div>
+        <div class='fc-event'>Job 3</div>
+        <div class='fc-event'>Job 4</div>
+        <div class='fc-event'>Job 5</div>
+        <p>
+            <input type='checkbox' id='drop-remove' />
+            <label for='drop-remove'>remove after drop</label>
+        </p>
+    </div>
+    <div id='calendar'></div>
+    <div id="eventContent" title="Event Details" style="display: none;">
+        <span>{{jobdescription}}</span><br>
+        <p id="eventInfo"></p>
+    </div>
+

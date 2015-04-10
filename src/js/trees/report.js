@@ -371,11 +371,7 @@ var ReportCtrl = app.controller(
                     .then(function (msg) {
                         s.emailRpt.disableSendBtn = false;
                         s.emailRpt.sendBtnText = 'Send';
-                        if (msg === 1) {
-                            hideFn();
-                            msg = 'Sent successfully';
-                        }
-                        s.setAlert(msg, {type: 'd'});
+                        $hide();
                     });
                 $timeout(function(){ updateEmailLogs(); },2000);
                 $timeout(function(){ updateEmailLogs(); },4000);

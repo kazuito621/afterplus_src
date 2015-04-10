@@ -1,4 +1,4 @@
-app.directive('sitesAutoComplete', function () {
+app.directive('sitesAutoComplete', ['Api',function (Api) {
     'use strict';
 
     var linker = function (scope, el, attrs) {
@@ -6,6 +6,11 @@ app.directive('sitesAutoComplete', function () {
         var callback = scope.$parent[attrs.callback] || angular.noop;
         var sites = scope.$parent[attrs.sites] || [];
 
+        if(sites.length==0){ // In case sites are not provided by the calling scope.
+            Api.getSiteList().then(function (siteData) {
+                sites=siteData;
+            })
+        }
         scope.sitesLookup = function (name) {
             callback({}, false);
 
@@ -13,8 +18,7 @@ app.directive('sitesAutoComplete', function () {
             autoCompleteData = _.filter(sites, function (site) {
                 name = name.toLowerCase();
                 var siteName = site.siteName.toLowerCase();
-
-                return siteName.search(name) > -1;
+                return  siteName.search(name) > -1;
             });
 
             return autoCompleteData;
@@ -37,4 +41,4 @@ app.directive('sitesAutoComplete', function () {
             return linker;
         }
     };
-});
+}]);

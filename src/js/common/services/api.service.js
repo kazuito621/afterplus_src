@@ -28,7 +28,7 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
             var t=storedData.getSiteOnlyTimeStamp();
             Rest.one('init?siteonly=1&timestamp='+t).get().then(function (data) {
-                storedData.setInitData(data,t);
+                storedData.setInitData(data,t,'siteOnly');
                 storedData.setSiteOnlyTimeStamp(data.timestamp);
                 initData.sites = data;
                 //$rootScope.initData.sites = data;
@@ -49,7 +49,7 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             var t=storedData.getNoSiteTimeStamp();
             Rest.one('init?nosite=1&timestamp='+t).get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
-                storedData.setInitData(data,t);
+                storedData.setInitData(data,t,'nosite');
                 storedData.setNoSiteTimeStamp(data.timestamp);
                 data.sites=undefined; //
                 if (data.filters) {
@@ -89,6 +89,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         },
         getSiteById: function (id) {
             return Rest.one('site', id).get();
+        },
+        getSitesByClientId: function (clientID) {
+            return Rest.all('client/' + clientID + '/sites').getList();
         },
         updateSite: function (siteID) {
             return Rest.one('site', siteID).get();
@@ -168,6 +171,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         },
         sendEmailPortalLink: function (rpt) {
             return Rest.all('sendPortalLink').post(rpt);
+        },
+        sendLoginInfo: function (userID) {
+            return Rest.all('user/'+userID+'/sendLogin').post({});
         },
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');
@@ -253,6 +259,13 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         removeSiteById: function (id) {
             return Rest.one('site', id).remove();
         },
+        //users
+        getUsers: function () {
+            return Rest.all('user').getList();
+        },
+        getUserRoles:function(){
+          return Rest.all('userroles').getList();
+        },
         // User / Site relationship
         userSite: {
             assign: function (siteId, user) {
@@ -291,6 +304,15 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
                     params.email += '*';
                 }
                 return Rest.all('user').getList(params);
+            },
+            create:function(param){
+                return Rest.all('site/multi/users').post(param);
+            },
+            getUserById: function (param) {
+                return Rest.one('user').get(param);
+            },
+            update:function(param,userID){
+                return Rest.all('user/'+userID).post(param);
             }
         },
 

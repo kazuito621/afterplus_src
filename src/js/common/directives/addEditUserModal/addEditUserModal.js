@@ -19,7 +19,7 @@ app.directive('addEditUserModal',
                 scope.newContact.isLoginDisabled=false;
                 scope.userRoles=[];
 
-                var init=function(){
+                var initVars=function(){
                     scope.newContact={};
                     scope.addedSites=[];
                     scope.selectedClient={};
@@ -30,7 +30,7 @@ app.directive('addEditUserModal',
                     scope.userRoles=[];
                 }
                 scope.openModal = function () {
-                    //init();
+                    initVars();
                     if(scope.userRoles.length==0){
                         Api.getUserRoles().then(function(userRoles){
                             scope.userRoles = angular.copy(userRoles);
@@ -40,6 +40,11 @@ app.directive('addEditUserModal',
                     if (angular.isDefined(attrs.sites)) {
                         scope.sites = scope.$eval(attrs.sites);
                     }
+
+                    if (angular.isDefined(attrs.users)) {
+                        scope.users = scope.$eval(attrs.users);
+                    }
+
                     if(scope.sites==undefined){ // in case site have been not provided.
                         Api.getSiteList().then(function (data) {
                             scope.sites=data;
@@ -55,7 +60,6 @@ app.directive('addEditUserModal',
                         };
                         Api.user.getUserById(param).then(function(data){
                             scope.newContact.email=data.email;
-                            //scope.newContact.role.roleCode=data.role;
                             scope.newContact.fName=data.fName;
                             scope.newContact.lName=data.lName;
                             scope.newContact.phone=data.phone;
@@ -68,8 +72,9 @@ app.directive('addEditUserModal',
                             var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
                             scope.newContact.role={};
                             scope.newContact.role = scope.userRoles[idx];
-
+                            //data.clientIDs = data.clientIDs.split(',');
                             getSiteNames(data.siteIDs);
+                            getClientNames(data.clientIDs);
                         });
                     }
                     modal.$promise.then(function () {
@@ -79,9 +84,7 @@ app.directive('addEditUserModal',
                     });
 
                 };
-                var getRoleIndex=function(){
-                   // for(var i=0;i<)
-                }
+
                 scope.closeModal = function () {
 
                     modal.hide();
@@ -110,12 +113,14 @@ app.directive('addEditUserModal',
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];
                     angular.forEach(scope.addedClients,function(item){
-                        user.clientIDs.push(item.client.clientID);
+                        user.clientIDs.push(item.client.userID);
                     });
-                    if(scope.newContact.isLoginDisabled) user.disabled=1;
-                    else user.disabled=0;
-                    if(scope.newContact.showStatInDash) user.showStatInDash=1;
-                    else user.showStatInDash=0;
+                    if(user.clientIDs.length==0) user.clientIDs.push(-1);
+                    if(user.siteIDs.length==0) user.siteIDs.push(-1);
+                    if(scope.newContact.isLoginDisabled) user.disabled='1';
+                    else user.disabled='0';
+                    if(user.role!='customer' && scope.newContact.showStatInDash) user.showStatInDash='1';
+                    else user.showStatInDash='0';
                    /*
                     POST /site/multi/users
                     JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer',
@@ -151,30 +156,50 @@ app.directive('addEditUserModal',
                             return;
                         }
                     }
-                    var siteNames=[];
-                    Api.getSitesByClientId(scope.selectedClient.userID).then(function(sites){
-                        angular.forEach(sites,function(item){
-                            siteNames.push({
-                                siteName:item.siteName
-                            });
-                        });
-
-                        scope.addedClients.push({
-                            client:scope.selectedClient,
-                            siteNames:siteNames
-                        });
-                        scope.selectedClient={};
-                        $('#newclientsProp').val('');
+                    scope.addedClients.push({
+                        client:scope.selectedClient,
                     });
+                    scope.selectedClient={};
+                    $('#newclientsProp').val('');
+
+                    //var siteNames=[];
+                    //Api.getSitesByClientId(scope.selectedClient.userID).then(function(sites){
+                    //    angular.forEach(sites,function(item){
+                    //        siteNames.push({
+                    //            siteName:item.siteName
+                    //        });
+                    //    });
+//
+                    //    scope.addedClients.push({
+                    //        client:scope.selectedClient,
+                    //        siteNames:siteNames
+                    //    });
+                    //    scope.selectedClient={};
+                    //    $('#newclientsProp').val('');
+                    //});
 
                 };
 
                 var getSiteNames = function(siteIDs){
+                    if(!siteIDs || siteIDs==[-1]) return;
                     siteIDs = siteIDs.split(',');
                     _.each(siteIDs,function(siteID){
                         var site = _.findObj(scope.initData.sites,'siteID',siteID);
                         scope.addedSites.push(site);
                     })
+                }
+
+                var getClientNames = function(clientIDs){
+                    if(!clientIDs || clientIDs==[-1]) return;
+                    clientIDs = clientIDs.split(',');
+                    _.each(clientIDs,function(id){
+                        scope.addedClients.push({
+                            client: _.findObj(scope.users,'userID',id)
+                            //siteNames:siteNames,
+                            //userID:id
+                        });
+
+                    });
                 }
 
                 scope.addProperty=function(event){

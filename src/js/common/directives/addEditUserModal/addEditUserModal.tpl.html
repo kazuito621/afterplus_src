@@ -26,7 +26,7 @@
                                     <select ng-model="newContact.role" ng-options="role.name for role in userRoles"  required>
                                         <option>{{role.name}}</option>
                                     </select> &nbsp;
-                                    <div class="row" style="margin: 5px 2px 10px 5px;" ng-if="user && user.role!='customer'">
+                                    <div class="row" style="margin: 5px 2px 10px 5px;" ng-show="user && newContact.role.roleCode!='customer'">
                                         <label class="col-sm-6" style="font-weight: bold;margin: 2px;">
                                             <input type="checkbox" ng-model="newContact.showStatInDash" ng-change="selectionChanged()"/> Show user in dashboard
                                         </label>
@@ -37,51 +37,54 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <label class="col-sm-5" style="font-weight: bold">Assigned properties</label>
-                                <br>
 
-                                <div class="btn-group">
-                                        <span ng-repeat="s in addedSites" class="btn btn-default hover-anchor"  bs-tooltip
-                                              title="{{s.siteName}}">
-                                            <span class="pull-right hover-action" >
-                                                 <a ng-click="removeFromAddedSiteList(s)"  href><i class="fa fa-times fa-fw"></i></a>
+                                <div ng-show="newContact.role.roleCode!='admin'">
+                                    <label class="col-sm-5" style="font-weight: bold">Assigned properties</label>
+                                    <br>
+                                    <div class="btn-group">
+                                            <span ng-repeat="s in addedSites" class="btn btn-default hover-anchor"  bs-tooltip
+                                                  title="{{s.siteName}}">
+                                                <span class="pull-right hover-action" >
+                                                     <a ng-click="removeFromAddedSiteList(s)"  href><i class="fa fa-times fa-fw"></i></a>
+                                                </span>
+                                                <span>{{s.siteName}}</span>
                                             </span>
-                                            <span>{{s.siteName}}</span>
-                                        </span>
-                                </div>
-                                <div class="row" style="margin: 5px 2px 10px 5px;">
-                                    <form ng-submit="addProperty($event);$viewValue=''">
-                                        <div class="col-sm-10">
-                                            <input type="text" required placeholder="Site name" style="width: 100%;" ng-model="newSite" id='newSiteName'
-                                               sites-auto-complete sites="sites" callback="siteSelect" bs-typeahead>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button ng-click="addProperty($event);$viewValue='';" type='button' class='btn btn-primary'>ADD</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <label class="col-sm-4" style="font-weight: bold">Assigned Clients</label>
-                                <br>
-                                <div class="btn-group">
-                                        <span ng-repeat="c in addedClients" class="btn btn-default hover-anchor"  bs-tooltip
-                                              title="{{getPropertyNames(c)}}">
-                                            <span class="pull-right hover-action" >
-                                                 <a ng-click="removeFromAddedClientList(c)"  href><i class="fa fa-times fa-fw"></i></a>
+                                    </div>
+                                    <div class="row" style="margin: 5px 2px 10px 5px;">
+                                        <form ng-submit="addProperty($event);$viewValue=''">
+                                            <div class="col-sm-10">
+                                                <input type="text" required placeholder="Site name" style="width: 100%;" ng-model="newSite" id='newSiteName'
+                                                   sites-auto-complete sites="sites" callback="siteSelect" bs-typeahead>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button ng-click="addProperty($event);$viewValue='';" type='button' class='btn btn-primary'>ADD</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <label class="col-sm-4" style="font-weight: bold">Assigned Clients</label>
+                                    <br>
+                                    <div class="btn-group">
+                                            <span ng-repeat="c in addedClients" class="btn btn-default hover-anchor"  bs-tooltip
+                                                  title="{{getPropertyNames(c)}}">
+                                                <span class="pull-right hover-action" >
+                                                     <a ng-click="removeFromAddedClientList(c)"  href><i class="fa fa-times fa-fw"></i></a>
+                                                </span>
+                                                <span>{{c.client.fName+' '+c.client.lName}}</span>
                                             </span>
-                                            <span>{{c.client.fName+c.client.lName}} ({{c.siteNames.length}} properties)</span>
-                                        </span>
+                                    </div>
+                                    <div class="row" style="margin: 5px 2px 10px 5px;">
+                                        <form ng-submit="addClientsProperty($event);newClient=''">
+                                            <div class="col-sm-10">
+                                            <input type="text" required placeholder="Client email id" style="width: 100%;" ng-model="newClient" id='newclientsProp'
+                                                   user-auto-complete="clientSelected" user-ignore="addedClients" bs-typeahead>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button ng-click="addClientsProperty($event);newClient='';" type='button' class='btn btn-primary'>ADD</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="row" style="margin: 5px 2px 10px 5px;">
-                                    <form ng-submit="addClientsProperty($event);newClient=''">
-                                        <div class="col-sm-10">
-                                        <input type="text" required placeholder="Client email id" style="width: 100%;" ng-model="newClient" id='newclientsProp'
-                                               user-auto-complete="clientSelected" user-ignore="addedClients" bs-typeahead>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button ng-click="addClientsProperty($event);newClient='';" type='button' class='btn btn-primary'>ADD</button>
-                                        </div>
-                                    </form>
-                                </div>
+
                                 <div class="row" style="margin: 5px 2px 10px 5px;" ng-style="newContact.isLoginDisabled==false?'':{'background-color':'red','color':'silver'}">
                                     <label class="col-sm-4" style="font-weight: bold;margin: 2px;">
                                         <input type="checkbox" ng-model="newContact.isLoginDisabled" ng-change="selectionChanged()"/> Login Disabled

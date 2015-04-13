@@ -61,14 +61,14 @@
             <tbody infinite-scroll="showMoreUsers()" infinite-scroll-distance="3">
             <tr ng-repeat="e in displayedUsers track by $index" class='hoverHotspot' id='item_{{e.reportID}}'>
                 <td  style="text-decoration:underline;cursor: pointer">
-                    <span ng-bind="e.email"  add-edit-user-modal="e" sites="sites" on-save="refreshSites"></span>
+                    <span ng-bind="e.email"  add-edit-user-modal="e" sites="sites" users="users" on-save="refreshSites"></span>
                     <a ng-if="e.role=='customer' && e.email!='No Results'" data-backdrop='static'
                        data-keyboard=true
                        bs-modal
                        data-template="js/trees/emailReport.tpl.html"
                        ng-click="sendPortalLink(e)"
-                            ><i  bs-tooltip title="Send user a portal login link" class="fa fa-gear"></i></a>
-                    <a ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information"><i class="fa fa-gear"></i></a>
+                            ><i  bs-tooltip title="Send user a portal login link" class="fa fa-envelope"></i></a>
+                    <a ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information"><i class="fa fa-envelope"></i></a>
                 </td>
                <!--<td ng-show="e.fName && e.lName" ng-bind="e.fName+' '+e.lName"></td>-->
                 <td  ng-bind="e.name"></td>

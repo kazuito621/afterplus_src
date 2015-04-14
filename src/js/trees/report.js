@@ -392,11 +392,9 @@ var ReportCtrl = app.controller(
                         s.emailRpt.disableSendBtn = false;
                         s.emailRpt.sendBtnText = 'Send';
 
-                        if (msg === 1) {
+                        if (msg.links.length >= 1) {
                             hideFn();
-                            msg = 'Sent successfully';
                         }
-                        s.setAlert(msg, {type: 'd'});
                     });
 				$timeout(function(){ updateEmailLogs(); },2000);
 				$timeout(function(){ updateEmailLogs(); },4000);

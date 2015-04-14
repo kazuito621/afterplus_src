@@ -42,7 +42,7 @@ var UserCtrl = app.controller('UserCtrl',
                             d.assignment='assigned';
                         }
                     });
-                    users = userFiltered = data;
+                    s.users = users = userFiltered = data;
                     self.sh = SortHelper.sh(users, '', columnMap, colSortOrder);
                     s.displayedUsers = userFiltered.slice(0, 49);
                     cb();

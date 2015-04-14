@@ -30,6 +30,8 @@ app.directive('bulkTreeEditor',
                     scope.contiueToEdit=false;
                 }
                 scope.openModal = function () {
+                    initVars();
+
                     if(scope.siteID) scope.mode='site';
                     else if(scope.reportID) scope.mode='report';
 
@@ -95,14 +97,16 @@ app.directive('bulkTreeEditor',
                         //});
                         //scope.years.unshift('All');
 
-                    if (!modal) {
+                    //if (!modal) {
                         modal = $modal({scope: scope, template: '/js/common/directives/bulkTreeEditor/bulkTreeEditor.tpl.html', show: false});
-                    }
+                    //}
 
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
                         $(document).keyup(hideOnEscape);
+                        $("#bulkEditorModal").css("overflow-y", "auto"); // After save, we manually trigger the modal again,
+                                                                        // that's why modal-open css is not applying.
                     });
                 };
 
@@ -275,7 +279,7 @@ app.directive('bulkTreeEditor',
                         if( scope.savedReportCheck==true){
                             return $modal({ scope: scope, template: 'js/common/directives/templates/OpenEditConfirmation.tpl.html', show: true });
                         }
-                        initVars();
+
                         scope.openModal();
                     });
                 };

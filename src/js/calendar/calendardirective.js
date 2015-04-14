@@ -10,7 +10,7 @@
             editablefullcalendar: "@",
             dropablefullcalendar: "@",
             eventfullcalendar: "@",
-          
+
 
         },
         controller: function ($rootScope, $scope, $element, $attrs, Api, $location) {
@@ -19,7 +19,7 @@
             $scope.UnscheduledJobs = [];
             $scope.ScheduledJobs = [];
             //$scope.SearchScheduledJobs = [];
-
+            $scope.clickedEvent = {};
 
 
             Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
@@ -29,7 +29,8 @@
                             {
                                 "title": field.name,
                                 "start": "2015-04-02",
-                                "price": "," + field.total_price
+                                "price": "," + field.total_price,
+                                reportId: field.entityID
 
                             });
 
@@ -37,15 +38,32 @@
                     if (field.status == "completed") {
                         $scope.UnscheduledJobs.push(
                             {
-                                "title": field.name.trim()?field.name.trim() : "Nil",
+                                "title": field.name.trim() ? field.name.trim() : "Nil",
                                 "start": "2015-03-02",
-                                "price": "," + field.total_price
-
+                                "price": "," + field.total_price,
+                                reportId: field.entityID
                             });
+
                     }
 
+
                 });
-                
+
+                $scope.getEventInfo = function (eventName)
+                {
+                    var selectedEvent = null;
+                    for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++)
+                    {
+                        var event = $scope.UnscheduledJobs[index];
+                        if (event.title.trim() == eventName.trim())
+                        {
+                            selectedEvent = event;
+                            break;
+                        }
+                    }
+                    return selectedEvent;
+                }
+
                 var bindexternalevents = setTimeout(function () {
                     var externalevents = $(".fc-event");
                     externalevents.each(function () {
@@ -66,91 +84,95 @@
                     });
                 }, 30);
 
-                
-               
-                    var elm = $element.find("#calendar");
-                    elm.fullCalendar({
-                        header: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'month,agendaWeek,agendaDay',
-                        },
-                        //defaultDate: '2015-02-12',
-                        dropAccept: '.drop-accpted',
-                        editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
-                        droppable: $scope.dropablefullcalendar,
-                        eventLimit: $scope.eventfullcalendar,
-                        startEditable: true,
-                        events: $scope.ScheduledJobs,
-                        select: function (start, end) {
-
-                            var title = prompt('Event Title:');
-                            var eventData;
-                            if (title) {
-                                eventData = {
-                                    title: title,
-                                    start: start,
-                                    end: end
-                                };
-                                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-                            }
-                            $('#calendar').fullCalendar('unselect');
-                        },
-                        drop: function (el, eventStart, ev, ui) {
-
-                            $('.fc-title br').remove();
-                            console.log(el._i);
-                            console.log(el._d);
-                            console.log(ev.helper[0].textContent);
-                            if ($('#drop-remove').is(':checked')) {
-                                // if so, remove the element from the "Draggable Events" list
-                                $(this).remove();
-                            }
 
 
-                        },
-                        eventDrop: function (event, delta, revertFunc) {
-                            console.log(event.start.format());
-                            console.log(event.title);
-                            console.log(event.start._i);
-                            console.log(event.start._d);
+                var elm = $element.find("#calendar");
+                elm.fullCalendar({
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay',
+                    },
+                    //defaultDate: '2015-02-12',
+                    dropAccept: '.drop-accpted',
+                    editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
+                    droppable: $scope.dropablefullcalendar,
+                    eventLimit: $scope.eventfullcalendar,
+                    startEditable: true,
+                    events: $scope.ScheduledJobs,
+                    select: function (start, end) {
 
+                        var title = prompt('Event Title:');
+                        var eventData;
+                        if (title) {
+                            eventData = {
+                                title: title,
+                                start: start,
+                                end: end
+                            };
+                            $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                        }
+                        $('#calendar').fullCalendar('unselect');
+                    },
+                    //drop: function (el, eventStart, ev, ui) {
 
-                        },
-                        updateEvent: function (event) {
-                            console.log(event);
-                        },
-                        eventClick: function (data, jsEvent, view) {
-                            $scope.jobdescription = data.price;
-                            $scope.$apply();
-                            $('#modalTitle').html("ReportName:" + data.title);
-                            $('#modalBody').html("Price:" + data.price);
-                            $('#fullCalModal').modal();
-                            //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
-                        },
-                        eventRender: function (event, element, view) {
-                            $('.fc-title br').remove();
+                    //    $('.fc-title br').remove();
+                       
+                    //    console.log(ev.helper[0].textContent);
+                    //    if ($('#drop-remove').is(':checked')) {
+                    //        // if so, remove the element from the "Draggable Events" list
+                    //        $(this).remove();
+                    //    }
+                        
 
-                            if (event.title === "" || event.title === null) {
-                                var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
-                                element.css('background-color', '#77DD77');
-                                element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" title="No foreman assigned to this job"></i></a>');
-                            }
-                            else {
-                                element.css('background-color', '#FFB347')
-                            }
-                        },
-                        eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
-                            console.log(event);
-                            var html = $(view.el[0]).find(".fc-title").html();
-                            html = html.replace("<br/>", "");
-                            html = html.replace("<br>", "");
-                            $(".fc-title").html(html);
+                    //},
+                    
+                    eventReceive: function (event) {
+                        var ev = $scope.getEventInfo(event.title);
+                        console.log(event.start);
+                        
+                        Api.ScheduleJob(ev.reportId, {
+                            job_start: event.start._d,
+                            job_end: event.start._d
+                        }).then(function () {
+                            //$scope.setAlert('Loading Trees', { busy: true, time: "false" });
+                        });
 
+                    },
+                    updateEvent: function (event) {
+                        console.log(event);
+                    },
+                    eventClick: function (data, jsEvent, view) {
+                        $scope.jobdescription = data.price;
+                        $scope.$apply();
+                        $scope.clickedEvent = data;
+                        $('#modalTitle').html("ReportName:" + data.title);
+                        $('#modalBody').html("Price:" + data.price);
+                        $('#fullCalModal').modal();
+                        //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
+                    },
+                    eventRender: function (event, element, view) {
+                        $('.fc-title br').remove();
 
-                        },
-                    });
-               
+                        if (event.title === "" || event.title === null) {
+                            var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
+                            element.css('background-color', '#77DD77');
+                            element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" title="No foreman assigned to this job"></i></a>');
+                        }
+                        else {
+                            element.css('background-color', '#FFB347')
+                        }
+                    },
+                    eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
+                        console.log(event);
+                        var html = $(view.el[0]).find(".fc-title").html();
+                        html = html.replace("<br/>", "");
+                        html = html.replace("<br>", "");
+                        $(".fc-title").html(html);
+
+                    },
+                });
+
             });
 
             $scope.onMouseHoverJob = function () {
@@ -227,6 +249,12 @@
             };
 
             $scope.UnscheduledJob = function () {
+                console.log($scope.clickedEvent);
+                Api.UnscheduledJob($scope.clickedEvent.reportId, {
+                    
+                }).then(function () {
+
+                });
             };
 
 

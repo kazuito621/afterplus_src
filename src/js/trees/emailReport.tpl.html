@@ -29,7 +29,7 @@
                         <tr ng-if="type == 'sendReport' || type == 'sendPortalLink'">
                             <td>To:</td>
                             <td>
-                                <br><tags-input ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
+                                <br><tags-input ng-style="(mode=='addEditUsers' && type == 'sendPortalLink')?{'pointer-events':'none'}:''" ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
                             </td>
                         </tr>
                         <!-- Comment out for now, because the backend isnt ready for this... see branch tim/22 for #wip

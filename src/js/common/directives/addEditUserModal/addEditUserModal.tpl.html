@@ -74,13 +74,18 @@
                                     </div>
                                     <div class="row" style="margin: 5px 2px 10px 5px;">
                                         <form ng-submit="addClientsProperty($event);newClient=''">
-                                            <div class="col-sm-10">
+                                            <!--<div class="col-sm-10">
                                             <input type="text" required placeholder="Client email id" style="width: 100%;" ng-model="newClient" id='newclientsProp'
                                                    user-auto-complete="clientSelected" user-ignore="addedClients" bs-typeahead>
                                             </div>
-                                            <div class="col-sm-2">
-                                                <button ng-click="addClientsProperty($event);newClient='';" type='button' class='btn btn-primary'>ADD</button>
+                                            -->
+                                            <div class="col-sm-5">
+                                                <select  ng-model="selectedClient" ng-options="user.email for user in users"></select>
                                             </div>
+                                            <div class="col-sm-2 pull-right">
+                                                <button ng-click="addClientsProperty()" type='button' class='btn btn-primary'>ADD</button>
+                                            </div>
+
                                         </form>
                                     </div>
                                 </div>
@@ -94,8 +99,8 @@
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
-                        <button type="button" class="btn btn-default" ng-click="$parent.closeModal();">CLOSE</button>
                         <button type="button" class="btn btn-default" ng-click="$parent.SaveUser();">SAVE</button>
+                        <button type="button" class="btn btn-default" ng-click="$parent.closeModal();">CLOSE</button>
                     </div>
                 </div>
             </div>

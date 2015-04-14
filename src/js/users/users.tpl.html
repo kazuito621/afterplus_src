@@ -3,11 +3,14 @@
             ng:cloak
             data-placement="center"
             class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
-            style="max-width: 100%; width: auto;"
+            style="max-width: 100%; width: auto;font-size: 23px;"
             add-edit-user-modal=""
             on-save="refreshSites"
             sites="sites"
             data-animation="am-fade-and-scale">New user/customer</button>
+    <br>
+    <br>
+    <br>
     <br>
     <div>
         <div class='pull-right topMargin5'>
@@ -67,8 +70,10 @@
                        bs-modal
                        data-template="js/trees/emailReport.tpl.html"
                        ng-click="sendPortalLink(e)"
-                            ><i  bs-tooltip title="Send user a portal login link" class="fa fa-envelope"></i></a>
-                    <a ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information"><i class="fa fa-envelope"></i></a>
+                            ><i  bs-tooltip title="Send user a portal login link" class="fa fa-envelope" style="margin-left: 6px;"></i></a>
+                    <a ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information">
+                        <i class="fa fa-envelope" style="margin-left: 6px;"></i>
+                    </a>
                 </td>
                <!--<td ng-show="e.fName && e.lName" ng-bind="e.fName+' '+e.lName"></td>-->
                 <td  ng-bind="e.name"></td>

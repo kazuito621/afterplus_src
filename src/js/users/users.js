@@ -75,6 +75,7 @@ var UserCtrl = app.controller('UserCtrl',
 
             s.sendPortalLink=function(user){
                 s.emailRpt={};
+                s.mode='addEditUsers';
                 s.type = 'sendPortalLink';
                 s.modalTitle = "Email Portal Link";
                 s.emailRpt.contactEmails = [];

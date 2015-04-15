@@ -90,10 +90,10 @@ app.directive('addEditUserModal',
                     modal.hide();
                 };
 
-                scope.clientSelected = function (user) {
-                    scope.selectedClient=user;
-
-                };
+                //scope.clientSelected = function (user) {
+                //    scope.selectedClient=user;
+//
+                //};
                 scope.siteSelect = function (user) {
                     scope.selectedProperty=user;
 
@@ -148,36 +148,19 @@ app.directive('addEditUserModal',
                 };//
 
                 scope.addClientsProperty = function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    if(scope.selectedClient.userID==undefined) return;
-                    for(var i=0;i<scope.addedClients.length;i++){
-                        if(scope.addedClients[i].client.userID==scope.selectedClient.userID){
+                   //event.preventDefault();
+                   //event.stopPropagation();
+                    if(this.selectedClient.userID==undefined) return;
+                    for(var i=0;i<this.addedClients.length;i++){
+                        if(this.addedClients[i].client.userID==this.selectedClient.userID){
                             return;
                         }
                     }
-                    scope.addedClients.push({
-                        client:scope.selectedClient,
+                    this.addedClients.push({
+                        client:this.selectedClient
                     });
-                    scope.selectedClient={};
-                    $('#newclientsProp').val('');
-
-                    //var siteNames=[];
-                    //Api.getSitesByClientId(scope.selectedClient.userID).then(function(sites){
-                    //    angular.forEach(sites,function(item){
-                    //        siteNames.push({
-                    //            siteName:item.siteName
-                    //        });
-                    //    });
-//
-                    //    scope.addedClients.push({
-                    //        client:scope.selectedClient,
-                    //        siteNames:siteNames
-                    //    });
-                    //    scope.selectedClient={};
-                    //    $('#newclientsProp').val('');
-                    //});
-
+                    this.selectedClient={};
+                   // $('#newclientsProp').val('');
                 };
 
                 var getSiteNames = function(siteIDs){

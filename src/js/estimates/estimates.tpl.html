@@ -110,7 +110,7 @@
                     <td>${{e.total_price|formatPrice}}</td>
                     <td>
 						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
-								ng-model="e.status" ng-change="setReportStatus(e,this)"
+								ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
 								placeholder="{{e.status}}"
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">

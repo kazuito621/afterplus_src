@@ -59,6 +59,7 @@ app.directive('addEditUserModal',
                             id:scope.user.userID
                         };
                         Api.user.getUserById(param).then(function(data){
+									scope.newContact.userID=data.userID;
                             scope.newContact.email=data.email;
                             scope.newContact.fName=data.fName;
                             scope.newContact.lName=data.lName;

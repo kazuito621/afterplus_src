@@ -52,11 +52,17 @@
                                     </div>
                                     <div class="row" style="margin: 5px 2px 10px 5px;">
                                         <form ng-submit="addProperty($event);$viewValue=''">
-                                            <div class="col-sm-10">
-                                                <input type="text" required placeholder="Site name" style="width: 100%;" ng-model="newSite" id='newSiteName'
-                                                   sites-auto-complete sites="sites" callback="siteSelect" bs-typeahead>
+                                            <!--<div class="col-sm-10">
+                                                &lt;!&ndash;<input type="text" required placeholder="Site name" style="width: 100%;" ng-model="newSite" id='newSiteName'
+                                                   sites-auto-complete sites="sites" callback="siteSelect" bs-typeahead>&ndash;&gt;
+                                                <div class="col-sm-5">
+                                                    <select  ng-model="newSite" ng-options="site.siteName for site in sites"></select>
+                                                </div>
+                                            </div>-->
+                                            <div class="col-sm-5">
+                                                <select  ng-model="selectedProperty" ng-options="site.siteName for site in sites"></select>
                                             </div>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 pull-right">
                                                 <button ng-click="addProperty($event);$viewValue='';" type='button' class='btn btn-primary'>ADD</button>
                                             </div>
                                         </form>
@@ -69,7 +75,7 @@
                                                 <span class="pull-right hover-action" >
                                                      <a ng-click="removeFromAddedClientList(c)"  href><i class="fa fa-times fa-fw"></i></a>
                                                 </span>
-                                                <span>{{c.client.fName+' '+c.client.lName}}</span>
+                                                <span>{{c.client.clientName}}</span>
                                             </span>
                                     </div>
                                     <div class="row" style="margin: 5px 2px 10px 5px;">
@@ -80,7 +86,7 @@
                                             </div>
                                             -->
                                             <div class="col-sm-5">
-                                                <select  ng-model="selectedClient" ng-options="user.email for user in users"></select>
+                                                <select  ng-model="selectedClient" ng-options="client.clientName for client in clients"></select>
                                             </div>
                                             <div class="col-sm-2 pull-right">
                                                 <button ng-click="addClientsProperty()" type='button' class='btn btn-primary'>ADD</button>

@@ -19,6 +19,7 @@
 		<td>
             <a href ng-if="auth.isAtleast('inventory')" ng-click='setStatus(true)' bs-tooltip title='Add Tree to Map'><i class="fa {{editModeCss}} white _size6"></i></a>
 				<i class="fa fa-plus" style='visibility:hidden;'></i><!-- if this isnt here, the above rollover doesnt work right... wtf -->
+            <a href ng-if="auth.isAtleast('inventory')" bulk-tree-editor site-id="siteID" treatments="treatments" bs-tooltip title='Bulkedit site'><i class="fa fa-gear white _size6"></i></a>
 		</td>
     </tr>
     </thead>

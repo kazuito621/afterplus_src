@@ -1,6 +1,6 @@
 var EstimatesListCtrl = app.controller('EstimatesListCtrl', 
-['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
-function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
+['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper','storedData',
+function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper,storedData) {
     'use strict';
     var s = window.ecs = $scope;
 	var myStateID='estimates',
@@ -70,7 +70,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     var init = function (cb) {
         var search = $location.search();
         cb = cb || angular.noop;
-        Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
+        Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
+            data=storedData.setEstimateData(data);
 			var isCust=Auth.is('customer');
 			_.each(data, function(d){
 				d.origStatus=d.status;
@@ -102,22 +103,16 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		var itemID=s.activePopover.itemID;
         Api.removeEstimateById(itemID).then(function () {
             if(false){ //TODO  if msg don't  indicates success,
-                s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
+                 s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
             }
-            else {
-                if(idx>=0) {
-                    estimates.splice(idx, 1);
-                }
-                s.setAlert('Property deleted successfully.',{type:'ok',time:5});
-            }
+             else {
+                 s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+             }
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});
         });
-
-        var idx=_.findObj(estimates, 'reportID', itemID, true);
-        if(idx>=0) {
-            s.displayedEstimates.splice(idx, 1);
-        }
+        var obj=_.findObj(estimates, 'reportID', itemID);
+        obj.delete=1;
         s.activePopover.elem.hide();
         delete s.activePopover.itemID;
     };
@@ -150,36 +145,75 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         var date=new Date(data);
         if(date.getDate().toString()=='NaN') return 'Enter a valid datetime'
     }
-	s.setReportStatus=function(rpt){
+
+
+	// do confirmation box if needed
+	s.setReportStatus=function(rpt, prev){
+		rpt.prevStatus=prev;
+		var st=rpt.status;
+		if(
+				('completed'==st && 'invoiced'!=prev)
+			|| ('paid'==st)
+		){
+            if( !confirm('Change "'+rpt.name+'" to '+st.toUpperCase()+"?\n(THIS CANNOT BE UNDONE)") ){ 
+					rpt.status=prev;
+					return;
+				}
+		}
+
+		_setReportStatus(rpt);		
+	}
+
+	// actually change the status
+	var _setReportStatus=function(rpt){
 		// todo -- we need a way for calls like this to know if a api calle failed.
 		// currently, both ok and fail, still calls the then()
 		Api.setReportStatus(rpt.reportID, rpt.status).then(function(d){
-			if(d=='Status updated'){
-				d.origStatus=d.status;
-				s.setAlert(d);
-			}else{
-				rpt.status=rpt.origStatus;
+			s.setAlert(d);
+			if(d!='Status updated' && rpt.prevStatus){
+				rpt.status=rpt.prevStatus;
 			}
 		});
 	}
 
 	s.data = {
-		// determine which statuses to show based on current status
-		// @param s STRING - currennt status ID
-		statuses:function(s){
-			var o= [{id:'draft', txt:'DRAFT',selectable:true}, 
-					{id:'sent', txt:'SENT',selectable:false}, 
-					{id:'approved', txt:'APPROVED',selectable:true}, 
-					{id:'completed', txt:'COMPLETED',selectable:true}, 
-					{id:'paid', txt:'PAID',selectable:true}]
-			if(s=='paid') return o.splice(4,1);			// if paid, only show COMPLETED and PAID
-			else if(s=='sent' || s=='approved') return o.splice(1,3);		// sent = show SENT, APPROVED, COMPLETED
-			else o.splice(1,1);							// if not sent, get rid of SENT
 
-			if(s=='draft') o.splice(3);					// DRAFT, APPR, COMPL
-			else if(s=='completed') return o.splice(2,2);		// COMPL,PAID
+		/** 
+		 * Determine which status menu is available, based on what the current status is
+		 * @param s STRING - currennt status ID
+		 * @return ARRAY
+		 */
+		statuses:function(s){
+			var o= [{id:'draft', txt:'DRAFT',selectable:true},
+					{id:'sent', txt:'SENT',selectable:false},
+					{id:'approved', txt:'APPROVED',selectable:true},
+					{id:'scheduled', txt:'SCHEDULED',selectable:true},
+					{id:'completed', txt:'COMPLETED',selectable:true},
+					{id:'invoiced', txt:'INVOICED',selectable:true},
+					{id:'paid', txt:'PAID',selectable:true}]
+
+			switch (s){
+				case 'draft':	// show DRAFT, APPR, COMPL
+					return [o[0], o[2]]
+
+				case 'sent':
+				case 'approved':	// show SENT, APPROVED, COMPLETED
+					return [o[1], o[2], o[4]];
+
+				case 'scheduled': // show SCHEDULED, COMPLETED
+					return o.splice(3,2);		
+		
+				case 'completed': //show COMPL, INV, PAID
+					return o.splice(4,3);		
+
+				case 'invoiced':	//show COMPL, INV, PAID
+					return o.splice(4,3);
+
+				case 'paid': return o.splice(6,1); // NONE
+			}
 			return o;
 		}
+
 		,filterText: ''
 		,getCount: function () {
 			if (estFiltered && estFiltered.length) {
@@ -196,7 +230,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             {viewValue:'Updated',value:'tstamp_updated'},
             {viewValue:'Sent',value:'tstamp_sent'},
             {viewValue:'Approved',value:'tstamp_approved'},
+            {viewValue:'Scheduled',value:'tstamp_scheduled'},
             {viewValue:'Completed',value:'tstamp_completed'},
+            {viewValue:'Invoiced',value:'tstamp_invoiced'},
             {viewValue:'Paid',value:'tstamp_paid'}
         ]
 	};
@@ -268,6 +304,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         s.data.filterTextEntry = '';
 
         applyFilter();
+        storedData.setEstimateTimeStamp(null);
+        init();
     };
 
     s.isEstimateSelected = function (id) {

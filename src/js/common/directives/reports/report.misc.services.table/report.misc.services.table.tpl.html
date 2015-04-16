@@ -23,8 +23,14 @@
                 <span ng-if='!auth.isAtleast("inventory")'>{{item.quantity}}</span>
             </td>
             <td data-title="service_price" class="text-right">
-                <a href editable-text='item.price' ng-if='auth.isAtleast("inventory")'>${{item.price}}</a>
-                <span ng-if='!auth.isAtleast("inventory")'>${{item.price}}</span>
+                <a href editable-text='item.price' ng-if='auth.isAtleast("inventory")'>
+                    <span ng-show="(item.price).indexOf('%')==-1">$</span>
+                    {{item.price}}
+                </a>
+                <span ng-if='!auth.isAtleast("inventory")'>
+                    <span ng-show="(item.price).indexOf('%')==-1">$</span>
+                    {{item.price}}
+                </span>
             </td>
             <td ng-if="data.mode()=='trees'">
                 <div ng-if="auth.isAtleast('inventory')">
@@ -36,16 +42,16 @@
 
         <tr ng-if="data.mode()=='trees'">
             <td>
-                <textarea ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'></textarea>
+                <textarea tabindex=1 ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'></textarea>
             </td>
             <td>
 									<span>
-										x&nbsp;<input type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
+										x&nbsp;<input tabindex=2 type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
 									</span>
             </td>
             <td style="padding-left:0px;padding-right:0px"  class="text-right">
 									<span>
-										$&nbsp;<input type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
+										$&nbsp;<input tabindex=3 type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
 									</span>
             </td>
             <td class="text-right">

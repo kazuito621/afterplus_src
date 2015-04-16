@@ -227,7 +227,7 @@ app.directive('siteUsersEditModal',
 	        }
 
 	        var hideOnEscape = function (e) {
-	            if (e.keyCode === 27) scope.hide();
+	            if (e.keyCode === 27) modal.hide();
 	        };
 
 	        var init = function () {

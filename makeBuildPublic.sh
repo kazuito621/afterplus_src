@@ -3,18 +3,18 @@
 
 PUBDIR=public
 DISTDIR=dist
+[ "$1" == "" ] && NEXTBUILDDIR="dist" || NEXTBUILDDIR=$1
 
 
-if [ "$1" == "" ] || [ ! -e $1 ];then
+if [ ! -e $NEXTBUILDDIR ];then
 	ME=`basename $0`
 	[ ! -e $1 ] && echo "Directory does not exist";
 	echo "Usage: $ME path/to/build-directory"
-	echo "Usage: #ME dist   -- will copy dist over to build-<timestamp> and make it public"
+	echo "Usage: $ME dist   -- will copy dist over to build-<timestamp> and make it public"
 	echo "   ie. $ME builds/build-12345"
 	exit 255
 fi
 
-NEXTBUILDDIR=$1		## relative dir of next build
 
 ## if it's "dist" then copy it over
 if [ "$NEXTBUILDDIR" == "$DISTDIR" ];then

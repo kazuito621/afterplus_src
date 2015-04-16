@@ -6,7 +6,7 @@
     mapsDefer = $q.defer();
 
     //Callback function - resolving promise after maps successfully loaded
-    $window.googleMapsInitialized = function () {        
+    window.googleMapsInitialized = function () {        
         mapsDefer.resolve();
     };
     //mapsDefer.resolve; // removed ()

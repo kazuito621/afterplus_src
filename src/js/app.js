@@ -61,7 +61,13 @@ app.config(['$routeProvider', '$locationProvider',
                 templateUrl: "js/trees/trees.tpl.html"
                 ,auth:true, reloadOnSearch:false
                 ,resolve: {
-                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                    deps:['Api','$route', function(Api,$route){
+                        var token=$route.current.params.token;
+                        if(token)
+                            return Auth.signInCustToken(token, true);
+
+                        return Api.getPromise();
+                    }]
                 }})
             //.when("/tree_edit/:treeID", {
             //    templateUrl: "js/trees/edit.tpl.html"
@@ -81,17 +87,29 @@ app.config(['$routeProvider', '$locationProvider',
                 ,resolve: {
                     deps:['Api', function(Api){  return Api.getPromise(); }]
                 }})
+            .when("/clients", {
+                templateUrl: "js/clients/clients.tpl.html"
+                ,auth:true, reloadOnSearch:false
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
+            .when("/users", {
+                templateUrl: "js/users/users.tpl.html"
+                ,auth:true, reloadOnSearch:false
+                ,resolve: {
+                    deps:['Api', function(Api){  return Api.getPromise(); }]
+                }})
             .when("/calendar", {
                 templateUrl: "js/calendar/calendar.html"
                 , auth: false, reloadOnSearch: false
                 , resolve: {
                     deps: ['Api', function (Api) { return Api.getPromise(); }]
                 }
-            })
+             })
             .otherwise({redirectTo: "/signin"});
 	}])
-	.run(['Restangular', '$rootScope',
-		function (RestProvider, rs) {
+	.run(['Restangular', '$rootScope','storedData',
+		function (RestProvider, rs, storedData) {
 			RestProvider
 				.setBaseUrl(cfg.apiBaseUrl())
 				//.setDefaultRequestParams({ apiKey: 'xx' })
@@ -112,7 +130,8 @@ app.config(['$routeProvider', '$locationProvider',
 						//if(!msg) msg='Error talking to the server';
 						type='danger';
 					}
-					if(msg) rs.$broadcast('alert', {msg:msg, type:type}); 
+					if(msg) rs.$broadcast('alert', {msg:msg, type:type});
+                    storedData.timeStampValInRespone=res.timestamp;
 					return res.data;
 				})
 				.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
@@ -143,7 +162,7 @@ app.config(['$routeProvider', '$locationProvider',
 
 			//var url;
 			//for (var i in $route.routes) {
-			//    if (url = $route.routes[i].templateUrl) {
+			//    if (url = $route.routes[i].templateUrl) {ngCookies
 			//        $http.get(url, { cache: $templateCache });
 			//    }
 			//}

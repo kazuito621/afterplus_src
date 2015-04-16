@@ -4,8 +4,8 @@
     A service is global - so Tree Controller and add items to the report,
     and Report Controller can build a UI based on the data
 **/
-app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '$http',
-function (Rest, $rootScope, $q, $location, storage, $http) {
+app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage','$http','storedData',
+function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
     'use strict';
     window.Api = this;
     var initData = {};
@@ -26,7 +26,10 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         }
         else {
             //sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
-            Rest.one('init?siteonly=1').get().then(function (data) {
+            var t=storedData.getSiteOnlyTimeStamp();
+            Rest.one('init?siteonly=1&timestamp='+t).get().then(function (data) {
+                storedData.setInitData(data,t,'siteOnly');
+                storedData.setSiteOnlyTimeStamp(data.timestamp);
                 initData.sites = data;
                 //$rootScope.initData.sites = data;
                 deferred.resolve(data);
@@ -43,8 +46,12 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
             deferred.resolve();
         } else {
             sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
-            Rest.one('init?nosite=1').get().then(function (data) {
+            var t=storedData.getNoSiteTimeStamp();
+            Rest.one('init?nosite=1&timestamp='+t).get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
+                storedData.setInitData(data,t,'nosite');
+                storedData.setNoSiteTimeStamp(data.timestamp);
+                data.sites=undefined; //
                 if (data.filters) {
                     data.filters.hazards = {
                         'building': { selected: false }, 'caDamage': { selected: false },
@@ -71,6 +78,9 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         getInitData: function () { return initData; },
         // returns a promise... for .then() when refresh is done
         refreshInitData: function () { return init(true); },
+        getEmailPortalLink:function(){ //GET /template/emailPortalLink
+            return  Rest.one('template/emailPortalLink').get();
+        },
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
         },
@@ -80,6 +90,9 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         getSiteById: function (id) {
             return Rest.one('site', id).get();
         },
+        getSitesByClientId: function (clientID) {
+            return Rest.all('client/' + clientID + '/sites').getList();
+        },
         updateSite: function (siteID) {
             return Rest.one('site', siteID).get();
         },
@@ -88,6 +101,9 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         },
         getTree: function (treeID) {
             return Rest.one('trees', treeID).get();
+        },
+        getTreatmentPrice: function () {
+            return Rest.all('treatmentprice').getList();
         },
         getSiteUsers: function (siteID, roles) {
             var params = {};
@@ -116,6 +132,25 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         getEmailTemplate: function (opt) {
             return Rest.one('template/emailReport').get(opt);
         },
+        getBulkEditInfo:function(opt){
+            return Rest.one('bulkedit').get(opt);
+        },
+        getBulkItemSummary:function(obj){
+            var type;
+            var id;
+            if(obj.reportID){
+                id=obj.reportID;
+                type='estimate'
+            }
+            else if(obj.siteID){
+                id=obj.siteID;
+                type='site';
+            }
+            return Rest.one(type+'/'+id+'/bulk_item_summary').get();
+        },
+        modifyBulkEditInfo : function(param,obj){
+            return Rest.all('bulkedit').post(obj,param);
+        },
         saveReport: function (reportObj) {
             // if its a Restangular obj, then post it...
             if (reportObj.post && typeof reportObj.post === 'function') {
@@ -133,6 +168,12 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         },
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
+        },
+        sendEmailPortalLink: function (rpt) {
+            return Rest.all('sendPortalLink').post(rpt);
+        },
+        sendLoginInfo: function (userID) {
+            return Rest.all('user/'+userID+'/sendLogin').post({});
         },
         removeEstimateById: function (id) {
             return Rest.one('estimate', id).post('delete');
@@ -189,6 +230,7 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         },
         signOut: function (Auth) {
             Auth.data({});
+            storedData.removeAllStoredData();
             Rest.one('signout').get();
             // TODO: clear init data some how maybe with an event onSignOut
             $location.url('/signin');
@@ -216,6 +258,13 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
         },
         removeSiteById: function (id) {
             return Rest.one('site', id).remove();
+        },
+        //users
+        getUsers: function () {
+            return Rest.all('user').getList();
+        },
+        getUserRoles:function(){
+          return Rest.all('userroles').getList();
         },
         // User / Site relationship
         userSite: {
@@ -255,6 +304,15 @@ function (Rest, $rootScope, $q, $location, storage, $http) {
                     params.email += '*';
                 }
                 return Rest.all('user').getList(params);
+            },
+            create:function(param){
+                return Rest.all('site/multi/users').post(param);
+            },
+            getUserById: function (param) {
+                return Rest.one('user').get(param);
+            },
+            update:function(param,userID){
+                return Rest.all('user/'+userID).post(param);
             }
         },
 

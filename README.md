@@ -30,8 +30,8 @@ After cloning this repository onto your local machine:
 Goto browser: http://localhost:9000
 
 Use this test account: 
-   user: timhon@gmail.com
-   pass: asdf
+   user: admin@arborplus.com
+   pass: pass
 
 
 Developer's Guide

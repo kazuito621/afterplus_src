@@ -121,8 +121,9 @@ var ReportCtrl = app.controller(
 				if(!s.report.status || s.report.status=='sent' || s.report.status=='draft' || s.report.status=='change_requested') s.report.actionButton=1;
 				else s.report.actionButton=0;
 			}
-            var discard=false;
-            s.$on('$locationChangeStart', function (event, next, current) {
+
+
+            s.isChanged=function(){
                 if(
                     s.data.mode()!=="trees"
                     || !Auth.isAtleast('inventory')
@@ -130,8 +131,13 @@ var ReportCtrl = app.controller(
                     || discard == true
                     || !((RS.reportBackup=='new') ||  ReportService.isChanged(RS.reportBackup, s.report))
                 ){
-                    return;
+                    return false;
                 }
+                return true;
+            }
+            var discard=false;
+            s.$on('$locationChangeStart', function (event, next, current) {
+                if(s.isChanged()==false) return;
 
                 $location.url($location.url(next).hash());
                 event.preventDefault();
@@ -271,6 +277,7 @@ var ReportCtrl = app.controller(
                         toName = tmp[0];
                     }
                 }
+                s.type = 'sendReport';
                 s.modalTitle = "Email: " + s.report.name;
                 s.emailRpt.reportID = s.report.reportID;
                 s.emailRpt.siteID = s.report.siteID;
@@ -309,6 +316,68 @@ var ReportCtrl = app.controller(
 				});
             };
 
+            s.sendPortalLink=function(){
+                s.saveReport();
+                if (s.report.contact) {
+                    var toName = s.report.contact.trim();
+                    var tmp = toName.split(' ');
+                    if (tmp.length > 1) {
+                        toName = tmp[0];
+                    }
+                }
+                s.type = 'sendPortalLink';
+                s.modalTitle = "Email Portal Link";
+                s.emailRpt.reportID = s.report.reportID;
+                s.emailRpt.siteID = s.report.siteID;
+                s.emailRpt.contactEmail = s.report.contactEmail;
+                s.emailRpt.cc_email = '';
+
+                s.emailRpt.ccEmails = [];
+
+                s.emailRpt.senderEmail = Auth.data().email;
+
+                s.emailRpt.subject = 'Manage your trees - Portal Login';
+                s.emailRpt.disableSendBtn = false;
+                s.emailRpt.sendBtnText = 'Send';
+
+                Api.getSiteUsers(s.emailRpt.siteID, 'customer')
+                    .then(function (res) {
+                        if (!res) {
+                            return;
+                        }
+                        var emList = [];
+                        _.each(res, function (r) {
+                            if (r && r.email) {
+                                emList.push(r.email);
+                            }
+                        });
+                        if (emList) {
+                            s.emailRpt.contactEmail = emList.join(', ');
+                            s.emailRpt.contactEmails = emList;
+                        }
+                    });
+                Api.getEmailPortalLink().then(function(data){
+                    s.emailRpt.message = data;
+                })
+            }
+            s.sendEmailPortalLink=function($hide, $show){
+                s.emailRpt.disableSendBtn = true;
+                s.emailRpt.sendBtnText = 'Sending...';
+
+                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
+
+                Api.sendEmailPortalLink(s.emailRpt)
+                    .then(function (msg) {
+                        s.emailRpt.disableSendBtn = false;
+                        s.emailRpt.sendBtnText = 'Send';
+                        $hide();
+                    });
+                $timeout(function(){ updateEmailLogs(); },2000);
+                $timeout(function(){ updateEmailLogs(); },4000);
+                $timeout(function(){ updateEmailLogs(); },12000);
+                $timeout(function(){ updateEmailLogs(); },30000);
+            }
             s.sendReport = function (hideFn, showFn) {
                 s.emailRpt.disableSendBtn = true;
                 s.emailRpt.sendBtnText = 'Sending and verifying...';
@@ -323,15 +392,14 @@ var ReportCtrl = app.controller(
                         s.emailRpt.disableSendBtn = false;
                         s.emailRpt.sendBtnText = 'Send';
 
-                        if (msg === 1) {
+                        if (msg.links.length >= 1) {
                             hideFn();
-                            msg = 'Sent successfully';
                         }
-                        s.setAlert(msg, {type: 'd'});
                     });
 				$timeout(function(){ updateEmailLogs(); },2000);
 				$timeout(function(){ updateEmailLogs(); },4000);
-				$timeout(function(){ updateEmailLogs(); },10000);
+				$timeout(function(){ updateEmailLogs(); },12000);
+				$timeout(function(){ updateEmailLogs(); },30000);
             };
 
 			var updateEmailLogs = function(){

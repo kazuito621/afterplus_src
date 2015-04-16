@@ -262,7 +262,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             s.openTreesOrSites = function () {
-                if (s.initData.sites.length == 1) { // If only site, open that site in satellite view.
+                if (s.initData.sites && s.initData.sites.length == 1) { // If only site, open that site in satellite view.
                     s.selected.siteID = s.initData.sites[0].siteID;
                     getTreeListings();
                 }
@@ -650,8 +650,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             s.treeMarkers = [];
 
+			var initMapCalled=false;
+			var initMapDefer=null;
             var initMap = function () {
-                var deferred = $q.defer();
+					// dont let initmap get called twice
+					if(initMapCalled) return initMapDefer.promise;
+					initMapCalled=true;
+
+                var deferred = initMapDefer = $q.defer();
                 gMapInitializer.mapsInitialized.then(function () {
                     loadMap().then(function () {
                         window.mapLoaded = true;
@@ -662,9 +668,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
 			var loadMap = function() {
-			console.log("load map ");
-                var deferred = $q.defer();
+            var deferred = $q.defer();
 				try{
+					console.log("load map ");
                 google.load(
                     "maps",
                     "3",
@@ -1455,11 +1461,12 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             //Define function to get specific treatment types (string) by ID
-            s.getTreatmentType = function (ID) {
-                var t = _.extract(s, 'initData.filters.treatments');
-                var found = _.findObj(t, 'treatmentTypeID', ID);
-                return _.extract(found, 'treatmentType');
-            }
+            // This is unused.
+            //s.getTreatmentType = function (ID) {
+            //    var t = _.extract(s, 'initData.filters.treatments');
+            //    var found = _.findObj(t, 'treatmentTypeID', ID);
+            //    return _.extract(found, 'treatmentType');
+            //}
 
 
             //Define function to get specific tree sizes (string) by ID
@@ -1699,7 +1706,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     siteNames: self.getSelectedSitesNames(),
                     sendBtnText: 'Send bulk estimate'
                 };
-                res.type = 'bulk';
+                res.type = 'bulkEstimate';
                 res.siteNames = [];
 
                 return res;

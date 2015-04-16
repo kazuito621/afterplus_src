@@ -1,5 +1,5 @@
 /**
- * Created by usert on 17-Jan-15.
+ * Created by Imdadul Huq on 17-Jan-15.
  */
 app.directive('adjustPrice',
     ['$popover','ReportService','$interval',

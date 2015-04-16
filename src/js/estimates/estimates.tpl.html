@@ -3,6 +3,10 @@
 
     <div class="table-header">
         <h1 class="pull-left">Estimates</h1>
+        <div  class='class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"'
+              style="max-width: 100%; width: auto;font-size: 23px;" ng-if="auth.isAtleast('staff')">
+            <a style="color: white;" href="#/calendar">Job Calendar</a>
+        </div>
         <div class="clearfix"></div>
     </div>
 
@@ -17,8 +21,14 @@
                     <input type="radio" value="sent"> Sent</label>
 				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
                     <input type="radio" value="approved"> Approved</label>
+				<label ng-click="setStatusFilter('scheduled')" class="btn btn-default">
+                    <input type="radio" value="scheduled"> Scheduled</label>
 				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
                     <input type="radio" value="completed"> Completed</label>
+                <label ng-click="setStatusFilter('invoiced')" class="btn btn-default">
+                    <input type="radio" value="invoiced"> Invoiced</label>
+                <label ng-click="setStatusFilter('paid')" class="btn btn-default">
+                    <input type="radio" value="paid"> Paid</label>
                 <span class="lnk leftSpace10">
                     <a href ng-click='reset()' bs-tooltip title='Reset'>
                         <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>
@@ -72,7 +82,7 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates track by $index" class='hoverHotspot' id='item_{{e.reportID}}'>
+                <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}' ng-style="e.delete==1?{'background-color':'#bbb'}:''">
                     <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
                         <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)" ng-click="toggleEstimateSelection(e.reportID)">
                     </td>
@@ -99,24 +109,32 @@
                     </td>
                     <td>${{e.total_price|formatPrice}}</td>
                     <td>
-						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" 
-								ng-model="e.status" ng-change="setReportStatus(e,this)"
+						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
+								ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
 								placeholder="{{e.status}}"
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">
-						</button> 
+						</button>
 						<button type='button' ng-if="auth.is('customer')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
 								 onclick="return false;">{{ e.status | statusText }}</button>
 					</td>
                     <td>
-                        <a href="#" editable-text="e[data.currentTstamp]" 
+                        <!--<a href="#" editable-text="e[data.currentTstamp]"
 									bs-tooltip title="{{e[data.currentTstamp]}}"
 									onbeforesave="validateDate($data)" onaftersave="updateEstimateTime(e)">
+                           	{{ e[data.currentTstamp] | formatDateFromNow }}
+                        </a>-->
+                        <a ng-if="auth.isAtleast('staff')" class="editable editable-click" status-dates="e"
+									bs-tooltip title="{{e[data.currentTstamp]}} " style="cursor: pointer;">
+                           	{{ e[data.currentTstamp] | formatDateFromNow }}
+                        </a>
+                        <a ng-if="auth.isAtleast('staff') == false" class="editable editable-click"
+									bs-tooltip title="{{e[data.currentTstamp]}}" style="cursor: pointer;">
                            	{{ e[data.currentTstamp] | formatDateFromNow }}
                         </a>
                     </td>
                     <td>
-                        <a ng-if="auth.isAtleast('inventory') && e.status=='draft'"
+                        <a ng-if="auth.isAtleast('inventory') && e.status=='draft' && e.delete!=1"
                            delete-with-confirm-button
                            type="estimate"
                            item-id="{{e.reportID}}"

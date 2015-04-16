@@ -74,6 +74,13 @@ angular.module('arborPlusFilters', [])
 		};  
 	})
 
+    .filter('formatDateOnly', function(){
+		return function(input) {
+			if(!input) return '';
+			return moment(input).format('YYYY-MM-DD');
+		};
+	})
+
 	.filter('formatDateFromNow', function(){
 		return function(input) {  
 			if(!input) return '';
@@ -168,7 +175,7 @@ angular.module('arborPlusFilters', [])
 	 	 return function(id, scope) {
 			var t = _.extract(scope.initData, 'filters.treatments');
 			if(!t) return '';
-			if(isNaN(t)){		// search by code
+			if(isNaN(id)){		// search by code
                 var obj=_.findObj(t, 'code', id);
                 if(obj && obj.treatmentType) return obj.treatmentType;
 			}else{				// search by id

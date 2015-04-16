@@ -41,8 +41,8 @@ app.directive('addEditUserModal',
                         scope.sites = scope.$eval(attrs.sites);
                     }
 
-                    if (angular.isDefined(attrs.users)) {
-                        scope.users = scope.$eval(attrs.users);
+                    if (angular.isDefined(attrs.clients)) {
+                        scope.clients = scope.$eval(attrs.clients);
                     }
 
                     if(scope.sites==undefined){ // in case site have been not provided.
@@ -95,10 +95,10 @@ app.directive('addEditUserModal',
                 //    scope.selectedClient=user;
 //
                 //};
-                scope.siteSelect = function (user) {
-                    scope.selectedProperty=user;
-
-                };
+                //scope.siteSelect = function (user) {
+                //    scope.selectedProperty=user;
+//
+                //};
                 scope.SaveUser = function (event) {
                     var user={};
                     if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
@@ -114,7 +114,7 @@ app.directive('addEditUserModal',
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];
                     angular.forEach(scope.addedClients,function(item){
-                        user.clientIDs.push(item.client.userID);
+                        user.clientIDs.push(item.client.clientID);
                     });
                     if(user.clientIDs.length==0) user.clientIDs.push(-1);
                     if(user.siteIDs.length==0) user.siteIDs.push(-1);
@@ -151,9 +151,9 @@ app.directive('addEditUserModal',
                 scope.addClientsProperty = function (event) {
                    //event.preventDefault();
                    //event.stopPropagation();
-                    if(this.selectedClient.userID==undefined) return;
+                    if(this.selectedClient.clientID==undefined) return;
                     for(var i=0;i<this.addedClients.length;i++){
-                        if(this.addedClients[i].client.userID==this.selectedClient.userID){
+                        if(this.addedClients[i].client.clientID==this.selectedClient.clientID){
                             return;
                         }
                     }
@@ -168,7 +168,7 @@ app.directive('addEditUserModal',
                     if(!siteIDs || siteIDs==[-1]) return;
                     siteIDs = siteIDs.split(',');
                     _.each(siteIDs,function(siteID){
-                        var site = _.findObj(scope.initData.sites,'siteID',siteID);
+                        var site = _.findObj(scope.sites,'siteID',siteID);
                         scope.addedSites.push(site);
                     })
                 }
@@ -178,7 +178,7 @@ app.directive('addEditUserModal',
                     clientIDs = clientIDs.split(',');
                     _.each(clientIDs,function(id){
                         scope.addedClients.push({
-                            client: _.findObj(scope.users,'userID',id)
+                            client: _.findObj(scope.clients,'clientID',id)
                             //siteNames:siteNames,
                             //userID:id
                         });
@@ -189,15 +189,14 @@ app.directive('addEditUserModal',
                 scope.addProperty=function(event){
                     event.preventDefault();
                     event.stopPropagation();
-                    if(scope.selectedProperty.siteID==undefined) return;
-                    for(var i=0;i<scope.addedSites.length;i++){
-                        if(scope.addedSites[i].siteID==scope.selectedProperty.siteID){
+                    if(this.selectedProperty.siteID==undefined) return;
+                    for(var i=0;i<this.addedSites.length;i++){
+                        if(this.addedSites[i].siteID==this.selectedProperty.siteID){
                            return;
                         }
                     }
-                    scope.addedSites.push(scope.selectedProperty);
-                    scope.selectedProperty=undefined;
-                    $('#newSiteName').val('');
+                    this.addedSites.push(this.selectedProperty);
+                    this.selectedProperty=undefined;
                 }
                 scope.getPropertyNames=function(client){
                     var str="";
@@ -217,7 +216,7 @@ app.directive('addEditUserModal',
                 };
                 scope.removeFromAddedClientList = function (client) {
                     for(var i=0;i<scope.addedClients.length;i++){
-                        if(scope.addedClients[i].userID==client.userID){
+                        if(scope.addedClients[i].clientID==client.clientID){
                             scope.addedClients.splice(i,1);
                             break;
                         }

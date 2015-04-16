@@ -36,7 +36,7 @@
 <div id='external-events' style="margin-top: 52px;">
     <h4>UnscheduledJobs</h4>
 
-<!--    <div class='fc-event'>
+    <!--    <div class='fc-event'>
         <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
     </div>-->
     <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs">
@@ -80,7 +80,9 @@
                 <h4 id="assignjobtitle" class="modal-title"></h4>
             </div>
             <div id="assignjobbody" class="modal-body">
-                <div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>
+                <a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.id as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
+                </a>
+                <!--<div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>-->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

@@ -355,6 +355,10 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             //sendEvt('alert', { msg: 'Job has been Unscheduled', time: 3, type: 'ok' });
             return Rest.one('estimate', id).post('unscheduled');
 
+        },
+        GetForemans: function (role) {
+            // GET  /users?role=XXX
+            return Rest.all('user').getList({ role: 'staff' });
         }
 
     };

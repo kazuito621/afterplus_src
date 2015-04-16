@@ -13,7 +13,7 @@
 
 
         },
-        controller: function ($rootScope, $scope, $element, $attrs, Api, $location) {
+        controller: function ($rootScope, $scope, $element, $attrs, Api, $location,$filter) {
             var search = $location.search();
 
             $scope.UnscheduledJobs = [];
@@ -129,11 +129,10 @@
                     
                     eventReceive: function (event) {
                         var ev = $scope.getEventInfo(event.title);
-                        console.log(event.start);
-                        
+                        console.log("event" + event.start.format('YYYY-MM-DD'));
                         Api.ScheduleJob(ev.reportId, {
-                            job_start: event.start._d,
-                            job_end: event.start._d
+                            job_start: event.start.format('YYYY-MM-DD'),
+                            job_end: event.start.format('YYYY-MM-DD')
                         }).then(function () {
                             //$scope.setAlert('Loading Trees', { busy: true, time: "false" });
                         });
@@ -225,16 +224,24 @@
             }
 
             $scope.open = function () {
-                $scope.foremans = [
-                   {
-                       foremanname: 'John Miclay'
-                   },
-                   {
-                       foremanname: 'Ruby Johanson'
-                   },
-                   {
-                       foremanname: 'Matrick Dusak'
-                   }];
+                $scope.user = {
+                    group: 1,
+                    groupName: 'John Miclay' // original value
+                };
+                //$scope.foremans = [
+                //   {
+                //       foremanid:1,
+                //       foremanname: 'John Miclay'
+                       
+                //   },
+                //   {
+                //       foremanid: 2,
+                //       foremanname: 'Ruby Johanson'
+                //   },
+                //   {
+                //       foremanid: 3,
+                //       foremanname: 'Matrick Dusak'
+                //   }];
 
                 data.title = "List of foreman's"
                 $('#assignjobtitle').html(data.title);
@@ -242,6 +249,35 @@
                 $('#jobassignforemanpopup').modal();
 
             };
+
+            $scope.loadGroups = function () {
+               
+                Api.GetForemans("staff", {
+
+                }).then(function (response) {
+                    angular.forEach(response, function (item) {
+                        $scope.groups.push({ "id": item.userID, "text": item.fName + item.lName })
+                    });
+                   
+                });
+               
+                //$scope.groups = [
+                //  {
+                //      id: 1,
+                //      text: 'John Miclay'
+
+                //  },
+                //  {
+                //      id: 2,
+                //      text: 'Ruby Johanson'
+                //  },
+                //  {
+                //      id: 3,
+                //      text: 'Matrick Dusak'
+                //  }];
+            };
+
+
 
             $scope.savejobtoforeman = function () {
                 //alert("a");
@@ -257,7 +293,25 @@
                 });
             };
 
+            $scope.user = {
+                group: 4,
+                groupName: 'admin' // original value
+            };
 
+            $scope.groups = [];
+
+            //$scope.loadGroups = function () {
+            //    return $scope.groups.length ? null : $http.get('/groups').success(function (data) {
+            //        $scope.groups = data;
+            //    });
+            //};
+
+            $scope.$watch('user.group', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    var selected = $filter('filter')($scope.groups, { id: $scope.user.group });
+                    $scope.user.groupName = selected.length ? selected[0].text : null;
+                }
+            });
 
 
         },

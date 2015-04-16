@@ -16,7 +16,12 @@
                                 <div class="row" style="margin: 5px 2px 0px 5px;">
                                     <!--<form ng-submit="addNewSiteContact($event)">-->
                                     <label class="col-sm-2" style="font-weight: bold">Email</label>
-                                    <input type="email" required placeholder="Email" style="width: 250px" ng-model="newContact.email" id='newContactEmail'><br>
+                                    <input type="email" required placeholder="Email" style="width: 250px" 
+													ng-model="newContact.email" id='newContactEmail'> 
+													<span ng-if="newContact.userID" style='color:#ccc; font-size:.7em;'>
+														(userID: {{newContact.userID}})
+													</span>
+													<br>
                                     <label class="col-sm-2" style="font-weight: bold">Name</label>
                                     <input type="text" placeholder="First name" required style="width:125px" ng-model="newContact.fName">
                                     <input type="text" placeholder="Last name" required style="width:120px;" ng-model="newContact.lName"><br>

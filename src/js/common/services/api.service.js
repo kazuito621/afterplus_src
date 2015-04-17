@@ -359,6 +359,10 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         GetForemans: function (role) {
             // GET  /users?role=XXX
             return Rest.all('user').getList({ role: 'staff' });
+        },
+        AssignJobToForeman: function (id, params) {
+           // POST / estimate / 123
+            return Rest.one('estimate', id).post(undefined,params);
         }
 
     };

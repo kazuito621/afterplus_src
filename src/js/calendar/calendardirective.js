@@ -18,19 +18,20 @@
 
             $scope.UnscheduledJobs = [];
             $scope.ScheduledJobs = [];
-            //$scope.SearchScheduledJobs = [];
             $scope.clickedEvent = {};
 
 
             Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
                 angular.forEach(data, function (field) {
+                    
                     if (field.status == "sent" && field.name != null) {
                         $scope.ScheduledJobs.push(
                             {
                                 "title": field.name,
                                 "start": "2015-04-02",
                                 "price": "," + field.total_price,
-                                reportId: field.entityID
+                                reportId: field.entityID,
+                                "siteid": field.siteID
 
                             });
 
@@ -41,7 +42,8 @@
                                 "title": field.name.trim() ? field.name.trim() : "Nil",
                                 "start": "2015-03-02",
                                 "price": "," + field.total_price,
-                                reportId: field.entityID
+                                reportId: field.entityID,
+                                "siteid": field.siteID
                             });
 
                     }
@@ -114,21 +116,21 @@
                         }
                         $('#calendar').fullCalendar('unselect');
                     },
-                    //drop: function (el, eventStart, ev, ui) {
+                    drop: function (el, eventStart, ev, ui) {
 
-                    //    $('.fc-title br').remove();
+                        $('.fc-title br').remove();
                        
-                    //    console.log(ev.helper[0].textContent);
-                    //    if ($('#drop-remove').is(':checked')) {
-                    //        // if so, remove the element from the "Draggable Events" list
-                    //        $(this).remove();
-                    //    }
+                        console.log(ev.helper[0].textContent);
+                        //if ($('#drop-remove').is(':checked')) {
+                            // if so, remove the element from the "Draggable Events" list
+                            $(this).remove();
+                        //}
                         
 
-                    //},
-                    
+                    },
                     eventReceive: function (event) {
                         var ev = $scope.getEventInfo(event.title);
+                        $scope.estimateid = ev.reportId;
                         console.log("event" + event.start.format('YYYY-MM-DD'));
                         Api.ScheduleJob(ev.reportId, {
                             job_start: event.start.format('YYYY-MM-DD'),
@@ -145,8 +147,31 @@
                         $scope.jobdescription = data.price;
                         $scope.$apply();
                         $scope.clickedEvent = data;
-                        $('#modalTitle').html("ReportName:" + data.title);
-                        $('#modalBody').html("Price:" + data.price);
+                        $('#modalTitle').html("Job Name:" + "<b>"+data.title+"<b/>");
+                         //$('#modalBody').html("Price:" + data.price);
+                        $scope.price = data.price.replace(",","");
+                        alert($scope.price);
+                        $scope.siteID = data.siteid;
+                        $scope.$apply(function () {
+                            Api.getSiteById($scope.siteID, {}).
+                       then(function (response) {
+                           $scope.siteName = response.siteName;
+                           $scope.siteAddress = response.city;
+                           $scope.city = response.city;
+                           $scope.state = response.state;
+                           $scope.zip = response.zip;
+                           $scope.contact = response.contact;
+                           $scope.email = response.contactEmail;
+                           $scope.phone = response.contactPhone;
+                           
+                       });
+
+                            $scope.user = {
+                                group: 1,
+                                groupName: 'John Miclay' // original value
+                            };
+                        });
+                       
                         $('#fullCalModal').modal();
                         //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
                     },
@@ -169,7 +194,8 @@
                         html = html.replace("<br>", "");
                         $(".fc-title").html(html);
 
-                    },
+                    }
+                    
                 });
 
             });
@@ -178,6 +204,7 @@
                 $("#tooltip").removeClass("hide").addClass("show");
 
             };
+
             $scope.onMouseLeaveJob = function () {
                 $("#tooltip").removeClass("show").addClass("hide");
             };
@@ -223,7 +250,9 @@
 
             }
 
-            $scope.open = function () {
+            $scope.open = function (siteID) {
+                
+
                 $scope.user = {
                     group: 1,
                     groupName: 'John Miclay' // original value
@@ -251,10 +280,11 @@
             };
 
             $scope.loadGroups = function () {
-               
+              
                 Api.GetForemans("staff", {
 
                 }).then(function (response) {
+                    $scope.groups = [];
                     angular.forEach(response, function (item) {
                         $scope.groups.push({ "id": item.userID, "text": item.fName + item.lName })
                     });
@@ -277,11 +307,13 @@
                 //  }];
             };
 
-
-
             $scope.savejobtoforeman = function () {
-                //alert("a");
-
+                alert($scope.estimateid);
+                Api.AssignJobToForeman($scope.estimateid, {
+                    job_userID: $scope.user.group
+                }).then(function (response) {
+                    console.log(response);
+                });
             };
 
             $scope.UnscheduledJob = function () {
@@ -300,20 +332,12 @@
 
             $scope.groups = [];
 
-            //$scope.loadGroups = function () {
-            //    return $scope.groups.length ? null : $http.get('/groups').success(function (data) {
-            //        $scope.groups = data;
-            //    });
-            //};
-
             $scope.$watch('user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     var selected = $filter('filter')($scope.groups, { id: $scope.user.group });
                     $scope.user.groupName = selected.length ? selected[0].text : null;
                 }
             });
-
-
         },
 
 

@@ -150,7 +150,7 @@
                         $('#modalTitle').html("Job Name:" + "<b>"+data.title+"<b/>");
                          //$('#modalBody').html("Price:" + data.price);
                         $scope.price = data.price.replace(",","");
-                        alert($scope.price);
+                      
                         $scope.siteID = data.siteid;
                         $scope.$apply(function () {
                             Api.getSiteById($scope.siteID, {}).

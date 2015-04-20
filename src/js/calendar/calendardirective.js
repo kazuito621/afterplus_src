@@ -13,7 +13,7 @@
 
 
         },
-        controller: function ($rootScope, $scope, $element, $attrs, Api, $location,$filter) {
+        controller: function ($rootScope, $scope, $element, $attrs, Api, $location, $filter) {
             var search = $location.search();
 
             $scope.UnscheduledJobs = [];
@@ -23,7 +23,7 @@
 
             Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
                 angular.forEach(data, function (field) {
-                    
+
                     if (field.status == "sent" && field.name != null) {
                         $scope.ScheduledJobs.push(
                             {
@@ -37,6 +37,7 @@
 
                     }
                     if (field.status == "completed") {
+                        console.log(field.total_price);
                         $scope.UnscheduledJobs.push(
                             {
                                 "title": field.name.trim() ? field.name.trim() : "Nil",
@@ -51,14 +52,11 @@
 
                 });
 
-                $scope.getEventInfo = function (eventName)
-                {
+                $scope.getEventInfo = function (eventName) {
                     var selectedEvent = null;
-                    for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++)
-                    {
+                    for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
                         var event = $scope.UnscheduledJobs[index];
-                        if (event.title.trim() == eventName.trim())
-                        {
+                        if (event.title.trim() == eventName.trim()) {
                             selectedEvent = event;
                             break;
                         }
@@ -119,13 +117,13 @@
                     drop: function (el, eventStart, ev, ui) {
 
                         $('.fc-title br').remove();
-                       
+
                         console.log(ev.helper[0].textContent);
                         //if ($('#drop-remove').is(':checked')) {
-                            // if so, remove the element from the "Draggable Events" list
-                            $(this).remove();
+                        // if so, remove the element from the "Draggable Events" list
+                        $(this).remove();
                         //}
-                        
+
 
                     },
                     eventReceive: function (event) {
@@ -147,10 +145,12 @@
                         $scope.jobdescription = data.price;
                         $scope.$apply();
                         $scope.clickedEvent = data;
-                        $('#modalTitle').html("Job Name:" + "<b>"+data.title+"<b/>");
-                         //$('#modalBody').html("Price:" + data.price);
-                        $scope.price = data.price.replace(",","");
-                      
+                        $('#modalTitle').html("Job Name:" + data.title);
+                        console.log(data.price);
+                        //$('#modalBody').html("Price:" + data.price);
+
+                        $scope.price = data.price.replace(",", "");
+
                         $scope.siteID = data.siteid;
                         $scope.$apply(function () {
                             Api.getSiteById($scope.siteID, {}).
@@ -163,7 +163,7 @@
                            $scope.contact = response.contact;
                            $scope.email = response.contactEmail;
                            $scope.phone = response.contactPhone;
-                           
+
                        });
 
                             $scope.user = {
@@ -171,7 +171,7 @@
                                 groupName: 'John Miclay' // original value
                             };
                         });
-                       
+
                         $('#fullCalModal').modal();
                         //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
                     },
@@ -194,8 +194,21 @@
                         html = html.replace("<br>", "");
                         $(".fc-title").html(html);
 
-                    }
-                    
+                    },
+                    eventDrop: function (el, eventStart, ev, ui) {
+                        console.log(el.reportId);
+                        console.log(el.title);
+                        console.log(el.start._i);
+                        console.log(el.start.format('YYYY-MM-DD'));
+                        Api.ScheduleJob(el.reportId, {
+                            job_start: el.start._i,
+                            job_end: el.start.format('YYYY-MM-DD')
+                        }).then(function (response) {
+                            console.log(response);
+                        });
+                        
+                    },
+
                 });
 
             });
@@ -251,7 +264,7 @@
             }
 
             $scope.open = function (siteID) {
-                
+
 
                 $scope.user = {
                     group: 1,
@@ -261,7 +274,7 @@
                 //   {
                 //       foremanid:1,
                 //       foremanname: 'John Miclay'
-                       
+
                 //   },
                 //   {
                 //       foremanid: 2,
@@ -280,7 +293,7 @@
             };
 
             $scope.loadGroups = function () {
-              
+
                 Api.GetForemans("staff", {
 
                 }).then(function (response) {
@@ -288,9 +301,9 @@
                     angular.forEach(response, function (item) {
                         $scope.groups.push({ "id": item.userID, "text": item.fName + item.lName })
                     });
-                   
+
                 });
-               
+
                 //$scope.groups = [
                 //  {
                 //      id: 1,
@@ -319,7 +332,7 @@
             $scope.UnscheduledJob = function () {
                 console.log($scope.clickedEvent);
                 Api.UnscheduledJob($scope.clickedEvent.reportId, {
-                    
+
                 }).then(function () {
 
                 });

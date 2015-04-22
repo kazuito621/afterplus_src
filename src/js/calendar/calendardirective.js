@@ -30,7 +30,7 @@
                                 "title": field.name,
                                 "start": "2015-04-02",
                                 "price": "," + field.total_price,
-                                reportId: field.entityID,
+                                reportId: field.reportID,
                                 "siteid": field.siteID
 
                             });
@@ -43,7 +43,7 @@
                                 "title": field.name.trim() ? field.name.trim() : "Nil",
                                 "start": "2015-03-02",
                                 "price": "," + field.total_price,
-                                reportId: field.entityID,
+                                reportId: field.reportID,
                                 "siteid": field.siteID
                             });
 
@@ -196,12 +196,15 @@
 
                     },
                     eventDrop: function (el, eventStart, ev, ui) {
-                        console.log(el.reportId);
-                        console.log(el.title);
-                        console.log(el.start._i);
-                        console.log(el.start.format('YYYY-MM-DD'));
+                       // var eventInfo=$scope.getEventInfo(event.title)
+                        if(el.reportId == undefined){
+                            var eventInfo=$scope.getEventInfo(el.title);
+                            el.reportId = eventInfo.reportId;
+                        }
+                        var t= angular.copy(el.start);
+                        t.add(-eventStart._days,'days');
                         Api.ScheduleJob(el.reportId, {
-                            job_start: el.start._i,
+                            job_start: t.format('YYYY-MM-DD'),//t.add(eventStart._days,'days').format('YYYY-MM-DD'),
                             job_end: el.start.format('YYYY-MM-DD')
                         }).then(function (response) {
                             console.log(response);

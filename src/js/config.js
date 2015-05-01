@@ -21,6 +21,7 @@ window.cfg={
 	// todo - later this all should be dynamically called from api
 	,getEntityID: function(){
             var h=this.host()||'';
+			if(h.match(/easytree/)) return 1;
 			if(h.match(/app.aplus/)) return 2;
 			if(h.match(/joseph/)) return 3;
 			if(h.match(/woodie|woody/)) return 4;
@@ -34,7 +35,9 @@ window.cfg={
 		}
 	,getEntity: function(){
 			var ent=[];
-			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus', isTcia:1,
+			ent[1]={name:'Easy Tree Service', medname:'Easy Tree', shortname:'easytree', isTcia:1,
+						afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
+			ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus', isTcia:1,
 						afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
 			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph', isTcia:1,
 						afiliations:"tcia.png,ctsp.png,isa_arb.jpg,isa_memb.jpg",

@@ -21,6 +21,7 @@ window.cfg={
 	// todo - later this all should be dynamically called from api
 	,getEntityID: function(){
             var h=this.host()||'';
+			if(h.match(/easytree/)) return 1;
 			if(h.match(/app.aplus/)) return 2;
 			if(h.match(/joseph/)) return 3;
 			if(h.match(/woodie|woody/)) return 4;
@@ -29,11 +30,14 @@ window.cfg={
 			if(h.match(/acme/)) return 6;
 			if(h.match(/medallion/)) return 8;
 			if(h.match(/padilla/)) return 9;
+			if(h.match(/advancedtr/)) return 10;
 			return 1;	// default to dev.aplustree
 		}
 	,getEntity: function(){
 			var ent=[];
-			ent[1]=ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus', isTcia:1,
+			ent[1]={name:'Easy Tree Service', medname:'Easy Tree', shortname:'easytree', isTcia:1,
+						afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
+			ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus', isTcia:1,
 						afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
 			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph', isTcia:1,
 						afiliations:"tcia.png,ctsp.png,isa_arb.jpg,isa_memb.jpg",
@@ -52,6 +56,8 @@ window.cfg={
 						shortname:"medallion",afiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
 			ent[9]={name:"Padilla Group Inc.",medname:"Padilla Group",shortname:"padilla", isTcia:1,
 						afiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
+			ent[10]={name:'Advanced Tree Care', medname:'Advanced Tree', shortname:'advancedtree',
+				afiliations:'isa_arb.jpg'};
 
 			var eid=this.getEntityID();
 			var ent = ent[eid];

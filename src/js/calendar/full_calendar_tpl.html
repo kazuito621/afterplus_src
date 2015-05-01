@@ -1,0 +1,93 @@
+﻿<style type="text/css">
+    .search {
+        background: none repeat scroll 0 0 #eee;
+        border: 1px solid #ccc;
+        float: left;
+        padding: 0 10px;
+        text-align: left;
+        width: 150px;
+        position: absolute;
+    }
+
+    #searchJob {
+        width: 129px;
+        margin-left: 0%;
+        margin-top: 2%;
+        margin-bottom: 2%;
+    }
+
+    .position {
+        position: absolute;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: inline;
+    }
+</style>
+
+<div class="search">
+    <span>Search Job:</span><br />
+    <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" />
+</div>
+<div id='external-events' style="margin-top: 52px;">
+    <h4>UnscheduledJobs</h4>
+
+<!--    <div class='fc-event'>
+        <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
+    </div>-->
+    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs">
+        {{singleJob.title}}<!--<span ng-show="false">{{singleJob.price}}</span>-->
+    </div>
+    <p>
+        <input type='checkbox' id='drop-remove' />
+        <label for='drop-remove'>remove after drop</label>
+    </p>
+</div>
+
+<div id='calendar'></div>
+
+
+<!--(Start) Modal Pop Up To Show Info about Job-->
+<div id="fullCalModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <h4 id="modalTitle" class="modal-title"></h4>
+            </div>
+            <div id="modalBody" class="modal-body"></div>
+            <div class="modal-footer">
+
+                <input type="button" class="btn btn-success" ng-click="open()" value="JobAssignToForeman"></input>
+                <input type="button" class="btn btn-success" ng-click="UnscheduledJob()" value="UnscheduledJob"></input>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--(End) Modal Up To Show Info about Job-->
+
+<!---(Start) Modal Pop Up  To Show List of  Foreman----->
+<div id="jobassignforemanpopup" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <h4 id="assignjobtitle" class="modal-title"></h4>
+            </div>
+            <div id="assignjobbody" class="modal-body">
+                <div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <input type="button" class="btn btn-success" value="SaveJobToForeman" ng-click="savejobtoforeman()"></input>
+            </div>
+        </div>
+    </div>
+</div>
+<!---(End) Modal Pop Up  To Show List of  Foreman----->
+

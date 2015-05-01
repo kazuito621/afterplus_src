@@ -1,21 +1,30 @@
 /**
- * Created by Imdadul Huq on 09-Apr-15.
+ * Created by Imdadul Huq on 11-Apr-15.
  */
-app.directive('jumpToCalender',
-    ['$popover', '$location',
-        function ($popover,$location) {
+app.directive('confirmPopup',
+    ['$popover',
+        function ($popover) {
             return {
                 restrict: 'EA',
+                /*scope:{
+                    callback:"&",
+                    message:"@confirmPopup"
+                },*/
                 link: function (scope, el, attrs) {
 
-                    if (angular.isDefined(attrs.parentModal)) {
-                        scope.parentModal = scope.$eval(attrs.parentModal);
+                    if (angular.isDefined(attrs.callback)) {
+                        scope.callback = scope.$eval(attrs.callback);
+                    }
+                    if (angular.isDefined(attrs.userId)) {
+                        scope.userID = scope.$eval(attrs.userId);
+                    }
+                    if (angular.isDefined(attrs.confirmPopup)) {
+                        scope.message = scope.$eval(attrs.confirmPopup);
                     }
 
-                    scope.go=function(){
+                    scope.ok=function(){
                         popover.hide();
-                        scope.parentModal.hide();
-                        $location.path('/calender');
+                        scope.callback(scope.userID);
                     };
 
                     var popover;
@@ -29,10 +38,10 @@ app.directive('jumpToCalender',
                         // create new one
                         popover = $popover(el, {
                             scope: scope,
-                            template: '/js/common/directives/jumpToCalender/jumpToCalender.tpl.html',
+                            template: '/js/common/directives/confirmation/confirmation.tpl.html',
                             show: false,
                             animation: 'am-flip-x',
-                            placement: 'left',
+                            placement: 'right',
                             trigger: 'focus'
                         });
 

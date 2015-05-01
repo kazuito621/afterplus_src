@@ -12,7 +12,7 @@ case "$1" in
          echo "Starting grunt..."
          if [ -f $PID ]
                 then
-                echo "Sorry, but grunt is already running here..."
+                echo "Sorry, but grunt is already running here... ($PID)" 
                 exit 1
          fi
          nohup $GRUNT serve > /dev/null 2>/dev/null &

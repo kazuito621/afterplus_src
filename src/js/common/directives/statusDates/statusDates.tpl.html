@@ -55,8 +55,8 @@
                                         <label class="pull-left">Scheduled</label>
                                     </td>
                                     <td data-title="service_quantity">
-                                        <a class="editable editable-click pull-right" jump-to-calender parent-modal="modal" ng-hide="t.tstamp_scheduled==''"  ng-bind="t.tstamp_scheduled"></a>
-                                        <a class="editable editable-click pull-right" jump-to-calender parent-modal="modal" ng-show="t.tstamp_scheduled==''">Not Set Yet</a>
+                                        <a class="editable editable-click pull-right" jump-to-calendar parent-modal="modal" ng-hide="t.tstamp_scheduled==''"  ng-bind="t.tstamp_scheduled"></a>
+                                        <a class="editable editable-click pull-right" jump-to-calendar parent-modal="modal" ng-show="t.tstamp_scheduled==''">Not Set Yet</a>
                                         <!--<input class="form-control pull-right" ng-model=" t.tstamp_scheduled" data-date-format="yyyy-MM-dd" placeholder="Set Date"
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">-->
                                     </td>
@@ -94,7 +94,7 @@
                     </div>
                     <div class="modal-footer topMargin0">
                         <button type="button" class="btn btn-default" ng-click="save()">Save</button>
-                        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+                        <button type="button" class="btn btn-default" ng-click="closeModal()">Cancel</button>
                     </div>
                 </form>
             </div>

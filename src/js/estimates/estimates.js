@@ -145,22 +145,44 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         var date=new Date(data);
         if(date.getDate().toString()=='NaN') return 'Enter a valid datetime'
     }
-	s.setReportStatus=function(rpt){
+
+
+	// do confirmation box if needed
+	s.setReportStatus=function(rpt, prev){
+		rpt.prevStatus=prev;
+		var st=rpt.status;
+		if(
+				('completed'==st && 'invoiced'!=prev)
+			|| ('paid'==st)
+		){
+            if( !confirm('Change "'+rpt.name+'" to '+st.toUpperCase()+"?\n(THIS CANNOT BE UNDONE)") ){ 
+					rpt.status=prev;
+					return;
+				}
+		}
+
+		_setReportStatus(rpt);		
+	}
+
+	// actually change the status
+	var _setReportStatus=function(rpt){
 		// todo -- we need a way for calls like this to know if a api calle failed.
 		// currently, both ok and fail, still calls the then()
 		Api.setReportStatus(rpt.reportID, rpt.status).then(function(d){
-			if(d=='Status updated'){
-				d.origStatus=d.status;
-				s.setAlert(d);
-			}else{
-				rpt.status=rpt.origStatus;
+			s.setAlert(d);
+			if(d!='Status updated' && rpt.prevStatus){
+				rpt.status=rpt.prevStatus;
 			}
 		});
 	}
 
 	s.data = {
-		// determine which statuses to show based on current status
-		// @param s STRING - currennt status ID
+
+		/** 
+		 * Determine which status menu is available, based on what the current status is
+		 * @param s STRING - currennt status ID
+		 * @return ARRAY
+		 */
 		statuses:function(s){
 			var o= [{id:'draft', txt:'DRAFT',selectable:true},
 					{id:'sent', txt:'SENT',selectable:false},
@@ -169,16 +191,29 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 					{id:'completed', txt:'COMPLETED',selectable:true},
 					{id:'invoiced', txt:'INVOICED',selectable:true},
 					{id:'paid', txt:'PAID',selectable:true}]
-			if(s=='paid') return o.splice(6,1);			// if paid PAID
-			else if(s=='sent' || s=='approved') return o.splice(1,4);		// sent = show SENT, APPROVED,SCHEDULED, COMPLETED
-			else if(s=='scheduled' || s=='completed') return o.splice(3,3);		// sent = show  SCHEDULED, COMPLETED, INVOICED
-			else if(s=='invoiced') return o.splice(5,2);		// INVOICED = show INVOICED, PAID
-			else o.splice(1,1);							// SHOW DRAFT
 
-			if(s=='draft') o.splice(3);					// DRAFT, APPR, COMPL
-			else if(s=='completed') return o.splice(2,2);		// COMPL,PAID
+			switch (s){
+				case 'draft':	// show DRAFT, APPR, COMPL
+					return [o[0], o[2]]
+
+				case 'sent':
+				case 'approved':	// show SENT, APPROVED, COMPLETED
+					return [o[1], o[2], o[4]];
+
+				case 'scheduled': // show SCHEDULED, COMPLETED
+					return o.splice(3,2);		
+		
+				case 'completed': //show COMPL, INV, PAID
+					return o.splice(4,3);		
+
+				case 'invoiced':	//show COMPL, INV, PAID
+					return o.splice(4,3);
+
+				case 'paid': return o.splice(6,1); // NONE
+			}
 			return o;
 		}
+
 		,filterText: ''
 		,getCount: function () {
 			if (estFiltered && estFiltered.length) {
@@ -269,8 +304,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         s.data.filterTextEntry = '';
 
         applyFilter();
-       // storedData.setEstimateTimeStamp(null);
-        //init();
+        storedData.setEstimateTimeStamp(null);
+        init();
     };
 
     s.isEstimateSelected = function (id) {

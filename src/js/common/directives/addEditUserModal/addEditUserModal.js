@@ -9,15 +9,28 @@ app.directive('addEditUserModal',
             var linker = function (scope, el, attrs) {
                 var modal;
                 window.sues = scope;
+
                 scope.newContact={};
                 scope.addedSites=[];
                 scope.selectedClient={};
                 scope.selectedClient.email="";
                 scope.addedClients=[];
                 scope.addedSites=[];
-                scope.isLoginDisabled=false;
+                scope.newContact.isLoginDisabled=false;
                 scope.userRoles=[];
+
+                var initVars=function(){
+                    scope.newContact={};
+                    scope.addedSites=[];
+                    scope.selectedClient={};
+                    scope.selectedClient.email="";
+                    scope.addedClients=[];
+                    scope.addedSites=[];
+                    scope.newContact.isLoginDisabled=false;
+                    scope.userRoles=[];
+                }
                 scope.openModal = function () {
+                    initVars();
                     if(scope.userRoles.length==0){
                         Api.getUserRoles().then(function(userRoles){
                             scope.userRoles = angular.copy(userRoles);
@@ -27,6 +40,11 @@ app.directive('addEditUserModal',
                     if (angular.isDefined(attrs.sites)) {
                         scope.sites = scope.$eval(attrs.sites);
                     }
+
+                    if (angular.isDefined(attrs.clients)) {
+                        scope.clients = scope.$eval(attrs.clients);
+                    }
+
                     if(scope.sites==undefined){ // in case site have been not provided.
                         Api.getSiteList().then(function (data) {
                             scope.sites=data;
@@ -36,19 +54,28 @@ app.directive('addEditUserModal',
                         modal = $modal({scope: scope, template: '/js/common/directives/addEditUserModal/addEditUserModal.tpl.html', show: false});
                     }
 
-                    if(scope.userID){
+                    if(scope.user){
                         var param={
-                            id:scope.userID
+                            id:scope.user.userID
                         };
                         Api.user.getUserById(param).then(function(data){
+									scope.newContact.userID=data.userID;
                             scope.newContact.email=data.email;
-                            //scope.newContact.role.roleCode=data.role;
                             scope.newContact.fName=data.fName;
                             scope.newContact.lName=data.lName;
                             scope.newContact.phone=data.phone;
+                            if(data.disabled == '1') scope.newContact.isLoginDisabled=true;
+                            else scope.newContact.isLoginDisabled=false;
+
+                            if(data.showStatInDash == '1') scope.newContact.showStatInDash=true;
+                            else scope.newContact.showStatInDash=false;
+
                             var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
                             scope.newContact.role={};
                             scope.newContact.role = scope.userRoles[idx];
+                            //data.clientIDs = data.clientIDs.split(',');
+                            getSiteNames(data.siteIDs);
+                            getClientNames(data.clientIDs);
                         });
                     }
                     modal.$promise.then(function () {
@@ -58,22 +85,20 @@ app.directive('addEditUserModal',
                     });
 
                 };
-                var getRoleIndex=function(){
-                   // for(var i=0;i<)
-                }
+
                 scope.closeModal = function () {
 
                     modal.hide();
                 };
 
-                scope.clientSelected = function (user) {
-                    scope.selectedClient=user;
-
-                };
-                scope.siteSelect = function (user) {
-                    scope.selectedProperty=user;
-
-                };
+                //scope.clientSelected = function (user) {
+                //    scope.selectedClient=user;
+//
+                //};
+                //scope.siteSelect = function (user) {
+                //    scope.selectedProperty=user;
+//
+                //};
                 scope.SaveUser = function (event) {
                     var user={};
                     if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
@@ -85,12 +110,18 @@ app.directive('addEditUserModal',
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
+                    
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];
                     angular.forEach(scope.addedClients,function(item){
                         user.clientIDs.push(item.client.clientID);
                     });
-                    if(scope.isLoginDisabled) user.login_disabled=1;
+                    if(user.clientIDs.length==0) user.clientIDs.push(-1);
+                    if(user.siteIDs.length==0) user.siteIDs.push(-1);
+                    if(scope.newContact.isLoginDisabled) user.disabled='1';
+                    else user.disabled='0';
+                    if(user.role!='customer' && scope.newContact.showStatInDash) user.showStatInDash='1';
+                    else user.showStatInDash='0';
                    /*
                     POST /site/multi/users
                     JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer',
@@ -99,49 +130,73 @@ app.directive('addEditUserModal',
                     or (for existing users)
                     JSON BODY: {userID:123, role:'sales', siteIDs:[123, 876, 432]}
                     */
-                    Api.user.create(user).then(function (data) {
-                        modal.hide();
-                    });
+                    if(scope.user){
+                        Api.user.update(user,scope.user.userID).then(function (data) {
+                            scope.user.email=user.email;
+                            scope.user.role=user.role;
+                            scope.user.fName=user.fName;
+                            scope.name=user.name+' '+user.lName;
+                            scope.user.lName=user.lName;
+                            scope.user.phone=user.phone;
+                            modal.hide();
+                        });
+                    }
+                    else{
+                        Api.user.create(user).then(function (data) {
+                            modal.hide();
+                        });
+                    }
                 };//
 
                 scope.addClientsProperty = function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    if(scope.selectedClient.userID==undefined) return;
-                    for(var i=0;i<scope.addedClients.length;i++){
-                        if(scope.addedClients[i].client.userID==scope.selectedClient.userID){
+                   //event.preventDefault();
+                   //event.stopPropagation();
+                    if(this.selectedClient.clientID==undefined) return;
+                    for(var i=0;i<this.addedClients.length;i++){
+                        if(this.addedClients[i].client.clientID==this.selectedClient.clientID){
                             return;
                         }
                     }
-                    var siteNames=[];
-                    Api.getSitesByClientId(scope.selectedClient.userID).then(function(sites){
-                        angular.forEach(sites,function(item){
-                            siteNames.push({
-                                siteName:item.siteName
-                            });
-                        });
-
-                        scope.addedClients.push({
-                            client:scope.selectedClient,
-                            siteNames:siteNames
-                        });
-                        scope.selectedClient={};
-                        $('#newclientsProp').val('');
+                    this.addedClients.push({
+                        client:this.selectedClient
                     });
-
+                    this.selectedClient={};
+                   // $('#newclientsProp').val('');
                 };
+
+                var getSiteNames = function(siteIDs){
+                    if(!siteIDs || siteIDs==[-1]) return;
+                    siteIDs = siteIDs.split(',');
+                    _.each(siteIDs,function(siteID){
+                        var site = _.findObj(scope.sites,'siteID',siteID);
+                        scope.addedSites.push(site);
+                    })
+                }
+
+                var getClientNames = function(clientIDs){
+                    if(!clientIDs || clientIDs==[-1]) return;
+                    clientIDs = clientIDs.split(',');
+                    _.each(clientIDs,function(id){
+                        scope.addedClients.push({
+                            client: _.findObj(scope.clients,'clientID',id)
+                            //siteNames:siteNames,
+                            //userID:id
+                        });
+
+                    });
+                }
+
                 scope.addProperty=function(event){
                     event.preventDefault();
                     event.stopPropagation();
-                    if(scope.selectedProperty.siteID==undefined) return;
-                    for(var i=0;i<scope.addedSites.length;i++){
-                        if(scope.addedSites[i].siteID==scope.selectedProperty.siteID){
+                    if(this.selectedProperty.siteID==undefined) return;
+                    for(var i=0;i<this.addedSites.length;i++){
+                        if(this.addedSites[i].siteID==this.selectedProperty.siteID){
                            return;
                         }
                     }
-                    scope.addedSites.push(scope.selectedProperty);
-                    scope.selectedProperty=undefined;
-                    $('#newSiteName').val('');
+                    this.addedSites.push(this.selectedProperty);
+                    this.selectedProperty=undefined;
                 }
                 scope.getPropertyNames=function(client){
                     var str="";
@@ -161,7 +216,7 @@ app.directive('addEditUserModal',
                 };
                 scope.removeFromAddedClientList = function (client) {
                     for(var i=0;i<scope.addedClients.length;i++){
-                        if(scope.addedClients[i].userID==client.userID){
+                        if(scope.addedClients[i].clientID==client.clientID){
                             scope.addedClients.splice(i,1);
                             break;
                         }
@@ -183,8 +238,9 @@ app.directive('addEditUserModal',
                         scope.mode='new';
                         scope.addedClients = [];
                         scope.addedSites = [];
+                        scope.userID=null;
                         if (angular.isDefined(attrs.addEditUserModal)) {
-                            scope.userID = scope.$eval(attrs.addEditUserModal);
+                            scope.user = scope.$eval(attrs.addEditUserModal);
                             scope.mode='edit';
                         }
                         scope.openModal();

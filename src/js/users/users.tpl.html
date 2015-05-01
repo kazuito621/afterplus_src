@@ -3,11 +3,15 @@
             ng:cloak
             data-placement="center"
             class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"
-            style="max-width: 100%; width: auto;"
+            style="max-width: 100%; width: auto;font-size: 23px;"
             add-edit-user-modal=""
             on-save="refreshSites"
             sites="sites"
+            clients="initData.clients"
             data-animation="am-fade-and-scale">New user/customer</button>
+    <br>
+    <br>
+    <br>
     <br>
     <div>
         <div class='pull-right topMargin5'>
@@ -61,13 +65,16 @@
             <tbody infinite-scroll="showMoreUsers()" infinite-scroll-distance="3">
             <tr ng-repeat="e in displayedUsers track by $index" class='hoverHotspot' id='item_{{e.reportID}}'>
                 <td  style="text-decoration:underline;cursor: pointer">
-                    <span ng-bind="e.email"  add-edit-user-modal="e.userID" sites="sites" on-save="refreshSites"></span>
+                    <span ng-bind="e.email"  add-edit-user-modal="e" sites="sites" clients="initData.clients" on-save="refreshSites"></span>
                     <a ng-if="e.role=='customer' && e.email!='No Results'" data-backdrop='static'
                        data-keyboard=true
                        bs-modal
                        data-template="js/trees/emailReport.tpl.html"
-                       ng-click="sendPortalLink(e)" ><i  bs-tooltip title="Send user a portal login link" class="fa fa-gear"></i></a>
-                    <a ng-if="e.role!='customer' && e.email!='No Results'" ng-click="sendLoginInfo(e.userID)" bs-tooltip title="Send user their login information"><i class="fa fa-gear"></i></a>
+                       ng-click="sendPortalLink(e)"
+                            ><i  bs-tooltip title="Send user a portal login link" class="fa fa-envelope" style="margin-left: 6px;"></i></a>
+                    <a ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information">
+                        <i class="fa fa-envelope" style="margin-left: 6px;"></i>
+                    </a>
                 </td>
                <!--<td ng-show="e.fName && e.lName" ng-bind="e.fName+' '+e.lName"></td>-->
                 <td  ng-bind="e.name"></td>

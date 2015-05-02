@@ -23,32 +23,28 @@
 
             Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
                 angular.forEach(data, function (field) {
-
-                    if (field.status == "sent" && field.name != null) {
-                        $scope.ScheduledJobs.push(
-                            {
-                                "title": field.name,
-                                "start": "2015-04-02",
-                                "price": "," + field.total_price,
-                                reportId: field.reportID,
-                                "siteid": field.siteID
-
-                            });
-
-                    }
-                    if (field.status == "completed") {
-                        console.log(field.total_price);
+                    if(( field.status=="sent" || field.status=="scheduled" ) && field.job_start==undefined)  {
                         $scope.UnscheduledJobs.push(
                             {
-                                "title": field.name.trim() ? field.name.trim() : "Nil",
+                                "title": field.name? field.name.trim() : "Nil",
                                 "start": "2015-03-02",
                                 "price": "," + field.total_price,
                                 reportId: field.reportID,
-                                "siteid": field.siteID
+                                "siteid": field.siteID,
+                                "status" : field.status
                             });
-
                     }
-
+                    else if(field.job_start ){
+                        $scope.ScheduledJobs.push(
+                            {
+                                "title": field.name? field.name.trim() : "Nil",
+                                "start": field.job_end,
+                                "price": "," + field.total_price,
+                                reportId: field.reportID,
+                                "siteid": field.siteID,
+                                "status" : field.status
+                            });
+                    }
 
                 });
 
@@ -183,6 +179,9 @@
                             element.css('background-color', '#77DD77');
                             element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" title="No foreman assigned to this job"></i></a>');
                         }
+                        else if(event.status != 'scheduled'){
+                            element.css('background-color', 'grey')
+                        }
                         else {
                             element.css('background-color', '#FFB347')
                         }
@@ -204,13 +203,12 @@
                         var t= angular.copy(el.start);
                         t.add(-eventStart._days,'days');
                         Api.ScheduleJob(el.reportId, {
-                            job_start: t.format('YYYY-MM-DD'),//t.add(eventStart._days,'days').format('YYYY-MM-DD'),
+                            job_start: t.format('YYYY-MM-DD'),
                             job_end: el.start.format('YYYY-MM-DD')
                         }).then(function (response) {
                             console.log(response);
                         });
-                        
-                    },
+                    }
 
                 });
 

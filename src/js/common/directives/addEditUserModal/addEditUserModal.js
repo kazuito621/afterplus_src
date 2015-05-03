@@ -77,7 +77,11 @@ app.directive('addEditUserModal',
                             getSiteNames(data.siteIDs);
                             getClientNames(data.clientIDs);
                         });
-                    }
+                    }else{
+						  	// if a new user, default to sending welcome email
+						  	scope.newContact.sendWelcomeEmail=true;
+						}
+
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
@@ -110,6 +114,8 @@ app.directive('addEditUserModal',
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
+
+						  if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
                     
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];

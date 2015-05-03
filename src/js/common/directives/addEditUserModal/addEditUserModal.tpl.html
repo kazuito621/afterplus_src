@@ -101,11 +101,22 @@
                                     </div>
                                 </div>
 
-                                <div class="row" style="margin: 5px 2px 10px 5px;" ng-style="newContact.isLoginDisabled==false?'':{'background-color':'red','color':'silver'}">
+                                <div class="row" style="margin: 5px 2px 10px 5px;" 
+										  		ng-style="newContact.isLoginDisabled==false?'':{'background-color':'red','color':'silver'}">
                                     <label class="col-sm-4" style="font-weight: bold;margin: 2px;">
                                         <input type="checkbox" ng-model="newContact.isLoginDisabled" ng-change="selectionChanged()"/> Login Disabled
                                     </label>
                                 </div>
+
+											<!-- if no userID (then new user), so ask if they want to email that person their login -->
+                                <div class="row" style="margin: 5px 2px 10px 5px;" 
+												ng-if="!newContact.userID">
+                                    <label class="col-sm-8" style="font-weight: bold;margin: 2px;">
+                                        <input type="checkbox" ng-model="newContact.sendWelcomeEmail" /> Send "Welcome" email to user
+                                    </label>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>

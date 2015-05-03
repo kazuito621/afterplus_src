@@ -126,7 +126,7 @@
                         </a>-->
                         <a ng-if="auth.isAtleast('staff')" class="editable editable-click" status-dates="e"
 									bs-tooltip title="{{e[data.currentTstamp]}} " style="cursor: pointer;">
-                           	{{ e[data.currentTstamp] | formatDateFromNow }}
+                           	{{ e[data.currentTstamp] | formatDateFromNow:'showNone' }}
                         </a>
                         <a ng-if="auth.isAtleast('staff') == false" class="editable editable-click"
 									bs-tooltip title="{{e[data.currentTstamp]}}" style="cursor: pointer;">

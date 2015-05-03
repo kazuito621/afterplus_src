@@ -82,8 +82,11 @@ angular.module('arborPlusFilters', [])
 	})
 
 	.filter('formatDateFromNow', function(){
-		return function(input) {  
-			if(!input) return '';
+		return function(input, opt) {  
+			if(!input){
+				if(opt=='showNone') return '(none)';
+				return '';
+			}
 			return moment(input).utc().fromNow();
 		};  
 	})

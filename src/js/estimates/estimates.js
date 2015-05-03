@@ -106,7 +106,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
                  s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
             }
              else {
-                 s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+                 s.setAlert('Deleted successfully.',{type:'ok',time:5});
              }
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});

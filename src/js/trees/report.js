@@ -146,9 +146,11 @@ var ReportCtrl = app.controller(
                     RS.reportBackup=undefined;
                     discard=true;
                     $location.url($location.url(next).hash());
+
                 }
                 sm.stayOnCurrentPage=function(){
                 }
+                $('#loadingDiv').css('display','none'); // To remove the loading div.
                 return $modal({ scope: sm, template: 'js/common/directives/templates/pageNavConfirm.tpl.html', show: true });
             });
 

@@ -73,11 +73,14 @@ app.directive('addEditUserModal',
                             var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
                             scope.newContact.role={};
                             scope.newContact.role = scope.userRoles[idx];
-                            //data.clientIDs = data.clientIDs.split(',');
                             getSiteNames(data.siteIDs);
                             getClientNames(data.clientIDs);
                         });
-                    }
+                    }else{
+						  	// if a new user, default to sending welcome email
+						  	scope.newContact.sendWelcomeEmail=true;
+						}
+
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
@@ -110,6 +113,8 @@ app.directive('addEditUserModal',
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
+
+						  if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
                     
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];
@@ -168,8 +173,7 @@ app.directive('addEditUserModal',
                     if(!siteIDs || siteIDs==[-1]) return;
                     siteIDs = siteIDs.split(',');
                     _.each(siteIDs,function(siteID){
-                        var site = _.findObj(scope.sites,'siteID',siteID);
-                        scope.addedSites.push(site);
+					 			addToSiteList(siteID);
                     })
                 }
 
@@ -190,12 +194,7 @@ app.directive('addEditUserModal',
                     event.preventDefault();
                     event.stopPropagation();
                     if(this.selectedProperty.siteID==undefined) return;
-                    for(var i=0;i<this.addedSites.length;i++){
-                        if(this.addedSites[i].siteID==this.selectedProperty.siteID){
-                           return;
-                        }
-                    }
-                    this.addedSites.push(this.selectedProperty);
+					 		addToSiteList(this.selectedProperty.siteID, this.selectedProperty);
                     this.selectedProperty=undefined;
                 }
                 scope.getPropertyNames=function(client){
@@ -214,6 +213,14 @@ app.directive('addEditUserModal',
                         }
                     }
                 };
+
+					 var addToSiteList = function(siteID, site){
+							if(!_.findObj(scope.addedSites, 'siteID', siteID)){
+								if(!site) site = _.findObj(scope.sites,'siteID',siteID);
+								if(site)
+									scope.addedSites.push(site);
+							}
+					 }
                 scope.removeFromAddedClientList = function (client) {
                     for(var i=0;i<scope.addedClients.length;i++){
                         if(scope.addedClients[i].clientID==client.clientID){

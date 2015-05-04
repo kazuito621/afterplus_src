@@ -38,7 +38,7 @@ var ClientsCtrl = app.controller('ClientsCtrl',
                         if(idx>=0) {
                             s.initData.clients.splice(idx, 1);
                         }
-                        s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+                        s.setAlert('Deleted successfully.',{type:'ok',time:5});
                     }
                 }, function err(){
                     s.setAlert("Client can't be deleted, try again later.",{type:'d',time:5});

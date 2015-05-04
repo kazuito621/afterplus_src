@@ -3,7 +3,7 @@
 
     <div class="table-header">
         <h1 class="pull-left">Estimates</h1>
-        <div  class='class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"'
+        <div ng-if="auth.hasPerm('calendar_view')" class='class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"'
               style="max-width: 100%; width: auto;font-size: 23px;" ng-if="auth.isAtleast('staff')">
             <a style="color: white;" href="#/calendar">Job Calendar</a>
         </div>
@@ -21,8 +21,10 @@
                     <input type="radio" value="sent"> Sent</label>
 				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
                     <input type="radio" value="approved"> Approved</label>
+						  <!--
 				<label ng-click="setStatusFilter('scheduled')" class="btn btn-default">
                     <input type="radio" value="scheduled"> Scheduled</label>
+						  -->
 				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
                     <input type="radio" value="completed"> Completed</label>
                 <label ng-click="setStatusFilter('invoiced')" class="btn btn-default">
@@ -76,6 +78,9 @@
                         </button>
                         <i ng-class="getDateColClass()" class='silver' ng-click="sortDateCol()"></i>
                     </th>
+                    <th ng-if="!auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
+                        Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
+                    </th>
                     <th style="min-width: 55px;"></th>
                 </tr>
             </thead>
@@ -115,7 +120,7 @@
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">
 						</button>
-						<button type='button' ng-if="auth.is('customer')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
+						<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
 								 onclick="return false;">{{ e.status | statusText }}</button>
 					</td>
                     <td>
@@ -126,12 +131,11 @@
                         </a>-->
                         <a ng-if="auth.isAtleast('staff')" class="editable editable-click" status-dates="e"
 									bs-tooltip title="{{e[data.currentTstamp]}} " style="cursor: pointer;">
-                           	{{ e[data.currentTstamp] | formatDateFromNow }}
+                           	{{ e[data.currentTstamp] | formatDateFromNow:'showNone' }}
                         </a>
-                        <a ng-if="auth.isAtleast('staff') == false" class="editable editable-click"
-									bs-tooltip title="{{e[data.currentTstamp]}}" style="cursor: pointer;">
+                        <span ng-if="false == auth.isAtleast('staff')" >
                            	{{ e[data.currentTstamp] | formatDateFromNow }}
-                        </a>
+                        </span>
                     </td>
                     <td>
                         <a ng-if="auth.isAtleast('inventory') && e.status=='draft' && e.delete!=1"

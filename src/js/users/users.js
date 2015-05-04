@@ -181,6 +181,7 @@ var UserCtrl = app.controller('UserCtrl',
                 s.data.filterTextEntry = '';
                 clearFilter();
                 applyFilter();
+					 init();
             };
 
             s.sendLoginInfo=function(userID){

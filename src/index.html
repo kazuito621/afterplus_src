@@ -62,7 +62,7 @@
 
     
     <header ng-include="'js/main/header.tpl.html'" ng-if="!isMobile"></header>
-    <div class="arbor-plus-app-loading" ng-animate-children>
+    <div class="arbor-plus-app-loading" ng-animate-children id="loadingDiv"> <!--Using this loadingDiv id name in report.js-->
 
 		<!--
 			HACKY CODE WARNING: I'm putting Style block inside directive so that it 

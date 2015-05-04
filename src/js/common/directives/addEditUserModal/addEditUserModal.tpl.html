@@ -47,7 +47,7 @@
                                     <label class="col-sm-5" style="font-weight: bold">Assigned properties</label>
                                     <br>
                                     <div class="btn-group">
-                                            <span ng-repeat="s in addedSites" class="btn btn-default hover-anchor"  bs-tooltip
+                                            <span ng-repeat="s in addedSites track by $index" class="btn btn-default hover-anchor"  bs-tooltip
                                                   title="{{s.siteName}}">
                                                 <span class="pull-right hover-action" >
                                                      <a ng-click="removeFromAddedSiteList(s)"  href><i class="fa fa-times fa-fw"></i></a>

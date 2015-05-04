@@ -5,7 +5,7 @@
                 <form class="form-inline" ng-submit="saveSite()">
                     <div class='panel panel-default bottomMargin0'>
                         <div class='panel-heading'>
-                            <h3 class='panel-title'>Status Dates - {{t.name}}</h3>
+                            <h3 class='panel-title'>Estimate/Job Dates - {{t.name}}</h3>
                         </div>
                         <div class='panel-body'>
                             <table class="table ng-scope">
@@ -16,28 +16,10 @@
                                 <tbody>
                                 <tr class="hoverHotspot">
                                     <td colspan="2" data-title="service_desc">
-                                        <label class="pull-left">Created</label>
-                                    </td>
-                                    <td data-title="service_quantity">
-                                        <input class="form-control pull-right" ng-model=" t.tstamp_created" data-date-format="yyyy-MM-dd" placeholder="Set Date"
-                                               data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
-                                    </td>
-                                </tr>
-                                <tr class="hoverHotspot">
-                                    <td colspan="2" data-title="service_desc">
-                                        <label class="pull-left">Updated</label>
-                                    </td>
-                                    <td data-title="service_quantity">
-                                        <input class="form-control pull-right" ng-model=" t.tstamp_updated" data-date-format="yyyy-MM-dd" placeholder="Set Date"
-                                               data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
-                                    </td>
-                                </tr>
-                                <tr class="hoverHotspot">
-                                    <td colspan="2" data-title="service_desc">
                                         <label class="pull-left">Sent</label>
                                     </td>
                                     <td data-title="service_quantity">
-                                        <input class="form-control pull-right" ng-model=" t.tstamp_sent" data-date-format="yyyy-MM-dd" placeholder="Set Date"
+                                        <input class="form-control pull-right" ng-model="t.tstamp_sent" data-date-format="yyyy-MM-dd" placeholder="Set Date"
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>
@@ -46,10 +28,12 @@
                                         <label class="pull-left">Approved</label>
                                     </td>
                                     <td data-title="service_quantity">
-                                        <input class="form-control pull-right" ng-model=" t.tstamp_approved" data-date-format="yyyy-MM-dd" placeholder="Set Date"
+                                        <input class="form-control pull-right" ng-model="t.tstamp_approved" data-date-format="yyyy-MM-dd" placeholder="Set Date"
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>
+
+										  <!-- commented out until feature is available 
                                 <tr class="hoverHotspot">
                                     <td colspan="2" data-title="service_desc">
                                         <label class="pull-left">Scheduled</label>
@@ -57,16 +41,15 @@
                                     <td data-title="service_quantity">
                                         <a class="editable editable-click pull-right" jump-to-calendar parent-modal="modal" ng-hide="t.tstamp_scheduled==''"  ng-bind="t.tstamp_scheduled"></a>
                                         <a class="editable editable-click pull-right" jump-to-calendar parent-modal="modal" ng-show="t.tstamp_scheduled==''">Not Set Yet</a>
-                                        <!--<input class="form-control pull-right" ng-model=" t.tstamp_scheduled" data-date-format="yyyy-MM-dd" placeholder="Set Date"
-                                               data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">-->
                                     </td>
                                 </tr>
+										  -->
                                 <tr class="hoverHotspot">
                                     <td colspan="2" data-title="service_desc">
                                         <label class="pull-left">Completed</label>
                                     </td>
                                     <td data-title="service_quantity">
-                                        <input class="form-control pull-right" ng-model=" t.tstamp_Completed" data-date-format="yyyy-MM-dd" placeholder="Set Date"
+                                        <input class="form-control pull-right" ng-model="t.tstamp_completed" data-date-format="yyyy-MM-dd" placeholder="Set Date"
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>
@@ -75,7 +58,7 @@
                                         <label class="pull-left">Invoiced</label>
                                     </td>
                                     <td data-title="service_quantity">
-                                        <input class="form-control pull-right" ng-model=" t.tstamp_invoiced" data-date-format="yyyy-MM-dd" placeholder="Set Date"
+                                        <input class="form-control pull-right" ng-model="t.tstamp_invoiced" data-date-format="yyyy-MM-dd" placeholder="Set Date"
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>
@@ -84,7 +67,7 @@
                                         <label class="pull-left">Paid</label>
                                     </td>
                                     <td data-title="service_quantity">
-                                        <input class="form-control pull-right" ng-model=" t.tstamp_paid" data-date-format="yyyy-MM-dd" placeholder="Set Date"
+                                        <input class="form-control pull-right" ng-model="t.tstamp_paid" data-date-format="yyyy-MM-dd" placeholder="Set Date"
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>

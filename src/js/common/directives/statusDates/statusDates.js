@@ -9,7 +9,7 @@ app.directive('statusDates',
                 link: function (scope, el, attrs) {
 
 
-                    var tstamp_props = ['tstamp_created','tstamp_updated' ,'tstamp_sent' , 'tstamp_approved','tstamp_scheduled' , 'tstamp_completed', 'tstamp_invoiced', 'tstamp_paid'];
+                    var tstamp_props = ['tstamp_sent' , 'tstamp_approved', /*'tstamp_scheduled',*/ 'tstamp_completed', 'tstamp_invoiced', 'tstamp_paid'];
                     var changedValues={};
                     scope.save = function(){
 
@@ -52,12 +52,16 @@ app.directive('statusDates',
                         scope.report = scope.$eval(attrs.statusDates);
                         scope.t={}; // this
                         scope.t = angular.copy(scope.report);
-                        if (scope.t.tstamp_created) scope.t.tstamp_created = $filter('formatDateOnly')(scope.report.tstamp_created);
-                        if (scope.t.tstamp_updated) scope.t.tstamp_updated = $filter('formatDateOnly')(scope.report.tstamp_updated);
 
                         _.each(tstamp_props, function(prop){
-                            if(scope.t[prop] == null || scope.t[prop] == undefined ) scope.t[prop]='';
-                            scope.t[prop] = $filter('formatDateOnly')(scope.report[prop]);
+									var d=scope.t[prop];
+									if( d == null || d == undefined ) d='';
+									else{
+                            	d = $filter('formatDateOnly')(d);
+										d = d.replace(/-/g, '/');		// required to change yyyy-mm-dd to yyyy/mm/dd
+																				// because the datepicker is wrong if you dont
+									}
+									scope.t[prop] = d;
                         });
 
                         scope.t_backUp = angular.copy(scope.t);

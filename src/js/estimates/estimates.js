@@ -68,6 +68,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     }
 
     var init = function (cb) {
+		s.setAlert("Loading...", {time:8});
+
         var search = $location.search();
         cb = cb || angular.noop;
         Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {

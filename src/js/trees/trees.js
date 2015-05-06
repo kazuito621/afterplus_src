@@ -1383,7 +1383,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 							// and not an actual treeSet. In which case, the "tree" object inside it, is the actual tree.
 					 		if(!itm.commonName && itm.tree) itm=itm.tree;		
 
-                    if (!itm || itm.hide) return;
+                    if (!itm || !itm.treeID || itm.hide) return;
                     if (itm.commonName == null || itm.commonName == 'null' || !itm.commonName) itm.commonName = ' ';
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
                         itm.info = getTreeTemplate(itm);

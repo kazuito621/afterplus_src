@@ -309,7 +309,7 @@ var ReportCtrl = app.controller(
                         if (emList) {
                             s.emailRpt.contactEmail = emList.join(', ');
                             s.emailRpt.contactEmails = emList;
-                            contactEmailsBackup = emList;
+                            contactEmailsBackup = angular.copy(emList);
                         }
                     });
 
@@ -380,30 +380,30 @@ var ReportCtrl = app.controller(
                         scope: sm,
                         template: '/js/common/directives/enterUserInfo/enterUserInfo.tpl.html',
                         animation: 'am-flip-x',
-                        placement: 'bottom',
-                        trigger: 'click'
+                        placement: 'bottom'
                     });
                 //show popover
-                sm.cancel = function(){
-                    alreadySkipped.push(email);
-                    if (sm.popover && typeof sm.popover.hide === 'function') {
-                        sm.popover.hide();
-                    }
-                };
-
-                sm.ok = function(){
-                    var idx = _.findObj(s.emailRpt.contactEmails, 'text', sm.email, true);
-                    s.emailRpt.contactEmails[idx].fname = sm.fname;
-                    s.emailRpt.contactEmails[idx].lname = sm.lname;
-                    s.emailRpt.contactEmails[idx].phone = sm.phone;
-                    alreadySkipped.push(email);
-                    if (sm.popover && typeof sm.popover.hide === 'function') {
-                        sm.popover.hide();
-                    }
-                };
                 sm.popover.$promise.then(function () {
                     sm.popover.show();
                 });
+                sm.cancel = function(){
+                    alreadySkipped.push(email);
+                    if (sm.popover && typeof sm.popover.hide === 'function') {
+                        el.off();
+                        sm.popover.hide();
+                    }
+                };
+                sm.ok = function(){
+                    var idx = _.findObj(s.emailRpt.contactEmails, 'text', sm.email, true);
+                    s.emailRpt.contactEmails[idx].fname = this.fname;
+                    s.emailRpt.contactEmails[idx].lname = this.lname;
+                    s.emailRpt.contactEmails[idx].phone = this.phone;
+                    alreadySkipped.push(email);
+                    if (sm.popover && typeof sm.popover.hide === 'function') {
+                        el.off();
+                        sm.popover.hide();
+                    }
+                };
             }
 
             var alreadySkipped= [];
@@ -415,6 +415,7 @@ var ReportCtrl = app.controller(
                 console.log(s.emailRpt.contactEmails)
                 _.each(s.emailRpt.contactEmails,function(item){
                    var idx = contactEmailsBackup.indexOf(item.text);
+                    //var idx = _.findObj(contactEmailsBackup, 'text', item.text,true);
                     if (idx == -1){
                         var alreadySkippedIdx = alreadySkipped.indexOf(item.text);
                         if(alreadySkippedIdx == -1) {
@@ -459,7 +460,11 @@ var ReportCtrl = app.controller(
                         s.emailRpt.sendBtnText = 'Send';
                         return;
                     };
-                    s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                    _.each(s.emailRpt.contactEmails,function(item){
+                       item.email = item.text;
+                    });
+                   // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                    s.emailRpt.contactEmail =angular.copy(s.emailRpt.contactEmails);
                     s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
 //
                     Api.sendEmailPortalLink(s.emailRpt)
@@ -479,24 +484,32 @@ var ReportCtrl = app.controller(
                 s.emailRpt.disableSendBtn = true;
                 s.emailRpt.sendBtnText = 'Sending and verifying...';
 
-                console.log('s.emailRpt', s.emailRpt);
-
-                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
-
-                Api.sendReport(s.emailRpt)
-                    .then(function (msg) {
+                isNewEmails().then(function(data){
+                    if(data.indexOf(true)!=-1) {
                         s.emailRpt.disableSendBtn = false;
                         s.emailRpt.sendBtnText = 'Send';
-
-                        if (msg.links.length >= 1) {
-                            hideFn();
-                        }
+                        return;
+                    };
+                    _.each(s.emailRpt.contactEmails,function(item){
+                        item.email = item.text;
                     });
-				$timeout(function(){ updateEmailLogs(); },2000);
-				$timeout(function(){ updateEmailLogs(); },4000);
-				$timeout(function(){ updateEmailLogs(); },12000);
-				$timeout(function(){ updateEmailLogs(); },30000);
+                    // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                    s.emailRpt.contactEmail =angular.copy(s.emailRpt.contactEmails);
+                    s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
+//
+                    Api.sendReport(s.emailRpt)
+                        .then(function (msg) {
+                            s.emailRpt.disableSendBtn = false;
+                            s.emailRpt.sendBtnText = 'Send';
+                            if (msg.msg.trim().toLowerCase() == ('emails sent successfully')) {
+                                hideFn();
+                            }
+                        });
+                    $timeout(function(){ updateEmailLogs(); },2000);
+                    $timeout(function(){ updateEmailLogs(); },4000);
+                    $timeout(function(){ updateEmailLogs(); },12000);
+                    $timeout(function(){ updateEmailLogs(); },30000);
+                });
             };
 
 			var updateEmailLogs = function(){

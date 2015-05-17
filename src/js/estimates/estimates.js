@@ -68,6 +68,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     }
 
     var init = function (cb) {
+		s.setAlert("Loading...", {time:8});
+
         var search = $location.search();
         cb = cb || angular.noop;
         Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
@@ -106,7 +108,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
                  s.setAlert("There was an error deleting the estimate.",{type:'d',time:5});
             }
              else {
-                 s.setAlert('Property deleted successfully.',{type:'ok',time:5});
+                 s.setAlert('Deleted successfully.',{type:'ok',time:5});
              }
         }, function err(){
             s.setAlert("Estimate can't be deleted, try again later.",{type:'d',time:5});

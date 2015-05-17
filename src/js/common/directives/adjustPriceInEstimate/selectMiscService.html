@@ -1,0 +1,18 @@
+<ul class='dropdown-menu' >
+        <li ng-repeat="svc in services track by $index">
+            <a ng-click="onSelect(svc)">{{svc.name}}</a>
+        </li>
+        <div ng-show="services.length==0" style="text-align: center;font-size: large; margin-top: 50px;min-height: 100px;">
+            No saved misc service found.
+        </div>
+
+    <button type="button" style="margin: 10px;" add-edit-misc-service data="services" class="btn btn-default">
+        <i class="fa fa-edit"></i>
+        Add/Edit Presents
+    </button>
+    <button style="margin-right: 10px;" type="button" class="btn btn-default " ng-click="cancel()">
+        <i class="fa fa-remove"></i>
+        CANCEL
+    </button>
+</ul>
+

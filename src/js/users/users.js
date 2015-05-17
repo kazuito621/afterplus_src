@@ -2,7 +2,8 @@ var UserCtrl = app.controller('UserCtrl',
     ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
         function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
             'use strict';
-            var s = window.ecs = $scope;
+            var s = window.ecs = $scope
+               	, myStateID = 'users'
             var users=[],  		// array of original estimates
                 userFiltered=[],  		// filtered list of estimates sites... which s.displayedSites uses as its source
                 filterTextTimeout,
@@ -181,6 +182,7 @@ var UserCtrl = app.controller('UserCtrl',
                 s.data.filterTextEntry = '';
                 clearFilter();
                 applyFilter();
+					 init();
             };
 
             s.sendLoginInfo=function(userID){

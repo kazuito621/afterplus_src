@@ -86,7 +86,8 @@ header
 					{
 						text-align: center;
 						display: block;
-						padding: 19px 40px;
+						padding: 19px 30px;
+
 
 						@media(max-width: 540px)
 						{
@@ -101,7 +102,7 @@ header
 						i 
 						{
 							display: block;
-							font-size: 30px;
+							font-size: 26px;
 							color: #adadad;
 
 							@media(max-width: 480px)
@@ -113,7 +114,7 @@ header
 						.text 
 						{
 							display: block;
-							@include font-g(18px , normal , #adadad , 24px);
+							@include font-g(14px , normal , #adadad , 20px);
 							text-transform: uppercase;
 							margin-top: 5px;
 

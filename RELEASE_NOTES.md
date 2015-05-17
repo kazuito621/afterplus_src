@@ -4,8 +4,9 @@ ArborPlus Release Notes
 
 had bug: builds/build-1427054055
 
-2015-03-21 (v2.3.7) - builds/build-1427054055
+2015-03-28 (v2.3.7) - builds/build-1427054055
 -------------------
+ - NEW: Bulk Editing of line items in Estimates
  - NEW: In Estimates List, user can edit approved/completed timestamps
  - NEW: In Estimates List, user can sort and change various status timestamps
  - NEW: User can send a portal link to a customer without needing to create an estimate

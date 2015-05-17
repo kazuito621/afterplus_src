@@ -224,7 +224,14 @@ var TreesCtrl = app.controller('TreesCtrl',
 					    if (data && data.siteID)
 					        s.selected.siteID = data.siteID;
 
-					    showMappedTrees();
+						// assign local tree id based on grouped items
+						var ct=1;
+						_.each(s.report.groupedItems, function(itm){
+							itm.tree=s.report.items[ itm.itemIndexes[0] ];
+							itm.tree.localTreeID=ct++;
+						});
+
+					    showMappedTrees(s.report.groupedItems);
 
 					    // todo - find a better place for this.... should happen after
 					    // tree map is initialized
@@ -1236,8 +1243,16 @@ var TreesCtrl = app.controller('TreesCtrl',
                 return o;
             }
 
-            //Define function to show site specific trees in map
+
+				/**
+				 * Put trees onto google map
+				 * This is used both by Site view and Estiamte view
+				 */
             var showMappedTrees = _.throttle(function (treeSet) {
+					if(!treeSet){
+						console.debug("FATAL ERROR: treeSet Missing ");
+						console.trace();
+					}
 
                 var gMapID = '';
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
@@ -1369,71 +1384,27 @@ var TreesCtrl = app.controller('TreesCtrl',
                     }
                 }
 
-
-
-                if (s.data.mode() == 'estimate' && s.report && s.report.items) treeSet = s.report.items;
+	
                 clearMarkers();
+
                 var set2 = [], ratingD, o;
                 if (!infowindow) infowindow = new google.maps.InfoWindow();
                 _.each(treeSet, function (itm) {
+					 		// this is used because in some instances, the report.groupedItems[] array is passed as the treeSet
+							// and not an actual treeSet. In which case, the "tree" object inside it, is the actual tree.
+					 		if(!itm.commonName && itm.tree) itm=itm.tree;		
+
                     if (!itm || itm.hide) return;
                     if (itm.commonName == null || itm.commonName == 'null' || !itm.commonName) itm.commonName = ' ';
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
                         itm.info = getTreeTemplate(itm);
-                        //ratingD = (itm.ratingID > 0) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
-                        //o = '<div class="mapWindowContainer">'
-                        //    + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
-                        //    + '<div class="mwcBody">'
-                        //	+ '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
-                        //	+ '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,
-                        //        itm.treeID, $filter('dbhID2Name')(itm.dbhID, s));
-                        //if (itm.ratingID) o += '<div class="firstHeading">Rating:{0}-{1}</div>'.format(itm.ratingID, ratingD);
-                        //o += '<div>';
-                        //if (itm.caDamage == 'yes') o += '<i class="fa fa-warning _red _size6" bs-tooltip title="Hardscape damage"></i> ';
-                        //if (itm.caDamage == 'potential') o += '<i class="fa fa-warning _grey _size6" bs-tooltip title="Hardscape damage"></i> ';
-                        //if (itm.powerline == 'yes') o += '<i class="fa fa-bolt _red _size6" bs-tooltip title="Powerline nearby"></i> ';
-                        //if (itm.building == 'yes') o += '<i class="fa fa-building _red _size7" bs-tooltip title="Building nearby"></i> ';
-                        //// todo - if itm.history[] contains any items which are "recommended" status, and year = THIS YEAR,
-                        //// then show a little [2014] icon in red.  if there is one for NEXT YEAR, then show a [2015] in grey,
-                        //// similar to the items in the tree results list. ... ie
-                        //// <span class='textIconBlock-red'>2014</span>
-                        //// .... or ...textIconBlock-grey
-                        ////	+'<div class="recYear">{0}</div>'.format(itm.history) // Not sure how to access and format this one.
-                        //var editClick = "angular.element(this).scope().editCurrentTree({0})".format(itm.treeID);
-                        //if (s.data.mode() === 'trees') {
-                        //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
-                        //    //if (Auth.isAtleast('inventory')) {
-                        //    //    o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                        //    //}
-                        //    //else {
-                        //    //    o += '</div><a href="Javascript:void(0)" onclick="{0}" style="font-weight:bold;">Edit Tree</a><BR></div>'.format(editClick);
-                        //    //}
-                        //    //o += '</div><a href="#/tree_edit/' + itm.treeID + '" style="font-weight:bold;">Edit Tree</a><BR></div>';
-                        //    //o += '</div><BR>'
-                        //    // +'<button class="navButton width90 roundedCorners" onclick="this.location=\'#/tree_edit/{0}\'">Edit Tree</button>'.format(itm.treeID);
-                        //}
-                        //itm.info = o;
                     }
                     setIconColor(itm);
                     set2.push(itm)
                 });
-                set2 = filterOutIconDups(set2);
                 if (set2.length > 0) addMarkers(set2, 'singleSite');
                 else s.setAlert('No trees found on this property', { type: 'd', time: 5 });
             }, 1000);
-
-            // When tree icons are grouped in estimate, there will be duplicates... always take the lower locatTreeID number
-            var filterOutIconDups = function (icons) {
-                var treeIDs = [];
-                var out = [];
-                _.each(icons, function (i) {
-                    if (treeIDs.indexOf(i.treeID) == -1) {
-                        out.push(i);
-                        treeIDs.push(i.treeID);
-                    }
-                });
-                return out;
-            }
 
 
             //Define function to get tree marker iconType/color by speciesID

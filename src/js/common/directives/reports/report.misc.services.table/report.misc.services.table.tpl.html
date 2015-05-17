@@ -14,7 +14,8 @@
         </thead>
 
         <tbody>
-        <tr ng-repeat="item in report.services" class="hoverHotspot">							   	<td data-title="service_desc" colspan="{{ data.mode()=='trees' && '1' || '2' }}">
+        <tr ng-repeat="item in report.services" class="hoverHotspot">							   	
+		  <td data-title="service_desc" colspan="{{ data.mode()=='trees' && '1' || '2' }}">
             <a href editable-text='item.desc' ng-if='auth.isAtleast("inventory")'>{{item.desc}}</a>
             <span ng-if='!auth.isAtleast("inventory")'>{{item.desc}}</span>
         </td>
@@ -42,16 +43,22 @@
 
         <tr ng-if="data.mode()=='trees'">
             <td>
-                <textarea tabindex=1 ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'></textarea>
+                <textarea tabindex='1' ng-model="service.desc" class="rightMargin10" placeholder="Service Description" style='width:490px;height:2em;'
+					 	onfocus="window.descBoxTop=document.documentElement.scrollTop || document.body.scrollTop"></textarea>
+                <a select-misc-service href="">
+                    <i class="fa fa-gear _size5" ></i>
+                </a>
             </td>
             <td>
 									<span>
-										x&nbsp;<input tabindex=2 type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
+										x&nbsp;<input tabindex='2' type="text" ng-model="service.quantity" class="rightMargin10" placeholder="1" 
+											onfocus="if(window.descBoxTop){ setTimeout(function(){$(window).scrollTop(window.descBoxTop);},350)}"
+											style='width:30px;height:2em;' ng-init="service.quantity=1"></input>
 									</span>
             </td>
             <td style="padding-left:0px;padding-right:0px"  class="text-right">
 									<span>
-										$&nbsp;<input tabindex=3 type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
+										$&nbsp;<input tabindex='3' type="text" ng-model="service.price"  placeholder="0.00" style='width:40px;height:2em;'></input>
 									</span>
             </td>
             <td class="text-right">

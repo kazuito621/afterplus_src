@@ -524,7 +524,10 @@ var ReportCtrl = app.controller(
                 s.service.quantity = 1;
                 s.service.price = "";
             };
-
+            s.setServiceDetails=function(service){
+                s.service.desc=service.name;
+                s.service.price=service.price;
+            }
             s.approveEstimate = function(){
                 s.disableApproveButton = true;
                 s.setAlert('Processing...', {time: 5});

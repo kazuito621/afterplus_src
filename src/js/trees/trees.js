@@ -531,6 +531,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.$on('onTreeUpdate', function (evt, tree) {
                 if (tree && tree.treeID) {
                     var t = _.findObj(s.trees, 'treeID', tree.treeID)
+                    updateMarker(tree);
                     if (t) t = _.deepCopy(t, tree);
                     if (_.extract(ReportService, 'report.items')) {
                         var t2 = _.findObj(ReportService.report.items, 'treeID', tree.treeID)
@@ -541,6 +542,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                     }
                 }
             });
+            var updateMarker = function(tree){
+                var marker = self.findMarker(tree.treeID);
+                marker.info = getTreeTemplate(tree);
+                infowindow.setContent(marker.info);
+                infowindow.open(gMap, marker);
+            }
 
             // When year in filter dropdown is changed...
             s.onSelectYear = function (id) {

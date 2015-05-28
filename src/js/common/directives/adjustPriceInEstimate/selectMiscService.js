@@ -34,7 +34,7 @@ app.directive('selectMiscService',
                         if(!scope.popover)
                             scope.popover = $popover(el, {
                                 scope: scope,
-                                template: '/js/common/directives/adjustPriceInEstimate/selectMiscService.html',
+                                template: '/js/common/directives/adjustPriceInEstimate/selectMiscService.tpl.html',
                                 animation: 'am-flip-x',
                                 placement: 'right',
                                 trigger: 'click'

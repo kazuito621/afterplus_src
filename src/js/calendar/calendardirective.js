@@ -40,11 +40,28 @@
                                });
                        }
                        else if(field.job_start ){
+                           var sTime ;
+                           var eTime ;
+                           if(moment(field.job_start).format('h:mm:ss a') ==  "12:00:00 am"){
+                               sTime =  moment(field.job_start).format('YYYY-MM-DD');
+                           }
+                           else {
+                               sTime =  moment(field.job_start).format('YYYY-MM-DD hh:mm:ss')
+                           }
+                           if(moment(field.job_end).format('h:mm:ss a') ==  "12:00:00 am"){
+                               eTime =  moment(field.job_end).format('YYYY-MM-DD');
+                           }
+                           else {
+                               eTime =  moment(field.job_end).format('YYYY-MM-DD hh:mm:ss')
+                           }
                            $scope.ScheduledJobs.push(
                                {
                                    "title": field.name? field.name.trim() : "Nil",
-                                   "start": field.job_start,
-                                   "end": field.job_end,
+                                   "start":sTime,
+                                   "end": eTime,
+                                   /*start: '2015-05-18',
+                                   end: '2015-05-18',*/
+
                                    "price": "," + field.total_price,
                                    reportId: field.reportID,
                                    "siteid": field.siteID,
@@ -100,7 +117,9 @@
                        editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
                        droppable: $scope.dropablefullcalendar,
                        eventLimit: $scope.eventfullcalendar,
+                       defaultTimedEventDuration: '04:00:00',
                        startEditable: true,
+                       durationEditable: true,
                        events: $scope.ScheduledJobs,
                        select: function (start, end) {
                            var title = prompt('Event Title:');
@@ -206,26 +225,42 @@
                            }
                            Api.ScheduleJob(el.reportId, {
                                //job_start: t.format('YYYY-MM-DD'),
-                               job_start: el.start.format('YYYY-MM-DD'),
-                               job_end: el.end.format('YYYY-MM-DD')
+                               job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
+                               job_end: moment(el.end).format('YYYY-MM-DD HH:mm:ss')
                            }).then(function (response) {
                                console.log(response);
                            });
 
                        },
-                       eventDrop: function (el, eventStart, ev, ui) {
+                       eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
                            // var eventInfo=$scope.getEventInfo(event.title)
                            if(el.reportId == undefined){
                                var eventInfo=$scope.getEventInfo(el.title);
                                el.reportId = eventInfo.reportId;
                            }
-                           var t= angular.copy(el.start);
-                           t.add(-eventStart._days,'days');
+                           //var t= angular.copy(el.start);
+                           //t.add(-eventStart._days,'days');
+                           var sTime;
+                           var eTime;
 
+                           sTime =  moment(el.start).format('YYYY-MM-DD HH:mm:ss');
+                           if(el._allDay == false && el.end == undefined){
+                               el.end =  angular.copy(el.start);
+                               el.end.add(4, 'hours');
+                               eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
+                           }
+                           else if (el.end == undefined){
+                               eTime = sTime;
+                           }
+                           else {
+                               eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
+                           }
                            Api.ScheduleJob(el.reportId, {
                                //job_start: t.format('YYYY-MM-DD'),
-                               job_start: el.start.format('YYYY-MM-DD'),
-                               job_end: el.end==null?el.start.format('YYYY-MM-DD'):el.end.format('YYYY-MM-DD')
+                              //job_start: el.start.format('YYYY-MM-DD'),
+                              //job_end: el.end==null?el.start.format('YYYY-MM-DD'):el.end.format('YYYY-MM-DD')
+                               job_start: sTime,
+                               job_end: eTime
                            }).then(function (response) {
                                console.log(response);
                            });

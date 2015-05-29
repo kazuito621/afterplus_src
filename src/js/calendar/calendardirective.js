@@ -395,7 +395,7 @@
                 Api.UnscheduledJob($scope.clickedEvent.reportId, {
 
                 }).then(function () {
-                    $('#fullCalModal').fadeOut();
+                    $('#fullCalModal').modal('hide');
                     $scope.init();
                     elm.fullCalendar('removeEvents', id);
                 });

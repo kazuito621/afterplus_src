@@ -104,7 +104,7 @@
                         <table>
                             <tr><td>Assignments</td><td></td></tr>
                             <tr><td>Name of Foreman</td><td></td></tr>
-                            <tr><td><a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.id as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
+                            <tr><td><a href="#" editable-select="user.group" onshow="loadGroups()"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoforeman(g.id)">{{ user.groupName || 'Select Foreman' }}
                         </a></td><td></td></tr>
                             <tr><td>Equipment 1</td><td></td></tr>
                             <tr><td>Equipment 2</td><td></td></tr>

@@ -27,6 +27,7 @@ app.directive('selectMiscService',
 
                     $(el).click(function () {
 
+                        if(scope.popover && scope.popover.$isShown) return;
                         if (scope.popover && typeof scope.popover.hide === 'function') {
                             scope.popover.hide();
                         }

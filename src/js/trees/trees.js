@@ -531,6 +531,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.$on('onTreeUpdate', function (evt, tree) {
                 if (tree && tree.treeID) {
                     var t = _.findObj(s.trees, 'treeID', tree.treeID)
+                    updateMarker(tree);
                     if (t) t = _.deepCopy(t, tree);
                     if (_.extract(ReportService, 'report.items')) {
                         var t2 = _.findObj(ReportService.report.items, 'treeID', tree.treeID)
@@ -541,6 +542,12 @@ var TreesCtrl = app.controller('TreesCtrl',
                     }
                 }
             });
+            var updateMarker = function(tree){
+                var marker = self.findMarker(tree.treeID);
+                marker.info = getTreeTemplate(tree);
+                infowindow.setContent(marker.info);
+                infowindow.open(gMap, marker);
+            }
 
             // When year in filter dropdown is changed...
             s.onSelectYear = function (id) {
@@ -959,7 +966,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                     //console.log("info added: "+marker.info);
                     mapBounds.extend(LatLngList[a]);
 
-
                     //determine which array to add markers to
                     switch (addType) {
                         case 'allSites':
@@ -1074,11 +1080,8 @@ var TreesCtrl = app.controller('TreesCtrl',
             //Fire when user click on edit tree from infowindow in map.
             //It contains all methods which we are using to edit a tree.
             s.editCurrentTree = function (treeId) {
-
                 s.currentEditableMarker = s.findEditableMarkerAndChangeOthers(treeId, false);
-
                 s.currentEditableMarker.currentPosition = s.currentEditableMarker.position;
-
                 s.cancelEditing = function (moveToCurrentPosition) {
                     if (moveToCurrentPosition === undefined) {
                         moveToCurrentPosition = true;
@@ -1137,7 +1140,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 var click = "angular.element(this).scope().cancelEditing()";
                 var confirmclick = "angular.element(this).scope().confirmEditing()";
-
                 var markertemplate = "<div style=\"height:60px;width:240px;\">" +
                                          "<div class=\"\">" +
                                             "<span>Drag pin to change the location of tree.</span><br/><br/>" +
@@ -1253,6 +1255,8 @@ var TreesCtrl = app.controller('TreesCtrl',
 						console.debug("FATAL ERROR: treeSet Missing ");
 						console.trace();
 					}
+
+console.debug(" show mapp trees -------- ");
 
                 var gMapID = '';
                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
@@ -1373,11 +1377,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                     }
                 }
 
-	
                 clearMarkers();
 
                 var set2 = [], ratingD, o;
                 if (!infowindow) infowindow = new google.maps.InfoWindow();
+
                 _.each(treeSet, function (itm) {
 					 		// this is used because in some instances, the report.groupedItems[] array is passed as the treeSet
 							// and not an actual treeSet. In which case, the "tree" object inside it, is the actual tree.
@@ -1416,7 +1420,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
                 itm.colorID = idx;
                 itm.iconType = base + num + '|' + bg + '|' + fg;
-
                 return itm.iconType;
             }
 

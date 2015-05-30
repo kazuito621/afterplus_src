@@ -34,17 +34,17 @@
     <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" />
 </div>
 <div id='external-events' style="margin-top: 52px;">
-    <h4>UnscheduledJobs</h4>
+    <h4 style="width:105%;">Unscheduled Jobs</h4>
 
-<!--    <div class='fc-event'>
+    <!--    <div class='fc-event'>
         <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
     </div>-->
     <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs">
         {{singleJob.title}}<!--<span ng-show="false">{{singleJob.price}}</span>-->
     </div>
     <p>
-        <input type='checkbox' id='drop-remove' />
-        <label for='drop-remove'>remove after drop</label>
+        <input type='checkbox' id='drop-remove' checked ng-show="false" />
+        <!--  <label for='drop-remove'>remove after drop</label>-->
     </p>
 </div>
 
@@ -58,11 +58,80 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 <h4 id="modalTitle" class="modal-title"></h4>
+                <h4 id="modalSiteID" class="modal-site" ng-show="true" ng-model="siteID"></h4>
             </div>
-            <div id="modalBody" class="modal-body"></div>
+            <div id="modalBody" class="modal-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                        <table>
+                            <tr>
+                                <td>SiteName</td>
+                                <td>:{{  siteName}}</td>
+                            </tr>
+                            <tr>
+                                <td>SiteAddress</td>
+                                <td>:{{  siteAddress}}</td>
+                            </tr>
+                            <tr>
+                                <td>City</td>
+                                <td>:{{  city}}</td>
+                            </tr>
+                            <tr>
+                                <td>State</td>
+                                <td>:{{  state}}</td>
+                            </tr>
+                            <tr>
+                                <td>Zip</td>
+                                <td>:{{  zip}}</td>
+                            </tr>
+                            <tr></tr>
+                            <tr></tr>
+                            <tr>
+                                <td>Contact</td>
+                                <td>:{{  contact}}</td>
+                            </tr>
+                            <tr>
+                                <td>Email Address</td>
+                                <td>:{{  email}}</td>
+                            </tr>
+                            <tr>
+                                <td>Phone</td>
+                                <td>:{{  phone}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table>
+                            <tr><td>Assignments</td><td></td></tr>
+                            <tr><td>Name of Foreman</td><td></td></tr>
+                            <tr><td><a href="#" editable-select="user.group" onshow="loadGroups()"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoforeman(g.id)">{{ user.groupName || 'Select Foreman' }}
+                        </a></td><td></td></tr>
+                            <tr><td>Equipment 1</td><td></td></tr>
+                            <tr><td>Equipment 2</td><td></td></tr>
+                            <tr><td>Equipment 3</td><td></td></tr>
+                            <tr>
+                                <td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Cost</td><td>${{price}}</td>
+                            </tr>
+                            <tr>
+                                <td>Completed</td><td>0%</td>
+                            </tr>
+                        </table>
+                        <!--<span>Assignments</span><br />
+                        <span>Name of Foreman</span>
+                        <span><a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.id as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
+                        </a></span>-->
+                    </div>
+                </div>
+            </div>
             <div class="modal-footer">
 
-                <input type="button" class="btn btn-success" ng-click="open()" value="JobAssignToForeman"></input>
+               <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
                 <input type="button" class="btn btn-success" ng-click="UnscheduledJob()" value="UnscheduledJob"></input>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -78,13 +147,18 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 <h4 id="assignjobtitle" class="modal-title"></h4>
+
             </div>
             <div id="assignjobbody" class="modal-body">
-                <div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>
+               <!-- <a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.id as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
+                </a>-->
+                <!--<div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>-->
+              
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <input type="button" class="btn btn-success" value="SaveJobToForeman" ng-click="savejobtoforeman()"></input>
+                <input type="button" class="btn btn-success" value="SaveJobToForeman" ng-click="savejobtoforeman(user.groupName)"></input>
             </div>
         </div>
     </div>

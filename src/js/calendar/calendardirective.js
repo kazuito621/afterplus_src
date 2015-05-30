@@ -163,7 +163,9 @@
                        },
                        eventClick: function (data, jsEvent, view) {
                            if(data.reportId == undefined){
+                               var tempId =  data._id;
                                data=$scope.getEventInfo(data.title);
+                               data._id = tempId;
                            }
                            $scope.jobdescription = data.price;
                            $scope.$apply();
@@ -195,7 +197,7 @@
                            });
 
                            $('#fullCalModal').modal();
-                           $('#fullCalModal').fadeIn();
+                          // $('#fullCalModal').fadeIn();
                            //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
                        },
                        eventRender: function (event, element, view) {
@@ -233,13 +235,11 @@
 
                        },
                        eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
-                           // var eventInfo=$scope.getEventInfo(event.title)
                            if(el.reportId == undefined){
                                var eventInfo=$scope.getEventInfo(el.title);
                                el.reportId = eventInfo.reportId;
                            }
-                           //var t= angular.copy(el.start);
-                           //t.add(-eventStart._days,'days');
+
                            var sTime;
                            var eTime;
 
@@ -324,32 +324,15 @@
             }
 
             $scope.open = function (siteID) {
-
-
                 $scope.user = {
                     group: 1,
                     groupName: 'John Miclay' // original value
                 };
-                //$scope.foremans = [
-                //   {
-                //       foremanid:1,
-                //       foremanname: 'John Miclay'
-
-                //   },
-                //   {
-                //       foremanid: 2,
-                //       foremanname: 'Ruby Johanson'
-                //   },
-                //   {
-                //       foremanid: 3,
-                //       foremanname: 'Matrick Dusak'
-                //   }];
 
                 data.title = "List of foreman's"
                 $('#assignjobtitle').html(data.title);
                 //$('#assignjobbody').html(data.price);
                 $('#jobassignforemanpopup').modal();
-
             };
 
             $scope.loadGroups = function () {
@@ -363,26 +346,10 @@
                     });
 
                 });
-
-                //$scope.groups = [
-                //  {
-                //      id: 1,
-                //      text: 'John Miclay'
-
-                //  },
-                //  {
-                //      id: 2,
-                //      text: 'Ruby Johanson'
-                //  },
-                //  {
-                //      id: 3,
-                //      text: 'Matrick Dusak'
-                //  }];
             };
 
             $scope.savejobtoforeman = function () {
-                alert($scope.estimateid);
-                Api.AssignJobToForeman($scope.estimateid, {
+                Api.AssignJobToForeman($scope.clickedEvent.reportId, {
                     job_userID: $scope.user.group
                 }).then(function (response) {
                     console.log(response);
@@ -414,7 +381,7 @@
                     $scope.user.groupName = selected.length ? selected[0].text : null;
                 }
             });
-        },
+        }
 
 
     }

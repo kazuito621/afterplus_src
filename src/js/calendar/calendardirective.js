@@ -202,7 +202,9 @@
                        },
                        eventRender: function (event, element, view) {
                            $('.fc-title br').remove();
-
+                           console.log(event.start.format('YYYY-MM-DD'));
+                            var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']")
+                           box.html('<h1> HELO THERE'+event.start.format('YYYY-MM-DD')+'</h1>');
                            if (event.title === "" || event.title === null) {
                                var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
                                element.css('background-color', '#77DD77');

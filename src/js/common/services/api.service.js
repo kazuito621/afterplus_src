@@ -160,8 +160,8 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             dbg(reportObj, "save rep ");
             return Rest.all('estimate').post(reportObj);
         },
-        updateEstimateTime:function(reportID,tstamp){
-            return Rest.all('estimate/'+reportID).post(tstamp);
+        updateEstimateTime: function (reportID, tstamp) {
+            return Rest.all('estimate/' + reportID).post(tstamp);
         },
         setReportStatus: function (rptID, status) {
             return Rest.one('estimate', rptID).post(status);
@@ -343,16 +343,40 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             params.lat = tree.lat;
             params.lng = tree.lng;
             params.siteID = tree.siteID;
-            
+
             //(elemFunction, this)("post", undefined, params, undefined, headers);
             return Rest.one('tree', tree.treeID).post(undefined, params);
         },
-        getGoogleAddress:function(params){
+        getGoogleAddress: function (params) {
             return $http.get(
                 'http://maps.googleapis.com/maps/api/geocode/json',
-                {params: params}
+                { params: params }
             )
+        },
+
+        //Scheduling Jobs/Estimates
+        ScheduleJob: function (id, params) {
+            // POST / estimate / 123
+            //sendEvt('alert', { msg: 'Job has been Scheduled', time: 3, type: 'ok' });
+            console.log(params);
+            return Rest.one('estimate', id).post(undefined, params);
+        },
+        UnscheduledJob: function (id, params) {
+
+            // POST /estimate/123/unscheduled
+            //sendEvt('alert', { msg: 'Job has been Unscheduled', time: 3, type: 'ok' });
+            return Rest.one('estimate', id).post('unscheduled');
+
+        },
+        GetForemans: function (role) {
+            // GET  /users?role=XXX
+            return Rest.all('user').getList({ role: 'staff' });
+        },
+        AssignJobToForeman: function (id, params) {
+           // POST / estimate / 123
+            return Rest.one('estimate', id).post(undefined,params);
         }
+
     };
 }]);
 

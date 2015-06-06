@@ -1453,7 +1453,7 @@ console.debug(" show mapp trees -------- ");
             s.toggleCheckedTrees = function (opt) {
                 if (opt instanceof Array) {							// option 4
                     _.remove(s.selectedTrees, function (t) {
-                        return (opt.indexOf(t.treeID) >= 0);
+                        return (opt.indexOf(t) >= 0);
                     });
                 } else {
                     _.trunc(s.selectedTrees);

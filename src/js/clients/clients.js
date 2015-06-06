@@ -1,6 +1,6 @@
 var ClientsCtrl = app.controller('ClientsCtrl',
-    ['$scope', '$route', '$modal', 'Api', '$popover', 'Auth', 'SortHelper',
-        function ($scope, $route, $modal, Api, $popover, Auth, SortHelper) {
+    ['$scope', '$route', '$modal', 'Api', '$popover', 'Auth', 'SortHelper','FilterHelper','$timeout',
+        function ($scope, $route, $modal, Api, $popover, Auth, SortHelper,FilterHelper,$timeout) {
             'use strict';
 
             var s = window.cts = $scope;
@@ -16,6 +16,11 @@ var ClientsCtrl = app.controller('ClientsCtrl',
             s.items = {};
             s.displayedClients = [];
             s.auth = Auth;
+            var clientsFiltered;
+            var filterTextTimeout ;
+            this.fh = FilterHelper.fh();
+            var filterGroups=[['clientName','contact', 'street']];
+            this.fh.setFilterGroups(filterGroups);
 
             var init = function () {
                 self.sh = SortHelper.sh(s.initData.clients, '', columnMap);
@@ -123,6 +128,53 @@ var ClientsCtrl = app.controller('ClientsCtrl',
 						clientEditModal.show();
                     });
             };
+            s.sh = {
+                sortByColumn: function (col) {
+                    applyFilter();
+                    self.sh.setData(clientsFiltered);
+                    clientsFiltered = self.sh.sortByColumn(col);
+                    s.displayedClients = clientsFiltered.slice(0, 49);
+                },
+                columnClass: function (col) {
+                    return self.sh.columnClass(col);
+                },
+                applySort: function () {
+
+                    //@@todo - we git a bug here when radio buttons are used
+                    //estFiltered = self.sh.makeSort(estFiltered);
+                }
+            };
+            var applyFilter = function () {
+                clientsFiltered = self.fh.applyFilter(s.initData.clients);
+                // without this line here, the filter gets messed up on the next filter execution
+                if(!clientsFiltered.length) clientsFiltered=[{clientName:'No Results', contact:'No Results', street:'No Results'}]
+                s.sh.applySort();
+                s.displayedClients = clientsFiltered.slice(0, 49);
+            };
+            s.OnSearchType = function(){
+                if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
+                filterTextTimeout = $timeout(function () {
+                    var txt = s.data.filterTextEntry;
+                    if (txt === '' || !txt) {
+                        self.fh.setFilter({clientName:'', contact:'', street:''});
+                        applyFilter();
+                    } else if (!isNaN(txt)) {
+                        // if search entry is a number, search by siteID and name
+                        self.fh.setFilter({clientName: txt, contact: txt,street:txt});
+                        applyFilter();
+                    } else {
+                        // if just letters, then search by name and city, and sales person
+                        self.fh.setFilter({clientName: txt, contact:txt,street:txt});
+                        applyFilter();
+                    }
+                }, 500);
+            };
+            s.clearSearch = function () {
+                s.data.filterTextEntry='';
+                self.fh.setFilter({clientName: '', contact: '',street:''});
+                applyFilter();
+            };
+
 
             init();
 

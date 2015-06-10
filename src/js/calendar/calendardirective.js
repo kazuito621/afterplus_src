@@ -153,8 +153,10 @@
                            Api.ScheduleJob(ev.reportId, {
                                job_start: event.start.format('YYYY-MM-DD'),
                                job_end: event.start.format('YYYY-MM-DD')
-                           }).then(function () {
-                               //$scope.setAlert('Loading Trees', { busy: true, time: "false" });
+                           }).then(function (res) {
+										if(res && res.conflict==1 && res.conflict_msg){
+											alert(res.conflict_msg);
+										}
                            });
 
                        },
@@ -208,7 +210,8 @@
                            if (event.title === "" || event.title === null) {
                                var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
                                element.css('background-color', '#77DD77');
-                               element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" title="No foreman assigned to this job"></i></a>');
+                               element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'
+										 		.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" title="No foreman assigned to this job"></i></a>');
                            }
                            else if(event.status != 'scheduled'){
                                element.css('background-color', 'grey')
@@ -231,8 +234,10 @@
                                //job_start: t.format('YYYY-MM-DD'),
                                job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
                                job_end: moment(el.end).format('YYYY-MM-DD HH:mm:ss')
-                           }).then(function (response) {
-                               console.log(response);
+                           }).then(function (res) {
+										if(res && res.conflict==1 && res.conflict_msg){
+											alert(res.conflict_msg);
+										}
                            });
 
                        },
@@ -263,8 +268,10 @@
                               //job_end: el.end==null?el.start.format('YYYY-MM-DD'):el.end.format('YYYY-MM-DD')
                                job_start: sTime,
                                job_end: eTime
-                           }).then(function (response) {
-                               console.log(response);
+                           }).then(function (res) {
+										if(res && res.conflict==1 && res.conflict_msg){
+											alert(res.conflict_msg);
+										}
                            });
                        }
 
@@ -363,15 +370,10 @@
                 var id = $scope.clickedEvent._id
                 Api.UnscheduledJob($scope.clickedEvent.reportId, {
 
-                }).then(function (data) {
-                    if(data == 'Status updated'){
-                        $('#fullCalModal').modal('hide')
-                        $scope.init();
-                        elm.fullCalendar('removeEvents', id);
-                    }
-                    else {
-                        alert('There is a conflict!');
-                    }
+                }).then(function () {
+                    $('#fullCalModal').modal('hide');
+                    $scope.init();
+                    elm.fullCalendar('removeEvents', id);
                 });
             };
 

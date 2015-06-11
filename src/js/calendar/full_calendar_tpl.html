@@ -39,7 +39,7 @@
     <!--    <div class='fc-event'>
         <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
     </div>-->
-    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs">
+    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openUncheduledJob(singleJob)">
         {{singleJob.title}}<!--<span ng-show="false">{{singleJob.price}}</span>-->
     </div>
     <p>
@@ -132,7 +132,7 @@
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                <input type="button" class="btn btn-success" ng-click="UnscheduledJob()" value="UnscheduledJob"></input>
+                <input type="button" class="btn btn-success" ng-hide="clickedEvent.type == 'Unscheduled'" ng-click="UnscheduledJob()" value="UnscheduledJob"></input>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>

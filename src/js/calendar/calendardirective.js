@@ -31,12 +31,13 @@
                        if( field.status=="approved"  ||  (field.status=="scheduled"  &&  field.job_start==undefined)) {
                            $scope.UnscheduledJobs.push(
                                {
-                                   "title": field.name? field.name.trim() : "Nil",
+                                   "title": field.name? field.reportID+' - '+ field.name.trim() : "Nil",
                                    "start": "2015-03-02",
                                    "price": "," + field.total_price,
                                    reportId: field.reportID,
                                    "siteid": field.siteID,
-                                   "status" : field.status
+                                   "status" : field.status,
+                                   "type" : 'Unscheduled'
                                });
                        }
                        else if(field.job_start ){
@@ -56,12 +57,12 @@
                            }
                            $scope.ScheduledJobs.push(
                                {
-                                   "title": field.name? field.name.trim() : "Nil",
+                                   "title": field.name? field.reportID+' - '+ field.name.trim() : "Nil",
                                    "start":sTime,
                                    "end": eTime,
                                    /*start: '2015-05-18',
                                    end: '2015-05-18',*/
-
+                                   "type" : 'Scheduled',
                                    "price": "," + field.total_price,
                                    reportId: field.reportID,
                                    "siteid": field.siteID,
@@ -164,49 +165,40 @@
                            console.log(event);
                        },
                        eventClick: function (data, jsEvent, view) {
-                           if(data.reportId == undefined){
-                               var tempId =  data._id;
-                               data=$scope.getEventInfo(data.title);
-                               data._id = tempId;
-                           }
-                           $scope.jobdescription = data.price;
-                           $scope.$apply();
-                           $scope.clickedEvent = data;
-                           $('#modalTitle').html("Job Name:" + data.title);
-                           console.log(data.price);
-                           //$('#modalBody').html("Price:" + data.price);
-
-                           $scope.price = data.price.replace(",", "");
-
-
-                           $scope.siteID = data.siteid;
-                           $scope.$apply(function () {
-                               Api.getSiteById($scope.siteID, {}).
-                                   then(function (response) {
-                                       $scope.siteName = response.siteName;
-                                       $scope.siteAddress = response.city;
-                                       $scope.city = response.city;
-                                       $scope.state = response.state;
-                                       $scope.zip = response.zip;
-                                       $scope.contact = response.contact;
-                                       $scope.email = response.contactEmail;
-                                       $scope.phone = response.contactPhone;
-                                   });
-                               $scope.user = {
-                                   group: 1,
-                                   groupName: 'John Miclay' // original value
-                               };
-                           });
-
-                           $('#fullCalModal').modal();
+                           $scope.openUncheduledJob(data);
                           // $('#fullCalModal').fadeIn();
                            //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
                        },
                        eventRender: function (event, element, view) {
                            $('.fc-title br').remove();
-                           console.log(event.start.format('YYYY-MM-DD'));
-                            var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']")
-                           box.html('<h1> HELO THERE'+event.start.format('YYYY-MM-DD')+'</h1>');
+
+                           /*WILL WORK ON IT LATER*/
+                           //if(event.start){
+                           //    if(element.totalCost == undefined) element.totalCost = 0;
+                           //    var duration = 1;
+                           //    var price = event.price.substring(event.price.indexOf(',')+1, event.price.length);
+                           //    price = parseFloat(price);
+                           //    if(event.end){
+                           //        duration = moment.duration(event.end.diff(event.start)).asDays();
+                           //        //element.totalCost+=event.price /duration;
+                           //        //element.totalCost+=(price/duration).toFixed(2);
+                           //        var currentDate = angular.copy(event.start);
+                           //        for(var i = 0;i<duration; i++){
+                           //            currentDate = currentDate.add(i, 'days');
+                           //            var box = $( "div.fc-bg" ).find("[data-date='"+currentDate.format('YYYY-MM-DD')+"']");
+                           //            if(box.totalCos)
+                           //            box.totalCost+=(price/duration).toFixed(2);
+                           //            box.html('<h1 style="position: absolute;bottom: 2px">'+box.totalCost+'$</h1>');
+                           //        }
+                           //    }
+                           //    else {
+                           //        element.totalCost+=price;
+                           //    }
+                           //}
+//
+                           // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
+                           ////var box = element.closest('table').find('th').eq(element.index())
+                           //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
                            if (event.title === "" || event.title === null) {
                                var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
                                element.css('background-color', '#77DD77');
@@ -383,7 +375,41 @@
             };
 
             $scope.groups = [];
+            $scope.openUncheduledJob = function(data){
+                if(data.reportId == undefined){
+                    var tempId =  data._id;
+                    data=$scope.getEventInfo(data.title);
+                    data._id = tempId;
+                }
+                $scope.jobdescription = data.price;
+                //$scope.$apply();
+                $scope.clickedEvent = data;
+                $('#modalTitle').html("Job Name:" + data.title.substring(data.title.indexOf('-')+1, data.title.length));
+                console.log(data.price);
+                //$('#modalBody').html("Price:" + data.price);
 
+                $scope.price = data.price.replace(",", "");
+
+
+                $scope.siteID = data.siteid;
+                Api.getSiteById($scope.siteID, {}).
+                    then(function (response) {
+                        $scope.siteName = response.siteName;
+                        $scope.siteAddress = response.city;
+                        $scope.city = response.city;
+                        $scope.state = response.state;
+                        $scope.zip = response.zip;
+                        $scope.contact = response.contact;
+                        $scope.email = response.contactEmail;
+                        $scope.phone = response.contactPhone;
+                    });
+                $scope.user = {
+                    group: 1,
+                    groupName: 'John Miclay' // original value
+                };
+
+                $('#fullCalModal').modal();
+            }
             $scope.$watch('user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     var selected = $filter('filter')($scope.groups, { id: $scope.user.group });

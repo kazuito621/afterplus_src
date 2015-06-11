@@ -9,7 +9,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		filterTextTimeout,
 		self = this,
     	columnMap = {
-        	'total_price': 'number'
+        	'total_price': 'number',
+			'reportID': 'number'
     	},
 		colSortOrder = {
 			total_price: 'desc'

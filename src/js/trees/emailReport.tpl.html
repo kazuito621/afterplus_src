@@ -23,13 +23,13 @@
                             </td>-->
                             <td>
                                 {{emailRpt.selectedSites.length}} Properties
-                                <a href="" ng-click="goToPropertyContacts($hide, $show)" style="color:blue">Edit</a>
+                                <a href="" ng-click="goToPropertyContacts($hide, $show)" style="color:grey">Edit</a>
                             </td>
                         </tr>
                         <tr ng-if="type == 'sendReport' || type == 'sendPortalLink'">
                             <td>To:</td>
                             <td>
-                                <br><tags-input ng-style="(mode=='addEditUsers' && type == 'sendPortalLink')?{'pointer-events':'none'}:''" ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
+                                <br><tags-input id="emailField" is-writing-tag ng-style="(mode=='addEditUsers' && type == 'sendPortalLink')?{'pointer-events':'none', 'color': '#a9a9a9'}:''" ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
                             </td>
                         </tr>
                         <!-- Comment out for now, because the backend isnt ready for this... see branch tim/22 for #wip

@@ -80,6 +80,9 @@ app.service('ReportService',
 						d.localTreeID=localID++;
 					})
 				}
+				console.debug("rpt st ");
+				console.debug(data.items);
+				console.debug("rpt end");
 
                 that.setGrandTotal();
                 data.total = that.report.total;

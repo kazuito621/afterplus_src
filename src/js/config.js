@@ -31,6 +31,8 @@ window.cfg={
 			if(h.match(/medallion/)) return 8;
 			if(h.match(/padilla/)) return 9;
 			if(h.match(/advancedtr/)) return 10;
+			if(h.match(/allamerican/)) return 11;
+			if(h.match(/fourseasons/)) return 12;
 			return 1;	// default to dev.aplustree
 		}
 	,getEntity: function(){
@@ -58,7 +60,10 @@ window.cfg={
 						afiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
 			ent[10]={name:'Advanced Tree Care', medname:'Advanced Tree', shortname:'advancedtree',
 				afiliations:'isa_arb.jpg'};
-
+			ent[11]={name:'All American Arborist', medname:'All American Arborist', shortname:'allamericanarborist',
+				afiliations:''};
+			ent[12]={name:'Four Seasons Tree Care', medname:'Four Seasons', shortname:'fourseasons',
+				afiliations:'isa_memb.jpg,wcisa.png,ctsp.png'};
 			var eid=this.getEntityID();
 			var ent = ent[eid];
 			if(!ent){

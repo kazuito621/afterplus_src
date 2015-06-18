@@ -21,10 +21,8 @@
                     <input type="radio" value="sent"> Sent</label>
 				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
                     <input type="radio" value="approved"> Approved</label>
-						  <!--
-				<label ng-click="setStatusFilter('scheduled')" class="btn btn-default">
+				<label auth.hasPerm('calendar_view') ng-click="setStatusFilter('scheduled')" class="btn btn-default">
                     <input type="radio" value="scheduled"> Scheduled</label>
-						  -->
 				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
                     <input type="radio" value="completed"> Completed</label>
                 <label ng-click="setStatusFilter('invoiced')" class="btn btn-default">

@@ -33,6 +33,9 @@ window.cfg={
 			if(h.match(/advancedtr/)) return 10;
 			if(h.match(/allamerican/)) return 11;
 			if(h.match(/fourseasons/)) return 12;
+			if(h.match(/landcare-fairfield/)) return 13;
+			if(h.match(/landcare-windsor/)) return 14;
+			if(h.match(/landcare-ranchocordova/)) return 15;
 			return 1;	// default to dev.aplustree
 		}
 	,getEntity: function(){
@@ -64,6 +67,11 @@ window.cfg={
 				afiliations:''};
 			ent[12]={name:'Four Seasons Tree Care', medname:'Four Seasons', shortname:'fourseasons',
 				afiliations:'isa_memb.jpg,wcisa.png,ctsp.png'};
+			ent[13]={name:'LandCare - Fairfield', medname:'LandCare', shortname:'landcare-fairfield', afiliations:''};
+			ent[14]={name:'LandCare - Windsor', medname:'LandCare', shortname:'landcare-windsor', afiliations:''};
+			ent[15]={name:'LandCare - Rancho Cordova', medname:'LandCare', shortname:'landcare-ranchocordova', afiliations:''};
+
+
 			var eid=this.getEntityID();
 			var ent = ent[eid];
 			if(!ent){

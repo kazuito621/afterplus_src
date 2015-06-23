@@ -82,7 +82,7 @@
             <td class="text-right">&#36;{{report.total.items|formatPrice}}</td>
 				<td ng-if="data()=='trees'"></td>
         </tr>
-        <tr>
+        <tr ng-if="report.tax_rate>0">
             <td align=right colspan="{{ data.mode()=='trees' && '2' || '3' }}">Taxes:</td>
             <td class="text-right">
                 <a href editable-text='report.tax_rate' ng-if='auth.isAtleast("inventory")'>

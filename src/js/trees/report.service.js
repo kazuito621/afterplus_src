@@ -30,6 +30,7 @@ app.service('ReportService',
 		var onChg=function(){ that.setGrandTotal(); }
 		$rootScope.$watch(function(){ return that.report.items}, onChg, true);
 		$rootScope.$watch(function(){ return that.report.services}, onChg, true);
+		$rootScope.$watch(function(){ return that.report.tax_rate}, onChg, true);
 
 		// send a func that will tell if report is dirty or not
 		$rootScope.$broadcast('registerPreventNav', function(){
@@ -269,7 +270,17 @@ app.service('ReportService',
 			}
 		})
 
-		this.report.total={items:items_total.toFixed(2), services:services_total.toFixed(2), grand:(services_total+items_total).toFixed(2)};
+		this.report.total={
+				items: items_total.toFixed(2), 
+				services: services_total.toFixed(2), 
+				tax: 0,
+				grand: (services_total+items_total).toFixed(2)
+			};
+		if(this.report.tax_rate){ 
+			var taxTot = ((services_total+items_total) * (this.report.tax_rate/100)).toFixed(2);
+			this.report.total.tax=taxTot;
+			this.report.total.grand = parseFloat(this.report.total.grand) + parseFloat(taxTot);
+		}
 	}
 
     this.isChanged=function(backupReport,report){

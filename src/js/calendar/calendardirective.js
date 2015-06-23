@@ -73,10 +73,14 @@
                    });
 
                    $scope.getEventInfo = function (eventName) {
+								// lookup by ID first
+								var m=eventName.trim().match(/([0-9]+)[ -]/);
+								if(m) var rptID=m[1];
+
                        var selectedEvent = null;
                        for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
                            var event = $scope.UnscheduledJobs[index];
-                           if (event.title.trim() == eventName.trim()) {
+                           if (event.reportId == rptID || event.title.trim() == eventName.trim()) {
                                selectedEvent = event;
                                break;
                            }

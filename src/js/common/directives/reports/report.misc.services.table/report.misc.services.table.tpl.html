@@ -73,24 +73,27 @@
 
         <!-- // Subtotals // -->
         <tr ng-if="report.total.services">
-            <td align=right colspan="3">Misc Services Subtotal:</td>
+            <td align=right colspan="{{ data.mode()=='trees' && '3' || '4' }}">Misc Services Subtotal:</td>
             <td class="text-right">&#36;{{report.total.services|formatPrice}}</td>
-				<td></td>
+				<td ng-if="data()=='trees'"></td>
         </tr>
         <tr ng-if="report.total.services">
-            <td align=right colspan="3">Tree Services Subtotal:</td>
+            <td align=right colspan="{{ data.mode()=='trees' && '3' || '4' }}">Tree Services Subtotal:</td>
             <td class="text-right">&#36;{{report.total.items|formatPrice}}</td>
-				<td></td>
+				<td ng-if="data()=='trees'"></td>
         </tr>
         <tr>
-            <td align=right colspan="2">Tax</td>
+            <td align=right colspan="{{ data.mode()=='trees' && '2' || '3' }}">Taxes:</td>
             <td class="text-right">
                 <a href editable-text='report.tax_rate' ng-if='auth.isAtleast("inventory")'>
                     {{ (report.tax_rate) ? report.tax_rate : '0.00'}}
                 </a>%
+					 <span ng-if='!auth.isAtleast("inventory")'>
+						{{ (report.tax_rate) ? report.tax_rate : '0.00' }}%
+					 </span>
 				</td>
             <td class="text-right">${{ report.total.tax }}</td>
-				<td></td>
+				<td ng-if="data()=='trees'"></td>
         </tr>
         </tbody>
     </table>

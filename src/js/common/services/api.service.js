@@ -169,6 +169,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
         },
+        lookupTaxByZip: function(zip){
+				return Rest.one('tax/zip/'+zip).get();
+        },
         sendEmailPortalLink: function (rpt) {
             return Rest.all('sendPortalLink').post(rpt);
         },

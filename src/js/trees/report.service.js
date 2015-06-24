@@ -126,8 +126,15 @@ app.service('ReportService',
 			.then(function(data) {
 				if(!data || !data.siteName) return;
 				_.copyProps(data, that.report, 'siteName,contact,contactEmail,contactPhone,street,city,state');
+
+				Api.lookupTaxByZip(that.report.zip).then(function (res) {
+					if(res && res.tax>0 && res.tax<100){
+						that.report.tax_rate=res.tax;
+					}
+				})
 			});	
 		SiteModelUpdateService.setReportSiteModel(this.report);
+
 	}
 
 	// Get the treatment descriptions using the API

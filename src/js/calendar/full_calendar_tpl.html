@@ -39,7 +39,7 @@
     <!--    <div class='fc-event'>
         <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
     </div>-->
-    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openUncheduledJob(singleJob)">
+    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openJob(singleJob)" ng-class="'calendar-'+singleJob.status">
         {{singleJob.title}}<!--<span ng-show="false">{{singleJob.price}}</span>-->
     </div>
     <p>
@@ -104,7 +104,9 @@
                         <table>
                             <tr><td>Assignments</td><td></td></tr>
                             <tr><td>Name of Foreman</td><td></td></tr>
-                            <tr><td><a href="#" editable-select="user.group" onshow="loadGroups()"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoforeman(g.id)">{{ user.groupName || 'Select Foreman' }}
+                            <tr><td><a href="#" editable-select="user.group"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoforeman(g.id)">{{ user.groupName || 'Select Foreman' }}
+                        </a></td><td></td></tr>
+                            <tr><td><a href="#" editable-select="salesUser.group"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoSalesUser(g.id)">{{ salesUser.salesUserName || 'Select Sales user' }}
                         </a></td><td></td></tr>
                             <tr><td>Equipment 1</td><td></td></tr>
                             <tr><td>Equipment 2</td><td></td></tr>

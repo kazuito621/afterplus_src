@@ -1075,6 +1075,27 @@ footer {
   color: #fff !important;
 }
 
+.calendar-approved {
+  background-color: #2ecc40 !important;
+  color: #fff !important;
+}
+.calendar-scheduled {
+  background-color: #ffa12d !important;
+  color: #fff !important;
+}
+.calendar-completed {
+  background-color: #9e3eff !important;
+  color: #fff !important;
+}
+.calendar-invoiced {
+  background-color: #ff4136 !important;
+  color: #fff !important;
+}
+.calendar-paid {
+  background-color: #fff !important;
+  color: #fff !important;
+}
+
 /* line 389, ../scss/partials/_common.scss */
 .small-tag {
   padding: 3px 6px;

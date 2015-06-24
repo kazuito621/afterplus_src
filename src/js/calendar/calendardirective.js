@@ -388,6 +388,8 @@
                 }).then(function (response) {
                     console.log(response);
                     $scope.clickedEvent.job_userID  = $scope.user.group;
+                    $scope.clickedEvent.title = $scope.clickedEvent.name? $scope.clickedEvent.reportId+' - '+shortenPrice($scope.clickedEvent.price.replace(',',''))+' - '+getFormaneName($scope.clickedEvent.job_userID)+' - '+ $scope.clickedEvent.name.trim() : "Nil",
+                    elm.fullCalendar( 'refetchEvents');
                 });
             };
             $scope.savejobtoSalesUser = function () {
@@ -470,8 +472,8 @@
 
             function shortenPrice($pr){
                 if($pr<1000) return $pr;
-                if($pr<10000) return  $pr.substring(0, $pr.length-3)+'k';
-                return Math.floor($pr/1000)+"k";
+                if($pr<10000) return  parseInt($pr).toString().substring(0, parseInt($pr).toString().length-3)+'k';
+                return Math.floor(parseInt($pr)/1000)+"k";
             }
         }
 

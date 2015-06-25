@@ -209,9 +209,9 @@ angular.module('calendardirective', [])
 									viewRender: function( view, cal ){
 										//@@todo - tim ... calendar isnt ready on this call.. is there a better way?
 										setTimeout(function(){
-											if(!updatePriceBGColor()){
+											if(!updatePriceColors()){
 												setTimeout(function(){
-													updatePriceBGColor();
+													updatePriceColors();
 												},2000);
 											}
 										},1000);
@@ -509,7 +509,7 @@ angular.module('calendardirective', [])
 				/** ========== PRICE CALCULATIONS PER DAY ============ **/
 
 				// change color of all calendar day box backgrounds, based on $ amount
-				function updatePriceBGColor(){
+				function updatePriceColors(){
 					if(!cal || !cal.fullCalendar) return false;
 					var view=cal.fullCalendar('getView');
 					if(view.name=='month'){
@@ -528,15 +528,13 @@ angular.module('calendardirective', [])
 					var t=getDayTotal(date);
 					if(t===false) return;
 					var warnLevel=-1;
-					if(t < goal * .5)	warnLevel=4;
-					else if(t < goal * .7) warnLevel=3;
-					else if(t < goal * .85) warnLevel=2;
-					else if(t < goal ) warnLevel=1;
-					else if(t>=goal) warnLevel=0;
+					if(t < goal * .75) warnLevel=2;		//red less than 75% of goal
+					else if(t < goal ) warnLevel=1;		//orng 75-100% of goal
+					else if(t>=goal) warnLevel=0;			//green 100%
 
 					if(warnLevel>=0){
-						var colors=['#ECFADC', '#FFDEDE', '#FFC9C9', '#FF7D7D'];
-						var clr = colors[warnLevel-1];
+						var colors=['#BBFAB4', '#FAF9B4', '#FCE6E6'];
+						var clr = colors[warnLevel];
 						var dt=date.format('YYYY-MM-DD');
 						var cell=$('td[data-date="'+dt+'"')
 						if(cell) cell.css('background-color', clr);

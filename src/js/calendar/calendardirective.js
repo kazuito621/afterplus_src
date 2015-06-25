@@ -1,4 +1,11 @@
-﻿angular.module('calendardirective', [])
+﻿function commaDigits(val){
+	while (/(\d+)(\d{3})/.test(val.toString())){
+		val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+	}
+	return val;
+}
+
+angular.module('calendardirective', [])
 .directive('calendar', function () {
     return {
         restrict: 'EA',
@@ -14,12 +21,13 @@
         controller: function ($rootScope, $scope, $element, $attrs, Api, $location, $filter,$q) {
             var search = $location.search();
 
+				window.fcs=$scope;
             $scope.UnscheduledJobs = [];
             $scope.ScheduledJobs = [];
             $scope.clickedEvent = {};
-            var elm;
-            var cal;
-            var uncheduledJobsBackUp;
+            var elm, 
+					cal, 		// ref to calendar html obj
+					uncheduledJobsBackUp;
            $scope.init = function(){
                $scope.UnscheduledJobs = [];
                $scope.ScheduledJobs = [];
@@ -46,7 +54,7 @@
 														+' - '+getFormaneName(field.job_userID)+' - '+ field.name.trim() : "Nil",
                                        "name": field.name? field.name.trim() : "Nil",
                                        "start": "2015-03-02",
-                                       "price": "," + field.total_price,
+                                       "price": field.total_price,
                                        reportId: field.reportID,
                                        "siteid": field.siteID,
                                        "status" : field.status,
@@ -80,7 +88,7 @@
                                        /*start: '2015-05-18',
                                         end: '2015-05-18',*/
                                        "type" : 'Scheduled',
-                                       "price": "," + field.total_price,
+                                       "price": field.total_price,
                                        reportId: field.reportID,
                                        "siteid": field.siteID,
                                        "status" : field.status,
@@ -106,11 +114,12 @@
                        var bindexternalevents = setTimeout(function () {
                            var externalevents = $(".fc-event");
                            externalevents.each(function () {
-                               var jobtitle = $(this).text().split(",");
+                               var jobtitle = $(this).text();
+                               var ev = $scope.getEventInfo(jobtitle);
 
                                $(this).data('event', {
-                                   title: jobtitle[0],     // use the element's text as the event title
-                                   price: jobtitle[1],
+                                   title: jobtitle,     // use the element's text as the event title
+                                   price: ev.price,
                                    stick: true            // maintain when user navigates (see docs on the renderEvent method)
                                });
 
@@ -169,7 +178,7 @@
                            eventReceive: function (event) {
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportId;
-                               console.log("event" + event.start.format('YYYY-MM-DD'));
+                               console.log("event:" + event.start.format('YYYY-MM-DD') + " $"+ev.price);
                                Api.ScheduleJob(ev.reportId, {
                                    job_start: event.start.format('YYYY-MM-DD'),
                                    job_end: event.start.format('YYYY-MM-DD')
@@ -188,6 +197,25 @@
                                // $('#fullCalModal').fadeIn();
                                //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
                            },
+									dayClick: function( date, evt, view ){
+										var tot=getDayTotal(date);
+										if(tot>0){
+											tot = "$" + commaDigits(tot);
+											alert(tot);
+										}
+									},
+									//dayRender: function( date, cell ){
+									//},
+									viewRender: function( view, cal ){
+										//@@todo - tim ... calendar isnt ready on this call.. is there a better way?
+										setTimeout(function(){
+											if(!updatePriceBGColor()){
+												setTimeout(function(){
+													updatePriceBGColor();
+												},2000);
+											}
+										},1000);
+									},
                            eventRender: function (event, element, view) {
                                $('.fc-title br').remove();
 
@@ -258,7 +286,6 @@
                                    var eventInfo=$scope.getEventInfo(el.title);
                                    el.reportId = eventInfo.reportId;
                                }
-
                                var sTime;
                                var eTime;
 
@@ -476,6 +503,81 @@
                 if($pr<10000) return  parseInt($pr).toString().substring(0, parseInt($pr).toString().length-3)+'k';
                 return Math.floor(parseInt($pr)/1000)+"k";
             }
+
+
+
+				/** ========== PRICE CALCULATIONS PER DAY ============ **/
+
+				// change color of all calendar day box backgrounds, based on $ amount
+				function updatePriceBGColor(){
+					if(!cal || !cal.fullCalendar) return false;
+					var view=cal.fullCalendar('getView');
+					if(view.name=='month'){
+						var t,dt,st=view.start;
+						for( var d=view.start; d.isBefore(view.end); d.add('days', 1) ){
+							paintDay(d);
+						}
+					}
+					return true;
+				}
+
+			
+				function paintDay(date){
+					var goal=2000;
+
+					var t=getDayTotal(date);
+					if(t===false) return;
+					var warnLevel=-1;
+					if(t < goal * .5)	warnLevel=4;
+					else if(t < goal * .7) warnLevel=3;
+					else if(t < goal * .85) warnLevel=2;
+					else if(t < goal ) warnLevel=1;
+					else if(t>=goal) warnLevel=0;
+
+					if(warnLevel>=0){
+						var colors=['#ECFADC', '#FFDEDE', '#FFC9C9', '#FF7D7D'];
+						var clr = colors[warnLevel-1];
+						var dt=date.format('YYYY-MM-DD');
+						var cell=$('td[data-date="'+dt+'"')
+						if(cell) cell.css('background-color', clr);
+					}
+				}
+
+
+				// get a total price for a given day
+				function getDayTotal(today){
+					if(!today) return false;
+					if(!cal || !cal.fullCalendar) return false;
+					var events=cal.fullCalendar('clientEvents');
+					console.debug(events.length);
+					var mev=[];  // matched events
+					var tot=0;
+					_.each( events, function(e){
+
+						if(!e.price) return;
+						// check for jobs that span multiple days
+						if( e.end
+						    && e.start.isBefore(today,'day') 
+							 && e.end.isAfter(today,'day')
+						){
+							var totalDays=e.end.diff(e.start,'days');
+							var p=parseFloat(parseFloat(e.price) / totalDays);
+							tot+=p;
+							mev.push(e);
+
+						// job on single day
+						}else if( e.start.isSame(today,'day')){ 
+						console.debug(e);
+							tot+=parseFloat(e.price);
+							mev.push(e);
+						}
+						else{
+						}
+					});
+					return tot;
+				}
+
+
         }
 
 

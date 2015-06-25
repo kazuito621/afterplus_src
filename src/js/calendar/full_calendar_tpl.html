@@ -36,23 +36,29 @@
 <div id='external-events' style="margin-top: 52px;">
     <h4 style="width:105%;">Approved Jobs</h4>
 
-    <!--    <div class='fc-event'>
-        <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
-    </div>-->
-    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openUncheduledJob(singleJob)">
-        {{singleJob.title}}<!--<span ng-show="false">{{singleJob.price}}</span>-->
+    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
+        {{singleJob.title}}
     </div>
     <p>
         <input type='checkbox' id='drop-remove' checked ng-show="false" />
         <!--  <label for='drop-remove'>remove after drop</label>-->
     </p>
 </div>
-
 <div id='calendar'></div>
+
+<!-- color key -->
+<div style='clear:both;'><BR></div>
+<div style='clear:both;padding:2em.'>
+	<span class='small-tag approved'>APPROVED</span>
+	<span class='small-tag scheduled'>SCHED</span>
+	<span class='small-tag completed'>COMPLETED</span>
+	<span class='small-tag invoiced'>INVOICED</span>
+	<span class='small-tag paid'>PAID</span>
+</div>
 
 
 <!--(Start) Modal Pop Up To Show Info about Job-->
-<div id="fullCalModal" class="modal fade">
+<div id="fullCalModal" class="modal fade" tabindex='-1'>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -104,7 +110,9 @@
                         <table>
                             <tr><td>Assignments</td><td></td></tr>
                             <tr><td>Name of Foreman</td><td></td></tr>
-                            <tr><td><a href="#" editable-select="user.group" onshow="loadGroups()"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoforeman(g.id)">{{ user.groupName || 'Select Foreman' }}
+                            <tr><td><a href="#" editable-select="user.group"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoforeman(g.id)">{{ user.groupName || 'Select Foreman' }}
+                        </a></td><td></td></tr>
+                            <tr><td><a href="#" editable-select="salesUser.group"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoSalesUser(g.id)">{{ salesUser.salesUserName || 'Select Sales user' }}
                         </a></td><td></td></tr>
                             <tr><td>Equipment 1</td><td></td></tr>
                             <tr><td>Equipment 2</td><td></td></tr>

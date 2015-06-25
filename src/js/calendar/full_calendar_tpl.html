@@ -36,19 +36,25 @@
 <div id='external-events' style="margin-top: 52px;">
     <h4 style="width:105%;">Unscheduled Jobs</h4>
 
-    <!--    <div class='fc-event'>
-        <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
-    </div>-->
-    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openJob(singleJob)" ng-class="'calendar-'+singleJob.status">
-        {{singleJob.title}}<!--<span ng-show="false">{{singleJob.price}}</span>-->
+    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em'>
+        {{singleJob.title}}
     </div>
     <p>
         <input type='checkbox' id='drop-remove' checked ng-show="false" />
         <!--  <label for='drop-remove'>remove after drop</label>-->
     </p>
 </div>
-
 <div id='calendar'></div>
+
+<!-- color key -->
+<div style='clear:both;'><BR></div>
+<div style='clear:both;padding:2em.'>
+	<span class='small-tag approved'>APPROVED</span>
+	<span class='small-tag scheduled'>SCHED</span>
+	<span class='small-tag completed'>COMPLETED</span>
+	<span class='small-tag invoiced'>INVOICED</span>
+	<span class='small-tag paid'>PAID</span>
+</div>
 
 
 <!--(Start) Modal Pop Up To Show Info about Job-->

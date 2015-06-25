@@ -217,7 +217,7 @@
                                // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
                                ////var box = element.closest('table').find('th').eq(element.index())
                                //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
-                               element.addClass('calendar-'+event.status);
+                               element.addClass('clr-'+event.status);
                                if (event.title === "" || event.title === null) {
                                    var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
                                    //element.css('background-color', '#77DD77');

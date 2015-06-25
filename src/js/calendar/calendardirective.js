@@ -42,7 +42,8 @@
                            if( field.status=="approved"  ||  (field.status=="scheduled"  &&  field.job_start==undefined)) {
                                $scope.UnscheduledJobs.push(
                                    {
-                                       "title": field.name? field.reportID+' - '+shortenPrice(field.total_price)+' - '+getFormaneName(field.job_userID)+' - '+ field.name.trim() : "Nil",
+                                       "title": field.name? field.reportID+' - $'+shortenPrice(field.total_price)
+														+' - '+getFormaneName(field.job_userID)+' - '+ field.name.trim() : "Nil",
                                        "name": field.name? field.name.trim() : "Nil",
                                        "start": "2015-03-02",
                                        "price": "," + field.total_price,
@@ -72,7 +73,7 @@
                                }
                                $scope.ScheduledJobs.push(
                                    {
-                                       "title": field.name? field.reportID+' - '+shortenPrice(field.total_price)+' - '+getFormaneName(field.job_userID)+' - '+ field.name.trim() : "Nil",
+                                       "title": field.name? field.reportID+' - $'+shortenPrice(field.total_price)+' - '+getFormaneName(field.job_userID)+' - '+ field.name.trim() : "Nil",
                                        "start":sTime,
                                        "end": eTime,
                                        "name": field.name? field.name.trim() : "Nil",
@@ -471,7 +472,7 @@
             });
 
             function shortenPrice($pr){
-                if($pr<1000) return $pr;
+                if($pr<1000) return Math.round($pr);
                 if($pr<10000) return  parseInt($pr).toString().substring(0, parseInt($pr).toString().length-3)+'k';
                 return Math.floor(parseInt($pr)/1000)+"k";
             }

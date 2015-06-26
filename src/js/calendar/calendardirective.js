@@ -193,9 +193,7 @@ angular.module('calendardirective', [])
 
                            },
 									eventDragStop: function( event, jsEvent, ui, view ){
-										setTimeout(function(){
-											updateTotals();	
-										},1000);
+										setTimeout(function(){	updateTotals() },1000);
 									},
                            updateEvent: function (event) {
                                console.log(event);
@@ -219,7 +217,6 @@ angular.module('calendardirective', [])
 									//dayRender: function( date, cell ){
 									//},
 									viewRender: function( view, cal ){
-										//@@todo - tim ... calendar isnt ready on this call.. is there a better way?
 										setTimeout(function(){
 											if(!updateTotals()){
 												setTimeout(function(){
@@ -274,7 +271,6 @@ angular.module('calendardirective', [])
                                //}
                            },
                            eventResize: function (el, delta, revertFunc, jsEvent, ui, view) {
-                               console.log(el);
                                var html = $(view.el[0]).find(".fc-title").html();
                                html = html.replace("<br/>", "");
                                html = html.replace("<br>", "");
@@ -292,28 +288,25 @@ angular.module('calendardirective', [])
                                        alert(res.conflict_msg);
                                    }
                                });
-
+										setTimeout(function(){	updateTotals() },1000);
                            },
                            eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
                                if(el.reportID == undefined){
                                    var eventInfo=$scope.getEventInfo(el.title);
                                    el.reportID = eventInfo.reportID;
                                }
-                               var sTime;
-                               var eTime;
-
+                               var sTime, eTime;
                                sTime =  moment(el.start).format('YYYY-MM-DD HH:mm:ss');
                                if(el._allDay == false && el.end == undefined){
                                    el.end =  angular.copy(el.start);
                                    el.end.add(4, 'hours');
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
                                }
-                               else if (el.end == undefined){
+                               else if (el.end == undefined)
                                    eTime = sTime;
-                               }
-                               else {
+                               else 
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
-                               }
+
                                Api.ScheduleJob(el.reportID, {
                                    job_start: sTime,
                                    job_end: eTime
@@ -322,6 +315,7 @@ angular.module('calendardirective', [])
                                        alert(res.conflict_msg);
                                    }
                                });
+										setTimeout(function(){	updateTotals() },1000);
                            }
 
                        });

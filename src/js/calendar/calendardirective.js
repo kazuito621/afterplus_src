@@ -52,7 +52,7 @@ angular.module('calendardirective', [])
                                $scope.UnscheduledJobs.push(
                                    {
                                        "title": field.name? field.reportID+' - $'+shortenPrice(field.total_price)
-														+' - '+getFormaneName(field.job_userID)+' - '+ field.name.trim() : "Nil",
+														+' - '+userID2Name(field.job_userID)+' - '+ field.name.trim() : "Nil",
                                        "name": field.name? field.name.trim() : "Nil",
                                        "start": "2015-03-02",
                                        "price": field.total_price,
@@ -82,7 +82,7 @@ angular.module('calendardirective', [])
                                }
                                $scope.ScheduledJobs.push(
                                    {
-                                       "title": field.name? field.reportID+' - $'+shortenPrice(field.total_price)+' - '+getFormaneName(field.job_userID)+' - '+ field.name.trim() : "Nil",
+                                       "title": field.name? field.reportID+' - $'+shortenPrice(field.total_price)+' - '+userID2Name(field.job_userID)+' - '+ field.name.trim() : "Nil",
                                        "start":sTime,
                                        "end": eTime,
                                        "name": field.name? field.name.trim() : "Nil",
@@ -274,7 +274,8 @@ angular.module('calendardirective', [])
                                    var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
                                    //element.css('background-color', '#77DD77');
                                    element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'
-                                       .format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" title="No foreman assigned to this job"></i></a>');
+                                       .format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" '
+													+'title="No foreman assigned to this job"></i></a>');
                                }
                                //else if(event.status != 'scheduled'){
                                //    //element.css('background-color', 'grey')
@@ -396,7 +397,7 @@ angular.module('calendardirective', [])
             $scope.open = function (siteID) {
                 $scope.user = {
                     group: 1,
-                    groupName: 'John Miclay' // original value
+                    name: 'John Miclay' // original value
                 };
 
                 data.title = "List of foreman's"
@@ -407,16 +408,15 @@ angular.module('calendardirective', [])
 
             $scope.loadGroups = function (deferred) {
 
-                Api.GetForemans("staff", {
-
-                }).then(function (response) {
+                Api.GetForemans("staff", {})
+					 .then(function (response) {
                     $scope.groups = [];
                     angular.forEach(response, function (item) {
                         if(item.userID == $scope.clickedEvent.job_userID){
-                            $scope.user = { "group": item.userID, "groupName": item.fName +' '+ item.lName };
+                            $scope.job_user = { "userID": item.userID, "name": item.fName +' '+ item.lName };
                         }
                         if(item.userID == $scope.clickedEvent.sales_userID){
-                            $scope.salesUser = { "group": item.userID, "salesUserName": item.fName +' '+ item.lName };
+                            $scope.sales_user = { "userID": item.userID, "name": item.fName +' '+ item.lName };
                         }
                         $scope.groups.push({ "id": item.userID, "text": item.fName +' '+ item.lName,"fName":item.fName });
                     });
@@ -424,7 +424,7 @@ angular.module('calendardirective', [])
                 });
             };
 
-            var getFormaneName = function(job_userID){
+            var userID2Name = function(job_userID){
                 for(var i = 0;i<$scope.groups.length;i++){
                     if($scope.groups[i].id == job_userID){
                         return $scope.groups[i].fName;
@@ -434,21 +434,27 @@ angular.module('calendardirective', [])
             }
             $scope.init();
             $scope.savejobtoforeman = function () {
+					$scope.job_user.name=userID2Name($scope.job_user.userID); 
                 Api.AssignJobToForeman($scope.clickedEvent.reportId, {
-                    job_userID: $scope.user.group
+                    job_userID: $scope.job_user.userID
                 }).then(function (response) {
                     console.log(response);
-                    $scope.clickedEvent.job_userID  = $scope.user.group;
-                    $scope.clickedEvent.title = $scope.clickedEvent.name? $scope.clickedEvent.reportId+' - '+shortenPrice($scope.clickedEvent.price.replace(',',''))+' - '+getFormaneName($scope.clickedEvent.job_userID)+' - '+ $scope.clickedEvent.name.trim() : "Nil",
+                    $scope.clickedEvent.job_userID  = $scope.job_user.userID;
+						  //@@todo .. duplicate code here! dont reassign the title again.. make a function for this WTF
+                    $scope.clickedEvent.title = $scope.clickedEvent.name? $scope.clickedEvent.reportId+' - '
+						  		+shortenPrice($scope.clickedEvent.price.replace(',',''))+' - '+userID2Name($scope.clickedEvent.job_userID)+' - '
+								+ $scope.clickedEvent.name.trim() : "Nil",
                     elm.fullCalendar( 'refetchEvents');
                 });
             };
+
             $scope.savejobtoSalesUser = function () {
+						$scope.sales_user.name=userID2Name($scope.sales_user.userID); 
                 Api.AssignJobToForeman($scope.clickedEvent.reportId, {
-                    sales_userID: $scope.user.salesUser
+                    sales_userID:  $scope.sales_user.userID
                 }).then(function (response) {
                     console.log(response);
-                    $scope.clickedEvent.sales_userID  = $scope.salesUser.group;
+                    $scope.clickedEvent.sales_userID  = $scope.sales_user.userID;
                 });
             };
 
@@ -474,10 +480,8 @@ angular.module('calendardirective', [])
                 $scope.jobdescription = data.price;
                 //$scope.$apply();
                 $scope.clickedEvent = data;
-                $('#modalTitle').html("<a href='#/trees?reportID="
-                +data.reportId+"'>"+
-                     '#'+data.reportId+' - '+data.name+
-                "</a>");
+                $('#modalTitle').html('<span style="font-size:1.5em; font-weight:bold;">'+data.reportId + " - " + data.name 
+					 	+"</span> (<a href='#/trees?reportID="+data.reportId+"'>link</a>)");
                 console.log(data.price);
                 //$('#modalBody').html("Price:" + data.price);
 
@@ -486,23 +490,25 @@ angular.module('calendardirective', [])
 
                 $scope.siteID = data.siteid;
                 Api.getSiteById($scope.siteID, {}).
-                    then(function (response) {
-                        $scope.siteName = response.siteName;
-                        $scope.siteAddress = response.city;
-                        $scope.city = response.city;
-                        $scope.state = response.state;
-                        $scope.zip = response.zip;
-                        $scope.contact = response.contact;
-                        $scope.email = response.contactEmail;
-                        $scope.phone = response.contactPhone;
+                    then(function (res) {
+                        $scope.siteName = res.siteName;
+                        $scope.street = res.street
+                        $scope.city = res.city;
+                        $scope.state = res.state;
+                        $scope.zip = res.zip;
+                        $scope.contact = res.contact;
+                        $scope.email = res.contactEmail;
+                        $scope.phone = res.contactPhone;
+								$scope.job_start = res.job_start;
+								$scope.job_end = res.job_end;
                     });
-                $scope.user = {
-                    group: -1,
-                    groupName: '' // original value
+                $scope.job_user = {
+                    userID: -1,
+                    name: '' // original value
                 };
-                $scope.salesUser = {
-                    group: -1,
-                    salesUserName: '' // original value
+                $scope.sales_user = {
+                    userID: -1,
+                    name: '' // original value
                 };
                 $scope.loadGroups();
 
@@ -511,13 +517,13 @@ angular.module('calendardirective', [])
             $scope.$watch('user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     var selected = $filter('filter')($scope.groups, { id: $scope.user.group });
-                    $scope.user.groupName = selected.length ? selected[0].text : null;
+                    $scope.user.name = selected.length ? selected[0].text : null;
                 }
             });
-            $scope.$watch('salesUser.group', function (newVal, oldVal) {
+            $scope.$watch('sales_user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    var selected = $filter('filter')($scope.groups, { id: $scope.salesUser.group });
-                    $scope.salesUser.salesUserName = selected.length ? selected[0].text : null;
+                    var selected = $filter('filter')($scope.groups, { id: $scope.sales_user.userID });
+                    $scope.sales_user.name = selected.length ? selected[0].text : null;
                 }
             });
 

@@ -52,6 +52,8 @@ angular.module('calendardirective', [])
                        angular.forEach(data, function (field) {
 
 									var obj=angular.copy(field);
+									obj.estimateUrl=obj.url;
+									delete obj.url;		//or else the calendar uses this as a link
 									obj.name = (field.name) ? field.name.trim() : '(blank name)';
 									obj.title=field.reportID+' - $'+shortenPrice(field.total_price)
 											+' - '+userID2Name(field.job_userID)+' - '+ obj.name;
@@ -464,7 +466,8 @@ angular.module('calendardirective', [])
                 //$scope.$apply();
                 $scope.clickedEvent = data;
                 $('#modalTitle').html('<span style="font-size:1.5em; font-weight:bold;">'+data.reportID + " - " + data.name 
-					 	+"</span> (<a href='#/trees?reportID="+data.reportID+"'>link</a>)");
+					 	+"</span> (<a href='#/trees?reportID="+data.reportID+"'>edit</a> | "
+						+"<a href='"+data.estimateUrl+"' target=_new>view</a>)");
                 console.log(data.price);
                 //$('#modalBody').html("Price:" + data.price);
 

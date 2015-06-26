@@ -25,6 +25,7 @@ angular.module('calendardirective', [])
             $scope.UnscheduledJobs = [];
             $scope.ScheduledJobs = [];
             $scope.clickedEvent = {};
+				$scope.goalPerDay=2000;
             var elm, 
 					cal, 		// ref to calendar html obj
 					uncheduledJobsBackUp;
@@ -216,10 +217,14 @@ angular.module('calendardirective', [])
                                //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
                            },
 									dayClick: function( date, evt, view ){
-										var tot=getDayTotal(date);
+										var tot=getDayTotal(date),diff;
 										if(tot>0){
-											tot = "$" + commaDigits(tot);
-											alert(tot);
+											niceTot = "$" + commaDigits(tot);
+											var msg=date.format("dddd") + " the " + date.format("Do") + " = " + niceTot;
+											var diff=Math.abs(Math.round($scope.goalPerDay-tot));
+											var undOvr = (tot>$scope.goalPerDay) ? " over)" : " UNDER!)";
+											msg+=" ($"+diff+undOvr;
+											$rootScope.$broadcast('alert', { msg:msg, time: 9, type: 'ok' });
 										}
 									},
 									//dayRender: function( date, cell ){
@@ -541,8 +546,7 @@ angular.module('calendardirective', [])
 
 			
 				function paintDay(date){
-					var goal=2000;
-
+					var goal=$scope.goalPerDay;
 					var t=getDayTotal(date);
 					if(t===false) return;
 					var warnLevel=-1;
@@ -590,7 +594,7 @@ angular.module('calendardirective', [])
 						else{
 						}
 					});
-					return tot;
+					return Math.round(tot);
 				}
 
 

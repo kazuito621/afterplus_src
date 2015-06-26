@@ -136,10 +136,11 @@ angular.module('calendardirective', [])
                            externalevents.each(function () {
                                var jobtitle = $(this).text();
                                var ev = $scope.getEventInfo(jobtitle);
+										 var pr = (ev && ev.price) ? ev.price : 0;
 
                                $(this).data('event', {
                                    title: jobtitle,     // use the element's text as the event title
-                                   price: ev.price,
+                                   price: pr,
                                    stick: true            // maintain when user navigates (see docs on the renderEvent method)
                                });
 
@@ -544,25 +545,28 @@ angular.module('calendardirective', [])
 				}
 
 				function updateTotalBoxes(){
-					// approved
-					var t=0;
-					_.each($scope.UnscheduledJobs, function(j){
-						t+=parseFloat(j.price);
-					});
-					$scope.total.approved='$'+shortenPrice(t);
+					var t=0, st=$scope.total;
+					st.approved=st.scheduled=st.completed=st.invoiced=st.paid=0;
 
-					var st=$scope.total;
-					st.scheduled=st.completed=st.invoiced=st.paid=0;
+					// approved
+					_.each($scope.UnscheduledJobs, function(j){
+						if( j.price ) st.approved+=parseFloat(j.price);
+						else if( j.total_price) st.approved+=parseFloat(j.total_price);
+					});
+
 					var ev=cal.fullCalendar('clientEvents');
 					_.each(ev, function(e){
 						if(e.status && e.price){ 
 							st[e.status]+=parseFloat(e.price);
 						}
 					});
-					st.scheduled='$' + shortenPrice(st.scheduled);
-					st.completed='$' + shortenPrice(st.completed);
-					st.invoiced='$' + shortenPrice(st.invoiced);
-					st.paid='$' + shortenPrice(st.paid);
+
+					var stats=['approved','scheduled','completed','invoiced','paid'];
+					_.each(stats, function(s){
+						st[s]='$' + shortenPrice(st[s]);
+						var c=$('.small-tag.'+s);
+						if(c) c.text(s+' = '+st[s]);
+					});
 				}
 
 

@@ -57,7 +57,7 @@ angular.module('calendardirective', [])
                                        "name": field.name? field.name.trim() : "Nil",
                                        "start": "2015-03-02",
                                        "price": field.total_price,
-                                       reportId: field.reportID,
+                                       reportID: field.reportID,
                                        "siteid": field.siteID,
                                        "status" : field.status,
                                        "type" : 'Unscheduled',
@@ -91,7 +91,7 @@ angular.module('calendardirective', [])
                                         end: '2015-05-18',*/
                                        "type" : 'Scheduled',
                                        "price": field.total_price,
-                                       reportId: field.reportID,
+                                       reportID: field.reportID,
                                        "siteid": field.siteID,
                                        "status" : field.status,
                                        "job_userID" : field.job_userID,
@@ -122,7 +122,7 @@ angular.module('calendardirective', [])
                        var selectedEvent = null;
                        for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
                            var event = $scope.UnscheduledJobs[index];
-                           if (event.reportId == rptID || event.title.trim() == eventName.trim()) {
+                           if (event.reportID == rptID || event.title.trim() == eventName.trim()) {
                                selectedEvent = event;
                                break;
                            }
@@ -197,9 +197,9 @@ angular.module('calendardirective', [])
                            },
                            eventReceive: function (event) {
                                var ev = $scope.getEventInfo(event.title);
-                               $scope.estimateid = ev.reportId;
+                               $scope.estimateid = ev.reportID;
                                console.log("event:" + event.start.format('YYYY-MM-DD') + " $"+ev.price);
-                               Api.ScheduleJob(ev.reportId, {
+                               Api.ScheduleJob(ev.reportID, {
                                    job_start: event.start.format('YYYY-MM-DD'),
                                    job_end: event.start.format('YYYY-MM-DD')
                                }).then(function (res) {
@@ -291,11 +291,11 @@ angular.module('calendardirective', [])
                                html = html.replace("<br/>", "");
                                html = html.replace("<br>", "");
                                $(".fc-title").html(html);
-                               if(el.reportId == undefined){
+                               if(el.reportID == undefined){
                                    var eventInfo=$scope.getEventInfo(el.title);
-                                   el.reportId = eventInfo.reportId;
+                                   el.reportID = eventInfo.reportID;
                                }
-                               Api.ScheduleJob(el.reportId, {
+                               Api.ScheduleJob(el.reportID, {
                                    //job_start: t.format('YYYY-MM-DD'),
                                    job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
                                    job_end: moment(el.end).format('YYYY-MM-DD HH:mm:ss')
@@ -307,9 +307,9 @@ angular.module('calendardirective', [])
 
                            },
                            eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
-                               if(el.reportId == undefined){
+                               if(el.reportID == undefined){
                                    var eventInfo=$scope.getEventInfo(el.title);
-                                   el.reportId = eventInfo.reportId;
+                                   el.reportID = eventInfo.reportID;
                                }
                                var sTime;
                                var eTime;
@@ -326,7 +326,7 @@ angular.module('calendardirective', [])
                                else {
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
                                }
-                               Api.ScheduleJob(el.reportId, {
+                               Api.ScheduleJob(el.reportID, {
                                    job_start: sTime,
                                    job_end: eTime
                                }).then(function (res) {
@@ -361,7 +361,7 @@ angular.module('calendardirective', [])
                             if (
                                 titletxt.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0 ||
                                 item.siteName.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0 ||
-                                item.reportId.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0
+                                item.reportID.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0
                             ) {
                                 $scope.UnscheduledJobs.push(item);
                             }
@@ -436,13 +436,13 @@ angular.module('calendardirective', [])
             $scope.init();
             $scope.savejobtoforeman = function () {
 					$scope.job_user.name=userID2Name($scope.job_user.userID); 
-                Api.AssignJobToForeman($scope.clickedEvent.reportId, {
+                Api.AssignJobToForeman($scope.clickedEvent.reportID, {
                     job_userID: $scope.job_user.userID
                 }).then(function (response) {
                     console.log(response);
                     $scope.clickedEvent.job_userID  = $scope.job_user.userID;
 						  //@@todo .. duplicate code here! dont reassign the title again.. make a function for this WTF
-                    $scope.clickedEvent.title = $scope.clickedEvent.name? $scope.clickedEvent.reportId+' - '
+                    $scope.clickedEvent.title = $scope.clickedEvent.name? $scope.clickedEvent.reportID+' - '
 						  		+shortenPrice($scope.clickedEvent.price.replace(',',''))+' - '+userID2Name($scope.clickedEvent.job_userID)+' - '
 								+ $scope.clickedEvent.name.trim() : "Nil",
                     elm.fullCalendar( 'refetchEvents');
@@ -451,7 +451,7 @@ angular.module('calendardirective', [])
 
             $scope.savejobtoSalesUser = function () {
 						$scope.sales_user.name=userID2Name($scope.sales_user.userID); 
-                Api.AssignJobToForeman($scope.clickedEvent.reportId, {
+                Api.AssignJobToForeman($scope.clickedEvent.reportID, {
                     sales_userID:  $scope.sales_user.userID
                 }).then(function (response) {
                     console.log(response);
@@ -462,7 +462,7 @@ angular.module('calendardirective', [])
             $scope.UnscheduledJob = function () {
                 console.log($scope.clickedEvent);
                 var id = $scope.clickedEvent._id
-                Api.UnscheduledJob($scope.clickedEvent.reportId, {
+                Api.UnscheduledJob($scope.clickedEvent.reportID, {
 
                 }).then(function () {
                     $('#fullCalModal').modal('hide');
@@ -473,7 +473,7 @@ angular.module('calendardirective', [])
 
             $scope.groups = [];
             $scope.openJob = function(data){
-                if(data.reportId == undefined){
+                if(data.reportID == undefined){
                     var tempId =  data._id;
                     data=$scope.getEventInfo(data.title);
                     data._id = tempId;
@@ -481,8 +481,8 @@ angular.module('calendardirective', [])
                 $scope.jobdescription = data.price;
                 //$scope.$apply();
                 $scope.clickedEvent = data;
-                $('#modalTitle').html('<span style="font-size:1.5em; font-weight:bold;">'+data.reportId + " - " + data.name 
-					 	+"</span> (<a href='#/trees?reportID="+data.reportId+"'>link</a>)");
+                $('#modalTitle').html('<span style="font-size:1.5em; font-weight:bold;">'+data.reportID + " - " + data.name 
+					 	+"</span> (<a href='#/trees?reportID="+data.reportID+"'>link</a>)");
                 console.log(data.price);
                 //$('#modalBody').html("Price:" + data.price);
 

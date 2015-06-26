@@ -30,6 +30,7 @@ angular.module('calendardirective', [])
             var elm, 
 					cal, 		// ref to calendar html obj
 					uncheduledJobsBackUp;
+
            $scope.init = function(){
                $scope.UnscheduledJobs = [];
                $scope.ScheduledJobs = [];
@@ -49,58 +50,39 @@ angular.module('calendardirective', [])
                    .then(function(values) {
                        var data = values[0];
                        angular.forEach(data, function (field) {
+
+									var obj=angular.copy(field);
+									obj.name = (field.name) ? field.name.trim() : '(blank name)';
+									obj.title=field.reportID+' - $'+shortenPrice(field.total_price)
+											+' - '+userID2Name(field.job_userID)+' - '+ obj.name;
+									obj.price=obj.total_price;
+
                            if( field.status=="approved"  ||  (field.status=="scheduled"  &&  field.job_start==undefined)) {
-                               $scope.UnscheduledJobs.push(
-                                   {
-                                       "title": field.name? field.reportID+' - $'+shortenPrice(field.total_price)
-														+' - '+userID2Name(field.job_userID)+' - '+ field.name.trim() : "Nil",
-                                       "name": field.name? field.name.trim() : "Nil",
-                                       "start": "2015-03-02",
-                                       "price": field.total_price,
-                                       reportID: field.reportID,
-                                       "siteid": field.siteID,
-                                       "status" : field.status,
-                                       "type" : 'Unscheduled',
-                                       "siteName" : field.siteName,
-                                       "job_userID" : field.job_userID,
-                                       "sales_userID" : field.sales_userID
-                                   });
+										obj.type='Unscheduled';
+										$scope.UnscheduledJobs.push(obj);
                            }
-                           else if(field.job_start ){
+                           else if(field.job_start)
+									{
                                var sTime ;
                                var eTime ;
-                               if(moment(field.job_start).format('h:mm:ss a') ==  "12:00:00 am"){
+                               if(moment(field.job_start).format('h:mm:ss a') ==  "12:00:00 am")
                                    sTime =  moment(field.job_start).format('YYYY-MM-DD');
-                               }
-                               else {
+                               else 
                                    sTime =  moment(field.job_start).format('YYYY-MM-DD hh:mm:ss')
-                               }
-                               if(moment(field.job_end).format('h:mm:ss a') ==  "12:00:00 am"){
-                                   eTime =  moment(field.job_end).format('YYYY-MM-DD');
-                               }
-                               else {
-                                   eTime =  moment(field.job_end).format('YYYY-MM-DD hh:mm:ss')
-                               }
-                               $scope.ScheduledJobs.push(
-                                   {
-                                       "title": field.name? field.reportID+' - $'+shortenPrice(field.total_price)+' - '+userID2Name(field.job_userID)+' - '+ field.name.trim() : "Nil",
-                                       "start":sTime,
-                                       "end": eTime,
-                                       "name": field.name? field.name.trim() : "Nil",
-                                       /*start: '2015-05-18',
-                                        end: '2015-05-18',*/
-                                       "type" : 'Scheduled',
-                                       "price": field.total_price,
-                                       reportID: field.reportID,
-                                       "siteid": field.siteID,
-                                       "status" : field.status,
-                                       "job_userID" : field.job_userID,
-                                       "sales_userID" : field.sales_userID
-                                   });
-                           }
 
+                               if(moment(field.job_end).format('h:mm:ss a') ==  "12:00:00 am")
+                                   eTime =  moment(field.job_end).format('YYYY-MM-DD');
+                               else 
+                                   eTime =  moment(field.job_end).format('YYYY-MM-DD hh:mm:ss')
+
+										obj.type='Scheduled';
+										obj.start=sTime;
+										obj.end=eTime;
+
+                               $scope.ScheduledJobs.push(obj);
+                           }
                        });
-                       uncheduledJobsBackUp = $scope.UnscheduledJobs;
+                       uncheduledJobsBackUp = angular.copy($scope.UnscheduledJobs);
                        $scope.getEventInfo = function (eventName) {
                            var selectedEvent = null;
                            for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
@@ -156,7 +138,7 @@ angular.module('calendardirective', [])
 
 
                        elm = $element.find("#calendar");
-                       cal = elm.fullCalendar({
+                       window.cal = cal = elm.fullCalendar({
                            header: {
                                left: 'prev,next today',
                                center: 'title',
@@ -210,6 +192,11 @@ angular.module('calendardirective', [])
                                });
 
                            },
+									eventDragStop: function( event, jsEvent, ui, view ){
+										setTimeout(function(){
+											updateTotals();	
+										},1000);
+									},
                            updateEvent: function (event) {
                                console.log(event);
                            },
@@ -490,7 +477,7 @@ angular.module('calendardirective', [])
                 $scope.price = data.price.replace(",", "");
 
 
-                $scope.siteID = data.siteid;
+                $scope.siteID = data.siteID;
                 Api.getSiteById($scope.siteID, {}).
                     then(function (res) {
                         $scope.siteName = res.siteName;
@@ -576,7 +563,7 @@ angular.module('calendardirective', [])
 					var view=cal.fullCalendar('getView');
 					if(view.name=='month'){
 						var t,dt,st=view.start;
-						for( var d=view.start; d.isBefore(view.end); d.add('days', 1) ){
+						for( var d=moment(view.start); d.isBefore(view.end); d.add('days', 1) ){
 							paintDay(d);
 						}
 					}
@@ -608,26 +595,24 @@ angular.module('calendardirective', [])
 					if(!today) return false;
 					if(!cal || !cal.fullCalendar) return false;
 					var events=cal.fullCalendar('clientEvents');
-					console.debug(events.length);
 					var mev=[];  // matched events
 					var tot=0;
 					_.each( events, function(e){
 
-						if(!e.price) return;
+						if(!e.todo_price) return;
 						// check for jobs that span multiple days
 						if( e.end
 						    && e.start.isBefore(today,'day') 
 							 && e.end.isAfter(today,'day')
 						){
 							var totalDays=e.end.diff(e.start,'days');
-							var p=parseFloat(parseFloat(e.price) / totalDays);
+							var p=parseFloat(parseFloat(e.todo_price) / totalDays);
 							tot+=p;
 							mev.push(e);
 
 						// job on single day
 						}else if( e.start.isSame(today,'day')){ 
-						console.debug(e);
-							tot+=parseFloat(e.price);
+							tot+=parseFloat(e.todo_price);
 							mev.push(e);
 						}
 						else{

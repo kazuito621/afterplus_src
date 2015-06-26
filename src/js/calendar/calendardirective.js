@@ -26,6 +26,7 @@ angular.module('calendardirective', [])
             $scope.ScheduledJobs = [];
             $scope.clickedEvent = {};
 				$scope.goalPerDay=2000;
+				$scope.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0}
             var elm, 
 					cal, 		// ref to calendar html obj
 					uncheduledJobsBackUp;
@@ -232,9 +233,9 @@ angular.module('calendardirective', [])
 									viewRender: function( view, cal ){
 										//@@todo - tim ... calendar isnt ready on this call.. is there a better way?
 										setTimeout(function(){
-											if(!updatePriceColors()){
+											if(!updateTotals()){
 												setTimeout(function(){
-													updatePriceColors();
+													updateTotals();
 												},2000);
 											}
 										},1000);
@@ -536,6 +537,34 @@ angular.module('calendardirective', [])
 
 
 				/** ========== PRICE CALCULATIONS PER DAY ============ **/
+
+				function updateTotals(){
+					updatePriceColors();
+					updateTotalBoxes();
+				}
+
+				function updateTotalBoxes(){
+					// approved
+					var t=0;
+					_.each($scope.UnscheduledJobs, function(j){
+						t+=parseFloat(j.price);
+					});
+					$scope.total.approved='$'+shortenPrice(t);
+
+					var st=$scope.total;
+					st.scheduled=st.completed=st.invoiced=st.paid=0;
+					var ev=cal.fullCalendar('clientEvents');
+					_.each(ev, function(e){
+						if(e.status && e.price){ 
+							st[e.status]+=parseFloat(e.price);
+						}
+					});
+					st.scheduled='$' + shortenPrice(st.scheduled);
+					st.completed='$' + shortenPrice(st.completed);
+					st.invoiced='$' + shortenPrice(st.invoiced);
+					st.paid='$' + shortenPrice(st.paid);
+				}
+
 
 				// change color of all calendar day box backgrounds, based on $ amount
 				function updatePriceColors(){

@@ -444,7 +444,6 @@ angular.module('calendardirective', [])
             };
 
             $scope.UnscheduledJob = function () {
-                console.log($scope.clickedEvent);
                 var id = $scope.clickedEvent._id
                 Api.UnscheduledJob($scope.clickedEvent.reportID, {
 
@@ -453,6 +452,7 @@ angular.module('calendardirective', [])
                     $scope.init();
                     elm.fullCalendar('removeEvents', id);
                 });
+					setTimeout(function(){	updateTotals() },1000);
             };
 
             $scope.groups = [];

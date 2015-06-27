@@ -38,33 +38,40 @@
 	 }
 </style>
 
-<div class="search">
-    <span>Search Job:</span><br />
-    <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" />
-</div>
-<div id='external-events' style="margin-top: 52px;">
-    <h4 style="width:105%;">Approved Jobs</h4>
+<div class="row">
+	<div class="col-md-3">
+		<div id='external-events' style="">
+			 <h4 style="margin:0 0 .5em; 0">Approved Jobs</h4>
+			 <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" placeholder="Search"/>
 
-    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
-        {{singleJob.title}}
-    </div>
-    <p>
-        <input type='checkbox' id='drop-remove' checked ng-show="false" />
-        <!--  <label for='drop-remove'>remove after drop</label>-->
-    </p>
-</div>
-<div id='calendar'></div>
+			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
+			 	ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
+				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
+				 	{{singleJob.title}}
+			 </div>
+			 <p>
+				  <input type='checkbox' id='drop-remove' checked ng-show="false" />
+				  <!--  <label for='drop-remove'>remove after drop</label>-->
+			 </p>
+		</div>
+	</div><!-- }} col -->
+	<div class='col-md-9'>
+		<div id='calendar'></div>
 
-<!-- color key -->
-<div style='clear:both;'><BR></div>
-<div style='clear:both;padding:2em.'>
-	<span class='small-tag approved'> APPROVED </span> &nbsp; 
-	<span class='small-tag scheduled'> SCHED </span> &nbsp; 
-	<span class='small-tag completed'> COMPLETED </span> &nbsp; 
-	<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
-	<span class='small-tag paid'> PAID </span>
-	&nbsp; Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>
-</div>
+		<!-- color key -->
+		<div style='clear:both;padding:2em;'>
+			<span class='small-tag approved'> APPROVED </span> &nbsp; 
+			<span class='small-tag scheduled'> SCHED </span> &nbsp; 
+			<span class='small-tag completed'> COMPLETED </span> &nbsp; 
+			<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
+			<span class='small-tag paid'> PAID </span>
+		</div>
+		<div>
+			Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>
+		</div>
+	</div><!-- }} col -->
+</div><!-- }} row -->
+<div style='margin:1em;'> &nbsp; </div>
 
 
 <!--(Start) Modal Pop Up To Show Info about Job-->

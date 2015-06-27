@@ -25,7 +25,7 @@ angular.module('calendardirective', [])
             $scope.UnscheduledJobs = [];
             $scope.ScheduledJobs = [];
             $scope.clickedEvent = {};
-				$scope.goalPerDay=2000;
+				$scope.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
 				$scope.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0}
             var elm, 
 					cal, 		// ref to calendar html obj
@@ -325,6 +325,10 @@ angular.module('calendardirective', [])
 
            }
 
+			$scope.saveGoalPerDay = function(){
+                Api.saveEntityInfo({goal_per_day:$scope.goalPerDay});
+					 updateTotals();
+			}
 
             $scope.onMouseHoverJob = function () {
                 $("#tooltip").removeClass("hide").addClass("show");

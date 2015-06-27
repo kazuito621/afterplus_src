@@ -241,6 +241,7 @@ app.directive('bulkTreeEditor',
                     Api.getBulkEditInfo(param).then(function(data){
                         scope.currentInfo.treeCount=data.treeCount;
                         scope.currentInfo.treatmentCount=data.treatmentCount;
+                        scope.currentInfo.treatmentTypeCount=data.treatmentTypeCount;
                         scope.currentInfo.price=data.price;
                     });
                 }

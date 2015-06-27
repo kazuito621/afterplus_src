@@ -316,11 +316,22 @@ footer
 		margin-bottom: 15px;
 	}
 
-
 	&.approved
 	{
 		border-color: $approved;
 		color: $approved;
+	}
+
+	&.scheduled
+	{
+		border-color: $scheduled;
+		color: $scheduled;
+	}
+
+	&.invoiced
+	{
+		border-color: $invoiced;
+		color: $invoiced;
 	}
 
 	&.billed
@@ -350,7 +361,8 @@ footer
 
 	&.paid
 	{
-		border-color: $paid;
+		border-color: #000;
+		font-color:#000;
 		color: $paid;
 	}
 
@@ -373,6 +385,14 @@ footer
 	background-color: $sent !important;
 	color: #fff !important;
 	}
+.clr-scheduled {
+	background-color: $scheduled !important;
+	color: #fff !important;
+	}
+.clr-invoiced {
+	background-color: $invoiced !important;
+	color: #fff !important;
+	}
 .clr-needs_approval {
 	background-color: $needs_approval !important;
 	color: #fff !important;
@@ -383,7 +403,8 @@ footer
 	}
 .clr-paid {
 	background-color: $paid !important;
-	color: #fff !important;
+	color: #000 !important;
+	border:#000 solid 1px;
 	}
 
 .small-tag
@@ -398,9 +419,11 @@ footer
 	&.draft{ background:$draft; }
 	&.approved{ background: $approved; }
 	&.needs_approval{ background: $needs_approval; }
+	&.scheduled{ background: $scheduled; }
 	&.billed{ background: $billed; }
+	&.invoiced{ background: $invoiced; }
 	&.completed{ background: $completed; }
-	&.paid{ background: $paid; }
+	&.paid{ background: $paid; color:#000; border:#000 solid 1px;}
 	&.sent{ background: $sent; }
 }
 

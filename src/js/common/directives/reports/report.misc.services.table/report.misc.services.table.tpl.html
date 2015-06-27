@@ -3,12 +3,13 @@
     <table class="table ng-scope ng-table" ng-if="data.mode()=='trees' || report.services.length > 0 ">
         <thead>
         <tr ng-hide="groupedItems.length==0">
-            <td colspan="4">Misc. Services</td>
+            <td colspan="5">Misc. Services</td>
         </tr>
         <tr>
             <td colspan="{{ data.mode()=='trees' && '1' || '2' }}">Description</td>
             <td>Quantity</td>
-            <td class="text-right">Price</td>
+            <td class="text-right">Amount</td>
+            <td class="text-right">Subtotal</td>
             <td ng-if="data.mode()=='trees'"></td>
         </tr>
         </thead>
@@ -33,6 +34,9 @@
                     {{item.price}}
                 </span>
             </td>
+            <td data-title="service_subtotal" class="text-right">
+					${{ item.price * item.quantity }}
+				</td>
             <td ng-if="data.mode()=='trees'">
                 <div ng-if="auth.isAtleast('inventory')">
                     <a href ng-click="removeItem(item.$$hashKey,'services')"
@@ -64,16 +68,37 @@
             <td class="text-right">
                 <button class="btn btn-red clr-white" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
             </td>
+				<td></td>
         </tr>
 
         <!-- // Subtotals // -->
         <tr ng-if="report.total.services">
-            <td align=right colspan="3">Misc Services Subtotal:</td>
+            <td align=right colspan="{{ data.mode()=='trees' && '3' || '4' }}">Misc Services Subtotal:</td>
             <td class="text-right">&#36;{{report.total.services|formatPrice}}</td>
+				<td ng-if="data.mode()=='trees'"></td>
         </tr>
         <tr ng-if="report.total.services">
-            <td align=right colspan="3">Tree Services Subtotal:</td>
+            <td align=right colspan="{{ data.mode()=='trees' && '3' || '4' }}">Tree Services Subtotal:</td>
             <td class="text-right">&#36;{{report.total.items|formatPrice}}</td>
+				<td ng-if="data.mode()=='trees'"></td>
+        </tr>
+        <tr ng-if="report.tax_rate>0 || data.mode()=='trees'">
+            <td align=right colspan="{{ data.mode()=='trees' && '2' || '3' }}">
+					Taxes: &nbsp; &nbsp;
+					<span ng-if="!(report.tax_rate>0) && entityID==3"> 
+						(<a href ng-click='lookupTaxByZip()'>Lookup Taxes Based on Zipcode</a>)
+					</span>
+				</td>
+            <td class="text-right">
+                <a href editable-text='report.tax_rate' ng-if='auth.isAtleast("inventory")'>
+                    {{ (report.tax_rate) ? report.tax_rate : '0.00'}}
+                </a>%
+					 <span ng-if='!auth.isAtleast("inventory")'>
+						{{ (report.tax_rate) ? report.tax_rate : '0.00' }}%
+					 </span>
+				</td>
+            <td class="text-right">${{ report.total.tax }}</td>
+				<td ng-if="data()=='trees'"></td>
         </tr>
         </tbody>
     </table>

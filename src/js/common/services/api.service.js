@@ -163,11 +163,17 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         updateEstimateTime: function (reportID, tstamp) {
             return Rest.all('estimate/' + reportID).post(tstamp);
         },
+		  saveEntityInfo: function(data){
+				return Rest.all('entity').post(data);
+		  },
         setReportStatus: function (rptID, status) {
             return Rest.one('estimate', rptID).post(status);
         },
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
+        },
+        lookupTaxByZip: function(zip){
+				return Rest.one('tax/zip/'+zip).get();
         },
         sendEmailPortalLink: function (rpt) {
             return Rest.all('sendPortalLink').post(rpt);

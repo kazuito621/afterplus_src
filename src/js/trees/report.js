@@ -654,6 +654,17 @@ var ReportCtrl = app.controller(
                 }
             }
 
+				s.lookupTaxByZip = function(){
+					if(!s.report.zip) return;
+                Api.lookupTaxByZip(s.report.zip)
+                    .then(function (res) {
+						  		if(res && res.tax>0 && res.tax<100){
+									s.report.tax_rate=res.tax;
+								}
+                    })
+				}
+
+
             // add New TreatmentCode
             s.addNewTreatment = function (treatments) {
                 treatments.push({

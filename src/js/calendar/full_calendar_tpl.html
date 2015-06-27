@@ -27,28 +27,51 @@
     .show {
         display: inline;
     }
+
+	 /* Override some calendar options */
+	 .fc-agenda-view .fc-day-grid .fc-row {
+	 		min-height: 35em; /* all-day section will never get shorter than this */
+		}
+	/* hide time in week view for now */
+	 .fc-time-grid-container {
+			height:1px !important;
+	 }
 </style>
 
-<div class="search">
-    <span>Search Job:</span><br />
-    <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" />
-</div>
-<div id='external-events' style="margin-top: 52px;">
-    <h4 style="width:105%;">Unscheduled Jobs</h4>
+<div class="row">
+	<div class="col-md-3">
+		<div id='external-events' style="">
+			 <h4 style="margin:0 0 .5em; 0">Approved Jobs</h4>
+			 <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" placeholder="Search"/>
 
-    <!--    <div class='fc-event'>
-        <div ng-repeat="singleJob in events"><ul><li>{{singleJob.title}}</li></ul></div>
-    </div>-->
-    <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportId'" ng-click="openJob(singleJob)" ng-class="'calendar-'+singleJob.status">
-        {{singleJob.title}}<!--<span ng-show="false">{{singleJob.price}}</span>-->
-    </div>
-    <p>
-        <input type='checkbox' id='drop-remove' checked ng-show="false" />
-        <!--  <label for='drop-remove'>remove after drop</label>-->
-    </p>
-</div>
+			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
+			 	ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
+				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
+				 	{{singleJob.title}}
+			 </div>
+			 <p>
+				  <input type='checkbox' id='drop-remove' checked ng-show="false" />
+				  <!--  <label for='drop-remove'>remove after drop</label>-->
+			 </p>
+		</div>
+	</div><!-- }} col -->
+	<div class='col-md-9'>
+		<div id='calendar'></div>
 
-<div id='calendar'></div>
+		<!-- color key -->
+		<div style='clear:both;padding:2em;'>
+			<span class='small-tag approved'> APPROVED </span> &nbsp; 
+			<span class='small-tag scheduled'> SCHED </span> &nbsp; 
+			<span class='small-tag completed'> COMPLETED </span> &nbsp; 
+			<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
+			<span class='small-tag paid'> PAID </span>
+		</div>
+		<div>
+			Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>
+		</div>
+	</div><!-- }} col -->
+</div><!-- }} row -->
+<div style='margin:1em;'> &nbsp; </div>
 
 
 <!--(Start) Modal Pop Up To Show Info about Job-->
@@ -62,80 +85,52 @@
             </div>
             <div id="modalBody" class="modal-body">
                   <div class="row">
-                    <div class="col-md-6">
-                        <table>
-                            <tr>
-                                <td>SiteName</td>
-                                <td>:{{  siteName}}</td>
-                            </tr>
-                            <tr>
-                                <td>SiteAddress</td>
-                                <td>:{{  siteAddress}}</td>
-                            </tr>
-                            <tr>
-                                <td>City</td>
-                                <td>:{{  city}}</td>
-                            </tr>
-                            <tr>
-                                <td>State</td>
-                                <td>:{{  state}}</td>
-                            </tr>
-                            <tr>
-                                <td>Zip</td>
-                                <td>:{{  zip}}</td>
-                            </tr>
-                            <tr></tr>
-                            <tr></tr>
-                            <tr>
-                                <td>Contact</td>
-                                <td>:{{  contact}}</td>
-                            </tr>
-                            <tr>
-                                <td>Email Address</td>
-                                <td>:{{  email}}</td>
-                            </tr>
-                            <tr>
-                                <td>Phone</td>
-                                <td>:{{  phone}}</td>
-                            </tr>
-                        </table>
+                    <div class="col-md-6" style='text-align:left; line-height:1.4em;'>
+						  		<b style='font-size:1.4em;'>{{ siteName }}</b><BR>
+								{{ street }}<BR>
+								{{ city }}, {{ state }}<BR>
+								{{ zip }} 
+								<span style='color:#999;'>
+									(<a target=_new href='http://maps.google.com/?q={{street}}, {{city}}, {{state}} {{zip}}'>map</a>)
+								</span>
+								<BR><BR>
+
+								<b style='font-size:1.2em;'>{{ contact }}</b><BR>
+								<a href='{{email}}'>{{email}}</a><BR>
+								{{ phone }}
+
                     </div>
-                    <div class="col-md-6">
-                        <table>
-                            <tr><td>Assignments</td><td></td></tr>
-                            <tr><td>Name of Foreman</td><td></td></tr>
-                            <tr><td><a href="#" editable-select="user.group"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoforeman(g.id)">{{ user.groupName || 'Select Foreman' }}
-                        </a></td><td></td></tr>
-                            <tr><td><a href="#" editable-select="salesUser.group"  e-ng-options="g.id as g.text for g in groups" onaftersave="savejobtoSalesUser(g.id)">{{ salesUser.salesUserName || 'Select Sales user' }}
-                        </a></td><td></td></tr>
-                            <tr><td>Equipment 1</td><td></td></tr>
-                            <tr><td>Equipment 2</td><td></td></tr>
-                            <tr><td>Equipment 3</td><td></td></tr>
-                            <tr>
-                                <td></td><td></td>
-                            </tr>
-                            <tr>
-                                <td></td><td></td>
-                            </tr>
-                            <tr>
-                                <td>Cost</td><td>${{price}}</td>
-                            </tr>
-                            <tr>
-                                <td>Completed</td><td>0%</td>
-                            </tr>
-                        </table>
-                        <!--<span>Assignments</span><br />
-                        <span>Name of Foreman</span>
-                        <span><a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.id as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
-                        </a></span>-->
+                    <div class="col-md-6" style='text-align:left; line-height:1.3em;'>
+						  
+
+                    <a href ng-if="auth.isAtleast('inventory')" editable-select='tree.speciesID' onaftersave="updateTreeName()"
+                       e-ng-options='obj.speciesID as obj.bothNames for obj in initData.filters.species'>
+                        {{ tree.commonName || '(not specified)' }}
+                    </a>
+
+						  		Foreman: <a href="#" editable-select="job_user.userID"  
+										e-ng-options="g.id as g.text for g in groups" 
+										onaftersave="savejobtoforeman()">{{ job_user.name || 'Select a Foreman' }}</a>
+										<BR><BR>
+
+								Sales: <a href="#" editable-select="sales_user.userID"  
+										e-ng-options="g.id as g.text for g in groups" 
+										onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
+										<BR><BR>
+										<BR>
+								<span style='font-size:2.2em;'>${{price|formatPrice}}</span><BR>
+
                     </div>
                 </div>
-            </div>
-            <side-note side-note report-id="{{reportId}}"></side-note>
+                  <div class="row">
+							{{ job_start }} - {{ job_end }}
+						</div>
+            </div> <!-- }} body -->
+            <side-note report-id="{{reportID}}"></side-note>
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                <input type="button" class="btn btn-success" ng-hide="clickedEvent.type == 'Unscheduled'" ng-click="UnscheduledJob()" value="UnscheduledJob"></input>
+                <input type="button" class="btn btn-success" ng-hide="clickedEvent.type == 'Unscheduled'" ng-click="UnscheduledJob()" value="Unschedule Job"></input>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>

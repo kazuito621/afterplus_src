@@ -84,15 +84,14 @@ app.directive('sideNote',
                     var itemID=scope.activePopover.itemID;
                     Api.deleteNote(scope.reportID, itemID).then(function () {
                         if(false){ //TODO  if msg don't  indicates success,
-                            scope.setAlert("There was an error deleting the note.",{type:'d',time:5});
+
                         }
                         else {
                             var index = _.findObj(scope.notes, 'reportID', itemID,true);
                             scope.notes.splice(index,1);
-                            scope.setAlert('Note deleted successfully.',{type:'ok',time:5});
                         }
                     }, function err(){
-                        scope.setAlert("Note can't be deleted, try again later.",{type:'d',time:5});
+
                     });
                     scope.activePopover.elem.hide();
                     delete scope.activePopover.itemID;

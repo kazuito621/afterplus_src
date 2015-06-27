@@ -1,0 +1,45 @@
+<div class="col-md-12" style="margin-bottom: 20px; margin-top: 10px;">
+    <h1 class="col-md-3 pull-left" style="font-weight: bold">Internal report</h1>
+    <a href="" class="col-md-4 pull-right" ng-click="addNote=true">Add notes</a>
+    <div ng-repeat="n in notes | orderBy:'noteID'">
+        <div class="col-md-8 pull-left" style="margin: 10px;" ng-bind="n.note"> </div>
+        <div  ng-show="n.noteID == editNoteID">
+            <textarea class="col-md-8" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="updatedText">
+            </textarea>
+            <form class="form-inline">
+                <div class='col-md-6'>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="update(n)">OK</button>
+                    <button type="button" class="btn btn-danger  btn-xs" ng-click="cancelEdit()">
+                        CANCEL
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3 pull-right hoverHotspot" style="margin: 10px;">
+            <i class="fa fa-pencil _grey _size4 hoverDisplay" ng-click="editNote(n)" title="Edit" bs-tooltip style="cursor: pointer;"></i>
+            <i class="fa fa-trash _grey _size4 hoverDisplay"
+               delete-with-confirm-button
+               type="note"
+               item-id="{{n.noteID}}"
+               active-popover="activePopover"
+               on-confirm-callback="deleteCurrentItem()"
+               title="Delete" bs-tooltip style="cursor: pointer;"></i>
+        </div>
+        <div class='col-md-5 pull-right' style="color: grey;">-- {{n.name}}, {{n.history}}</div>
+    </div>
+    <div ng-show="addNote==true">
+        <textarea class="col-md-8" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="noteInput">
+            </textarea>
+        <form class="form-inline">
+            <div class='col-md-6'>
+                <button type="button" class="btn btn-success btn-xs" ng-click="ok()">OK</button>
+                <button type="button" class="btn btn-danger  btn-xs" ng-click="addNote=false">
+                    CANCEL
+                </button>
+            </div>
+        </form>
+    </div>
+    <BR>
+    <BR>
+    <BR>
+</div>

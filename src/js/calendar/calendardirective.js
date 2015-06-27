@@ -444,6 +444,7 @@
                         $scope.contact = response.contact;
                         $scope.email = response.contactEmail;
                         $scope.phone = response.contactPhone;
+                        $scope.reportId = data.reportId;
                     });
                 $scope.user = {
                     group: -1,

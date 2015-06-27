@@ -199,6 +199,22 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
 
             return $q.all(promises);
         },
+
+        //Notes
+        getNotes:function(reportID){
+            return Rest.one('note/report/'+reportID).get();
+        },
+        addNote:function(reportID,text){
+            return Rest.all('note/report/'+reportID).post({note:text});
+        },
+        deleteNote:function(reportID,noteID){
+           // DELETE /note/report/123/456
+            return Rest.one('note/report/'+reportID+'/'+noteID).remove();
+        },
+        editNote:function(reportID,noteID,text){
+           // POST /note/report/123/456
+            return Rest.all('note/report/'+reportID+'/'+noteID).post({note:text});
+        },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
             return Rest.one('service_desc', 'treatmenttype').get({ id: ids.toString() });

@@ -97,11 +97,9 @@
 	}
 
 
-
 // ===============================================================
 //    If were on dev server, then look on live server now
-
-if(!preg_match('/dev.arbor/', __FILE__)){
+if(preg_match('/(dev.arbor|dev.aplus)/', __FILE__)){
 	header('Content-type: image/jpeg');
 	echo file_get_contents("http://app.arborplus.com$req");
 	die();

@@ -23,7 +23,8 @@
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>
-                                <tr class="hoverHotspot">
+
+                                <tr class="hoverHotspot" ng-if="report.status!='sent'">
                                     <td colspan="2" data-title="service_desc">
                                         <label class="pull-left">Approved</label>
                                     </td>
@@ -44,7 +45,8 @@
                                     </td>
                                 </tr>
 										  -->
-                                <tr class="hoverHotspot">
+
+                                <tr class="hoverHotspot" ng-if="report.status=='paid' || report.status=='invoiced' || report.status=='completed'">
                                     <td colspan="2" data-title="service_desc">
                                         <label class="pull-left">Completed</label>
                                     </td>
@@ -53,7 +55,8 @@
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>
-                                <tr class="hoverHotspot">
+
+                                <tr class="hoverHotspot" ng-if="report.status=='paid' || report.status=='invoiced'">
                                     <td colspan="2" data-title="service_desc">
                                         <label class="pull-left">Invoiced</label>
                                     </td>
@@ -62,7 +65,8 @@
                                                data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
                                     </td>
                                 </tr>
-                                <tr class="hoverHotspot">
+
+                                <tr class="hoverHotspot" ng-if="report.status=='paid'">
                                     <td colspan="2" data-title="service_desc">
                                         <label class="pull-left">Paid</label>
                                     </td>

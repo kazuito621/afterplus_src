@@ -1,13 +1,28 @@
 <div class="col-md-12" style="margin-bottom: 20px; margin-top: 10px;">
-    <h1 class="col-md-3 pull-left" style="font-weight: bold">Notes (internal)</h1>
-    <a href="" class="col-md-4 pull-right" ng-click="addNote=true">Add notes</a>
-    <div ng-repeat="n in notes | orderBy:'noteID':reverse">
-        <div class="col-md-8 pull-left" style="margin: 10px;" ng-bind="n.note"> </div>
-        <div  ng-show="n.noteID == editNoteID">
-            <textarea class="col-md-8" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="updatedText">
+    <h1 class="col-md-4 pull-left" style="font-weight: bold; font-size:1.2em;">Notes (internal)</h1>
+    <a href="" class="col-md-3 pull-right" ng-click="addNote=true">Add notes</a>
+
+		<!-- new note -->
+    <div ng-show="addNote==true">
+        <form class="form-inline">
+        <textarea class="col-md-12" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="noteInput">
             </textarea>
+            <div class='col-md-12 pull-right' style='padding:1em;'>
+                <button type="button" class="btn btn-success btn-xs" ng-click="ok()">OK</button>
+                <button type="button" class="btn btn-danger  btn-xs" ng-click="addNote=false">CANCEL</button>
+            </div>
+        </form>
+    </div>
+
+		<!-- existing notes -->
+    <div ng-repeat="n in notes | orderBy:'noteID':true">
+
+		  <!-- editor -->
+        <div  ng-show="n.noteID == editNoteID">
             <form class="form-inline">
-                <div class='col-md-6'>
+            <textarea class="col-md-12" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="updatedText">
+            </textarea>
+                <div class='col-md-12 pull-right' style='padding:1em;'>
                     <button type="button" class="btn btn-success btn-xs" ng-click="update(n)">OK</button>
                     <button type="button" class="btn btn-danger  btn-xs" ng-click="cancelEdit()">
                         CANCEL
@@ -15,7 +30,9 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-3 pull-right hoverHotspot" style="margin: 10px;">
+			
+        <div class="col-md-12 pull-left" style="text-align:left; margin: 10px; line-height:1.3em; " ng-bind="n.note"> </div>
+        <div class="col-md-2 pull-right hoverHotspot" style="margin: 10px;">
             <i class="fa fa-pencil _grey _size4 hoverDisplay" ng-click="editNote(n)" title="Edit" bs-tooltip style="cursor: pointer;"></i>
             <i class="fa fa-trash _grey _size4 hoverDisplay"
                delete-with-confirm-button
@@ -25,19 +42,8 @@
                on-confirm-callback="deleteCurrentItem()"
                title="Delete" bs-tooltip style="cursor: pointer;"></i>
         </div>
-        <div class='col-md-5 pull-right' style="color: grey;">-- {{n.name}}, {{n.history}}</div>
-    </div>
-    <div ng-show="addNote==true">
-        <textarea class="col-md-8" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="noteInput">
-            </textarea>
-        <form class="form-inline">
-            <div class='col-md-6'>
-                <button type="button" class="btn btn-success btn-xs" ng-click="ok()">OK</button>
-                <button type="button" class="btn btn-danger  btn-xs" ng-click="addNote=false">
-                    CANCEL
-                </button>
-            </div>
-        </form>
+        <div class='col-md-5 pull-right' style="font-size:.9em; color: silver; text-align:right;">&mdash; {{n.name}}, {{n.history}}</div>
+		  <div class='col-md-12'><hr></div>
     </div>
     <BR>
     <BR>

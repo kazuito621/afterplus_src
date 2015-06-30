@@ -506,7 +506,7 @@ angular.module('calendardirective', [])
                 };
                 $scope.loadGroups();
 
-                $('#fullCalModal').modal();
+                $('#fullCalModal').modal({backdrop:false});
             }
             $scope.$watch('user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {

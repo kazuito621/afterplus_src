@@ -50,6 +50,7 @@ app.directive('sideNote',
                 }
 
                 scope.cancelEdit = function(){
+                    scope.addingNote=false;
                     scope.addNote=false;
                     scope.updatedText='';
                     scope.editNoteID=-1;

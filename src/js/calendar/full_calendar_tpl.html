@@ -126,11 +126,11 @@
 							{{ job_start }} - {{ job_end }}
 						</div>
             </div> <!-- }} body -->
-            <side-note report-id="{{reportID}}"></side-note>
+            <side-note report-id="{{reportID}}" note-type='report_internal'></side-note>
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                <input type="button" class="btn btn-success" ng-hide="clickedEvent.type == 'Unscheduled'" ng-click="UnscheduledJob()" value="Unschedule Job"></input>
+                <input type="button" class="btn btn-success" ng-hide="clickedEvent.type == 'Unscheduled' || status != 'unscheduled' " ng-click="UnscheduledJob()" value="Unschedule Job"></input>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>

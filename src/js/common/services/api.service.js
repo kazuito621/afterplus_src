@@ -207,19 +207,20 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         },
 
         //Notes
-        getNotes:function(reportID){
-            return Rest.one('note/report/'+reportID).get();
+		  // 'notetype' refers to note.type in db... ie. 'report_internal', 'site_internal'
+        getNotes:function(noteType, reportID){
+            return Rest.one('note/'+noteType+'/'+reportID).get();
         },
-        addNote:function(reportID,text){
-            return Rest.all('note/report/'+reportID).post({note:text});
+        addNote:function(noteType, reportID,text){
+            return Rest.all('note/'+noteType+'/'+reportID).post({note:text});
         },
-        deleteNote:function(reportID,noteID){
+        deleteNote:function(noteType, reportID,noteID){
            // DELETE /note/report/123/456
-            return Rest.one('note/report/'+reportID+'/'+noteID).remove();
+            return Rest.one('note/'+noteType+'/'+reportID+'/'+noteID).remove();
         },
-        editNote:function(reportID,noteID,text){
+        editNote:function(noteType, reportID,noteID,text){
            // POST /note/report/123/456
-            return Rest.all('note/report/'+reportID+'/'+noteID).post({note:text});
+            return Rest.all('note/'+noteType+'/'+reportID+'/'+noteID).post({note:text});
         },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {

@@ -12,7 +12,8 @@ app.directive('sideNote',
             transclude: false,
             templateUrl: 'js/common/directives/sideNote/sideNote.tpl.html',
             scope:{
-                reportID:'@reportId'
+                reportID:'@reportId',
+					 noteType:'@noteType'
             },
             link:function (scope, el, attrs) {
                 scope.noteInput='';
@@ -22,7 +23,7 @@ app.directive('sideNote',
 
                 scope.ok=function(){
                     scope.addingNote = true;
-                    Api.addNote(scope.reportID,scope.noteInput).then(function(data){
+                    Api.addNote(scope.noteType, scope.reportID,scope.noteInput).then(function(data){
                         scope.addingNote = false;
                         scope.addNote = false;
                         if(data == 'Note created.'){
@@ -33,11 +34,13 @@ app.directive('sideNote',
                             });
                             scope.noteInput='';
                         }
-                    });
+                    }).catch(function(res){
+								// there was an error
+						  });
                 }
                 scope.update=function(noteItem){
                     scope.addingNote = true;
-                    Api.editNote(scope.reportID,noteItem.noteID,noteItem.note).then(function(data){
+                    Api.editNote(scope.noteType, scope.reportID, noteItem.noteID, noteItem.note).then(function(data){
                         scope.addingNote = false;
                         scope.addNote = false;
                         scope.editNoteID = -1;
@@ -54,7 +57,7 @@ app.directive('sideNote',
                 scope.$watch('reportID',function(n,o){
                     if(n && n!='')
                     {
-                        Api.getNotes(n).then(function(data){
+                        Api.getNotes(scope.noteType, n).then(function(data){
                             scope.notes = data;
                             angular.forEach(scope.notes,function(note){
                                 var updateTime = moment(note.tstamp_updated).format('YYYY-MM-DD HH:mm:ss');

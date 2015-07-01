@@ -125,13 +125,16 @@ app.service('ReportService',
 		Api.updateSite(this.siteID)
 			.then(function(data) {
 				if(!data || !data.siteName) return;
-				_.copyProps(data, that.report, 'siteName,contact,contactEmail,contactPhone,street,city,state');
-
-				Api.lookupTaxByZip(that.report.zip).then(function (res) {
-					if(res && res.tax>0 && res.tax<100){
-						that.report.tax_rate=res.tax;
-					}
-				})
+				_.copyProps(data, that.report, 'siteName,contact,contactEmail,contactPhone,street,city,state,zip');
+				if(that.report.zip){
+					Api.lookupTaxByZip(that.report.zip).then(function (res) {
+						if(res && res.tax>0 && res.tax<100){
+							that.report.tax_rate=res.tax;
+						}else{
+							$rootScope.$broadcast('alert', {msg:'No taxes were found for this zipcode: '+that.report.zip, type:'danger'}); 
+						}
+					})
+				}
 			});	
 		SiteModelUpdateService.setReportSiteModel(this.report);
 

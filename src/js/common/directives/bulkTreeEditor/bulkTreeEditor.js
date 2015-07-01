@@ -229,7 +229,6 @@ app.directive('bulkTreeEditor',
                         scope.selected.isAllSelected = false;
                     }
 
-					
                     if(scope.selected.isTreatmentSelected){
                         scope.singleTreatmentSelected=true;
                     }else{
@@ -244,6 +243,9 @@ app.directive('bulkTreeEditor',
                         scope.currentInfo.treatmentTypeCount=data.treatmentTypeCount;
                         scope.currentInfo.price=data.price;
                     });
+
+						  if(anyCategorySelected()==false && scope.selected.isAllSelected==false)
+						  	scope.selected.isAllSelected=true;
                 }
 
                 scope.closeModal = function () {

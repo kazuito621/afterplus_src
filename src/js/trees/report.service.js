@@ -120,7 +120,7 @@ app.service('ReportService',
 	}
 
 	this.updateSiteInfo = function(){
-		if(this.report && this.report.siteName && this.report.siteName.length) return;
+		if(this.report && this.report.siteName && this.report.zip) return;
 		var that=this;
 		Api.updateSite(this.siteID)
 			.then(function(data) {
@@ -130,8 +130,6 @@ app.service('ReportService',
 					Api.lookupTaxByZip(that.report.zip).then(function (res) {
 						if(res && res.tax>0 && res.tax<100){
 							that.report.tax_rate=res.tax;
-						}else{
-							$rootScope.$broadcast('alert', {msg:'No taxes were found for this zipcode: '+that.report.zip, type:'danger'}); 
 						}
 					})
 				}

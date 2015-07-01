@@ -660,6 +660,8 @@ var ReportCtrl = app.controller(
                     .then(function (res) {
 						  		if(res && res.tax>0 && res.tax<100){
 									s.report.tax_rate=res.tax;
+								}else{
+                				s.setAlert('No taxes found for zipcode: '+s.report.zip,{type:'danger'});
 								}
                     })
 				}

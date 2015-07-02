@@ -50,14 +50,16 @@ angular.module('calendardirective', [])
                    .then(function(values) {
                        var data = values[0];
                        angular.forEach(data, function (field) {
-
-									var obj=angular.copy(field);
-									obj.estimateUrl=obj.url;
-									delete obj.url;		//or else the calendar uses this as a link
-									obj.name = (field.name) ? field.name.trim() : '(blank name)';
-									obj.title=field.reportID+' - $'+shortenPrice(field.total_price)
-											+' - '+userID2Name(field.job_userID)+' - '+ obj.name;
-									obj.price=obj.total_price;
+							var obj=angular.copy(field);
+							obj.estimateUrl=obj.url;
+                            if(field.reportID == '826'){
+                                var a=1;
+                            }
+							delete obj.url;		//or else the calendar uses this as a link
+							obj.name = (field.name) ? field.name.trim() : '(blank name)';
+							obj.title=field.reportID+' - $'+shortenPrice(field.total_price)
+									+' - '+userID2Name(field.job_userID)+' - '+ obj.name;
+							obj.price=obj.total_price;
 
                            if( field.status=="approved"  ||  (field.status=="scheduled"  &&  field.job_start==undefined)) {
 										obj.type='Unscheduled';
@@ -80,7 +82,10 @@ angular.module('calendardirective', [])
 										obj.type='Scheduled';
 										obj.start=sTime;
 										obj.end=eTime;
-
+										//obj.end=moment(eTime).add(1, 'days').format('YYYY-MM-DD');
+                                if(field.reportID == '901') {
+                                    var a=1;
+                                }
                                $scope.ScheduledJobs.push(obj);
                            }
                        });
@@ -183,10 +188,13 @@ angular.module('calendardirective', [])
                            eventReceive: function (event) {
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
+                               var temp = angular.copy(event.start);
+                               temp = temp.add(1,'days');
+                               event.end = temp;
                                console.log("event:" + event.start.format('YYYY-MM-DD') + " $"+ev.price);
                                Api.ScheduleJob(ev.reportID, {
                                    job_start: event.start.format('YYYY-MM-DD'),
-                                   job_end: event.start.format('YYYY-MM-DD')
+                                   job_end: temp.format('YYYY-MM-DD')
                                }).then(function (res) {
                                    if(res && res.conflict==1 && res.conflict_msg){
                                        alert(res.conflict_msg);
@@ -281,6 +289,11 @@ angular.module('calendardirective', [])
                                    var eventInfo=$scope.getEventInfo(el.title);
                                    el.reportID = eventInfo.reportID;
                                }
+                               el.job_start = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
+                               el.job_end = moment(el.end).format('YYYY-MM-DD HH:mm:ss')
+                               updateArray(el.reportID,moment(el.job_start).format('YYYY-MM-DD hh:mm:ss'),moment(el.job_end).format('YYYY-MM-DD hh:mm:ss'));
+                               //$('#calendar').fullCalendar('updateEvent', event);
+
                                Api.ScheduleJob(el.reportID, {
                                    //job_start: t.format('YYYY-MM-DD'),
                                    job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
@@ -304,9 +317,11 @@ angular.module('calendardirective', [])
                                    el.end.add(4, 'hours');
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
                                }
-                               else if (el.end == undefined)
-                                   eTime = sTime;
-                               else 
+                               else if (el.end == undefined){
+                                   el.end = moment(el.start).add(1,'days');
+                                   eTime = el.end.format('YYYY-MM-DD HH:mm:ss');
+                               }
+                               else
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
 
                                Api.ScheduleJob(el.reportID, {
@@ -438,7 +453,7 @@ angular.module('calendardirective', [])
             };
 
             $scope.savejobtoSalesUser = function () {
-						$scope.sales_user.name=userID2Name($scope.sales_user.userID); 
+				$scope.sales_user.name=userID2Name($scope.sales_user.userID);
                 Api.AssignJobToForeman($scope.clickedEvent.reportID, {
                     sales_userID:  $scope.sales_user.userID
                 }).then(function (response) {
@@ -463,10 +478,45 @@ angular.module('calendardirective', [])
             };
 
             $scope.groups = [];
+            var job_start_backup_value ;
+            var job_end_backup_value ;
+            var getValueBackup = function(data){
+                job_start_backup_value = data.start;
+                if(data.end==null){
+                    var temp=angular.copy(data.start);
+                    job_end_backup_value = temp.add(1, 'days');
+                }
+                else
+                    job_end_backup_value = data.end;
+            }
+            $scope.saveDates = function(){
+                Api.ScheduleJob($scope.clickedEvent.reportID, {
+                    job_start: moment($scope.job_start).format('YYYY-MM-DD HH:mm:ss'),
+                    job_end: moment($scope.job_end).format('YYYY-MM-DD HH:mm:ss')
+                }).then(function (res) {
+                    if(res && res.conflict==1 && res.conflict_msg){
+                        alert(res.conflict_msg);
+                    }
+                   //$scope.clickedEvent.start = moment($scope.job_start).format('YYYY-MM-DD');
+                   //$scope.clickedEvent.end =moment($scope.job_end).format('YYYY-MM-DD');
+                    updateArray($scope.clickedEvent.reportID,moment($scope.job_start).format('YYYY-MM-DD'),moment($scope.job_end).format('YYYY-MM-DD'));
+                    $scope.clickedEvent.start = $scope.job_start;
+                    $scope.clickedEvent.end = $scope.job_end;
+                    elm.fullCalendar('updateEvent', $scope.clickedEvent);
+                    $scope.valueChanged = false;
+                });
+
+            }
+
             $scope.openJob = function(data){
                 if(data.reportID == undefined){
+                    getValueBackup(data);
                     var tempId =  data._id;
                     data=$scope.getEventInfo(data.title);
+                    data.start = job_start_backup_value;
+                    data._start = job_start_backup_value;
+                    data.end = job_end_backup_value;
+                    data._end = job_end_backup_value;
                     data._id = tempId;
                 }
                 $scope.jobdescription = data.price;
@@ -492,8 +542,16 @@ angular.module('calendardirective', [])
                         $scope.contact = res.contact;
                         $scope.email = res.contactEmail;
                         $scope.phone = res.contactPhone;
-						$scope.job_start = res.job_start;
-						$scope.job_end = res.job_end;
+
+                        //$scope.job_start =$scope.clickedEvent.job_start!=null?data.start.format('YYYY-MM-DD' ):job_start_backup_value;
+                        //$scope.job_end =$scope.clickedEvent.job_end!=null?data.end.format('YYYY-MM-DD' ):job_end_backup_value;
+
+                        $scope.job_start =data.start.format('YYYY-MM-DD');
+                        $scope.job_end =data.end.format('YYYY-MM-DD');
+
+                        $scope.duration = moment.duration(data.end.diff(data.start)).asDays();
+                        $scope.duration = Math.floor($scope.duration);
+
                         $scope.reportID = data.reportID;
                     });
                 $scope.job_user = {
@@ -507,6 +565,30 @@ angular.module('calendardirective', [])
                 $scope.loadGroups();
 
                 $('#fullCalModal').modal({backdrop:false});
+            }
+            $scope.adjust = function(type){
+               // $scope.job_start =moment($scope.job_start).format('YYYY-MM-DD hh:mm:ss');
+               // $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD hh:mm:ss');
+                $scope.valueChanged = true;
+                if(typeof  $scope.job_start != 'object')
+                {
+                    $scope.job_start = moment($scope.job_start);
+                }
+                if( typeof $scope.job_end  != 'object')
+                {
+                    $scope.job_end = moment($scope.job_end);
+                }
+                if(type == 'days'){
+                    var temp=angular.copy($scope.job_start);
+                    $scope.job_end = temp.add($scope.duration, 'days');
+                }
+                else {
+                    //if($scope.job_start.format('YYYY-MM-DD') ==  $scope.job_end.format('YYYY-MM-DD')){
+                    //    $scope.duration = 1;
+                    //}
+                     if($scope.job_start)
+                        $scope.duration = moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays();
+                }
             }
             $scope.$watch('user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
@@ -625,6 +707,27 @@ angular.module('calendardirective', [])
 					});
 					return Math.round(tot);
 				}
+
+            function updateArray(reportID,start,end){  // where star and end is not moment type object.
+                for(var i= 0;i<$scope.ScheduledJobs.length;i++){
+                    if($scope.ScheduledJobs[i].reportID == reportID){
+                        $scope.ScheduledJobs[i].start = start;
+                        $scope.ScheduledJobs[i].job_start = start;
+                        $scope.ScheduledJobs[i].end = end;
+                        $scope.ScheduledJobs[i].job_end = end;
+                        break;
+                    }
+                }
+                for(var i= 0;i<$scope.UnscheduledJobs.length;i++){
+                    if($scope.UnscheduledJobs[i].reportID == reportID){
+                        $scope.UnscheduledJobs[i].start = start;
+                        $scope.UnscheduledJobs[i].job_start = start;
+                        $scope.UnscheduledJobs[i].end = end;
+                        $scope.UnscheduledJobs[i].job_end = end;
+                        break;
+                    }
+                }
+            }
 
 
         }

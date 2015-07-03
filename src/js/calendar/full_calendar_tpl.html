@@ -40,6 +40,13 @@
 
 <div class="row">
 	<div class="col-md-3">
+		<div style='margin:0 0 1em; text-align:left;'>
+			<select id="foreman_filter" class='' 
+					  ng-model="filter_job_userID"
+					  ng-change="filterByJobUserID()">
+				 <option class="option" ng-repeat="u in jobUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
+			</select>
+		</div>
 		<div id='external-events' style="">
 			 <h4 style="margin:0 0 .5em; 0">Approved Jobs</h4>
 			 <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" placeholder="Search"/>
@@ -130,10 +137,10 @@
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                <input type="button" class="btn btn-success" 
+                <input type="button" class="btn btn-danger" 
 					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  " 
 						ng-click="UnscheduledJob()" value="Unschedule Job"></input> 
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

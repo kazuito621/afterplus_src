@@ -25,8 +25,9 @@ angular.module('calendardirective', [])
             $scope.UnscheduledJobs = [];
             $scope.ScheduledJobs = [];
             $scope.clickedEvent = {};
+				$scope.filter_job_userID=-99;
 				$scope.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
-				$scope.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0}
+				$scope.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
             var elm, 
 					cal, 		// ref to calendar html obj
 					uncheduledJobsBackUp;
@@ -49,6 +50,7 @@ angular.module('calendardirective', [])
                $q.all(apis)
                    .then(function(values) {
                        var data = values[0];
+							  $scope.jobUsers=[{userID:-99, name:'All', count:0}, {userID:-98, name:'Unassigned', count:0}];
                        angular.forEach(data, function (field) {
 
 									var obj=angular.copy(field);
@@ -83,6 +85,17 @@ angular.module('calendardirective', [])
 
                                $scope.ScheduledJobs.push(obj);
                            }
+
+									// setup filtering
+									if(obj.job_userID){
+										var f=_.findObj($scope.jobUsers, 'userID', obj.job_userID);
+										if(f) f.count++;
+										else $scope.jobUsers.push({userID: obj.job_userID, name: userID2Name(obj.job_userID), count:1});
+									}else{
+										$scope.jobUsers[1].count++;	//unassigned
+									}
+									$scope.jobUsers[0].count++;		//all
+
                        });
                        uncheduledJobsBackUp = angular.copy($scope.UnscheduledJobs);
                        $scope.getEventInfo = function (eventName) {
@@ -154,7 +167,9 @@ angular.module('calendardirective', [])
                            defaultTimedEventDuration: '04:00:00',
                            startEditable: true,
                            durationEditable: true,
-                           events: $scope.ScheduledJobs,
+                           events:  function(st, end, tz, callback){ 
+											callback( filterJobs() );
+									},
                            select: function (start, end) {
                                var title = prompt('Event Title:');
                                var eventData;
@@ -423,6 +438,10 @@ angular.module('calendardirective', [])
             }
             $scope.init();
             $scope.savejobtoforeman = function () {
+					var oldUserID=$scope.clickedEvent.job_userID;
+					var newUserID=$scope.job_user.userID;
+					updateFilter(oldUserID, newUserID);
+
 					$scope.job_user.name=userID2Name($scope.job_user.userID); 
                 Api.AssignJobToForeman($scope.clickedEvent.reportID, {
                     job_userID: $scope.job_user.userID
@@ -461,6 +480,18 @@ angular.module('calendardirective', [])
                $('#fullCalModal').modal('hide');
 					setTimeout(function(){	updateTotals() },1000);
             };
+
+
+
+
+
+
+
+				/** ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- -------
+
+												JOB DETAILS MODAL BOX 
+				
+				   ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- */
 
             $scope.groups = [];
             $scope.openJob = function(data){
@@ -529,6 +560,40 @@ angular.module('calendardirective', [])
             }
 
 
+				//$scope.jobUserIDs=[{name:'xx', userID:123}];
+				// when filter drop down is changed
+				$scope.filterByJobUserID = function(){
+					cal.fullCalendar('refetchEvents');
+				}
+
+				function updateFilter(oldUserID, newUserID){
+				console.debug("up ::  "+oldUserID);
+					$($("#foreman_filter option")).each(function(){
+						if($(this).val()==oldUserID) $(this).text('xx');
+					});
+
+					return	;
+					// angular method.. but needs to call apply...
+					var idx=_.findObj($scope.jobUsers, 'userID', oldUserID, true);
+					if(f) f.count--;
+					var f=_.findObj($scope.jobUsers, 'userID', newUserID);
+					if(f) f.count++;
+				}
+
+				// provides the events to the calendar, and filters
+				// the array based on filter_job_userID
+				function filterJobs(){
+					var uid = $scope.filter_job_userID;
+					if(uid==-99) return $scope.ScheduledJobs;
+					var o=[];
+					_.each($scope.ScheduledJobs, function(e){
+						var show=false;
+						if(uid==-98 && !e.job_userID) show=true;
+						else if(e.job_userID == uid) show=true;
+						if(show) o.push(e);
+					});
+					return o;
+				}
 
 				/** ========== PRICE CALCULATIONS PER DAY ============ **/
 

@@ -15,7 +15,7 @@
 		<input type="text" placeholder="email" ng-model="login.email" required><br>
 		<input type="password" placeholder="password" ng-model="login.pswd" required><BR><BR>
 		<button  type="submit" value="Login" class='btn btn-primary topSpace10' ng-click="signIn()"
-			ng-disabled='login.btnDisabled'	>Sign In</button>
+			ng-disabled='login.btnDisabled==true'	>Sign In</button>
 		<BR><BR>
 		<a href ng-click="forgotPassword()">I forgot my password</a>
 		</form>

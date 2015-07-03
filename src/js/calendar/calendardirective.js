@@ -144,7 +144,7 @@ angular.module('calendardirective', [])
                            header: {
                                left: 'prev,next today',
                                center: 'title',
-                               right: 'month,agendaWeek,agendaDay'
+                               right: 'month,agendaWeek'
                            },
                            //defaultDate: '2015-02-12',
                            dropAccept: '.drop-accpted',
@@ -479,6 +479,7 @@ angular.module('calendardirective', [])
                 //$('#modalBody').html("Price:" + data.price);
 
                 $scope.price = data.price.replace(",", "");
+					 $scope.status = data.status;
 
 
                 $scope.siteID = data.siteID;
@@ -572,6 +573,14 @@ angular.module('calendardirective', [])
 							paintDay(d);
 						}
 					}
+					
+					// update today box
+					/*
+					var dt=moment().format('YYYY-MM-DD');
+					var cell=$('td.fc-day-number[data-date="'+dt+'"]');
+					cell.css('font-color', '#f33');
+					*/
+
 					return true;
 				}
 
@@ -589,7 +598,8 @@ angular.module('calendardirective', [])
 						var colors=['#BBFAB4', '#FAF9B4', '#FCE6E6'];
 						var clr = colors[warnLevel];
 						var dt=date.format('YYYY-MM-DD');
-						var cell=$('td[data-date="'+dt+'"')
+					//	var cell=$('td[data-date="'+dt+'"]')
+						var cell=$('td.fc-day-number[data-date="'+dt+'"]');
 						if(cell) cell.css('background-color', clr);
 					}
 				}

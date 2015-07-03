@@ -27,12 +27,10 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 
 
 	s.signIn = function(){
-		s.login.btnDisabled=true;
 		if(!s.login.email || !s.login.pswd) return;
 		s.localStore.lastEmailUsed=s.login.email;
 		Auth.signIn(s.login.email, s.login.pswd)
 			.then(function(result){
-				s.login.btnDisabled=false;
 				if(q.redirect){ 
 					var url=cfg.hostAndPort() + '/#' + q.redirect;
 					document.location=url;
@@ -43,10 +41,7 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 					// document.location.reload();
 				}
 				else s.goTrees();
-			}, function (err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
-									//that could possibly throw errors
-				s.login.btnDisabled=false;
-			})
+			});
 	}
 
 	s.forgotPassword = function(){

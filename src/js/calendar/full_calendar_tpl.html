@@ -116,12 +116,12 @@
                     </a>
 
 						  		Foreman: <a href="#" editable-select="job_user.userID"  
-										e-ng-options="g.id as g.text for g in groups" 
+										e-ng-options="g.userID as g.text for g in groups" 
 										onaftersave="savejobtoforeman()">{{ job_user.name || 'Select a Foreman' }}</a>
 										<BR><BR>
 
 								Sales: <a href="#" editable-select="sales_user.userID"  
-										e-ng-options="g.id as g.text for g in groups" 
+										e-ng-options="g.userID as g.text for g in groups" 
 										onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
 										<BR><BR>
 										<BR>
@@ -157,7 +157,7 @@
 
             </div>
             <div id="assignjobbody" class="modal-body">
-               <!-- <a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.id as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
+               <!-- <a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.userID as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
                 </a>-->
                 <!--<div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>-->
               

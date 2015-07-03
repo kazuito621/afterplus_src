@@ -217,8 +217,6 @@ angular.module('calendardirective', [])
                            },
                            eventClick: function (data, jsEvent, view) {
                                $scope.openJob(data);
-                               // $('#fullCalModal').fadeIn();
-                               //$("#eventContent").dialog({ modal: true, title: data.title, width: 350 });
                            },
 									dayClick: function( date, evt, view ){
 										var tot=getDayTotal(date),diff;
@@ -422,37 +420,55 @@ angular.module('calendardirective', [])
                         if(item.userID == $scope.clickedEvent.sales_userID){
                             $scope.sales_user = { "userID": item.userID, "name": item.fName +' '+ item.lName };
                         }
-                        $scope.groups.push({ "id": item.userID, "text": item.fName +' '+ item.lName,"fName":item.fName });
+                        $scope.groups.push({ "userID": item.userID, "text": item.fName +' '+ item.lName,"fName":item.fName });
                     });
                     if(deferred) deferred.resolve($scope.groups); //
                 });
             };
 
             var userID2Name = function(job_userID){
+					if(!job_userID) return 'n/a';
+					if(-99 == job_userID) return 'All'; // for filters
                 for(var i = 0;i<$scope.groups.length;i++){
-                    if($scope.groups[i].id == job_userID){
-                        return $scope.groups[i].fName;
+                    if($scope.groups[i].userID == job_userID){
+						  		if($scope.groups[i].email)
+									return $scope.groups[i].replace(/@.*/,'');
+								else
+                        	return $scope.groups[i].fName;
                     }
                 }
-                return 'N/A';
+                return 'User '+job_userID;
             }
             $scope.init();
+				//@@todo - update the counts in the dropdown! .. by knowing who was assigned before, and subtracting and adding
             $scope.savejobtoforeman = function () {
 					var oldUserID=$scope.clickedEvent.job_userID;
 					var newUserID=$scope.job_user.userID;
-					updateFilter(oldUserID, newUserID);
-
 					$scope.job_user.name=userID2Name($scope.job_user.userID); 
+					var job = _.find($scope.ScheduledJobs, 'reportID', $scope.clickedEvent.reportID);
+					if(job) job.job_userID=newUserID;
+					/*
+					ok this makes no fucking sense to me... it seems that the schedulesjobs[] array 
+					is different then the events[] array that gets passed in to calendar...
+					so when the job user is set, we need to set on both....
+
+					.. but i do set on both, but then when we refilter the users... 
+					it doesnt fucking stick.
+
+					*/
+
                 Api.AssignJobToForeman($scope.clickedEvent.reportID, {
                     job_userID: $scope.job_user.userID
                 }).then(function (response) {
-                    console.log(response);
-                    $scope.clickedEvent.job_userID  = $scope.job_user.userID;
+							$scope.clickedEvent.job_userID = $scope.job_user.userID;
+
 						  //@@todo .. duplicate code here! dont reassign the title again.. make a function for this WTF
                     $scope.clickedEvent.title = $scope.clickedEvent.name? $scope.clickedEvent.reportID+' - '
 						  		+shortenPrice($scope.clickedEvent.price.replace(',',''))+' - '+userID2Name($scope.clickedEvent.job_userID)+' - '
-								+ $scope.clickedEvent.name.trim() : "Nil",
-                    elm.fullCalendar( 'refetchEvents');
+								+ $scope.clickedEvent.name.trim() : "Nil";
+
+// if we do this, we lose the data on the object when its reloaded. stupid fucking bug
+//							updateFilter(oldUserID, newUserID);
                 });
             };
 
@@ -511,44 +527,34 @@ angular.module('calendardirective', [])
 
                 $scope.price = data.price.replace(",", "");
 					 $scope.status = data.status;
-
-
                 $scope.siteID = data.siteID;
+                $scope.sales_user = {  userID: -1, name:'' }
+                $scope.job_user = {  userID: -1, name:'' }
+						$scope.job_user.userID = data.job_userID || -1;
+						$scope.sales_user.userID = data.sales_userID || -1;
+
                 Api.getSiteById($scope.siteID, {}).
                     then(function (res) {
-                        $scope.siteName = res.siteName;
-                        $scope.street = res.street
-                        $scope.city = res.city;
-                        $scope.state = res.state;
-                        $scope.zip = res.zip;
-                        $scope.contact = res.contact;
-                        $scope.email = res.contactEmail;
-                        $scope.phone = res.contactPhone;
-						$scope.job_start = res.job_start;
-						$scope.job_end = res.job_end;
-                        $scope.reportID = data.reportID;
+						  		// copy over string and numbers to $scope
+						  		_.each(res, function(r, key){
+									if( typeof r == 'string' || typeof r == 'number' )
+										$scope[key]=r;
+								});
+								$scope.email=$scope.contactEmail;
+								$scope.phone=$scope.contactPhone;
                     });
-                $scope.job_user = {
-                    userID: -1,
-                    name: '' // original value
-                };
-                $scope.sales_user = {
-                    userID: -1,
-                    name: '' // original value
-                };
                 $scope.loadGroups();
-
                 $('#fullCalModal').modal({backdrop:false});
             }
             $scope.$watch('user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    var selected = $filter('filter')($scope.groups, { id: $scope.user.group });
+                    var selected = $filter('filter')($scope.groups, { userID: $scope.user.group });
                     $scope.user.name = selected.length ? selected[0].text : null;
                 }
             });
             $scope.$watch('sales_user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    var selected = $filter('filter')($scope.groups, { id: $scope.sales_user.userID });
+                    var selected = $filter('filter')($scope.groups, { userID: $scope.sales_user.userID });
                     $scope.sales_user.name = selected.length ? selected[0].text : null;
                 }
             });

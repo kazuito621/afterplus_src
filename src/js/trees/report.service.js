@@ -287,7 +287,7 @@ app.service('ReportService',
 		if(this.report.tax_rate){ 
 			var taxTot = ((services_total+items_total) * (this.report.tax_rate/100)).toFixed(2);
 			this.report.total.tax=taxTot;
-			this.report.total.grand = parseFloat(this.report.total.grand) + parseFloat(taxTot);
+			this.report.total.grand = (parseFloat(this.report.total.grand) + parseFloat(taxTot)).toFixed(2);
 		}
 	}
 

@@ -391,9 +391,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             return Rest.one('estimate', id).post('unscheduled');
 
         },
-        GetForemans: function (role) {
+        GetForemans: function () {
             // GET  /users?role=XXX
-            return Rest.all('user').getList({ role: 'staff' });
+            return Rest.all('user').getList({ role: 'staff,admin' });
         },
         AssignJobToForeman: function (id, params) {
            // POST / estimate / 123

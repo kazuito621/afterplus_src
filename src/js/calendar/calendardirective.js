@@ -410,7 +410,7 @@ angular.module('calendardirective', [])
 
             $scope.loadGroups = function (deferred) {
 
-                Api.GetForemans("staff", {})
+                Api.GetForemans()
 					 .then(function (response) {
                     $scope.groups = [];
                     angular.forEach(response, function (item) {

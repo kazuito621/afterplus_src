@@ -685,7 +685,7 @@ angular.module('calendardirective', [])
 					var tot=0;
 					_.each( events, function(e){
 
-						if(!e.todo_price) return;
+						if(!e.todo_price) e.todo_price=e.total_price;
 						// check for jobs that span multiple days
 						if( e.end
 						    && e.start.isBefore(today,'day') 

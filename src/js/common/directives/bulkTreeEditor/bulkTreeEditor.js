@@ -143,8 +143,11 @@ app.directive('bulkTreeEditor',
                     Api.modifyBulkEditInfo(param,post).then(function(data){
                         if(scope.onApplyChange != undefined) // mode = report
                             scope.onApplyChange();
+
+                    		scope.selectionChanged();
                     });
                 }
+
                 var createParam=function(){
                     var param={};
 
@@ -183,6 +186,7 @@ app.directive('bulkTreeEditor',
                     scope.selected.isDbhSelected = false;
                     scope.selected.isSetPrice = false
                     scope.selected.IsChangeToTreatment = false
+						  scope.selected.removeFromRecommendation=false;
                     scope.singleTreatmentSelected = false;
                     scope.selectionChanged();
                 }
@@ -234,6 +238,7 @@ app.directive('bulkTreeEditor',
                     }else{
                         scope.selected.isSetPrice = false
                         scope.selected.IsChangeToTreatment = false
+								scope.selected.removeFromRecommendation=false;
                         scope.singleTreatmentSelected=false;
                     }
                     var param=createParam();

@@ -98,23 +98,20 @@ angular.module('calendardirective', [])
 
                        });
                        uncheduledJobsBackUp = angular.copy($scope.UnscheduledJobs);
-                       $scope.getEventInfo = function (eventName) {
-                           var selectedEvent = null;
-                           for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
-                               var event = $scope.UnscheduledJobs[index];
-                               if (event.title.trim() == eventName.trim()) {
-                                   selectedEvent = event;
-                                   break;
-                               }
-                           }
-                           return selectedEvent;
-                       }
 
-
+							  // get event data from sched or unsched array based on reportID or event name in title box
                    $scope.getEventInfo = function (eventName) {
-								// lookup by ID first
-								var m=eventName.trim().match(/([0-9]+)[ -]/);
-								if(m) var rptID=m[1];
+
+								eventName=''+eventName;
+								eventName=eventName.trim();
+
+						 		if(!isNaN(eventName)){		// if its a number, its a reportID
+									var rptID=eventName
+								}else{
+									// try to lookup by ID first
+									var m=eventName.match(/([0-9]+)[ -]/);
+									if(m) var rptID=m[1];
+								}
 
                        var selectedEvent = null;
                        for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
@@ -131,11 +128,13 @@ angular.module('calendardirective', [])
                        var bindexternalevents = setTimeout(function () {
                            var externalevents = $(".fc-event");
                            externalevents.each(function () {
+										 var reportID=$(this).attr('data-reportID');
                                var jobtitle = $(this).text();
-                               var ev = $scope.getEventInfo(jobtitle);
+                               var ev = $scope.getEventInfo(reportID);
 										 var pr = (ev && ev.price) ? ev.price : 0;
 
                                $(this).data('event', {
+										 	  reportID: ev.reportID,
                                    title: jobtitle,     // use the element's text as the event title
                                    price: pr,
                                    stick: true            // maintain when user navigates (see docs on the renderEvent method)
@@ -157,13 +156,16 @@ angular.module('calendardirective', [])
                            header: {
                                left: 'prev,next today',
                                center: 'title',
-                               right: 'month,agendaWeek'
+                               right: 'month,basicWeek'
                            },
                            //defaultDate: '2015-02-12',
                            dropAccept: '.drop-accpted',
                            editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
                            droppable: $scope.dropablefullcalendar,
-                           eventLimit: $scope.eventfullcalendar,
+									eventLimit: true,
+									views:{
+										week:{ eventLimit:false }
+									},
                            defaultTimedEventDuration: '04:00:00',
                            startEditable: true,
                            durationEditable: true,
@@ -183,19 +185,15 @@ angular.module('calendardirective', [])
                                }
                                $('#calendar').fullCalendar('unselect');
                            },
-                           drop: function (el, eventStart, ev, ui) {
-
+                           drop: function (el, eventStart, ev, ui) {		// jquery ui external drop call: http://fullcalendar.io/docs/dropping/drop/
                                $('.fc-title br').remove();
-
                                console.log(ev.helper[0].textContent);
                                //if ($('#drop-remove').is(':checked')) {
                                // if so, remove the element from the "Draggable Events" list
                                $(this).remove();
                                //}
-
-
                            },
-                           eventReceive: function (event) {
+                           eventReceive: function (event) {			// external drop callback
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
                                console.log("event:" + event.start.format('YYYY-MM-DD') + " $"+ev.price);
@@ -219,6 +217,21 @@ angular.module('calendardirective', [])
                                $scope.openJob(data);
                            },
 									dayClick: function( date, evt, view ){
+
+										// check for double click
+										var now=new Date().getTime();
+										if(now - view.lastDayClick < 600){
+											var v=elm.fullCalendar('getView');
+											if(v.name=='basicWeek' || v.name=='agendaWeek')
+												elm.fullCalendar('changeView', 'month');
+											else
+												elm.fullCalendar('changeView', 'basicWeek');
+											elm.fullCalendar('gotoDate', date);
+											return;
+										}
+										view.lastDayClick=now;
+
+										// dislay daily total
 										var tot=getDayTotal(date),diff;
 										if(tot>0){
 											niceTot = "$" + commaDigits(tot);
@@ -666,7 +679,8 @@ angular.module('calendardirective', [])
 					else if(t>=goal) warnLevel=0;			//green 100%
 
 					if(warnLevel>=0){
-						var colors=['#BBFAB4', '#FAF9B4', '#FCE6E6'];
+						//				green			orgn       red
+						var colors=['#a7f49f', '#fbc972', '#fbacac'];
 						var clr = colors[warnLevel];
 						var dt=date.format('YYYY-MM-DD');
 					//	var cell=$('td[data-date="'+dt+'"]')
@@ -684,8 +698,12 @@ angular.module('calendardirective', [])
 					var mev=[];  // matched events
 					var tot=0;
 					_.each( events, function(e){
-
 						if(!e.todo_price) e.todo_price=e.total_price;
+						if(!e.todo_price){
+                  	var ev = $scope.getEventInfo(e.reportID);
+							if(ev.todo_price) e.todo_price=ev.todo_price;
+							if(ev.total_price) e.todo_price=ev.total_price;
+						}
 						// check for jobs that span multiple days
 						if( e.end
 						    && e.start.isBefore(today,'day') 
@@ -693,6 +711,9 @@ angular.module('calendardirective', [])
 						){
 							var totalDays=e.end.diff(e.start,'days');
 							var p=parseFloat(parseFloat(e.todo_price) / totalDays);
+							// todo, check for work_weekend variable here...
+							// if set, then check if job spans a weekend.. and if so,
+							// dont include that in the totalDays when dividing
 							tot+=p;
 							mev.push(e);
 

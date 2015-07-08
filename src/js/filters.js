@@ -241,7 +241,6 @@ angular.module('arborPlusFilters', [])
 	// add commas to number, and remove ".00" at end
 	.filter('formatPrice', function(){
 		return function( val ){
-			val=''+Math.round(val,2);
     		while (/(\d+)(\d{3})/.test(val.toString())){
 	    		val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
 		   	}

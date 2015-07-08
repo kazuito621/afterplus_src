@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q','$rootScope','$popover',
-        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth, $modal, $q, $rootScope,$popover) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q','$rootScope','$popover','$sce',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth, $modal, $q, $rootScope,$popover,$sce) {
             'use strict';
 
             // local and scoped vars
@@ -21,7 +21,8 @@ var ReportCtrl = app.controller(
             var contactEmailsBackup=[];
 			s.afiliations=cfg.getEntity().afiliations || '';
 			if(s.afiliations)s.afiliations=s.afiliations.split(',');
-			s.estimate_footer=cfg.getEntity().estimate_footer;
+			var ef=$('<div/>').html(cfg.getEntity().estimate_footer).text();	//decode html
+			s.estimate_footer=$sce.trustAsHtml(ef);
 
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',

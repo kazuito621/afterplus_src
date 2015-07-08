@@ -33,7 +33,7 @@ angular.module('calendardirective', [])
 					uncheduledJobsBackUp;
 
            $scope.init = function(){
-					s.setAlert("Loading...", {time:8});
+			  		$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
                $scope.UnscheduledJobs = [];
                $scope.ScheduledJobs = [];
                $scope.clickedEvent = {};

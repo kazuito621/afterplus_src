@@ -31,11 +31,11 @@
                 </a>
                 <span ng-if='!auth.isAtleast("inventory")'>
                     <span ng-show="(item.price).indexOf('%')==-1">$</span>
-                    {{item.price}}
+                    {{item.price|formatPrice}}
                 </span>
             </td>
             <td data-title="service_subtotal" class="text-right">
-					${{ item.price * item.quantity }}
+					${{ item.price * item.quantity | formatPrice}}
 				</td>
             <td ng-if="data.mode()=='trees'">
                 <div ng-if="auth.isAtleast('inventory')">

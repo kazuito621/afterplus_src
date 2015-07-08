@@ -19,8 +19,8 @@ var ReportCtrl = app.controller(
             s.siteOfReport={};
             var changedItems = [];
             var contactEmailsBackup=[];
-			s.afiliations=cfg.getEntity().afiliations || '';
-			if(s.afiliations)s.afiliations=s.afiliations.split(',');
+			s.affiliations=cfg.getEntity().affiliations || '';
+			if(s.affiliations)s.affiliations=s.affiliations.split(',');
 			var ef=$('<div/>').html(cfg.getEntity().estimate_footer).text();	//decode html
 			s.estimate_footer=$sce.trustAsHtml(ef);
 

@@ -51,27 +51,27 @@
 		window.cfg.getEntity = function(){
 			var ent=[];
 			ent[1]={name:'Easy Tree Service', medname:'Easy Tree', shortname:'easytree', isTcia:1,
-						afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
+						affiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
 			ent[2]={name:'A Plus Tree Service', medname:'A Plus Tree', shortname:'aplus', isTcia:1,
-						afiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
+						affiliations:'wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg'};
 			ent[3]={name:'Joseph Tree Service', medname:'Joseph Tree', shortname:'joseph', isTcia:1,
-						afiliations:"tcia.png,ctsp.png,isa_arb.jpg,isa_memb.jpg",
+						affiliations:"tcia.png,ctsp.png,isa_arb.jpg,isa_memb.jpg",
 						estimate_footer:"<a href='http://www.josephtreeservice.com/includes/pdf/bwcCoverage.pdf' target='_new'>Workers Comp Documentation</a><BR><a href='http://www.josephtreeservice.com/includes/pdf/josephTreeCert.pdf' target='_new'>Insurance Certificate</a>"
 					};
 			ent[5]={name:'Hendrickson Tree Care', medname:'Hendrickson Tree', shortname:'hendrickson',
-				afiliations:'isa_arb.jpg,ctsp.png,kaa.jpg'};
+				affiliations:'isa_arb.jpg,ctsp.png,kaa.jpg'};
 			ent[7]={name:'Shreiner Tree Care', medname:'Shreiner Tree', shortname:'shreiner', isTcia:1,
-						afiliations:"tcia.png,ctsp.png,isa_arb.jpg,bcma.jpg"};
+						affiliations:"tcia.png,ctsp.png,isa_arb.jpg,bcma.jpg"};
 			ent[8]={name:"Medallion Landscape Management, Inc.",medname:"Medallion Landscape Mgmt", isTcia:1,
-						shortname:"medallion",afiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
+						shortname:"medallion",affiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
 			ent[9]={name:"Padilla Group Inc.",medname:"Padilla Group",shortname:"padilla", isTcia:1,
-						afiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
+						affiliations:"wcisa.png,ctsp.png,papa.jpg,treeworker.jpg,bcma.jpg"};
 			ent[10]={name:'Advanced Tree Care', medname:'Advanced Tree', shortname:'advancedtree',
-				afiliations:'isa_arb.jpg'};
+				affiliations:'isa_arb.jpg'};
 			ent[11]={name:'All American Arborist', medname:'All American Arborist', shortname:'allamericanarborist',
-				afiliations:''};
+				affiliations:''};
 			ent[12]={name:'Four Seasons Tree Care', medname:'Four Seasons', shortname:'fourseasons',
-				afiliations:'isa_memb.jpg,wcisa.png,ctsp.png'};
+				affiliations:'isa_memb.jpg,wcisa.png,ctsp.png'};
 			var eid=this.getEntityID();
 			var ent = ent[eid];
 			if(!ent){

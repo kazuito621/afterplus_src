@@ -1,13 +1,15 @@
 'use strict';
 
 var SigninCtrl = app.controller('SigninCtrl', 
-['$scope', '$timeout', '$route','md5', '$location', 'Auth', 
-function ($scope, $timeout, $route, md5, $location, Auth ){
+['$scope', '$timeout', '$route','md5', '$location', 'Auth', 'storage',
+function ($scope, $timeout, $route, md5, $location, Auth, storage ){
 
 	var s = window.scs = $scope
 		,url
 		s.login={};
-		if(s.localStore.lastEmailUsed) s.login.email=s.localStore.lastEmailUsed;
+
+	var lastEm = storage.get('lastEmailUsed');
+	if(lastEm) s.login.email=lastEm;
 
 	var q=$location.search()
 
@@ -28,7 +30,10 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 
 	s.signIn = function(){
 		if(!s.login.email || !s.login.pswd) return;
-		s.localStore.lastEmailUsed=s.login.email;
+
+		// store last emails used
+		storage.set('lastEmailUsed', s.login.email);
+
 		Auth.signIn(s.login.email, s.login.pswd)
 			.then(function(result){
 				if(q.redirect){ 

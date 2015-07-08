@@ -14,7 +14,6 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     
     var dynamicTitle = cfg.getEntity();
     $("html").find("title").text(dynamicTitle.name);
-  
 
     storage.bind(s, 'localStore', { defaultValue: { token: false } });
    

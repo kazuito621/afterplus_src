@@ -130,17 +130,36 @@
                     </div>
                 </div>
                   <div class="row">
-							{{ job_start }} - {{ job_end }}
+							{{ job_start.format('YYYY-MM-DD') }} - {{ job_end.format('YYYY-MM-DD') }}
 						</div>
+                <BR>
+                <div class="row">
+                    Start<input class="" ng-model="job_start" data-date-format="yyyy-MM-dd" placeholder="Set Date" ng-change="adjust()"
+                           data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
+                    End <input class="" ng-model="job_end" data-date-format="yyyy-MM-dd" placeholder="Set Date" ng-change="adjust()"
+                           data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text">
+                    Days <input class="" ng-model="duration"  placeholder="Total days" ng-change = "adjust('days')"
+                           type="number" min="1" style="width: 100px;">
+                    <button type="button" class="btn btn-green" ng-show="valueChanged" ng-click="saveDates()">Save</button>
+				</div>
+                <BR>
+                <div class="row" ng-show="weekendWork">
+                    <label class="col-md-3" style="font-size:1.2em;">Weekend Work</label> <select class="col-md-7" ng-options="w.id as w.text for w in weekends" ng-model="selectedWeekendWork" ng-change="weekendWorkChanged(selectedWeekendWork)"></select>
+                </div>
+                <div>
+
+                </div>
             </div> <!-- }} body -->
             <side-note report-id="{{reportID}}" note-type='report_internal'></side-note>
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
+
                 <input type="button" class="btn btn-danger" 
 					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  " 
 						ng-click="UnscheduledJob()" value="Unschedule Job"></input> 
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="valueChanged = false">Close</button>
+
             </div>
         </div>
     </div>

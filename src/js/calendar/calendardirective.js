@@ -151,7 +151,7 @@ angular.module('calendardirective', [])
 										 var pr = (ev && ev.price) ? ev.price : 0;
 
                                $(this).data('event', {
-										 	  reportID: ev.reportID,
+										 	  reportID: (ev && ev.reportID) ? ev.reportID : '',
                                    title: jobtitle,     // use the element's text as the event title
                                    price: pr,
                                    stick: true            // maintain when user navigates (see docs on the renderEvent method)
@@ -203,13 +203,15 @@ angular.module('calendardirective', [])
                                $('#calendar').fullCalendar('unselect');
                            },
                            drop: function (el, eventStart, ev, ui) {		// jquery ui external drop call: http://fullcalendar.io/docs/dropping/drop/
-										return; // in imdad/29 he commented this all out
+
+										// without these here, the job detail box opens on drag
                                $('.fc-title br').remove();
-                               console.log(ev.helper[0].textContent);
+                               //console.log(ev.helper[0].textContent);
                                // if so, remove the element from the "Draggable Events" list
                                $(this).remove();
                            },
                            eventReceive: function (event) {			// external drop callback
+									return;
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
                                var temp = angular.copy(event.start);
@@ -257,8 +259,11 @@ angular.module('calendardirective', [])
 											var msg=date.format("dddd") + " the " + date.format("Do") + " = " + niceTot;
 											var diff=Math.abs(Math.round($scope.goalPerDay-tot));
 											var undOvr = (tot>$scope.goalPerDay) ? " over)" : " UNDER!)";
+											var alType = (tot>$scope.goalPerDay) ? "ok" : "d";
 											msg+=" ($"+diff+undOvr;
-											$rootScope.$broadcast('alert', { msg:msg, time: 9, type: 'ok' });
+											$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alType });
+										}else{
+											$rootScope.$broadcast('alert', { msg:'$0 Total! Give me some jobs!', time: 9, type: 'd' });
 										}
 									},
 									//dayRender: function( date, cell ){
@@ -540,7 +545,7 @@ angular.module('calendardirective', [])
                 else
                     job_end_backup_value = data.end;
             }
-            $scope.saveDates = function(){
+            $scope.saveJobDates = function(){
                 Api.ScheduleJob($scope.clickedEvent.reportID, {
                     job_start: moment($scope.job_start).format('YYYY-MM-DD HH:mm:ss'),
                     job_end: moment($scope.job_end).format('YYYY-MM-DD HH:mm:ss')
@@ -628,17 +633,21 @@ angular.module('calendardirective', [])
 								$scope.email=$scope.contactEmail;
 								$scope.phone=$scope.contactPhone;
 
-                        $scope.job_start =data.start.format('YYYY-MM-DD');
-                        $scope.job_end =data.end.format('YYYY-MM-DD');
-
-                        $scope.duration = moment.duration(data.end.diff(data.start)).asDays();
-                        $scope.duration = Math.floor($scope.duration);
+								if(data.start && data.end){
+									if(data.start)
+										$scope.job_start = data.start.format('YYYY-MM-DD');
+									if(data.end)
+										$scope.job_end = data.end.format('YYYY-MM-DD');
+									$scope.duration = moment.duration(data.end.diff(data.start)).asDays();
+									$scope.duration = Math.floor($scope.duration);
+								}
 //needed?
                         $scope.reportID = data.reportID;
                     });
                 $scope.loadGroups();
                 $('#fullCalModal').modal({backdrop:false});
             }
+
             $scope.weekendWorkChanged = function(weekendWorkID){
                 Api.changeEstimateProperty($scope.clickedEvent.reportID, {
                     work_weekend:  weekendWorkID
@@ -646,36 +655,38 @@ angular.module('calendardirective', [])
                     $scope.clickedEvent.work_weekend = weekendWorkID;
                 });
             }
-            $scope.adjust = function(type){
+
+            $scope.onJobDateChange = function(type){
                // $scope.job_start =moment($scope.job_start).format('YYYY-MM-DD hh:mm:ss');
                // $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD hh:mm:ss');
                 $scope.valueChanged = true;
-                if(typeof  $scope.job_start != 'object')
-                {
+                if(typeof  $scope.job_start != 'object'){
                     $scope.job_start = moment($scope.job_start);
                 }
-                if( typeof $scope.job_end  != 'object')
-                {
+                if( typeof $scope.job_end  != 'object'){
                     $scope.job_end = moment($scope.job_end);
                 }
+
+					 //if start was set after end, reset end
+					 if( $scope.job_start > $scope.job_end ) $scope.job_end=$scope.job_start;
+
                 if(type == 'days'){
                     var temp=angular.copy($scope.job_start);
                     $scope.job_end = temp.add($scope.duration, 'days');
-                }
-                else {
-                    //if($scope.job_start.format('YYYY-MM-DD') ==  $scope.job_end.format('YYYY-MM-DD')){
-                    //    $scope.duration = 1;
-                    //}
-                     if($scope.job_start)
-                        $scope.duration = moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays();
+                } else {
+                	if($scope.job_start)
+                 		var d = Math.round(moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays());
+                 		$scope.duration = (d>0) ? d : 1;
                 }
             }
+
             $scope.$watch('user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     var selected = $filter('filter')($scope.groups, { userID: $scope.user.group });
                     $scope.user.name = selected.length ? selected[0].text : null;
                 }
             });
+
             $scope.$watch('sales_user.group', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     var selected = $filter('filter')($scope.groups, { userID: $scope.sales_user.userID });

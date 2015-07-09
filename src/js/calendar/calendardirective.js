@@ -203,7 +203,6 @@ angular.module('calendardirective', [])
                                $('#calendar').fullCalendar('unselect');
                            },
                            drop: function (el, eventStart, ev, ui) {		// jquery ui external drop call: http://fullcalendar.io/docs/dropping/drop/
-
 										// without these here, the job detail box opens on drag
                                $('.fc-title br').remove();
                                //console.log(ev.helper[0].textContent);
@@ -211,7 +210,6 @@ angular.module('calendardirective', [])
                                $(this).remove();
                            },
                            eventReceive: function (event) {			// external drop callback
-									return;
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
                                var temp = angular.copy(event.start);
@@ -633,11 +631,11 @@ angular.module('calendardirective', [])
 								$scope.email=$scope.contactEmail;
 								$scope.phone=$scope.contactPhone;
 
+								if(data.start)
+									$scope.job_start = data.start.format('YYYY-MM-DD');
+								if(data.end)
+									$scope.job_end = data.end.format('YYYY-MM-DD');
 								if(data.start && data.end){
-									if(data.start)
-										$scope.job_start = data.start.format('YYYY-MM-DD');
-									if(data.end)
-										$scope.job_end = data.end.format('YYYY-MM-DD');
 									$scope.duration = moment.duration(data.end.diff(data.start)).asDays();
 									$scope.duration = Math.floor($scope.duration);
 								}

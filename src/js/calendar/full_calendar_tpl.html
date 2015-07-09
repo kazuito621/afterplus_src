@@ -131,11 +131,13 @@
                 </div>
                 <BR>
                 <div class="row">
-                    Start <input class="" ng-model="job_start" data-date-format="yyyy-MM-dd" placeholder="Set Date" ng-change="onJobDateChange()"
-                           data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:7em;'>
-                    End <input class="" ng-model="job_end" data-date-format="yyyy-MM-dd" placeholder="Set Date" ng-change="onJobDateChange()"
-                           data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:7em;'>
-                    Days <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
+                    Start: <input class="" ng-model="job_start" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                           data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:7em;'
+									data-placement='top'> &nbsp; 
+                    End: <input class="" ng-model="job_end" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                           data-date-type="number"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:7em;'
+									data-placement='top'> &nbsp;
+                    Days: <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
                            type="number" min="1" style="width: 2.5em;">
                     <button type="button" class="btn btn-primary" ng-show="valueChanged" ng-click="saveJobDates()">Save</button>
 				</div>

@@ -224,7 +224,6 @@ angular.module('calendardirective', [])
                                        alert(res.conflict_msg);
                                    }
                                });
-
                            },
 									eventDragStop: function( event, jsEvent, ui, view ){
 										setTimeout(function(){	updateTotals() },1000);
@@ -254,7 +253,7 @@ angular.module('calendardirective', [])
 										var tot=getDayTotal(date),diff;
 										if(tot>0){
 											niceTot = "$" + commaDigits(tot);
-											var msg=date.format("dddd") + " the " + date.format("Do") + " = " + niceTot;
+											var msg=date.format("ddd M/DD") + " = " + niceTot;
 											var diff=Math.abs(Math.round($scope.goalPerDay-tot));
 											var undOvr = (tot>$scope.goalPerDay) ? " over)" : " UNDER!)";
 											var alType = (tot>$scope.goalPerDay) ? "ok" : "d";
@@ -273,13 +272,13 @@ angular.module('calendardirective', [])
 													updateTotals();
 												},2000);
 											}
-										},1000);
+                             		$('.fc-time').remove();
+										},600);
 									},
                            eventRender: function (event, element, view) {
                                $('.fc-title br').remove();
 
                                /*WILL WORK ON IT LATER*/
-
 //
                                // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
                                ////var box = element.closest('table').find('th').eq(element.index())
@@ -562,15 +561,15 @@ angular.module('calendardirective', [])
 
             }
 
-            var prepareModal = function(event){
-                $scope.weekendWork = false;
+            var setupModalDatePickers = function(event){
+                $scope.showWeekendWork = false;
                 if(event.start){
                     var duration = 1;
                     if(event.end){
                         duration = moment.duration(event.end.diff(event.start)).asDays();
                         //if(duration<4) return;
                         var day1, day2;
-                        $scope.weekendWork = false;
+                        $scope.showWeekendWork = false;
                         //Th Fr Sa Sun No
                         if(event.reportID == '2478' ){
                             var a=1;
@@ -582,7 +581,7 @@ angular.module('calendardirective', [])
                             startDate = angular.copy(event.start);
                             day2 = startDate.add(i+1, 'days');
                             if(day1.format('dd') == 'Sa' && day2.format('dd') == 'Su'){
-                                $scope.weekendWork = true;
+                                $scope.showWeekendWork = true;
                                 break;
                             }
                         }
@@ -602,7 +601,8 @@ angular.module('calendardirective', [])
                     data._id = tempId;
                 }
                 $scope.jobdescription = data.price;
-                $scope.selectedWeekendWork = data.work_weekend;
+                $scope.selectedWeekendWork = (data.work_weekend)  ? data.work_weekend : 0;
+
                 //$scope.$apply();
                 $scope.clickedEvent = data;
                 $('#modalTitle').html('<span style="font-size:1.5em; font-weight:bold;">'+data.reportID + " - " + data.name 
@@ -614,7 +614,7 @@ angular.module('calendardirective', [])
                 $scope.price = data.price.replace(",", "");
 					 $scope.status = data.status;
 
-                prepareModal(data);
+                setupModalDatePickers(data);
                 $scope.siteID = data.siteID;
                 $scope.sales_user = {  userID: -1, name:'' }
                 $scope.job_user = {  userID: -1, name:'' }
@@ -637,7 +637,7 @@ angular.module('calendardirective', [])
 									$scope.job_end = data.end.format('YYYY-MM-DD');
 								if(data.start && data.end){
 									$scope.duration = moment.duration(data.end.diff(data.start)).asDays();
-									$scope.duration = Math.floor($scope.duration);
+									$scope.duration = Math.ceil($scope.duration);
 								}
 //needed?
                         $scope.reportID = data.reportID;
@@ -824,10 +824,22 @@ angular.module('calendardirective', [])
 							if(ev.todo_price) e.todo_price=ev.todo_price;
 							if(ev.total_price) e.todo_price=ev.total_price;
 						}
+
 						// check for jobs that span multiple days
-						if( e.end
-						    && e.start.isBefore(today,'day') 
-							 && e.end.isAfter(today,'day')
+						// if: 
+						//			- has an end day, AND start and end day not the same
+						//			AND: 
+						//				   - start is today or before today
+						//				AND
+						//				   - end is today or after today (AND end date end time is more than 00:00:00)
+						if( 
+							(e.end && e.start.format('M/d') != e.end.format('M/d'))
+							&&
+							(
+								(e.start.isBefore(today,'day') || e.start.isSame(today, 'day'))
+								&&
+								e.end.isAfter(today,'day')
+							)
 						){
 							var totalDays=e.end.diff(e.start,'days');
 							var p=parseFloat(parseFloat(e.todo_price) / totalDays);

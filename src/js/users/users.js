@@ -126,11 +126,11 @@ var UserCtrl = app.controller('UserCtrl',
             },*/
             s.showMoreUsers = function () {
                 var count = s.displayedUsers.length;
-                if (count === users.length) {
+                if (count === userFiltered.length) {
                     return;
                 }
 
-                var addon = users.slice(count, count + 50);
+                var addon = userFiltered.slice(count, count + 50);
                 s.displayedUsers = s.displayedUsers.concat(addon);
             };
 

@@ -247,9 +247,7 @@ var ReportCtrl = app.controller(
 				if( $location.search().siteID ) $location.search('siteID','');
             };
 
-
-
-            s.saveReport = function () {
+            s.saveReport = function (cb1,cb2) {
 
                 var allTreatmentsSaved = s.checkAllTreatmentCodeSaved();
                 if (!allTreatmentsSaved) {
@@ -265,6 +263,11 @@ var ReportCtrl = app.controller(
                     // RS.reportBackup must be reinitialized after all change in s.report has done AND before $location call.
                     if (data && data.reportID && $location.search().reportID !== data.reportID) {
                         $location.search({ reportID: data.reportID});
+                    }
+                    /*This two callback are for closing the existing modal and open the bulk edit modal (when applicable)*/
+                    if(cb1!= undefined && cb2!= undefined){
+                        cb1();
+                        cb2();
                     }
                 });
                 RS.reportBackup= angular.copy(s.report); // This is for faster case save and navigate instantly.

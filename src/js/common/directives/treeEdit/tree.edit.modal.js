@@ -14,7 +14,7 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
     var linker = function (s, el, attrs) {
         //scope.itemId = scope.$eval(attrs.itemId);
        // var treeID=s.$eval("tree").treeID;
-        var treeID=s.$eval(attrs.treeEditModal);
+        var tree=s.$eval(attrs.treeEditModal);
         var _mode;
         window.ets = s;
         var myStateID = 'tree_edit';    // matches with the templateID
@@ -42,7 +42,7 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
 
         // added throttle, because on fist load, it might fire twice, once from init() on load,
         // and once from the $on(nav) event above
-        var init = _.throttle(function (treeID, mode) {
+        var init = _.throttle(function (tree, mode) {
             if(mode=='edit'){
                 s.openModal();
             }
@@ -51,21 +51,25 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
             if (!mode) {
                 mode = 'edit';
             }
+            s.tree = tree;
 
-            if (treeID) {
-                s.treeID = treeID;
-            } else {
-                s.treeID = s.renderPath[1];
-            }
-            if (!s.treeID) {
-                return;
-            }
-            var a=_mode;
-            Api.getTree(s.treeID)
-                .then(function (data) {
-                    s.tree = data;
-                    s.tree.mode = mode;
-                });
+            s.slides6 = [];
+            s.carouselIndex6 = 1;
+            s.tree.mode = mode;
+            s.colors = ["#fc0003", "#f70008", "#f2000d", "#ed0012", "#e80017", "#e3001c", "#de0021", "#d90026", "#d4002b", "#cf0030", "#c90036", "#c4003b", "#bf0040", "#ba0045", "#b5004a", "#b0004f", "#ab0054", "#a60059", "#a1005e", "#9c0063", "#960069", "#91006e", "#8c0073", "#870078", "#82007d", "#7d0082", "#780087", "#73008c", "#6e0091", "#690096", "#63009c", "#5e00a1", "#5900a6", "#5400ab", "#4f00b0", "#4a00b5", "#4500ba", "#4000bf", "#3b00c4", "#3600c9", "#3000cf", "#2b00d4", "#2600d9", "#2100de", "#1c00e3", "#1700e8", "#1200ed", "#0d00f2", "#0800f7", "#0300fc"];
+            var index=0;
+            _.each(s.tree.images,function(i){ // TODO after api change; use data.images instead dummyData.images
+                index++;
+                s.slides6.push(
+                    {
+                        id: (index),
+                        label: 'slide #' + (index),
+                        img: i.imgMed ,  // TODO after api change; use data.imagePrefix instead dummyData.imagePrefix
+                        color: s.colors[ (index*10) % s.colors.length],
+                        odd: (index % 2 === 0)
+                    }
+                )
+            })
 
             // setup ESCAPE key
             $(document).keyup(cancelOnEscape);
@@ -131,7 +135,7 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
         };
 
         el.on('click', function (event) {
-            init(treeID, 'edit');
+            init(tree, 'edit');
         });
 
         //init();

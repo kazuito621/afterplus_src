@@ -28,13 +28,7 @@ angular.module('calendardirective', [])
 				$scope.filter_job_userID=-99;
 				$scope.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
 				$scope.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
-            $scope.weekendWork = false;
-            $scope.weekends = [
-                {id:'0',text:'No weekend work'},
-                {id:'1',text:'Sat'},
-                {id:'2',text:'Sun'},
-                {id:'3',text:'Both'}
-            ]
+            $scope.showWeekendWork = false;
             var elm, 
 					cal, 		// ref to calendar html obj
 					uncheduledJobsBackUp;
@@ -68,42 +62,23 @@ angular.module('calendardirective', [])
 									obj.title=field.reportID+' - $'+shortenPrice(field.total_price)
 											+' - '+userID2Name(field.job_userID)+' - '+ obj.name;
 									obj.price=obj.total_price;
-
-										// whats this? debug code?
-                            if(field.reportID == '826'){
-                                var a=1;
-                            }
-									obj.work_weekend=obj.work_weekend;
-
+									obj.id=field.reportID;
                            if( field.status=="approved"  ||  (field.status=="scheduled"  &&  field.job_start==undefined)) {
 										obj.type='Unscheduled';
 										$scope.UnscheduledJobs.push(obj);
                            }
                            else if(field.job_start)
 									{
-                               var sTime ;
-                               var eTime ;
-                               if(moment(field.job_start).format('h:mm:ss a') ==  "12:00:00 am")
-                                   sTime =  moment(field.job_start).format('YYYY-MM-DD');
-                               else 
-                                   sTime =  moment(field.job_start).format('YYYY-MM-DD hh:mm:ss')
-
-                               if(moment(field.job_end).format('h:mm:ss a') ==  "12:00:00 am")
-                                   eTime =  moment(field.job_end).format('YYYY-MM-DD');
-                               else 
-                                   eTime =  moment(field.job_end).format('YYYY-MM-DD hh:mm:ss')
-
 										obj.type='Scheduled';
-										obj.start=sTime;
-										obj.end=eTime;
-										//obj.end=moment(eTime).add(1, 'days').format('YYYY-MM-DD');
-                                if(field.reportID == '901') {
-                                    var a=1;
-                                }
+										obj.start=moment(field.job_start).format('YYYY-MM-DD 00:00:00');
+										if( field.job_end )
+											obj.end=moment(field.job_end).format('YYYY-MM-DD 23:59:59');
+										else
+											obj.end=moment(field.job_start).format('YYYY-MM-DD 23:59:59');
                                $scope.ScheduledJobs.push(obj);
                            }
 
-									// setup filtering
+									// setup filtering 
 									if(obj.job_userID){
 										var f=_.findObj($scope.jobUsers, 'userID', obj.job_userID);
 										if(f) f.count++;
@@ -112,8 +87,8 @@ angular.module('calendardirective', [])
 										$scope.jobUsers[1].count++;	//unassigned
 									}
 									$scope.jobUsers[0].count++;		//all
-
                        });
+
                        uncheduledJobsBackUp = angular.copy($scope.UnscheduledJobs);
 
 							  // get event data from sched or unsched array based on reportID or event name in title box
@@ -180,8 +155,9 @@ angular.module('calendardirective', [])
                            editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
                            droppable: $scope.dropablefullcalendar,
 									eventLimit: true,
+									timezone: 'local',
 									views:{
-										week:{ eventLimit:false }
+										week:{ eventLimit:false}
 									},
                            defaultTimedEventDuration: '04:00:00',
                            startEditable: true,
@@ -212,13 +188,10 @@ angular.module('calendardirective', [])
                            eventReceive: function (event) {			// external drop callback
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
-                               var temp = angular.copy(event.start);
-                               temp = temp.add(1,'days');
-                               event.end = temp;
-                               console.log("event:" + event.start.format('YYYY-MM-DD') + " $"+ev.price);
+										 var job_end=moment(event.start).format('YYYY-MM-DD 23:59:59');
+                               event.end = moment(job_end);
                                Api.ScheduleJob(ev.reportID, {
-                                   job_start: event.start.format('YYYY-MM-DD'),
-                                   job_end: temp.format('YYYY-MM-DD')
+                                   job_start: event.start.format('YYYY-MM-DD')
                                }).then(function (res) {
                                    if(res && res.conflict==1 && res.conflict_msg){
                                        alert(res.conflict_msg);
@@ -228,7 +201,7 @@ angular.module('calendardirective', [])
 									eventDragStop: function( event, jsEvent, ui, view ){
 										setTimeout(function(){	updateTotals() },1000);
 									},
-                           updateEvent: function (event) {
+                           xxupdateEvent: function (event) {
                                console.log(event);
                            },
                            eventClick: function (data, jsEvent, view) {
@@ -238,7 +211,7 @@ angular.module('calendardirective', [])
 
 										// check for double click
 										var now=new Date().getTime();
-										if(now - view.lastDayClick < 600){
+										if(now - view.lastDayClick < 400){
 											var v=elm.fullCalendar('getView');
 											if(v.name=='basicWeek' || v.name=='agendaWeek')
 												elm.fullCalendar('changeView', 'month');
@@ -315,7 +288,7 @@ angular.module('calendardirective', [])
                                Api.ScheduleJob(el.reportID, {
                                    //job_start: t.format('YYYY-MM-DD'),
                                    job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
-                                   job_end: moment(el.end).format('YYYY-MM-DD HH:mm:ss')
+                                   job_end: moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss')
                                }).then(function (res) {
                                    if(res && res.conflict==1 && res.conflict_msg){
                                        alert(res.conflict_msg);
@@ -331,16 +304,17 @@ angular.module('calendardirective', [])
                                var sTime, eTime;
                                sTime =  moment(el.start).format('YYYY-MM-DD HH:mm:ss');
                                if(el._allDay == false && el.end == undefined){
-                                   el.end =  angular.copy(el.start);
-                                   el.end.add(4, 'hours');
+                                   el.end = moment(el.start.format('YYYY-MM-DD 23:59:59'));
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
                                }
                                else if (el.end == undefined){
-                                   el.end = moment(el.start).add(1,'days');
-                                   eTime = el.end.format('YYYY-MM-DD HH:mm:ss');
+                                   el.end = moment(el.start.format('YYYY-MM-DD 23:59:59'));
+                                   eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
                                }
                                else
+										 {
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
+										 }
 
                                Api.ScheduleJob(el.reportID, {
                                    job_start: sTime,
@@ -536,25 +510,29 @@ angular.module('calendardirective', [])
             var getValueBackup = function(data){
                 job_start_backup_value = data.start;
                 if(data.end==null){
-                    var temp=angular.copy(data.start);
-                    job_end_backup_value = temp.add(1, 'days');
+                    var temp=moment(data.start);
+                    job_end_backup_value = temp.format('YYYY-MM-DD 23:59:59');
                 }
                 else
                     job_end_backup_value = data.end;
             }
+
             $scope.saveJobDates = function(){
+					// convert from unix back to iso
+					$scope.job_start=moment.unix($scope.job_start_unix).format('YYYY-MM-DD HH:mm:ss');
+					$scope.job_end=moment.unix($scope.job_end_unix).format('YYYY-MM-DD HH:mm:ss');
+
                 Api.ScheduleJob($scope.clickedEvent.reportID, {
-                    job_start: moment($scope.job_start).format('YYYY-MM-DD HH:mm:ss'),
-                    job_end: moment($scope.job_end).format('YYYY-MM-DD HH:mm:ss')
+                    job_start: $scope.job_start,
+                    job_end: $scope.job_end
                 }).then(function (res) {
                     if(res && res.conflict==1 && res.conflict_msg){
                         alert(res.conflict_msg);
                     }
-                   //$scope.clickedEvent.start = moment($scope.job_start).format('YYYY-MM-DD');
-                   //$scope.clickedEvent.end =moment($scope.job_end).format('YYYY-MM-DD');
-                    updateArray($scope.clickedEvent.reportID,moment($scope.job_start).format('YYYY-MM-DD'),moment($scope.job_end).format('YYYY-MM-DD'));
-                    $scope.clickedEvent.start = $scope.job_start;
-                    $scope.clickedEvent.end = $scope.job_end;
+
+                    updateArray($scope.clickedEvent.reportID, $scope.job_start, $scope.job_end); //moment($scope.job_start).format('YYYY-MM-DD'),moment($scope.job_end).format('YYYY-MM-DD'));
+                    $scope.clickedEvent.start = moment($scope.job_start);
+                    $scope.clickedEvent.end = moment($scope.job_end);
                     elm.fullCalendar('updateEvent', $scope.clickedEvent);
                     $scope.valueChanged = false;
                 });
@@ -562,34 +540,146 @@ angular.module('calendardirective', [])
             }
 
             var setupModalDatePickers = function(event){
-                $scope.showWeekendWork = false;
-                if(event.start){
-                    var duration = 1;
-                    if(event.end){
-                        duration = moment.duration(event.end.diff(event.start)).asDays();
-                        //if(duration<4) return;
-                        var day1, day2;
-                        $scope.showWeekendWork = false;
-                        //Th Fr Sa Sun No
-                        if(event.reportID == '2478' ){
-                            var a=1;
-                        }
-                        for(var i = 1;i<duration-2; i++){
-                            var startDate = angular.copy(event.start);
-                            var endDate = angular.copy(event.start);
-                            day1 = startDate.add(i, 'days');
-                            startDate = angular.copy(event.start);
-                            day2 = startDate.add(i+1, 'days');
-                            if(day1.format('dd') == 'Sa' && day2.format('dd') == 'Su'){
-                                $scope.showWeekendWork = true;
-                                break;
-                            }
-                        }
-                    }
-                }
+                $scope.showWeekendWork = isDateSpanWeekend(event.start, event.end);
+					
+					 $scope.job_start_unix=event.start.format('X');
+					 $scope.job_end_unix=event.end.format('X');
             }
 
+
+
+				/**
+				 * Calc total days of work, taking weekend work into account
+				 * @param e eventObj (which should have vars: start, end, work_weekend
+				 *						work_weekend: 0=no weekends, 1=work on sat, 2=work on sun, 3=work both
+				 * @return INT
+				 */
+				var getTotalDaysOfWork = function(e){
+					var d1=e.start.format('YYYYMMDD');
+					var d2=e.end.format('YYYYMMDD');
+
+					var d,c=0,day,ds;
+					for(var di=d1; di<=d2; di++){
+						ds=''+di;
+						d=moment(ds.substr(0,4)+'-'+ds.substr(4,2)+'-'+ds.substr(6));
+						day=d.format('d');
+						if(day>=1 && day<=5 || e.work_weekend==3){ 
+							c++;
+						}else if(day==6 && e.work_weekend==1){
+							c++;
+						}else if(day==0 && e.work_weekend==2){
+							c++;
+						}
+					}
+					return c;
+				}
+				/* Testing of getTotalDaysOfWork 
+				var dts=[
+						['2015-07-10', '2015-07-13', 0, 2],		
+						['2015-07-10', '2015-07-13', 1, 3],		
+						['2015-07-10', '2015-07-13', 2, 3],		
+						['2015-07-10', '2015-07-13', 3, 4],		
+
+						['2015-07-10', '2015-07-12', 0, 1],			
+						['2015-07-10', '2015-07-12', 1, 2],			//5
+						['2015-07-10', '2015-07-12', 2, 2],		
+						['2015-07-10', '2015-07-12', 3, 3],		
+
+						['2015-07-04', '2015-07-12', 0, 5],		
+						['2015-07-04', '2015-07-12', 1, 7],		
+						['2015-07-04', '2015-07-12', 2, 7],			//10
+						['2015-07-04', '2015-07-12', 3, 9],		
+
+						['2015-07-05', '2015-07-12', 0, 5],		
+						['2015-07-05', '2015-07-12', 1, 6],		
+						['2015-07-05', '2015-07-12', 2, 7],		
+						['2015-07-05', '2015-07-12', 3, 8],		
+					]
+				_.each(dts, function(d, idx){
+					var e={start:moment(d[0]), end:moment(d[1]), work_weekend:d[2]};
+					var res=getTotalDaysOfWork(e);
+					if( res!=d[3] )
+						console.debug('Test '+idx+' FAIL: '+d[0]+' --> '+d[1]+' SHOULD BE '+d[3]+', but is '+res); 
+				});
+				
+
+
+				/**
+				 * Check if two dates span a weekend.. ie.
+				 * 	Fri-Mon = TRUE
+				 * 	Wed-Mon = TRUE
+				 *		Sat-Mon = FALSE
+				 *		Fri-Sun = FALSE
+				 * @param date1 - momentJS object
+				 * @param date2 - momentJS object
+				 * @return BOOL
+				 */
+				var isDateSpanWeekend = function(date1, date2){
+					if(!date1 || !date2) return false;
+					if(typeof date1 != 'object') date1=moment(date1);
+					if(typeof date2 != 'object') date2=moment(date2);
+					if(date1 > date2) return false;
+					
+					// make sure date2 hours is late in the day so duration will round up
+					if(date2.format('H')<15) date2=moment(date2.format('YYYY-MM-DD 23:59:59'))
+					var duration = Math.ceil(Math.abs(moment.duration(date1.diff(date2)).asHours()/24));
+					if(duration<4) return false;
+					if(duration>9) return true;
+
+					// if duration is between 5 and 9 days, then examine more carefully
+					var d1=date1.format('d');		// convert to day of week, 0=sun, 1=mon, etc
+					var d2=date2.format('d');	
+
+					// if 9 days, and only one (or none) start/end on weekend then true
+					if( duration==9 ){
+						if( (d1!=0 && d1!=6) || (d2!=0 && d2!=6) ) return true;
+						return false;
+					}
+
+					// if starts or ends on a weekend, then FALSE
+					if( (d1==0 || d1==6) || (d2==0 || d2==6) ) return false;
+					return true;
+
+				}
+				/* Testing of isDateSpanWeekend
+				var dts=[
+						['2015-07-10', '2015-07-13', true],					
+						['2015-07-10 13:00', '2015-07-13', true],
+						['2015-07-10', '2015-07-12', false],
+						['2015-07-10', '2015-07-11', false],
+						['2015-07-11', '2015-07-13', false],
+						['2015-07-12', '2015-07-13', false],	//5
+
+						['2015-07-09', '2015-07-13', true],
+						['2015-07-08', '2015-07-13', true],
+						['2015-07-10', '2015-07-14', true],
+						['2015-07-10', '2015-07-15', true],
+						['2015-07-09', '2015-07-15', true],		//10
+
+						['2015-07-05', '2015-07-12', false],
+						['2015-07-05', '2015-07-13', true],
+						['2015-07-03', '2015-07-10', true],
+						['2015-07-02', '2015-07-10', true],
+						['2015-07-04', '2015-07-10', false],	//15
+
+						['2015-07-04', '2015-07-11', false],	
+						['2015-07-04', '2015-07-12', false],
+						['2015-07-04', '2015-07-13', true],
+
+						['2015-07-09', '2015-07-15', true],
+					]
+				_.each(dts, function(d, idx){
+					var res=isDateSpanWeekend(d[0],d[1]);
+					if( res!=d[2] )
+						console.debug('Test '+idx+' FAIL: '+d[0]+' --> '+d[1]+' SHOULD BE '+d[2]); 
+				});
+				*/
+
+				
+
             $scope.openJob = function(data){
+                $scope.clickedEvent = data;
+
                 if(data.reportID == undefined){
                     getValueBackup(data);
                     var tempId =  data._id;
@@ -603,18 +693,24 @@ angular.module('calendardirective', [])
                 $scope.jobdescription = data.price;
                 $scope.selectedWeekendWork = (data.work_weekend)  ? data.work_weekend : 0;
 
-                //$scope.$apply();
-                $scope.clickedEvent = data;
+					 if(!data.start) data.start=moment(moment(data.job_start).format('YYYY-MM-DD 00:00:00'));
+					 if(!data.end){
+					 	if(data.job_end)
+					 		data.end = moment(moment(data.job_end).format('YYYY-MM-DD 23:59:59'));
+						else
+					 		data.end = moment(moment(data.job_start).format('YYYY-MM-DD 23:59:59'));
+					}
+
                 $('#modalTitle').html('<span style="font-size:1.5em; font-weight:bold;">'+data.reportID + " - " + data.name 
 					 	+"</span> (<a href='#/trees?reportID="+data.reportID+"'>edit</a> | "
 						+"<a href='"+data.estimateUrl+"' target=_new>view</a>)");
-                console.log(data.price);
                 //$('#modalBody').html("Price:" + data.price);
 
                 $scope.price = data.price.replace(",", "");
 					 $scope.status = data.status;
 
                 setupModalDatePickers(data);
+
                 $scope.siteID = data.siteID;
                 $scope.sales_user = {  userID: -1, name:'' }
                 $scope.job_user = {  userID: -1, name:'' }
@@ -654,6 +750,10 @@ angular.module('calendardirective', [])
                 });
             }
 
+
+				/**
+				 * Note days... should start at 00:00:00 and end at 23:59:59
+				 */
             $scope.onJobDateChange = function(type){
                // $scope.job_start =moment($scope.job_start).format('YYYY-MM-DD hh:mm:ss');
                // $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD hh:mm:ss');
@@ -662,7 +762,7 @@ angular.module('calendardirective', [])
                     $scope.job_start = moment($scope.job_start);
                 }
                 if( typeof $scope.job_end  != 'object'){
-                    $scope.job_end = moment($scope.job_end);
+                    $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD 23:59:59');
                 }
 
 					 //if start was set after end, reset end
@@ -671,10 +771,9 @@ angular.module('calendardirective', [])
                 if(type == 'days'){
                     var temp=angular.copy($scope.job_start);
                     $scope.job_end = temp.add($scope.duration, 'days');
-                } else {
-                	if($scope.job_start)
-                 		var d = Math.round(moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays());
-                 		$scope.duration = (d>0) ? d : 1;
+                } else if($scope.job_start){
+                 		var d = Math.ceil(moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays());
+                 		$scope.duration = d;
                 }
             }
 
@@ -841,11 +940,9 @@ angular.module('calendardirective', [])
 								e.end.isAfter(today,'day')
 							)
 						){
-							var totalDays=e.end.diff(e.start,'days');
+							
+							var totalDays=getTotalDaysOfWork(e);
 							var p=parseFloat(parseFloat(e.todo_price) / totalDays);
-							// todo, check for work_weekend variable here...
-							// if set, then check if job spans a weekend.. and if so,
-							// dont include that in the totalDays when dividing
 							tot+=p;
 							mev.push(e);
 

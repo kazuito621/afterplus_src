@@ -45,6 +45,10 @@
 			if(h.match(/advancedtr/)) return 10;
 			if(h.match(/allamerican/)) return 11;
 			if(h.match(/fourseasons/)) return 12;
+			if(h.match(/landcare-fairfield/)) return 13;
+			if(h.match(/landcare-windsor/)) return 14;
+			if(h.match(/landcare-rancho/)) return 15;
+			if(h.match(/hoppe/)) return 16;
 			return 1;	// default to dev.aplustree
 		}
 

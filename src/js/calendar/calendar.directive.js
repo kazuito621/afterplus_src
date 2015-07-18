@@ -756,21 +756,17 @@ angular.module('calendardirective', [])
 				 * Note days... should start at 00:00:00 and end at 23:59:59
 				 */
             $scope.onJobDateChange = function(type){
-               // $scope.job_start =moment($scope.job_start).format('YYYY-MM-DD hh:mm:ss');
-               // $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD hh:mm:ss');
                 $scope.valueChanged = true;
-                if(typeof  $scope.job_start != 'object'){
-                    $scope.job_start = moment($scope.job_start);
-                }
-                if( typeof $scope.job_end  != 'object'){
-                    $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD 23:59:59');
-                }
+
+					 //use the unix ... convert back
+					$scope.job_start=moment.unix($scope.job_start_unix).format('YYYY-MM-DD HH:mm:ss');
+					$scope.job_end=moment.unix($scope.job_end_unix).format('YYYY-MM-DD HH:mm:ss');
 
 					 //if start was set after end, reset end
 					 if( $scope.job_start > $scope.job_end ) $scope.job_end=$scope.job_start;
 
                 if(type == 'days'){
-                    var temp=angular.copy($scope.job_start);
+                    var temp=moment($scope.job_start);
                     $scope.job_end = temp.add($scope.duration, 'days');
                 } else if($scope.job_start){
                  		var d = Math.ceil(moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays());

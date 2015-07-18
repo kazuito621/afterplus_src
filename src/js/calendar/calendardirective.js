@@ -245,7 +245,6 @@ angular.module('calendardirective', [])
 													updateTotals();
 												},2000);
 											}
-                             		$('.fc-time').remove();
 										},600);
 									},
                            eventRender: function (event, element, view) {
@@ -324,7 +323,9 @@ angular.module('calendardirective', [])
                                        alert(res.conflict_msg);
                                    }
                                });
-										setTimeout(function(){	updateTotals() },1000);
+										setTimeout(function(){	
+											updateTotals(); 
+										},600);
                            }
 
                        });

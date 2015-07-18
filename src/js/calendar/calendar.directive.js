@@ -10,7 +10,7 @@ angular.module('calendardirective', [])
     return {
         restrict: 'EA',
         replace: false,
-        templateUrl: '/js/calendar/full_calendar_tpl.html',
+        templateUrl: '/js/calendar/calendar.directive.tpl.html',
         scope: {
             leftButtons: "@",
             rightButtons: "@",

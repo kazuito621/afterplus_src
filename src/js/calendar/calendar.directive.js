@@ -157,7 +157,7 @@ angular.module('calendardirective', [])
 									eventLimit: true,
 									timezone: 'local',
 									views:{
-										week:{ eventLimit:false}
+										week:{eventLimit:false}
 									},
                            defaultTimedEventDuration: '04:00:00',
                            startEditable: true,

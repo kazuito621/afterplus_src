@@ -361,8 +361,7 @@ footer
 
 	&.paid
 	{
-		border-color: #000;
-		font-color:#000;
+		border-color: $paid;
 		color: $paid;
 	}
 
@@ -402,10 +401,11 @@ footer
 	color: #fff !important;
 	}
 .clr-paid {
-	background-color: $paid !important;
-	color: #000 !important;
+	background-color: $paid_bg !important;
+	color: $paid !important;
 	border:#000 solid 1px;
 	}
+
 
 .small-tag
 {
@@ -423,7 +423,7 @@ footer
 	&.billed{ background: $billed; }
 	&.invoiced{ background: $invoiced; }
 	&.completed{ background: $completed; }
-	&.paid{ background: $paid; color:#000; border:#000 solid 1px;}
+	&.paid{ background: $paid_bg; color:$paid; border:$paid solid 1px; }
 	&.sent{ background: $sent; }
 }
 

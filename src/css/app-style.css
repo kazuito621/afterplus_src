@@ -1040,62 +1040,61 @@ footer {
 }
 /* line 362, ../scss/partials/_common.scss */
 .big-tag.paid {
-  border-color: #000;
-  font-color: #000;
-  color: white;
+  border-color: black;
+  color: black;
 }
-/* line 369, ../scss/partials/_common.scss */
+/* line 368, ../scss/partials/_common.scss */
 .big-tag.sent {
   border-color: #0074d9;
   color: #0074d9;
 }
 
-/* line 376, ../scss/partials/_common.scss */
+/* line 375, ../scss/partials/_common.scss */
 .clr-approved {
   background-color: #2ecc40 !important;
   color: #fff !important;
 }
 
-/* line 380, ../scss/partials/_common.scss */
+/* line 379, ../scss/partials/_common.scss */
 .clr-draft {
   background-color: #cccccc !important;
   color: #fff !important;
 }
 
-/* line 384, ../scss/partials/_common.scss */
+/* line 383, ../scss/partials/_common.scss */
 .clr-sent {
   background-color: #0074d9 !important;
   color: #fff !important;
 }
 
-/* line 388, ../scss/partials/_common.scss */
+/* line 387, ../scss/partials/_common.scss */
 .clr-scheduled {
   background-color: #ffa12d !important;
   color: #fff !important;
 }
 
-/* line 392, ../scss/partials/_common.scss */
+/* line 391, ../scss/partials/_common.scss */
 .clr-invoiced {
   background-color: #ff4136 !important;
   color: #fff !important;
 }
 
-/* line 396, ../scss/partials/_common.scss */
+/* line 395, ../scss/partials/_common.scss */
 .clr-needs_approval {
   background-color: #ff4136 !important;
   color: #fff !important;
 }
 
-/* line 400, ../scss/partials/_common.scss */
+/* line 399, ../scss/partials/_common.scss */
 .clr-completed {
   background-color: #9e3eff !important;
   color: #fff !important;
 }
 
-/* line 404, ../scss/partials/_common.scss */
+/* line 403, ../scss/partials/_common.scss */
 .clr-paid {
   background-color: white !important;
-  color: #000 !important;
+  color: black !important;
   border: #000 solid 1px;
 }
 
@@ -1139,8 +1138,8 @@ footer {
 /* line 426, ../scss/partials/_common.scss */
 .small-tag.paid {
   background: white;
-  color: #000;
-  border: #000 solid 1px;
+  color: black;
+  border: black solid 1px;
 }
 /* line 427, ../scss/partials/_common.scss */
 .small-tag.sent {

@@ -145,8 +145,10 @@ app.config(['$routeProvider', '$locationProvider',
 						,httpConfig:httpConfig
 					}
 				})
-				.setErrorInterceptor(function(){
-					rs.$broadcast('alert', {msg:'Error talking to the server (3)', type:'danger'});
+				.setErrorInterceptor(function(res){
+					console.debug(res);
+					console.debug("^^^ error from setErrorInterceptor ");
+					rs.$broadcast('alert', {msg:'Error talking to the server (4)', type:'danger'});
 					dbg('REST error found in setErrorInterceptor');
 					//return true;	//todo -- what to do here? display error to user?
 					})

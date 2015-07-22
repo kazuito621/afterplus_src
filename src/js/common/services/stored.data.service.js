@@ -171,9 +171,9 @@ app.service('storedData',
                 self.setEstimateTimeStamp(null);
 
                 self.storedData = null;
-                storage.set('initData', null);
+                storage.set('initData', {});
 
-                storage.set('estimateData', null);
+                storage.set('estimateData', []);
             };
 
             this.setTimeStamp=function(api){

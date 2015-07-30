@@ -802,7 +802,6 @@ angular.module('calendardirective', [])
 				}
 
 				function updateFilter(oldUserID, newUserID){
-				console.debug("up ::  "+oldUserID);
 					$($("#foreman_filter option")).each(function(){
 						if($(this).val()==oldUserID) $(this).text('xx');
 					});
@@ -869,7 +868,7 @@ angular.module('calendardirective', [])
 					var view=cal.fullCalendar('getView');
 					if(view.name=='month'){
 						var t,dt,st=view.start;
-						for( var d=moment(view.start); d.isBefore(view.end); d.add('days', 1) ){
+						for( var d=moment(view.start); d.isBefore(view.end); d.add(1, 'days') ){
 							paintDay(d);
 						}
 					}

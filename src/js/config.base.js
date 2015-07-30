@@ -49,6 +49,7 @@
 			if(h.match(/landcare-windsor/)) return 14;
 			if(h.match(/landcare-rancho/)) return 15;
 			if(h.match(/hoppe/)) return 16;
+			if(h.match(/trimac/)) return 17;
 			return 1;	// default to dev.aplustree
 		}
 

@@ -42,9 +42,14 @@
                 <td data-title="listing_species" class="td-name">{{item.dbhID | dbhID2Name:this }}
                     {{item.commonName || 'Not specified'}} <span ng-if="item.botanicalName">({{item.botanicalName}})</span>
                     <span class="light" bo-text="'[' + item.treeID + ']'"></span>
-                    <a style="cursor: pointer" tree-edit-modal="item.treeID" class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')">
+                    <a style="cursor: pointer" tree-edit-modal="item.treeID" class='row-action leftSpace10' ng-if="auth.isAtleast('inventory')"
+						  	 title='Edit Tree' bs-tooltip>
                         <i class="fa fa-pencil clr-primary _size5 hoverDisplay"></i>
                     </a>
+                    <a ng-if="auth.isAtleast('inventory')" href ng-click="onLocateTree(TreesCtrl.findMarker(item.treeID), item.treeID)" 
+						  		title='Locate tree on map' bs-tooltip>
+								<i class="fa fa-map-marker grey _size5 hoverDisplay"></i>
+						  </a>
                     <div ng-if="item.notes" id="estimate_table_notes">{{item.notes}}</div>
                 </td>
                 <td data-title="listing_treatment" colspan="3" class="td-treatment-bid">

@@ -617,9 +617,20 @@ var ReportCtrl = app.controller(
             };
 
             s.onItemRollOut = function (marker) {
+				console.debug(s.stayOnMarker );
+					if(stayOnMarker && marker.id == stayOnMarker.id) return;
                 animateMarker(marker, null);
                 hoveredItem.animationCompleted = false;
             };
+
+				var stayOnMarker=null;
+				s.onLocateTree = function(marker, treeID){
+					if(stayOnMarker) animateMarker(stayOnMarker, null);
+					stayOnMarker=marker;	
+                $(window).scrollTop(150);
+                $rootScope.$broadcast('highlightTreeResult', { treeID: treeID });
+				}
+
             s.reloadReport=function(){
                 RS.loadReport(s.report.reportID);
             };

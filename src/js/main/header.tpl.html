@@ -7,19 +7,18 @@
 	</div>
 	<div class='header-nav cnt-actions'>
 		<div ng-if="auth.isSignedIn()">
-			<span>
-				<b>{{auth.getLoginName()}}</b>  
-				<a ng-if="auth.hasPerm('dashboard_view')" href='/go/dash?token={{auth.data().token}}' target='_new' bs-tooltip title='Dashboard'>
-					<span class="fa-stack">
-					  	<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-dashboard fa-stack-1x fa-inverse"></i>
-					</span></a>
-				<a href ng-click="auth.signOut()" bs-tooltip title='Sign Out'>
-					<span class="fa-stack">
-					  	<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-sign-out fa-stack-1x fa-inverse"></i>
-					</span></a>
-			</span>
+
+
+		<div class="btn-group">
+            <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">{{auth.getLoginName()}} <span class="caret"></span></button>
+            <ul class="dropdown-menu pull-right">
+                <li ng-if="auth.hasPerm('dashboard_view')"><a href="/go/dash?token={{auth.data().token}}" target='_new'>Dashboard</a></li>
+                <li><a href add-edit-user-modal="myself" sites="initData.sites" clients="initData.clients">My User Profile</a></li>
+                <li class="divider"></li>
+                <li><a href ng-click="auth.signOut()">Sign Out</a></li>
+            </ul>
+        </div>
+
 		</div>
 	</div>	
 	<div class="clearfix"></div>

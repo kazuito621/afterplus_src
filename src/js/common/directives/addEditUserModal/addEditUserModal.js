@@ -37,22 +37,19 @@ app.directive('addEditUserModal',
                             scope.newContact.role = scope.userRoles[0];
                         });
                     }
-                    if (angular.isDefined(attrs.sites)) {
+                    if (angular.isDefined(attrs.sites)) 
                         scope.sites = scope.$eval(attrs.sites);
-                    }
 
-                    if (angular.isDefined(attrs.clients)) {
+                    if (angular.isDefined(attrs.clients)) 
                         scope.clients = scope.$eval(attrs.clients);
-                    }
 
                     if(scope.sites==undefined){ // in case site have been not provided.
                         Api.getSiteList().then(function (data) {
                             scope.sites=data;
                         })
                     }
-                    if (!modal) {
+                    if (!modal) 
                         modal = $modal({scope: scope, template: '/js/common/directives/addEditUserModal/addEditUserModal.tpl.html', show: false});
-                    }
 
 
 							scope.title='Add New User';

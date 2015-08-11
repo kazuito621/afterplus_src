@@ -8,12 +8,15 @@
 	<div class='header-nav cnt-actions'>
 		<div ng-if="auth.isSignedIn()">
 
-
+		<a ng-if="hasNewFeatures" href='/go/changelog' ng-click='onClickWhatsNew()' target=_new><i class='fa fa-star' style='color:#f33;'
+			data-placement="bottom" bs-tooltip title='New Features!'
+			></i></a> &nbsp;
 		<div class="btn-group">
             <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">{{auth.getLoginName()}} <span class="caret"></span></button>
             <ul class="dropdown-menu pull-right">
                 <li ng-if="auth.hasPerm('dashboard_view')"><a href="/go/dash?token={{auth.data().token}}" target='_new'>Dashboard</a></li>
                 <li><a href add-edit-user-modal="myself" sites="initData.sites" clients="initData.clients">My User Profile</a></li>
+					 <li ng-if="auth.isAtleast('inventory')"><a href='/go/changelog' ng-click='onClickWhatsNew()' target=_new>What's New?</a></li>
                 <li class="divider"></li>
                 <li><a href ng-click="auth.signOut()">Sign Out</a></li>
             </ul>

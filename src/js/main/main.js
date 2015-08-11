@@ -120,7 +120,21 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
 
 
-
+	// check if changelog is new... and show NEW FEATURES star in top right of header
+	var clb=storage.get('changelog_bytes');
+	s.hasNewFeatures=false;
+	var changelog_size=false;
+  	Rest.one('changelog_size').get().then(function(r){
+		if(r.size && r.size>1 && r.size!=clb){
+			changelog_size=r.size;
+			s.hasNewFeatures=true;
+		}
+	});
+	if(!clb) s.hasNewFeatures=true;
+	s.onClickWhatsNew=function(){
+		storage.set('changelog_bytes', changelog_size);
+		s.hasNewFeatures=false;
+	}
 
 
 

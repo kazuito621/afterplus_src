@@ -44,6 +44,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     s.sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); }
 
 
+	// if chrome ask for more storage space
+	if( navigator && navigator.webkitPersistentStorage && navigator.webkitPersistentStorage.requestQuota ){
+		var b = 1024*1024*50;
+		navigator.webkitPersistentStorage.requestQuota(b, function(a,b){
+			console.debug("Bytes allowed for local storage: "+a);
+		});
+	}
+
+
     var lastRenderedTplID;
     var render = function () {
         // break up url path into array 

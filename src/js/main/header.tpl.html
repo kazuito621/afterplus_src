@@ -17,6 +17,16 @@
                 <li ng-if="auth.hasPerm('dashboard_view')"><a href="/go/dash?token={{auth.data().token}}" target='_new'>Dashboard</a></li>
                 <li><a href add-edit-user-modal="myself" sites="initData.sites" clients="initData.clients">My User Profile</a></li>
 					 <li ng-if="auth.isAtleast('inventory')"><a href='/go/changelog' ng-click='onClickWhatsNew()' target=_new>What's New?</a></li>
+
+				
+						<!-- login as different user in entity -->
+                <li ng-if="relatedUsers" class="divider"></li>
+                <li ng-if="relatedUsers"><a href='#' style='color:#aaa;' onclick='return false;'>Login as Entity:</li>
+                <li ng-if="relatedUsers" ng-repeat="u in relatedUsers track by u.userID">
+					 	<a href='http://{{u.appdomain}}/#/signin/{{u.token}}'" target=_new>{{u.entityName}}</a>
+					</li>
+
+
                 <li class="divider"></li>
                 <li><a href ng-click="auth.signOut()">Sign Out</a></li>
             </ul>

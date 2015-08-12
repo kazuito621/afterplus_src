@@ -334,7 +334,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
         }
     }
 
-
+	// lookup related users ... in a little bit
+	s.relatedUsers=false;
+	$timeout(function(){
+		Rest.all('user/related').getList().then(function(r){
+			if(r && r.length){
+				s.relatedUsers=r;
+			}
+		});
+	},2000);
 
 
 }]); 		// 	}}} MainCtrl

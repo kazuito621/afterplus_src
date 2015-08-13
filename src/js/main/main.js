@@ -334,15 +334,18 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
         }
     }
 
-	// lookup related users ... in a little bit
+	// lookup related users ... after signin
 	s.relatedUsers=false;
-	$timeout(function(){
+	var chkRelatedUsers = function(){
+		if(!s.auth.isAtleast('inventory')) return;
 		Rest.all('user/related').getList().then(function(r){
 			if(r && r.length){
 				s.relatedUsers=r;
 			}
 		});
-	},2000);
+	}
+ 	s.$on("onSignin", chkRelatedUsers);
+	$timeout(chkRelatedUsers, 2000);
 
 
 }]); 		// 	}}} MainCtrl

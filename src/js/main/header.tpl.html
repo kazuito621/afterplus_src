@@ -23,7 +23,7 @@
                 <li ng-if="relatedUsers" class="divider"></li>
                 <li ng-if="relatedUsers"><a href='#' style='color:#aaa;' onclick='return false;'>Login as Entity:</li>
                 <li ng-if="relatedUsers" ng-repeat="u in relatedUsers track by u.userID">
-					 	<a href='http://{{u.appdomain}}/#/signin/{{u.token}}'" target=_new>{{u.entityName}}</a>
+					 	<a href='http://{{u.appdomain}}/#/signin/{{u.token|escape}}'" target=_new>{{u.entityName}}</a>
 					</li>
 
 

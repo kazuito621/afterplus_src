@@ -286,6 +286,17 @@ angular.module('arborPlusFilters', [])
             //console.info('initial ' + val + ' result ' + formatted_number);
             return formatted_number;
         }
-    });
+    })
+
+
+	.filter('escape', function(){
+		return function(val){
+			return window.encodeURIComponent(val);
+		}
+	})
+
+	 ;
+
+
 
 

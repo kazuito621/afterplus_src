@@ -1,7 +1,15 @@
 <div class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" style="margin-left: 20%; width: 50%">
         <div class="modal-content" style="width: 113%;">
+
+            <div class="modal-header" ng-show="title">
+                <button type="button" class="close" ng-click="onCancel()">&times;</button>
+                <h4 class="modal-title">Tree Details</h4>
+            </div>
+
             <div class="treeEditBox edit-tree-container">
+
+
                 <div class="row">
                     <div class="col-md-5">
                         <div class="image">
@@ -62,7 +70,7 @@
                                     </div>
                                     <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.building}}</div>
                                 </dd>
-                                <dt>Hardscape damage?</dt>
+                                <dt>Hardscape Damage?</dt>
                                 <dd>
                                     <div ng-if="tree.mode=='edit'" class="pullright centerText">
                                         <a href ng-if="auth.isAtleast('inventory')" e-ng-options="obj for obj in ynpOptions" editable-radiolist="tree.caDamage">{{tree.caDamage || "(not specified)"}}</a>
@@ -72,12 +80,18 @@
                                 </dd>
                             </dl>
                             <div class="clearfix"></div>
-                            <h3>Notes <span ng-if="tree.mode=='edit'">(click to edit)</span></h3>
+                            <h3>Notes &nbsp;<span ng-if="tree.mode=='edit'" style='font-weight:normal;color:#ccc;'>(click to edit)</span></h3>
                             <a href="#" editable-textarea="tree.notes" e-rows="3" e-cols="30">
                                 <pre>{{ tree.notes || '(no notes)' }}</pre>
                             </a>
-                            <br />
-                            <br />
+                        </div><!-- }}} div.content -->
+                    </div><!-- }}} col -->
+                </div><!-- }}} row -->
+
+					<!-- new row under image and tree details -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="content">
 
                             <div class='table-responsive'>
                                 <table class='table table-striped'>
@@ -91,18 +105,24 @@
                                         <thead>
                                     <tbody>
                                         <tr id="treeHistoryItem" ng-repeat="o in tree.history" class="hoverHotspot">
-                                            <td width='44%'>
+                                            <td>
                                                 <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.treatmentTypeID|treatmentTypeID2Name:this"></span>
                                                 <a ng-if="auth.isAtleast('inventory')" href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments' editable-select='o.treatmentTypeID'
                                                     onaftersave="updateTreatmentCode(o)">{{o.treatmentTypeID|treatmentTypeID2Name:this}}
                                                 </a>
                                             </td>
-                                            <td width='34%'>
+                                            <td>
                                                 <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.treatmentStatusCode|treatmentStatusName:this"></span>
                                                 <a ng-if="auth.isAtleast('inventory')" href e-ng-options='t.treatmentStatusCode as t.treatmentStatus for t in initData.treatmentStatuses' editable-select='o.treatmentStatusCode'>{{o.treatmentStatusCode|treatmentStatusName:this}}
                                                 </a>
                                             </td>
+														  <td> 
+																{{o.notes}}
+														  </td>
                                             <td>
+                                                <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.month"></span>
+                                                <a ng-if="auth.isAtleast('inventory')" href e-ng-options='y for y in monthOptions' editable-select='o.month'>{{o.month}}</a>
+																&nbsp;/&nbsp; 
                                                 <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.year"></span>
                                                 <a ng-if="auth.isAtleast('inventory')" href e-ng-options='y for y in yearOptions' editable-select='o.year'>{{o.year}}
                                                 </a>
@@ -116,38 +136,29 @@
                                             </td>
                                         </tr>
                                     </tbody>
-                                </table>
-                            </div>
+                                </table><!-- }}} rec table-->
+                            </div><!-- }}} rec div.table-responsive -->
+
 
                             <div ng-if="tree.mode!='rollover'" class=''>
-                                <button class='navButton' ng-click="save();">Save</button>
-                                &nbsp;
-               <!--     <button delete-with-confirm-button
-                        type="tree"
-                        item-id="{{tree.treeID}}"
-                        active-popover="activePopover"
-                        on-confirm-callback="deleteTree(tree.treeID)"
-                        class="navButton"
-                        bs-tooltip title="Delete" ng-if="auth.isAtleast('inventory')">
-                        Delete This Tree
-                    </button>-->
-                                &nbsp;<a ng-click="onCancel()" bs-tooltip class='hand' title="Hotkey: Press Escape to cancel">Cancel</a>
-                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  
                                 <a delete-with-confirm-button
                                     type="tree"
                                     item-id="{{tree.treeID}}"
                                     active-popover="activePopover"
-                                    on-confirm-callback="deleteTree(tree.treeID)"
-                                    class="navButton"
-                                    bs-tooltip title="Delete" ng-if="auth.isAtleast('inventory')" style="float: right; text-decoration: none;">
-                                    <span aria-hidden="true" class="glyphicon glyphicon-trash" style="width:40px;"></span>
-                                 
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+												class='hand'
+                                    on-confirm-callback="deleteTree(tree.treeID)" style='text-decoration:underline; color:#f33;'
+                                    bs-tooltip title="Delete" ng-if="auth.isAtleast('inventory')" >Delete Tree</a>
+
+
+                                <button type='button' class='btn btn-primary' style='float:right;' ng-click="save();">Save</button>
+                                <button type='button'  ng-click="onCancel()" bs-tooltip class='btn hand' title="Hotkey: Press Escape to Close/Cancel" style='float:right; margin-right:1em;'>Close</button>
+                            </div><!-- }}} if tree.mode not rollover -->
+
+                        </div><!-- }}} div.content -->
+                    </div><!-- }}} col -->
+                </div><!-- }}} row -->
+
+            </div><!-- }}} treeEditBox -->
+        </div><!-- }}} modal -->
     </div>
 </div>

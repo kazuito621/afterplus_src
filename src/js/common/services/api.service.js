@@ -163,11 +163,17 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         updateEstimateTime: function (reportID, tstamp) {
             return Rest.all('estimate/' + reportID).post(tstamp);
         },
+		  saveEntityInfo: function(data){
+				return Rest.all('entity').post(data);
+		  },
         setReportStatus: function (rptID, status) {
             return Rest.one('estimate', rptID).post(status);
         },
         sendReport: function (rpt) {
             return Rest.all('sendEstimate').post(rpt);
+        },
+        lookupTaxByZip: function(zip){
+				return Rest.one('tax/zip/'+zip).get();
         },
         sendEmailPortalLink: function (rpt) {
             return Rest.all('sendPortalLink').post(rpt);
@@ -198,6 +204,23 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             });
 
             return $q.all(promises);
+        },
+
+        //Notes
+		  // 'notetype' refers to note.type in db... ie. 'report_internal', 'site_internal'
+        getNotes:function(noteType, reportID){
+            return Rest.one('note/'+noteType+'/'+reportID).get();
+        },
+        addNote:function(noteType, reportID,text){
+            return Rest.all('note/'+noteType+'/'+reportID).post({note:text});
+        },
+        deleteNote:function(noteType, reportID,noteID){
+           // DELETE /note/report/123/456
+            return Rest.one('note/'+noteType+'/'+reportID+'/'+noteID).remove();
+        },
+        editNote:function(noteType, reportID,noteID,text){
+           // POST /note/report/123/456
+            return Rest.all('note/'+noteType+'/'+reportID+'/'+noteID).post({note:text});
         },
         // @param ids ARRAY of IDs to get
         getTreatmentDesc: function (ids) {
@@ -368,11 +391,11 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             return Rest.one('estimate', id).post('unscheduled');
 
         },
-        GetForemans: function (role) {
+        GetForemans: function () {
             // GET  /users?role=XXX
-            return Rest.all('user').getList({ role: 'staff' });
+            return Rest.all('user').getList({ role: 'staff,admin' });
         },
-        AssignJobToForeman: function (id, params) {
+        changeEstimateProperty: function (id, params) {
            // POST / estimate / 123
             return Rest.one('estimate', id).post(undefined,params);
         }

@@ -21,10 +21,8 @@
                     <input type="radio" value="sent"> Sent</label>
 				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
                     <input type="radio" value="approved"> Approved</label>
-						  <!--
-				<label ng-click="setStatusFilter('scheduled')" class="btn btn-default">
+				<label auth.hasPerm('calendar_view') ng-click="setStatusFilter('scheduled')" class="btn btn-default">
                     <input type="radio" value="scheduled"> Scheduled</label>
-						  -->
 				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
                     <input type="radio" value="completed"> Completed</label>
                 <label ng-click="setStatusFilter('invoiced')" class="btn btn-default">
@@ -87,7 +85,8 @@
 
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}' ng-style="e.delete==1?{'background-color':'#bbb'}:''">
+                <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}' 
+					 	ng-style="e.delete==1?{'background-color':'#bbb'}:''">
                     <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
                         <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)" ng-click="toggleEstimateSelection(e.reportID)">
                     </td>
@@ -121,7 +120,8 @@
 								bs-select onclick="return false;">
 						</button>
 						<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
-								 onclick="return false;">{{ e.status | statusText }}</button>
+								ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)" style='cursor:pointer !important'
+								>{{ e.status | statusText }}</button>
 					</td>
                     <td>
                         <!--<a href="#" editable-text="e[data.currentTstamp]"

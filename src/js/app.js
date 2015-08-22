@@ -114,12 +114,12 @@ app.config(['$routeProvider', '$locationProvider',
 				.setBaseUrl(cfg.apiBaseUrl())
 				//.setDefaultRequestParams({ apiKey: 'xx' })
 				.setRestangularFields({ selfLink: 'self.link'})		// todo ... explore this option
-				.setResponseExtractor(function(res, op) {
+				.addResponseInterceptor(function(res, op, what, url, response, deferred) {
 					if( !res ){
 						rs.$broadcast('alert', {msg:'Error talking to the server (2)', type:'danger'}); 
 						return {};
 					}
-					//if(res.request && res.fetchtime) dbg(res.request+' - '+res.fetchime+'s');
+			
 					if( typeof res == 'string' ) res={result:0, msg:res};
 					res.data=res.data||{}		//make sure data exists
 					var msg=res.msg||res.message||res.data.msg||res.data.message, type='success'
@@ -131,7 +131,8 @@ app.config(['$routeProvider', '$locationProvider',
 						type='danger';
 					}
 					if(msg) rs.$broadcast('alert', {msg:msg, type:type});
-                    storedData.timeStampValInRespone=res.timestamp;
+               storedData.timeStampValInRespone=res.timestamp;
+					if(res.result!=1) deferred.reject(res);
 					return res.data;
 				})
 				.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
@@ -144,8 +145,10 @@ app.config(['$routeProvider', '$locationProvider',
 						,httpConfig:httpConfig
 					}
 				})
-				.setErrorInterceptor(function(){
-					rs.$broadcast('alert', {msg:'Error talking to the server (3)', type:'danger'});
+				.setErrorInterceptor(function(res){
+					console.debug(res);
+					console.debug("^^^ error from setErrorInterceptor ");
+					rs.$broadcast('alert', {msg:'Error talking to the server (4)', type:'danger'});
 					dbg('REST error found in setErrorInterceptor');
 					//return true;	//todo -- what to do here? display error to user?
 					})
@@ -332,6 +335,40 @@ _.mixin({
         }
         return destination;
     }
+
+	,getObjBytes : function( object ){
+		 var objectList = [];
+		 var stack = [ object ];
+		 var bytes = 0;
+
+		 while ( stack.length ) {
+			  var value = stack.pop();
+
+			  if ( typeof value === 'boolean' ) {
+					bytes += 4;
+			  }
+			  else if ( typeof value === 'string' ) {
+					bytes += value.length * 2;
+			  }
+			  else if ( typeof value === 'number' ) {
+					bytes += 8;
+			  }
+			  else if
+			  (
+					typeof value === 'object'
+					&& objectList.indexOf( value ) === -1
+			  )
+			  {
+					objectList.push( value );
+
+					for( var i in value ) {
+						 stack.push( value[ i ] );
+					}
+			  }
+		 }
+		 return bytes;
+	}
+
 });
 		
 	
@@ -348,4 +385,5 @@ if (!String.prototype.format) {
     });
   };
 }
+
 

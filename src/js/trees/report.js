@@ -1,7 +1,7 @@
 var ReportCtrl = app.controller(
     'ReportCtrl',
-    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q','$rootScope',
-        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth, $modal, $q, $rootScope) {
+    ['$scope', 'Api', '$route', '$timeout', 'ReportService', '$location', '$anchorScroll', 'Auth','$modal','$q','$rootScope','$popover','$sce',
+        function ($scope, Api, $route, $timeout, ReportService, $location, $anchorScroll, Auth, $modal, $q, $rootScope,$popover,$sce) {
             'use strict';
 
             // local and scoped vars
@@ -18,10 +18,11 @@ var ReportCtrl = app.controller(
             s.treatmentDescriptions = [];
             s.siteOfReport={};
             var changedItems = [];
-            
-			s.afiliations=cfg.getEntity().afiliations || '';
-			if(s.afiliations)s.afiliations=s.afiliations.split(',');
-			s.estimate_links=cfg.getEntity().estimate_links;
+            var contactEmailsBackup=[];
+			s.affiliations=cfg.getEntity().affiliations || '';
+			if(s.affiliations)s.affiliations=s.affiliations.split(',');
+			var ef=$('<div/>').html(cfg.getEntity().estimate_footer).text();	//decode html
+			s.estimate_footer=$sce.trustAsHtml(ef);
 
             s.editorOptions = {
 //                filebrowserBrowseUrl: '/browser/browse.php',
@@ -283,6 +284,7 @@ var ReportCtrl = app.controller(
                         toName = tmp[0];
                     }
                 }
+                alreadySkipped=[];
                 s.type = 'sendReport';
                 s.modalTitle = "Email: " + s.report.name;
                 s.emailRpt.reportID = s.report.reportID;
@@ -312,6 +314,7 @@ var ReportCtrl = app.controller(
                         if (emList) {
                             s.emailRpt.contactEmail = emList.join(', ');
                             s.emailRpt.contactEmails = emList;
+                            contactEmailsBackup = angular.copy(emList);
                         }
                     });
 
@@ -331,6 +334,7 @@ var ReportCtrl = app.controller(
                         toName = tmp[0];
                     }
                 }
+                alreadySkipped=[];
                 s.type = 'sendPortalLink';
                 s.modalTitle = "Email Portal Link";
                 s.emailRpt.reportID = s.report.reportID;
@@ -360,52 +364,157 @@ var ReportCtrl = app.controller(
                         if (emList) {
                             s.emailRpt.contactEmail = emList.join(', ');
                             s.emailRpt.contactEmails = emList;
+                            contactEmailsBackup = angular.copy(emList);
                         }
                     });
                 Api.getEmailPortalLink().then(function(data){
                     s.emailRpt.message = data;
                 })
             }
+
+            var enterUserInfo = function(email){
+                var sm= s.$new();
+                sm.email=email;
+                if (sm.popover && typeof sm.popover.hide === 'function') {
+                    sm.popover.hide();
+                }
+                // create new one
+                var el = $('#emailField');
+                if(!sm.popover)
+                    sm.popover = $popover(el, {
+                        scope: sm,
+                        template: '/js/common/directives/enterUserInfo/enterUserInfo.tpl.html',
+                        animation: 'am-flip-x',
+                        placement: 'bottom'
+                    });
+                //show popover
+                sm.popover.$promise.then(function () {
+                    sm.popover.show();
+                });
+                sm.cancel = function(){
+                    alreadySkipped.push(email);
+                    if (sm.popover && typeof sm.popover.hide === 'function') {
+                        el.off();
+                        sm.popover.hide();
+                    }
+                };
+                sm.ok = function(){
+                    var idx = _.findObj(s.emailRpt.contactEmails, 'text', sm.email, true);
+                    s.emailRpt.contactEmails[idx].fname = this.fname;
+                    s.emailRpt.contactEmails[idx].lname = this.lname;
+                    s.emailRpt.contactEmails[idx].phone = this.phone;
+                    alreadySkipped.push(email);
+                    if (sm.popover && typeof sm.popover.hide === 'function') {
+                        el.off();
+                        sm.popover.hide();
+                    }
+                };
+            }
+
+            var alreadySkipped= [];
+
+            var isNewEmails = function(){
+                var deferred = $q.defer();
+                var newAdded = [];
+                console.log(contactEmailsBackup)
+                console.log(s.emailRpt.contactEmails)
+                _.each(s.emailRpt.contactEmails,function(item){
+                   var idx = contactEmailsBackup.indexOf(item.text);
+                    //var idx = _.findObj(contactEmailsBackup, 'text', item.text,true);
+                    if (idx == -1){
+                        var alreadySkippedIdx = alreadySkipped.indexOf(item.text);
+                        if(alreadySkippedIdx == -1) {
+                            newAdded.push(item.text);
+                        }
+                    }
+                });
+                if(newAdded.length==0){
+                    $timeout(function(){ deferred.resolve([false]); },100);
+                    return deferred.promise;
+                    return;
+                }
+                var apis=[];
+                _.each(newAdded,function(item){
+                    var deferred = $q.defer();
+                    apis.push(deferred.promise);
+                    Api.user.lookUp({email:item}).then(function (data) {
+                        if(data.length == 0){
+                            enterUserInfo(item);
+                            deferred.resolve(true);
+                        }
+                        else {
+                            deferred.resolve(false);
+                        }
+                    });
+                });
+
+                $q.all(apis)
+                    .then(function(values) {
+                        console.log(values);
+                        deferred.resolve(values);
+                    });
+
+                return deferred.promise;
+            }
             s.sendEmailPortalLink=function($hide, $show){
                 s.emailRpt.disableSendBtn = true;
                 s.emailRpt.sendBtnText = 'Sending...';
-
-                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
-
-                Api.sendEmailPortalLink(s.emailRpt)
-                    .then(function (msg) {
+                isNewEmails().then(function(data){
+                    if(data.indexOf(true)!=-1) {
                         s.emailRpt.disableSendBtn = false;
                         s.emailRpt.sendBtnText = 'Send';
-                        $hide();
+                        return;
+                    };
+                    _.each(s.emailRpt.contactEmails,function(item){
+                       item.email = item.text;
                     });
-                $timeout(function(){ updateEmailLogs(); },2000);
-                $timeout(function(){ updateEmailLogs(); },4000);
-                $timeout(function(){ updateEmailLogs(); },12000);
-                $timeout(function(){ updateEmailLogs(); },30000);
+                   // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                    s.emailRpt.contactEmail =angular.copy(s.emailRpt.contactEmails);
+                    s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
+//
+                    Api.sendEmailPortalLink(s.emailRpt)
+                        .then(function (msg) {
+                            s.emailRpt.disableSendBtn = false;
+                            s.emailRpt.sendBtnText = 'Send';
+                            $hide();
+                        });
+                    $timeout(function(){ updateEmailLogs(); },2000);
+                    $timeout(function(){ updateEmailLogs(); },4000);
+                    $timeout(function(){ updateEmailLogs(); },12000);
+                    $timeout(function(){ updateEmailLogs(); },30000);
+                });
+
             }
             s.sendReport = function (hideFn, showFn) {
                 s.emailRpt.disableSendBtn = true;
                 s.emailRpt.sendBtnText = 'Sending and verifying...';
 
-                console.log('s.emailRpt', s.emailRpt);
-
-                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
-
-                Api.sendReport(s.emailRpt)
-                    .then(function (msg) {
+                isNewEmails().then(function(data){
+                    if(data.indexOf(true)!=-1) {
                         s.emailRpt.disableSendBtn = false;
                         s.emailRpt.sendBtnText = 'Send';
-
-                        if (msg.links.length >= 1) {
-                            hideFn();
-                        }
+                        return;
+                    };
+                    _.each(s.emailRpt.contactEmails,function(item){
+                        item.email = item.text;
                     });
-				$timeout(function(){ updateEmailLogs(); },2000);
-				$timeout(function(){ updateEmailLogs(); },4000);
-				$timeout(function(){ updateEmailLogs(); },12000);
-				$timeout(function(){ updateEmailLogs(); },30000);
+                    // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+                    s.emailRpt.contactEmail =angular.copy(s.emailRpt.contactEmails);
+                    s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
+//
+                    Api.sendReport(s.emailRpt)
+                        .then(function (msg) {
+                            s.emailRpt.disableSendBtn = false;
+                            s.emailRpt.sendBtnText = 'Send';
+                            if (msg.msg.trim().toLowerCase() == ('emails sent successfully')) {
+                                hideFn();
+                            }
+                        });
+                    $timeout(function(){ updateEmailLogs(); },2000);
+                    $timeout(function(){ updateEmailLogs(); },4000);
+                    $timeout(function(){ updateEmailLogs(); },12000);
+                    $timeout(function(){ updateEmailLogs(); },30000);
+                });
             };
 
 			var updateEmailLogs = function(){
@@ -509,9 +618,20 @@ var ReportCtrl = app.controller(
             };
 
             s.onItemRollOut = function (marker) {
+				console.debug(s.stayOnMarker );
+					if(stayOnMarker && marker.id == stayOnMarker.id) return;
                 animateMarker(marker, null);
                 hoveredItem.animationCompleted = false;
             };
+
+				var stayOnMarker=null;
+				s.onLocateTree = function(marker, treeID){
+					if(stayOnMarker) animateMarker(stayOnMarker, null);
+					stayOnMarker=marker;	
+                $(window).scrollTop(150);
+                $rootScope.$broadcast('highlightTreeResult', { treeID: treeID });
+				}
+
             s.reloadReport=function(){
                 RS.loadReport(s.report.reportID);
             };
@@ -549,6 +669,19 @@ var ReportCtrl = app.controller(
                     s.report = RS.getBlankReport();
                 }
             }
+
+				s.lookupTaxByZip = function(){
+					if(!s.report.zip) return;
+                Api.lookupTaxByZip(s.report.zip)
+                    .then(function (res) {
+						  		if(res && res.tax>0 && res.tax<100){
+									s.report.tax_rate=res.tax;
+								}else{
+                				s.setAlert('No taxes found for zipcode: '+s.report.zip,{type:'danger'});
+								}
+                    })
+				}
+
 
             // add New TreatmentCode
             s.addNewTreatment = function (treatments) {

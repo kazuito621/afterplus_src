@@ -1,13 +1,15 @@
 'use strict';
 
 var SigninCtrl = app.controller('SigninCtrl', 
-['$scope', '$timeout', '$route','md5', '$location', 'Auth', 
-function ($scope, $timeout, $route, md5, $location, Auth ){
+['$scope', '$timeout', '$route','md5', '$location', 'Auth', 'storage',
+function ($scope, $timeout, $route, md5, $location, Auth, storage ){
 
 	var s = window.scs = $scope
 		,url
 		s.login={};
-		if(s.localStore.lastEmailUsed) s.login.email=s.localStore.lastEmailUsed;
+
+	var lastEm = storage.get('lastEmailUsed');
+	if(lastEm) s.login.email=lastEm;
 
 	var q=$location.search()
 
@@ -27,30 +29,47 @@ function ($scope, $timeout, $route, md5, $location, Auth ){
 
 
 	s.signIn = function(){
-		s.login.btnDisabled=true;
 		if(!s.login.email || !s.login.pswd) return;
-		s.localStore.lastEmailUsed=s.login.email;
+
+		// store last emails used
+		storage.set('lastEmailUsed', s.login.email);
+
 		Auth.signIn(s.login.email, s.login.pswd)
 			.then(function(result){
-				s.login.btnDisabled=false;
-				if(q.redirect){ 
-					var url=cfg.hostAndPort() + '/#' + q.redirect;
-					document.location=url;
-					// in the past before we changed the old div/hide method back to 
-					// traditional angular routeProvider, this reload was here because
-					// the map would not load when the div was hidden... so when we signed in, the map was blank
-					// but i think this is not necessary now
-					// document.location.reload();
-				}
-				else s.goTrees();
-			}, function (err){ 	//if theres an error. is this needed? todo - use reject/resolve in more places
-									//that could possibly throw errors
-				s.login.btnDisabled=false;
-			})
+				s.afterLogin();
+			});
 	}
 
 	s.forgotPassword = function(){
 		window.location=cfg.host()+'/go/password?e='+s.login.email;
+	}
+
+
+	s.afterLogin = function(){
+		if(q.redirect){ 
+			var url;
+			if(q.redirect.match(/^http/)){
+				url=q.redirect;
+			}else if(q.redirect.match(/^\/go/)){
+				url=cfg.host() + q.redirect;
+				var t=Auth.data().token;
+				if(t && url.match(/\?/)){
+					url+='&token='+t;
+				}else if(t){
+					url+='?token='+t;
+				}
+			}else{
+				url=cfg.hostAndPort() + '/#' + q.redirect;
+			}
+
+			document.location=url;
+			// in the past before we changed the old div/hide method back to 
+			// traditional angular routeProvider, this reload was here because
+			// the map would not load when the div was hidden... so when we signed in, the map was blank
+			// but i think this is not necessary now
+			// document.location.reload();
+		}
+		else s.goTrees();
 	}
 
 	s.goTrees=function(){

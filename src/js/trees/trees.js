@@ -362,6 +362,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 1);
 
 
+				s.$on('highlightTreeResult', function(e, data){
+					highlightResultRow(data.treeID);
+				});
 
             var highlightResultRow = function (treeID) {
                 if (s.data.mode() !== 'trees') {
@@ -1269,14 +1272,11 @@ console.debug(" show mapp trees -------- ");
                     });
                 }
 
-                if( gMapID == 'treeMap' && Auth.isAtleast('inventory') ) 		// Auth.isAtleast('inventory') && 
-                {
+					 // if staff user, then add events for moving and clicking on a tree
+                if (gMapID == 'treeMap' && Auth.isAtleast('inventory')){
                     if (!s.isBindRightClick) {
                         google.maps.event.addListener(gMap, 'click', function (event) {
-
-                            if (!s.editMode)
-                                return;
-
+                            if (!s.editMode) return;
                             if (s.MarkerAdded) {
                                 s.cancelMarker(s.treeMarkers.length - 1, false);
                                 s.MarkerAdded = false;
@@ -1288,12 +1288,9 @@ console.debug(" show mapp trees -------- ");
                             });
 
                             s.confirmLocation = function (markerIndex) {
-
                                 s.setAlert('Saving tree', { busy: true, time: "false" });
                                 var marker = s.treeMarkers[markerIndex];
-
                                 var position = marker.position;
-
                                 var tree = {
                                     siteID: s.selected.siteID,
                                     longitude: position.lng(),
@@ -1301,7 +1298,6 @@ console.debug(" show mapp trees -------- ");
                                     lat: position.lat(),
                                     lng: position.lng()
                                 };
-
                                 Api.saveTree(tree).then(function (response) {
                                     s.hideAllAlert();
 
@@ -1315,20 +1311,16 @@ console.debug(" show mapp trees -------- ");
                                     lastInsertedMarker.setIcon(setIconColor(response));
                                     markers_singleSite.push(lastInsertedMarker);
                                     s.trees.push(response);
+                                    if (infowindow)  infowindow.close();
 
-                                    if (infowindow) {
-                                        infowindow.close();
-                                    }
                                     var timeOut = setTimeout(function () {
                                         var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
                                         if (treeEl !== undefined && treeEl.length > 0)
                                             treeEl.click();
-
                                         clearTimeout(timeOut);
                                     }, 1000);
 
                                     google.maps.event.clearListeners(marker, 'click');
-
                                     google.maps.event.addListener(marker, 'click', function (event) {
                                         if (!infowindow)
                                             infowindow = new google.maps.InfoWindow();
@@ -1344,7 +1336,6 @@ console.debug(" show mapp trees -------- ");
                                         });
                                     });
                                     s.MarkerAdded = false;
-
                                 });
                             }
 
@@ -1364,13 +1355,13 @@ console.debug(" show mapp trees -------- ");
                             var confirmclick = "angular.element(this).scope().confirmLocation({0})".format(s.treeMarkers.length - 1);
 
                             var markertemplate = "<div style=\"height:35px;width:210px;\">" +
-											  "<div class=\"\">" +
-												  "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
-															 .format(confirmclick) +
-												  "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
-												  "Cancel" +
-												"</button>" +
-											 "</div></div>";
+										  "<div class=\"\">" +
+											  "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
+														 .format(confirmclick) +
+											  "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
+											  "Cancel" +
+											"</button>" +
+										 "</div></div>";
 
                             google.maps.event.addListener(marker, 'click', function (event) {
                                 if (!infowindow)
@@ -1398,8 +1389,8 @@ console.debug(" show mapp trees -------- ");
 					 		// this is used because in some instances, the report.groupedItems[] array is passed as the treeSet
 							// and not an actual treeSet. In which case, the "tree" object inside it, is the actual tree.
 					 		if(!itm.commonName && itm.tree) itm=itm.tree;		
-                    if (!itm || itm.hide) return;
 
+                    if (!itm || !itm.treeID || itm.hide) return;
                     if (itm.commonName == null || itm.commonName == 'null' || !itm.commonName) itm.commonName = ' ';
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
                         itm.info = getTreeTemplate(itm);
@@ -1465,7 +1456,7 @@ console.debug(" show mapp trees -------- ");
             s.toggleCheckedTrees = function (opt) {
                 if (opt instanceof Array) {							// option 4
                     _.remove(s.selectedTrees, function (t) {
-                        return (opt.indexOf(t.treeID) >= 0);
+                        return (opt.indexOf(t) >= 0);
                     });
                 } else {
                     _.trunc(s.selectedTrees);

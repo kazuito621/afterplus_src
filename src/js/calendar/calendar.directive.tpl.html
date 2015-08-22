@@ -1,0 +1,201 @@
+﻿<style type="text/css">
+	
+  		.fc-time { 
+			display:none;
+		}
+    .search {
+        background: none repeat scroll 0 0 #eee;
+        border: 1px solid #ccc;
+        float: left;
+        padding: 0 10px;
+        text-align: left;
+        width: 150px;
+        position: absolute;
+    }
+
+    #searchJob {
+        width: 129px;
+        margin-left: 0%;
+        margin-top: 2%;
+        margin-bottom: 2%;
+    }
+
+    .position {
+        position: absolute;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: inline;
+    }
+
+	 /* Override some calendar options */
+	 .fc-agenda-view .fc-day-grid .fc-row {
+	 		min-height: 35em; /* all-day section will never get shorter than this */
+		}
+	/* hide time in week view for now 
+	 .fc-time-grid-container {
+			height:1px !important;
+	 }*/
+</style>
+
+<div class="row">
+	<div class="col-md-3">
+		<div style='margin:0 0 1em; text-align:left;'>
+			<select id="foreman_filter" class='' 
+					  ng-model="filter_job_userID"
+					  ng-change="filterByJobUserID()">
+				 <option class="option" ng-repeat="u in jobUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
+			</select>
+		</div>
+		<div id='external-events' style="">
+			 <h4 style="margin:0 0 .5em; 0">Approved Jobs</h4>
+			 <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" placeholder="Search"/>
+
+			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
+			 	ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
+				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
+				 	{{singleJob.title}}
+			 </div>
+			 <p>
+				  <input type='checkbox' id='drop-remove' checked ng-show="false" />
+				  <!--  <label for='drop-remove'>remove after drop</label>-->
+			 </p>
+		</div>
+	</div><!-- }} col -->
+	<div class='col-md-9'>
+		<div id='calendar'></div>
+
+		<!-- color key -->
+		<div style='clear:both;padding:2em;'>
+			<span class='small-tag approved'> APPROVED </span> &nbsp; 
+			<span class='small-tag scheduled'> SCHED </span> &nbsp; 
+			<span class='small-tag completed'> COMPLETED </span> &nbsp; 
+			<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
+			<span class='small-tag paid'> PAID </span>
+		</div>
+		<div>
+			Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>
+		</div>
+	</div><!-- }} col -->
+</div><!-- }} row -->
+<div style='margin:1em;'> &nbsp; </div>
+
+
+<!--(Start) Modal Pop Up To Show Info about Job-->
+<div id="fullCalModal" class="modal fade" tabindex='-1'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <h4 id="modalTitle" class="modal-title"></h4>
+                <h4 id="modalSiteID" class="modal-site" ng-show="true" ng-model="siteID"></h4>
+            </div>
+            <div id="modalBody" class="modal-body">
+                  <div class="row">
+                    <div class="col-md-6" style='text-align:left; line-height:1.4em;'>
+						  		<b style='font-size:1.4em;'>{{ siteName }}</b><BR>
+								{{ street }}<BR>
+								{{ city }}, {{ state }}<BR>
+								{{ zip }} 
+								<span style='color:#999;'>
+									(<a target=_new href='http://maps.google.com/?q={{street}}, {{city}}, {{state}} {{zip}}'>map</a>)
+								</span>
+								<BR><BR>
+
+								<b style='font-size:1.2em;'>{{ contact }}</b><BR>
+								<a href='{{email}}'>{{email}}</a><BR>
+								{{ phone }}
+
+                    </div>
+                    <div class="col-md-6" style='text-align:left; line-height:1.3em;'>
+						  
+
+                    <a href ng-if="auth.isAtleast('inventory')" editable-select='tree.speciesID' onaftersave="updateTreeName()"
+                       e-ng-options='obj.speciesID as obj.bothNames for obj in initData.filters.species'>
+                        {{ tree.commonName || '(not specified)' }}
+                    </a>
+
+						  		Foreman: <a href="#" editable-select="job_user.userID"  
+										e-ng-options="g.userID as g.text for g in groups" 
+										onaftersave="savejobtoforeman()">{{ job_user.name || 'Select a Foreman' }}</a>
+										<BR><BR>
+
+								Sales: <a href="#" editable-select="sales_user.userID"  
+										e-ng-options="g.userID as g.text for g in groups" 
+										onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
+										<BR><BR>
+										<BR>
+								<span style='font-size:2.2em;'>${{price|formatPrice}}</span><BR>
+
+                    </div>
+                </div>
+                <BR>
+				<div style='background-color:#F7F4E1;padding:1em;'>
+                <div class="row">
+                    Start: <input class="" ng-model="job_start_unix" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                           data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
+									data-placement='top'> &nbsp; 
+                    End: <input class="" ng-model="job_end_unix" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                           data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
+									data-placement='top'> &nbsp;
+                    Days: <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
+                           type="number" min="1" style="width: 3.5em;">
+                    <button type="button" class="btn btn-primary" ng-show="valueChanged" ng-click="saveJobDates()">Save</button>
+					 </div>
+                <div class="row" ng-show="showWeekendWork">
+                	<BR>
+                	<label style="font-size:1.1em;">Weekend Work?</label> 
+							<input type=radio value=0 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> No  &nbsp; 
+							<input type=radio value=1 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sat &nbsp;
+							<input type=radio value=2 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sun &nbsp;
+							<input type=radio value=3 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Both
+				</div>
+                <div>
+
+                </div>
+            </div> <!-- }} body -->
+            <side-note report-id="{{reportID}}" note-type='report_internal'></side-note>
+            <div class="modal-footer">
+
+               <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
+
+                <input type="button" class="btn btn-danger" 
+					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  " 
+						ng-click="UnscheduledJob()" value="Unschedule Job"></input> 
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="valueChanged = false">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--(End) Modal Up To Show Info about Job-->
+
+<!---(Start) Modal Pop Up  To Show List of  Foreman----->
+<div id="jobassignforemanpopup" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <h4 id="assignjobtitle" class="modal-title"></h4>
+
+            </div>
+            <div id="assignjobbody" class="modal-body">
+               <!-- <a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.userID as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
+                </a>-->
+                <!--<div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>-->
+              
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <input type="button" class="btn btn-success" value="SaveJobToForeman" ng-click="savejobtoforeman(user.groupName)"></input>
+            </div>
+        </div>
+    </div>
+</div>
+<!---(End) Modal Pop Up  To Show List of  Foreman----->
+

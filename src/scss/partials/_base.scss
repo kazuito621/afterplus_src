@@ -59,11 +59,15 @@ $screen-md-max:              ($screen-lg-min - 1) !default;
 
 $sent: #0074D9;
 $draft: #cccccc;
-$completed: #0074D9;
+$completed: #9e3eff;
 $needs_approval: #FF4136;
-$paid: #FF4136;
+$paid: #000;
+$paid_bg: #fff;
 $approved: #2ECC40;
-$billed: #FF851B;
+$billed: #ff4136;
+$scheduled: #ffa12d;
+$invoiced: #ff4136;
+
 
 @mixin font-g($font-size , $font-weight , $color , $line-height) 
 {

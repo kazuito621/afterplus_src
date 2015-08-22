@@ -70,7 +70,6 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 
     var init = function (cb) {
 		s.setAlert("Loading...", {time:8});
-
         var search = $location.search();
         cb = cb || angular.noop;
         Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
@@ -382,6 +381,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		}, 500);
 	});
 
+	s.onCustClickStatus = function(reportID, hashLink, status){
+		return $location.path('/estimate/'+hashLink);
+	}
 
 	init();
 	s.$on('nav', function (e, data) {

@@ -7,14 +7,16 @@ cd `dirname $0`
 GRUNT=`which grunt`
 PID=/tmp/.arbor.grunt.pid
 
+echo $0;
 case "$1" in
          ""|start)
-         echo "Starting grunt..."
          if [ -f $PID ]
                 then
-                echo "Sorry, but grunt is already running here... ($PID)" 
-                exit 1
+                echo "Grunt is running. Will restart. (pid:$PID)" 
+					 ME=`basename $0`
+					 sh $ME stop;
          fi
+         echo "Starting grunt..."
          nohup $GRUNT serve > /dev/null 2>/dev/null &
          echo $! > $PID
          echo "Done."

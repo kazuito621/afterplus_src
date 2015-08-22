@@ -143,8 +143,11 @@ app.directive('bulkTreeEditor',
                     Api.modifyBulkEditInfo(param,post).then(function(data){
                         if(scope.onApplyChange != undefined) // mode = report
                             scope.onApplyChange();
+
+                    		scope.selectionChanged();
                     });
                 }
+
                 var createParam=function(){
                     var param={};
 
@@ -183,6 +186,7 @@ app.directive('bulkTreeEditor',
                     scope.selected.isDbhSelected = false;
                     scope.selected.isSetPrice = false
                     scope.selected.IsChangeToTreatment = false
+						  scope.selected.removeFromRecommendation=false;
                     scope.singleTreatmentSelected = false;
                     scope.selectionChanged();
                 }
@@ -229,20 +233,24 @@ app.directive('bulkTreeEditor',
                         scope.selected.isAllSelected = false;
                     }
 
-					
                     if(scope.selected.isTreatmentSelected){
                         scope.singleTreatmentSelected=true;
                     }else{
                         scope.selected.isSetPrice = false
                         scope.selected.IsChangeToTreatment = false
+								scope.selected.removeFromRecommendation=false;
                         scope.singleTreatmentSelected=false;
                     }
                     var param=createParam();
                     Api.getBulkEditInfo(param).then(function(data){
                         scope.currentInfo.treeCount=data.treeCount;
                         scope.currentInfo.treatmentCount=data.treatmentCount;
+                        scope.currentInfo.treatmentTypeCount=data.treatmentTypeCount;
                         scope.currentInfo.price=data.price;
                     });
+
+						  if(anyCategorySelected()==false && scope.selected.isAllSelected==false)
+						  	scope.selected.isAllSelected=true;
                 }
 
                 scope.closeModal = function () {

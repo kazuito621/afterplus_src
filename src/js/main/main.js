@@ -14,7 +14,6 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     
     var dynamicTitle = cfg.getEntity();
     $("html").find("title").text(dynamicTitle.name);
-  
 
     storage.bind(s, 'localStore', { defaultValue: { token: false } });
    
@@ -43,6 +42,15 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     // why? because $broadcast() only goes DOWN to child scopes, $emit() goes UP,
     // this way you dont have to keep track of where everything is in relation to everything else... 
     s.sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); }
+
+
+	// if chrome ask for more storage space
+	if( navigator && navigator.webkitPersistentStorage && navigator.webkitPersistentStorage.requestQuota ){
+		var b = 1024*1024*50;
+		navigator.webkitPersistentStorage.requestQuota(b, function(a,b){
+			console.debug("Bytes allowed for local storage: "+a);
+		});
+	}
 
 
     var lastRenderedTplID;
@@ -121,7 +129,21 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
 
 
-
+	// check if changelog is new... and show NEW FEATURES star in top right of header
+	var clb=storage.get('changelog_bytes');
+	s.hasNewFeatures=false;
+	var changelog_size=false;
+  	Rest.one('changelog_size').get().then(function(r){
+		if(r.size && r.size>1 && r.size!=clb){
+			changelog_size=r.size;
+			s.hasNewFeatures=true;
+		}
+	});
+	if(!clb) s.hasNewFeatures=true;
+	s.onClickWhatsNew=function(){
+		storage.set('changelog_bytes', changelog_size);
+		s.hasNewFeatures=false;
+	}
 
 
 
@@ -312,7 +334,18 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
         }
     }
 
-
+	// lookup related users ... after signin
+	s.relatedUsers=false;
+	var chkRelatedUsers = function(){
+		if(!s.auth.isAtleast('inventory')) return;
+		Rest.all('user/related').getList().then(function(r){
+			if(r && r.length){
+				s.relatedUsers=r;
+			}
+		});
+	}
+ 	s.$on("onSignin", chkRelatedUsers);
+	$timeout(chkRelatedUsers, 2000);
 
 
 }]); 		// 	}}} MainCtrl

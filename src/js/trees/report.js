@@ -238,13 +238,14 @@ var ReportCtrl = app.controller(
              });
              */
 
-
             s.newReport = function () {
                 RS.getBlankReport();
-
-				// clear out the query string
-				if( $location.search().reportID ) $location.search('reportID','');
-				if( $location.search().siteID ) $location.search('siteID','');
+                setTimeout(function(){
+                    RS.reportBackup='new';
+                },200)
+			    // clear out the query string
+			    if( $location.search().reportID ) $location.search('reportID','');
+			    if( $location.search().siteID ) $location.search('siteID','');
             };
 
             s.saveReport = function (cb1,cb2) {

@@ -94,14 +94,6 @@ app.directive('addEditUserModal',
                     modal.hide();
                 };
 
-                //scope.clientSelected = function (user) {
-                //    scope.selectedClient=user;
-//
-                //};
-                //scope.siteSelect = function (user) {
-                //    scope.selectedProperty=user;
-//
-                //};
                 scope.SaveUser = function (event) {
                     var user={};
                     if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
@@ -127,14 +119,7 @@ app.directive('addEditUserModal',
                     else user.disabled='0';
                     if(user.role!='customer' && scope.newContact.showStatInDash) user.showStatInDash='1';
                     else user.showStatInDash='0';
-                   /*
-                    POST /site/multi/users
-                    JSON BODY: {email:'bob@hotmail.com', fname:'bob', lname:'jones', role:'customer',
-                    siteIDs:[123, 876, 432],
-                    clientIDs:[456]}
-                    or (for existing users)
-                    JSON BODY: {userID:123, role:'sales', siteIDs:[123, 876, 432]}
-                    */
+
                     if(scope.user){
                         Api.user.update(user,scope.user.userID).then(function (data) {
                             scope.user.email=user.email;
@@ -154,8 +139,6 @@ app.directive('addEditUserModal',
                 };//
 
                 scope.addClientsProperty = function (event) {
-                   //event.preventDefault();
-                   //event.stopPropagation();
                     if(this.selectedClient.clientID==undefined) return;
                     for(var i=0;i<this.addedClients.length;i++){
                         if(this.addedClients[i].client.clientID==this.selectedClient.clientID){
@@ -166,7 +149,6 @@ app.directive('addEditUserModal',
                         client:this.selectedClient
                     });
                     this.selectedClient={};
-                   // $('#newclientsProp').val('');
                 };
 
                 var getSiteNames = function(siteIDs){
@@ -183,8 +165,6 @@ app.directive('addEditUserModal',
                     _.each(clientIDs,function(id){
                         scope.addedClients.push({
                             client: _.findObj(scope.clients,'clientID',id)
-                            //siteNames:siteNames,
-                            //userID:id
                         });
 
                     });
@@ -214,13 +194,13 @@ app.directive('addEditUserModal',
                     }
                 };
 
-					 var addToSiteList = function(siteID, site){
-							if(!_.findObj(scope.addedSites, 'siteID', siteID)){
-								if(!site) site = _.findObj(scope.sites,'siteID',siteID);
-								if(site)
-									scope.addedSites.push(site);
-							}
-					 }
+				var addToSiteList = function(siteID, site){
+						if(!_.findObj(scope.addedSites, 'siteID', siteID)){
+							if(!site) site = _.findObj(scope.sites,'siteID',siteID);
+							if(site)
+								scope.addedSites.push(site);
+						}
+				}
                 scope.removeFromAddedClientList = function (client) {
                     for(var i=0;i<scope.addedClients.length;i++){
                         if(scope.addedClients[i].clientID==client.clientID){

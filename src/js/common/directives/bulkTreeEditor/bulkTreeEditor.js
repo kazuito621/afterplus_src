@@ -253,6 +253,29 @@ app.directive('bulkTreeEditor',
                     modal.hide();
                 }
 
+                scope.startBulkEdit = function(){
+                    if (angular.isDefined(attrs.reportId)) {
+                        scope.reportID = scope.$eval(attrs.reportId);
+                    }
+                    if (angular.isDefined(attrs.siteId)) {
+                        scope.siteID = scope.$eval(attrs.siteId);
+                    }
+                    if (angular.isDefined(attrs.treatments)) {
+                        scope.allTreatments = scope.$eval(attrs.treatments);
+                    }
+                    if (angular.isDefined(attrs.savedReportCheck)) {
+                        scope.savedReportCheck = scope.$eval(attrs.savedReportCheck);
+                    }
+                    if (angular.isDefined(attrs.onApplyChange)) {
+                        scope.onApplyChange = scope.$eval(attrs.onApplyChange);
+                    }
+
+                    if( scope.savedReportCheck==true){
+                        return $modal({ scope: scope, template: 'js/common/directives/templates/OpenEditConfirmation.tpl.html', show: true });
+                    }
+                    else scope.openModal();
+                }
+
                 var hideOnEscape = function(e){
                     if(e.keyCode === 27) scope.hide();
                 };
@@ -260,27 +283,7 @@ app.directive('bulkTreeEditor',
                 var init = function () {
                     el.on('click', function (event) {
                         event.preventDefault();
-                        if (angular.isDefined(attrs.reportId)) {
-                            scope.reportID = scope.$eval(attrs.reportId);
-                        }
-                        if (angular.isDefined(attrs.siteId)) {
-                            scope.siteID = scope.$eval(attrs.siteId);
-                        }
-                        if (angular.isDefined(attrs.treatments)) {
-                            scope.allTreatments = scope.$eval(attrs.treatments);
-                        }
-                        if (angular.isDefined(attrs.savedReportCheck)) {
-                            scope.savedReportCheck = scope.$eval(attrs.savedReportCheck);
-                        }
-                        if (angular.isDefined(attrs.onApplyChange)) {
-                            scope.onApplyChange = scope.$eval(attrs.onApplyChange);
-                        }
-
-                        if( scope.savedReportCheck==true){
-                            return $modal({ scope: scope, template: 'js/common/directives/templates/OpenEditConfirmation.tpl.html', show: true });
-                        }
-
-                        scope.openModal();
+                        scope.startBulkEdit();
                     });
                 };
                 init();

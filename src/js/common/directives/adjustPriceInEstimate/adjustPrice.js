@@ -129,7 +129,11 @@ app.directive('adjustPrice',
 
                     $(el).click(function () {
                         scope.adjustPercentage=0;
-                        scope.newTotal=angular.copy(scope.$parent.report.total.items);
+                        if(scope.$parent.report.total) //
+                            scope.newTotal=angular.copy(scope.$parent.report.total.items);
+                        else { // When the report is new and empty, no total prop exists in the report.
+                            scope.newTotal = 0;
+                        }
                         if (scope.popover && typeof scope.popover.hide === 'function') {
                             scope.popover.hide();
                         }

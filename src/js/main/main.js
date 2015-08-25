@@ -343,6 +343,10 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 				s.relatedUsers=r;
 			}
 		});
+
+		var d=s.auth.data();
+		var es=(d && d.entity && d.entity.shortname) ? d.entity.shortname : '';
+		window.name="arborplus_" + es;
 	}
  	s.$on("onSignin", chkRelatedUsers);
 	$timeout(chkRelatedUsers, 2000);

@@ -500,12 +500,12 @@ var ReportCtrl = app.controller(
                     // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
                     s.emailRpt.contactEmail =angular.copy(s.emailRpt.contactEmails);
                     s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
-//
+
                     Api.sendReport(s.emailRpt)
-                        .then(function (msg) {
+                        .then(function (res) {
                             s.emailRpt.disableSendBtn = false;
                             s.emailRpt.sendBtnText = 'Send';
-                            if (msg.msg.trim().toLowerCase() == ('emails sent successfully')) {
+                            if (res.msg.trim().toLowerCase().match(/success/)){
                                 hideFn();
                             }
                         });

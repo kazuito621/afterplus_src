@@ -40,7 +40,7 @@ app.directive('addEditMiscService',
 
                 scope.openModal=function(){
                     if(!modal)
-                        modal = $modal({scope: scope, template: '/js/common/directives/adjustPriceInEstimate/addEditMiscService.html', show: false});
+                        modal = $modal({scope: scope, template: '/js/common/directives/adjustPriceInEstimate/addEditMiscService.tpl.html', show: false});
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key

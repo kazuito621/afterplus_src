@@ -109,13 +109,30 @@ app.service('Auth',
                 Api.signOut(this);
             };
 
+				this.getDefaultUserRoles = function(){
+					return {
+						admin:{id:50},
+						api:{id:50},
+						sales:{id:30},
+						inventory:{id:20},
+						public:{id:1},
+						quickbooks:{id:40},
+						qbestimate:{id:20},
+						staff:{id:20},
+						superadmin:{id:100},
+						customer:{id:10}
+					};
+				}
+
 				// defaultRoleLevel - if you are checking for what a reuired role is, you should default to
 				// a high number like 100... so that if it doesnt exists, a user doesnt accidentally get access to something
             this.role2id = function (role, defaultRoleLevel) {
-					if(!defaultRoleLevel) defaultRoleLevel=0;
-                if( !this.userRoles[role] ) return defaultRoleLevel;
+					var userRoles = (this.userRoles && this.userRoles.admin) ? this.userRoles : this.getDefaultUserRoles();
 
-                var n = this.userRoles[role].id;
+					if(!defaultRoleLevel) defaultRoleLevel=0;
+                if( !userRoles[role] ) return defaultRoleLevel;
+
+                var n = userRoles[role].id;
                 if( n ) return n;
 
 					if( role=='staff' ) return this.role2id('inventory');

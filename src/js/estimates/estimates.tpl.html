@@ -138,7 +138,7 @@
                         </span>
                     </td>
                     <td>
-                        <a ng-if="auth.isAtleast('inventory') && e.status=='draft' && e.delete!=1"
+                        <a ng-if="auth.isAtleast('inventory') && (e.status=='draft' || e.status=='sent') && e.delete!=1"
                            delete-with-confirm-button
                            type="estimate"
                            item-id="{{e.reportID}}"

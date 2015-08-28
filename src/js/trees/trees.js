@@ -1209,10 +1209,15 @@ var TreesCtrl = app.controller('TreesCtrl',
                     treeEl.click();
             }
 
+				/**
+				 * Create HTML code that goes into the Google Maps InfoWindow 
+				 */
             var getTreeTemplate = function (itm) {
                 var ratingD = (itm.ratingID > 0 && itm.ratingID < 6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
+					 
+					 var imgTxt = (itm.images && itm.images.length>1) ? '<div>('+itm.images.length + ' images)</div>' : '';
                 var o = '<div class="mapWindowContainer">'
-                     + '<div class="mwcImgCt"><img class="mwcImg" src="{0}"></div>'.format(itm.imgSm2)
+                     + '<div class="mwcImgCt"><img class="mwcImg" src="{0}">{1}</div>'.format(itm.imgSm2, imgTxt)
                      + '<div class="mwcBody">'
                      + '<span style="font-size:1.1em; font-weight:bold">{0}</span><BR>'.format(itm.commonName)
                      + '{0}<BR>TreeID:{1}<BR>Size:{2}<BR>'.format(itm.botanicalName,

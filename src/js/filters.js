@@ -286,6 +286,16 @@ angular.module('arborPlusFilters', [])
             //console.info('initial ' + val + ' result ' + formatted_number);
             return formatted_number;
         }
-    });
+    })
 
+	.filter('reverse', function() {
+	  return function(items) {
+	      return (items||[]).slice().reverse();
+	  };
+	  })
 
+	  .filter('slice', function() {
+	    return function(arr, start, end) {
+		     return (arr || []).slice(start, end);
+			    };
+	});

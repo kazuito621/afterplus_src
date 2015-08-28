@@ -2,7 +2,13 @@
 <div class="treeEditBox edit-tree-container">
     <div class="row">
         <div class="col-md-6">
-            <div class="image"><a target=_new href='{{tree.imgLrg}}'><img ng-src="{{tree.imgMed + tree_cachebuster}}"/></a></div>
+            <div class="image"><img ng-src="{{tree.imgMed + tree_cachebuster}}"/></div>
+
+				<div ng-if="tree.images && tree.images.length>1" ng-repeat="itm in tree.images | slice : 0 : -1 | reverse ">
+					<img src='{{itm.imgSm2}}' 
+						style='width:auto !important; display: inline; padding: 5px; border: 1px solid #ccc;'>
+				</div>
+
         </div>
         <div class="col-md-6">
             <div class="content">
@@ -87,7 +93,7 @@
                         </tr>
                         <thead>
                         <tbody>
-                        <tr id="treeHistoryItem" ng-repeat="o in tree.history" class="hoverHotspot">
+                        <tr id="treeHistoryItem" ng-repeat="o in tree.history track by o.treeHistoryID" class="hoverHotspot">
                             <td width='44%'>
                                 <span ng-if="!auth.isAtleast('inventory')" ng-bind="o.treatmentTypeID|treatmentTypeID2Name:this"></span>
                                 <a ng-if="auth.isAtleast('inventory')" href e-ng-options='t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments' editable-select='o.treatmentTypeID'

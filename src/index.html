@@ -19,10 +19,11 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- fontawesome must stay out of the build block, or the icons get messed up -->
     <link rel="stylesheet" href="bower_components/font-awesome-bower/css/font-awesome.css" />
-    
+
+	 <!-- HACK! for some reason grunt build removes bootstrap.css in bower clause! so i had to add it manually -->
     <!-- build:css css/vendor.css -->
-    <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css" />
     <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css" />
     <link rel="stylesheet" href="bower_components/angular-motion/dist/angular-motion.css" />
@@ -39,7 +40,7 @@
     <link rel="stylesheet" href="css/carousel.css">
     <!-- endbuild -->
 
-    <!-- build:css({.tmp,src}) css/fullcalender.css -->
+    <!-- build:css({.tmp,src}) -->
  
     <link href="js/calender/css/jquery-ui.css" rel="stylesheet" />
     <!-- endbuild -->
@@ -211,10 +212,12 @@
     <script src="js/common/directives/adjustPriceInEstimate/addEditMiscService.js"></script>
     <script src="js/common/directives/adjustPriceInEstimate/selectMiscService.js"></script>
     <script src="js/common/directives/loadingScreen/loadingScreen.js"></script>
-    <script src="js/calendar/calendardirective.js"></script>
+    <script src="js/calendar/calendar.directive.js"></script>
 
     <script src="js/common/directives/bulkTreeEditor/bulkTreeEditor.js"></script>
 
+<!-- this is not even referencing the right file properly... this was
+     for the scheduling date in the report dates popup to jump over to the job calendar -->
     <script src="js/common/directives/jumpToCalendar/jumpToCalendar.js"></script>
     <script src="js/common/directives/confirmation/confirmation.js"></script>
 

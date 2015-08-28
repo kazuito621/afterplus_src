@@ -82,10 +82,10 @@
             <td class="text-right">&#36;{{report.total.items|formatPrice}}</td>
 				<td ng-if="data.mode()=='trees'"></td>
         </tr>
-        <tr ng-if="report.tax_rate>0 || data.mode()=='trees'">
+        <tr ng-if="report.tax_rate && report.tax_rate>0 || data.mode()=='trees'">
             <td align=right colspan="{{ data.mode()=='trees' && '2' || '3' }}">
 					Taxes: &nbsp; &nbsp;
-					<span ng-if="!(report.tax_rate>0) && entityID==3"> 
+					<span ng-if="(report.tax_rate && !(report.tax_rate>0)) && entityID==3"> 
 						(<a href ng-click='lookupTaxByZip()'>Lookup Taxes Based on Zipcode</a>)
 					</span>
 				</td>
@@ -98,7 +98,7 @@
 					 </span>
 				</td>
             <td class="text-right">${{ report.total.tax }}</td>
-				<td ng-if="data()=='trees'"></td>
+				<td ng-if="data.mode()=='trees'"></td>
         </tr>
         </tbody>
     </table>

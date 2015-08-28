@@ -362,6 +362,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 1);
 
 
+				s.$on('highlightTreeResult', function(e, data){
+					highlightResultRow(data.treeID);
+				});
 
             var highlightResultRow = function (treeID) {
                 if (s.data.mode() !== 'trees') {

@@ -22,7 +22,16 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
         s.ynOptions = ['yes', 'no'];
         s.ynpOptions = ['yes', 'no', 'potential'];
         s.tree_cachebuster = '?ts=' + moment().unix();
-        s.yearOptions = ["2012", "2013", "2014", "2015", "2016", "2017"];
+        s.yearOptions = []; 
+		  s.monthOptions= [];
+		  for(var yr=moment().format('YYYY')-2,i=0; i<10; i++,yr++){
+				s.yearOptions.push(yr);
+		  }
+		  for(var i=1; i<=12; i++){
+				s.monthOptions.push(i);
+		  }
+
+
         var modal;
 
         var cancelOnEscape = function (e) {

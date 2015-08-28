@@ -10,7 +10,7 @@ angular.module('calendardirective', [])
     return {
         restrict: 'EA',
         replace: false,
-        templateUrl: '/js/calendar/full_calendar_tpl.html',
+        templateUrl: '/js/calendar/calendar.directive.tpl.html',
         scope: {
             leftButtons: "@",
             rightButtons: "@",
@@ -157,7 +157,7 @@ angular.module('calendardirective', [])
 									eventLimit: true,
 									timezone: 'local',
 									views:{
-										week:{ eventLimit:false}
+										week:{eventLimit:false}
 									},
                            defaultTimedEventDuration: '04:00:00',
                            startEditable: true,
@@ -245,7 +245,6 @@ angular.module('calendardirective', [])
 													updateTotals();
 												},2000);
 											}
-                             		$('.fc-time').remove();
 										},600);
 									},
                            eventRender: function (event, element, view) {
@@ -324,7 +323,9 @@ angular.module('calendardirective', [])
                                        alert(res.conflict_msg);
                                    }
                                });
-										setTimeout(function(){	updateTotals() },1000);
+										setTimeout(function(){	
+											updateTotals(); 
+										},600);
                            }
 
                        });
@@ -755,21 +756,17 @@ angular.module('calendardirective', [])
 				 * Note days... should start at 00:00:00 and end at 23:59:59
 				 */
             $scope.onJobDateChange = function(type){
-               // $scope.job_start =moment($scope.job_start).format('YYYY-MM-DD hh:mm:ss');
-               // $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD hh:mm:ss');
                 $scope.valueChanged = true;
-                if(typeof  $scope.job_start != 'object'){
-                    $scope.job_start = moment($scope.job_start);
-                }
-                if( typeof $scope.job_end  != 'object'){
-                    $scope.job_end = moment($scope.job_end).format('YYYY-MM-DD 23:59:59');
-                }
+
+					 //use the unix ... convert back
+					$scope.job_start=moment.unix($scope.job_start_unix).format('YYYY-MM-DD HH:mm:ss');
+					$scope.job_end=moment.unix($scope.job_end_unix).format('YYYY-MM-DD HH:mm:ss');
 
 					 //if start was set after end, reset end
 					 if( $scope.job_start > $scope.job_end ) $scope.job_end=$scope.job_start;
 
                 if(type == 'days'){
-                    var temp=angular.copy($scope.job_start);
+                    var temp=moment($scope.job_start);
                     $scope.job_end = temp.add($scope.duration, 'days');
                 } else if($scope.job_start){
                  		var d = Math.ceil(moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays());
@@ -805,7 +802,6 @@ angular.module('calendardirective', [])
 				}
 
 				function updateFilter(oldUserID, newUserID){
-				console.debug("up ::  "+oldUserID);
 					$($("#foreman_filter option")).each(function(){
 						if($(this).val()==oldUserID) $(this).text('xx');
 					});
@@ -872,7 +868,7 @@ angular.module('calendardirective', [])
 					var view=cal.fullCalendar('getView');
 					if(view.name=='month'){
 						var t,dt,st=view.start;
-						for( var d=moment(view.start); d.isBefore(view.end); d.add('days', 1) ){
+						for( var d=moment(view.start); d.isBefore(view.end); d.add(1, 'days') ){
 							paintDay(d);
 						}
 					}

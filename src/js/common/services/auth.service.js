@@ -109,13 +109,16 @@ app.service('Auth',
                 Api.signOut(this);
             };
 
-            this.role2id = function (role) {
-                if( !this.userRoles[role] ) return 1;
+				// defaultRoleLevel - if you are checking for what a reuired role is, you should default to
+				// a high number like 100... so that if it doesnt exists, a user doesnt accidentally get access to something
+            this.role2id = function (role, defaultRoleLevel) {
+					if(!defaultRoleLevel) defaultRoleLevel=0;
+                if( !this.userRoles[role] ) return defaultRoleLevel;
 
                 var n = this.userRoles[role].id;
                 if( n ) return n;
 
-				if( role=='staff' ) return this.role2id('inventory');
+					if( role=='staff' ) return this.role2id('inventory');
 
                 return 1;
             };
@@ -143,10 +146,11 @@ app.service('Auth',
              * ie. if user is an admin, Auth.is('customer') will return TRUE
              */
             this.isAtleast = function (role) {
-                var urID = this.role2id(this.getUserRole());
-                var rID = this.role2id(role);
-//                console.log(role, urID, rID, urID >= rID);
-                if (urID >= rID) {
+                var userRoleLevel = this.role2id(this.getUserRole());
+                var requiredRoleLevel = this.role2id(role, 100);
+
+                //console.log('isAtleast:', role, this.getUserRole(), userRoleLevel, requiredRoleLevel);
+                if (userRoleLevel >= requiredRoleLevel) {
                     return true;
                 }
                 return false;

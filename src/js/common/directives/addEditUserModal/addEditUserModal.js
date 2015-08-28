@@ -37,24 +37,24 @@ app.directive('addEditUserModal',
                             scope.newContact.role = scope.userRoles[0];
                         });
                     }
-                    if (angular.isDefined(attrs.sites)) {
+                    if (angular.isDefined(attrs.sites)) 
                         scope.sites = scope.$eval(attrs.sites);
-                    }
 
-                    if (angular.isDefined(attrs.clients)) {
+                    if (angular.isDefined(attrs.clients)) 
                         scope.clients = scope.$eval(attrs.clients);
-                    }
 
                     if(scope.sites==undefined){ // in case site have been not provided.
                         Api.getSiteList().then(function (data) {
                             scope.sites=data;
                         })
                     }
-                    if (!modal) {
+                    if (!modal) 
                         modal = $modal({scope: scope, template: '/js/common/directives/addEditUserModal/addEditUserModal.tpl.html', show: false});
-                    }
 
+
+							scope.title='Add New User';
                     if(scope.user){
+						  		scope.title='Edit User';
                         var param={
                             id:scope.user.userID
                         };
@@ -247,8 +247,13 @@ app.directive('addEditUserModal',
                         scope.addedSites = [];
                         scope.userID=null;
                         if (angular.isDefined(attrs.addEditUserModal)) {
-                            scope.user = scope.$eval(attrs.addEditUserModal);
-                            scope.mode='edit';
+									scope.mode='edit';
+									if(attrs.addEditUserModal == 'myself'){
+										scope.user = Auth.data();
+										scope.editMyself=true;
+									}else{
+										 scope.user = scope.$eval(attrs.addEditUserModal);
+									}
                         }
                         scope.openModal();
                     });

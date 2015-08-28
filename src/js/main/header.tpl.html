@@ -7,19 +7,31 @@
 	</div>
 	<div class='header-nav cnt-actions'>
 		<div ng-if="auth.isSignedIn()">
-			<span>
-				<b>{{auth.getLoginName()}}</b>  
-				<a ng-if="auth.hasPerm('dashboard_view')" href='/go/dash?token={{auth.data().token}}' target='_new' bs-tooltip title='Dashboard'>
-					<span class="fa-stack">
-					  	<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-dashboard fa-stack-1x fa-inverse"></i>
-					</span></a>
-				<a href ng-click="auth.signOut()" bs-tooltip title='Sign Out'>
-					<span class="fa-stack">
-					  	<i class="fa fa-square fa-stack-2x"></i>
-						<i class="fa fa-sign-out fa-stack-1x fa-inverse"></i>
-					</span></a>
-			</span>
+
+		<a ng-if="hasNewFeatures" href='/go/changelog' ng-click='onClickWhatsNew()' target=_new><i class='fa fa-star' style='color:#f33;'
+			data-placement="bottom" bs-tooltip title='New Features!'
+			></i></a> &nbsp;
+		<div class="btn-group">
+            <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">{{auth.getLoginName()}} <span class="caret"></span></button>
+            <ul class="dropdown-menu pull-right">
+                <li ng-if="auth.hasPerm('dashboard_view')"><a href="/go/dash?token={{auth.data().token}}" target='_new'>Dashboard</a></li>
+                <li><a href add-edit-user-modal="myself" sites="initData.sites" clients="initData.clients">My User Profile</a></li>
+					 <li ng-if="auth.isAtleast('inventory')"><a href='/go/changelog' ng-click='onClickWhatsNew()' target=_new>What's New?</a></li>
+
+				
+						<!-- login as different user in entity -->
+                <li ng-if="relatedUsers" class="divider"></li>
+                <li ng-if="relatedUsers"><a href='#' style='color:#aaa;' onclick='return false;'>Login as Entity:</li>
+                <li ng-if="relatedUsers" ng-repeat="u in relatedUsers track by u.userID">
+					 	<a href='http://{{u.appdomain}}/#/signin/{{u.token}}'" target=_new>{{u.entityName}}</a>
+					</li>
+
+
+                <li class="divider"></li>
+                <li><a href ng-click="auth.signOut()">Sign Out</a></li>
+            </ul>
+        </div>
+
 		</div>
 	</div>	
 	<div class="clearfix"></div>

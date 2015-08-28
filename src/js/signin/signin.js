@@ -36,21 +36,40 @@ function ($scope, $timeout, $route, md5, $location, Auth, storage ){
 
 		Auth.signIn(s.login.email, s.login.pswd)
 			.then(function(result){
-				if(q.redirect){ 
-					var url=cfg.hostAndPort() + '/#' + q.redirect;
-					document.location=url;
-					// in the past before we changed the old div/hide method back to 
-					// traditional angular routeProvider, this reload was here because
-					// the map would not load when the div was hidden... so when we signed in, the map was blank
-					// but i think this is not necessary now
-					// document.location.reload();
-				}
-				else s.goTrees();
+				s.afterLogin();
 			});
 	}
 
 	s.forgotPassword = function(){
 		window.location=cfg.host()+'/go/password?e='+s.login.email;
+	}
+
+
+	s.afterLogin = function(){
+		if(q.redirect){ 
+			var url;
+			if(q.redirect.match(/^http/)){
+				url=q.redirect;
+			}else if(q.redirect.match(/^\/go/)){
+				url=cfg.host() + q.redirect;
+				var t=Auth.data().token;
+				if(t && url.match(/\?/)){
+					url+='&token='+t;
+				}else if(t){
+					url+='?token='+t;
+				}
+			}else{
+				url=cfg.hostAndPort() + '/#' + q.redirect;
+			}
+
+			document.location=url;
+			// in the past before we changed the old div/hide method back to 
+			// traditional angular routeProvider, this reload was here because
+			// the map would not load when the div was hidden... so when we signed in, the map was blank
+			// but i think this is not necessary now
+			// document.location.reload();
+		}
+		else s.goTrees();
 	}
 
 	s.goTrees=function(){

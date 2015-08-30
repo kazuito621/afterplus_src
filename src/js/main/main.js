@@ -352,6 +352,21 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 	$timeout(chkRelatedUsers, 2000);
 
 
+
+	// check if were on the right subdomain, and forward to correct one
+	var e=cfg.getEntity();
+	if(e && e.domain_regex && e.domain_regex.length>1){
+		var subdom = cfg.getSubDomain()
+		var dom = cfg.host().replace(/^http:../,'');
+		console.debug(" ...  "+dom + ' == ' + e.appdomain);
+		if(dom != e.appdomain){
+			var u =$location.absUrl();
+			var newURL = u.replace(new RegExp(dom), e.appdomain);  
+			window.location = newURL;
+		}
+	}
+
+
 }]); 		// 	}}} MainCtrl
 
 

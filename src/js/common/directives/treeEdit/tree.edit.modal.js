@@ -74,6 +74,7 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
                         id: (index),
                         label: 'slide #' + (index),
                         img: i.imgMed ,  // TODO after api change; use data.imagePrefix instead dummyData.imagePrefix
+								link: i.imgLrg,
                         color: s.colors[ (index*10) % s.colors.length],
                         odd: (index % 2 === 0)
                     }

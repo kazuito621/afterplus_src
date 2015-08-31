@@ -287,16 +287,21 @@ angular.module('arborPlusFilters', [])
             return formatted_number;
         }
     })
-
-
 	.filter('escape', function(){
 		return function(val){
 			return window.encodeURIComponent(val);
 		}
 	})
+	.filter('reverse', function() {
+	  return function(items) {
+	      return (items||[]).slice().reverse();
+	  };
+	  })
 
-	 ;
+	  .filter('slice', function() {
+	    return function(arr, start, end) {
+		     return (arr || []).slice(start, end);
+			    };
+	})
 
-
-
-
+	;

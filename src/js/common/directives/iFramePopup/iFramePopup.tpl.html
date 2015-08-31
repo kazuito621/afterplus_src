@@ -1,0 +1,15 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="title">
+                <button type="button" class="close" ng-click="hide()">&times;</button>
+                <h4 class="modal-title" ng-bind="title"></h4>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{trustSrc(url)}}" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+                <!--<iframe src="http://dev.arborplus.com/api/v2.0/estimate" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>-->
+            </div>
+        </div>
+    </div>
+</div>
+

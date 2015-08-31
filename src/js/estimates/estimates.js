@@ -74,24 +74,27 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         cb = cb || angular.noop;
         Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
             data=storedData.setEstimateData(data);
-			var isCust=Auth.is('customer');
-			_.each(data, function(d){
-				d.origStatus=d.status;
-				if(isCust && d.status=='sent') d.status='needs_approval';
+				var isCust=Auth.is('customer');
+				_.each(data, function(d){
+					d.origStatus=d.status;
+					if(isCust && d.status=='sent') d.status='needs_approval';
 
-				if(d.siteName && d.siteName.length>40) d.siteName_short=d.siteName.substr(0,40)+'...';
-				else d.siteName_short=d.siteName
+					if(d.siteName && d.siteName.length>40) d.siteName_short=d.siteName.substr(0,40)+'...';
+					else d.siteName_short=d.siteName
 
-				if(d.name && d.name.length>40) d.name_short=d.name.substr(0,40)+'...';
-				else d.name_short=d.name
+					if(d.name && d.name.length>40) d.name_short=d.name.substr(0,40)+'...';
+					else d.name_short=d.name
 
-				d.sales_email_short=d.sales_email;
-				if(d.sales_email_short) d.sales_email_short=d.sales_email.split('@')[0];
-			});
+					d.sales_email_short=d.sales_email;
+					if(d.sales_email_short) d.sales_email_short=d.sales_email.split('@')[0];
+				});
             estimates = estFiltered = data;
             self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);
             s.displayedEstimates = estFiltered.slice(0, 49);
             cb();
+				if( s.data.filterTextEntry && s.data.filterTextEntry.lenght>1 ){
+					s.data.filterTextEntry = ' ' + s.data.filterTextEntry;
+				}
         });
     };
 
@@ -362,6 +365,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     // when search box is changed, then update the filters, but
 	// add delay so we dont over work the browser.
 	s.$watch('data.filterTextEntry', function (txt, old) {
+		txt = (txt || '');
+		txt = txt.trim();
 		if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
 		filterTextTimeout = $timeout(function () {
 			if (txt === '' || !txt) {

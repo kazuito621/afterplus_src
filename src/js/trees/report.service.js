@@ -326,7 +326,7 @@ app.service('ReportService',
 		var reportHash = this.getReportMd5(true);
 
 		var that=this;
-        var saveRequest = Api.saveReport(this.report);
+     	var saveRequest = Api.saveReport(this.report);
 		saveRequest
 			.then(function(data){
                 if (reportHash != that.getReportMd5(false)){
@@ -337,6 +337,7 @@ app.service('ReportService',
 
 				if(data && data.reportID) that.report.reportID = data.reportID;
 				if(data.token) that.report.token=data.token;
+				if(data.charts) that.report.charts=data.charts;
 				console.log("Report data returned: "+that.report.reportID);
 				that.setReportLink();
 			});

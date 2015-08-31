@@ -116,6 +116,16 @@
         </div>
         <!--Estimate Summary Ends-->
 
+
+
+			<div id='summary-charts' ng-if="report.charts" style='padding:2em 0 2em 0;'>
+				<img src='{{report.charts.treatmentCategories}}'>
+				<img src='{{report.charts.treatments}}'>
+				<img src='{{report.charts.species}}'>
+			</div>
+
+
+
         <!--Directive is not performing anything what is the point having simple HTML in directive-->
         <div class="estimate-actions" ng-if="data.mode()=='trees'">
             <button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>

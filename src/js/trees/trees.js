@@ -1458,7 +1458,7 @@ console.debug(" show mapp trees -------- ");
             //			  2. FALSE == uncheck all
             //			  3. 'thisYear' == check all with recommendations this year
             //			  4. ARRAY of treeIDs - toggle all those treeIDs
-            s.toggleCheckedTrees = function (opt) {
+            s.toggleCheckedTrees = s.safeApplyFn( function (opt) {
                 if (opt instanceof Array) {							// option 4
                     _.remove(s.selectedTrees, function (t) {
                         return (opt.indexOf(t) >= 0);
@@ -1474,7 +1474,7 @@ console.debug(" show mapp trees -------- ");
                         });
                     }
                 }
-            };
+            });
 
             // when user adds/removes filter, we should remove selected trees that dont satisfy that filter
             s.filterSelectedTrees = function () {
@@ -1571,7 +1571,7 @@ console.debug(" show mapp trees -------- ");
                         if (added.length)
                             msg = '{0} trees added. Some did not have recommendations assigned'.format(added.length)
                         else
-                            msg = 'These trees did not have recommendations assigned.';
+                            msg = 'These trees did not have recommendations assigned, or are already assigned.';
                     }
                     s.setAlert(msg, { type: 'd', time: 10 });
                     s.toggleCheckedTrees(added);

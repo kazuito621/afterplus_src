@@ -172,9 +172,9 @@ app.service('ReportService',
 
 	// if treatment codes exist, then use them,
 	// else, use what is recommended for the tree 
-	//		(but only the first year that is listed...
+	//		(but only the first year that is listed... ... and keeping in mind if any filters are being used)
 	//		ie. if there is a 2014 and a 2015, only use the 2014)  (#note1)
-	//			EXCEPTION TO THIS RULE: if a 2015 filter is set and there is a 2015 reco, then use that..
+	//			EXCEPTION TO THIS RULE: if a 2015 filter is set and there is a 2015 reco, then use that...
 	//			ie. disregard the "first year" rule if a different filter is set (#note2)
 	// @return MIXED - If any trees were successful, return ARRAY of ID's that succeeded
 	//				 - if error mixing trees from different sites, return "-1"
@@ -199,18 +199,24 @@ app.service('ReportService',
 					addedTreeIDs.push(tree.treeID);
 				});
 			}
-		}else{	//use what is recommended
+		}	
+		else 	// use what is recommended. if treatment filter used, only use those treatments that match the filter
+		{
 			_.each(trees, function(t){
 				// store the year of the item recomendation,
 				// so if a different year comes up, we can disregard
 				var recoYearUsed=false;
 
 				// check to see which/if YEAR filters were used, and if one was used, then prefer that year
+				// also check if treatment filter used ...
+				var treatmentFilters=[];
 				if(selectedFilters){
 					var lowestFilterYear=9999;
 					_.each(selectedFilters, function(itm){
-						if(itm.type=='year' && itm.id<lowestFilterYear){
+						if( itm.type=='year' && itm.id<lowestFilterYear ){
 							lowestFilterYear=itm.id;
+						}else if( itm.type=='treatments' ){
+							treatmentFilters.push(itm.id);
 						}
 					})
 				}
@@ -222,6 +228,9 @@ app.service('ReportService',
 					// if a reco year has already been used, and doesnt match this one, then skip it (see #note1)
 					if(recoYearUsed && th.year!=recoYearUsed) return;		
 
+					// if treatment Filter useded... make sure this matches one
+					if(treatmentFilters.length && treatmentFilters.indexOf(th.treatmentTypeID)==-1) return;
+
 					// if there is a filter year, and it doesnt match this current tree item, 
 					// then skip this item (see #note2)
 					if(lowestFilterYear<9999 && lowestFilterYear!=th.year) return;
@@ -229,16 +238,24 @@ app.service('ReportService',
 					recoYearUsed=th.year;							// record the year used 
 					tree.treatmentTypeCode=th.treatmentTypeCode;
 
-                    //if there is a recommended price for this treatment, then use it
-                    if (th.price){
-                        tree.price = th.price;
-                    }
-                    else{
-					    tree.price=that.getTreatmentPrice(tree.treatmentTypeCode, tree.dbhID);
-                    }
+					//if there is a recommended price for this treatment, then use it
+					tree.price = (th.price) ? th.price : that.getTreatmentPrice(tree.treatmentTypeCode, tree.dbhID);
+
 					if(!tree.reportItemID) tree.reportItemID=nextItemID++;
-					that.report.items.unshift(tree);
-					addedTreeIDs.push(tree.treeID);
+
+					// make sure that treatment for that tree not already on
+					var canAdd=true;
+					_.each(that.report.items, function(itm){
+						if(itm.treeID == tree.treeID && itm.treatmentTypeCode == tree.treatmentTypeCode){ 
+							canAdd=false;
+							return false;
+						}
+					});
+
+					if(canAdd){
+						that.report.items.unshift(tree);
+						addedTreeIDs.push(tree.treeID);
+					}
 				});
 			});
 		}

@@ -92,29 +92,29 @@ angular.module('calendardirective', [])
                        uncheduledJobsBackUp = angular.copy($scope.UnscheduledJobs);
 
 							  // get event data from sched or unsched array based on reportID or event name in title box
-                   $scope.getEventInfo = function (eventName) {
+                       $scope.getEventInfo = function (eventName) {
 
-								eventName=''+eventName;
-								eventName=eventName.trim();
+				   				eventName=''+eventName;
+				   				eventName=eventName.trim();
 
-						 		if(!isNaN(eventName)){		// if its a number, its a reportID
-									var rptID=eventName
-								}else{
-									// try to lookup by ID first
-									var m=eventName.match(/([0-9]+)[ -]/);
-									if(m) var rptID=m[1];
-								}
+				   		 		if(!isNaN(eventName)){		// if its a number, its a reportID
+				   					var rptID=eventName
+				   				}else{
+				   					// try to lookup by ID first
+				   					var m=eventName.match(/([0-9]+)[ -]/);
+				   					if(m) var rptID=m[1];
+				   				}
 
-                       var selectedEvent = null;
-                       for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
-                           var event = $scope.UnscheduledJobs[index];
-                           if (event.reportID == rptID || event.title.trim() == eventName.trim()) {
-                               selectedEvent = event;
-                               break;
+                           var selectedEvent = null;
+                           for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
+                               var event = $scope.UnscheduledJobs[index];
+                               if (event.reportID == rptID || event.title.trim() == eventName.trim()) {
+                                   selectedEvent = event;
+                                   break;
+                               }
                            }
+                           return selectedEvent;
                        }
-                       return selectedEvent;
-                   }
 
 
                        var bindexternalevents = setTimeout(function () {
@@ -188,7 +188,7 @@ angular.module('calendardirective', [])
                            eventReceive: function (event) {			// external drop callback
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
-										 var job_end=moment(event.start).format('YYYY-MM-DD 23:59:59');
+							   var job_end=moment(event.start).format('YYYY-MM-DD 23:59:59');
                                event.end = moment(job_end);
                                Api.ScheduleJob(ev.reportID, {
                                    job_start: event.start.format('YYYY-MM-DD')
@@ -198,55 +198,55 @@ angular.module('calendardirective', [])
                                    }
                                });
                            },
-									eventDragStop: function( event, jsEvent, ui, view ){
-										setTimeout(function(){	updateTotals() },1000);
-									},
+							eventDragStop: function( event, jsEvent, ui, view ){
+								setTimeout(function(){	updateTotals() },1000);
+							},
                            xxupdateEvent: function (event) {
                                console.log(event);
                            },
                            eventClick: function (data, jsEvent, view) {
                                $scope.openJob(data);
                            },
-									dayClick: function( date, evt, view ){
+							dayClick: function( date, evt, view ){
 
-										// check for double click
-										var now=new Date().getTime();
-										if(now - view.lastDayClick < 400){
-											var v=elm.fullCalendar('getView');
-											if(v.name=='basicWeek' || v.name=='agendaWeek')
-												elm.fullCalendar('changeView', 'month');
-											else
-												elm.fullCalendar('changeView', 'basicWeek');
-											elm.fullCalendar('gotoDate', date);
-											return;
-										}
-										view.lastDayClick=now;
+								// check for double click
+								var now=new Date().getTime();
+								if(now - view.lastDayClick < 400){
+									var v=elm.fullCalendar('getView');
+									if(v.name=='basicWeek' || v.name=='agendaWeek')
+										elm.fullCalendar('changeView', 'month');
+									else
+										elm.fullCalendar('changeView', 'basicWeek');
+									elm.fullCalendar('gotoDate', date);
+									return;
+								}
+								view.lastDayClick=now;
 
-										// dislay daily total
-										var tot=getDayTotal(date),diff;
-										if(tot>0){
-											niceTot = "$" + commaDigits(tot);
-											var msg=date.format("ddd M/DD") + " = " + niceTot;
-											var diff=Math.abs(Math.round($scope.goalPerDay-tot));
-											var undOvr = (tot>$scope.goalPerDay) ? " over)" : " UNDER!)";
-											var alType = (tot>$scope.goalPerDay) ? "ok" : "d";
-											msg+=" ($"+diff+undOvr;
-											$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alType });
-										}else{
-											$rootScope.$broadcast('alert', { msg:'$0 Total! Give me some jobs!', time: 9, type: 'd' });
-										}
-									},
-									//dayRender: function( date, cell ){
-									//},
-									viewRender: function( view, cal ){
+								// dislay daily total
+								var tot=getDayTotal(date),diff;
+								if(tot>0){
+									niceTot = "$" + commaDigits(tot);
+									var msg=date.format("ddd M/DD") + " = " + niceTot;
+									var diff=Math.abs(Math.round($scope.goalPerDay-tot));
+									var undOvr = (tot>$scope.goalPerDay) ? " over)" : " UNDER!)";
+									var alType = (tot>$scope.goalPerDay) ? "ok" : "d";
+									msg+=" ($"+diff+undOvr;
+									$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alType });
+								}else{
+									$rootScope.$broadcast('alert', { msg:'$0 Total! Give me some jobs!', time: 9, type: 'd' });
+								}
+							},
+							//dayRender: function( date, cell ){
+							//},
+							viewRender: function( view, cal ){
+								setTimeout(function(){
+									if(!updateTotals()){
 										setTimeout(function(){
-											if(!updateTotals()){
-												setTimeout(function(){
-													updateTotals();
-												},2000);
-											}
-										},600);
-									},
+											updateTotals();
+										},2000);
+									}
+								},600);
+							},
                            eventRender: function (event, element, view) {
                                $('.fc-title br').remove();
 
@@ -323,14 +323,13 @@ angular.module('calendardirective', [])
                                        alert(res.conflict_msg);
                                    }
                                });
-										setTimeout(function(){	
-											updateTotals(); 
-										},600);
+								setTimeout(function(){
+									updateTotals();
+								},600);
                            }
 
                        });
                    });
-
            }
 
 			$scope.saveGoalPerDay = function(){

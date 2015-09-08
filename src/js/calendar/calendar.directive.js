@@ -188,8 +188,8 @@ angular.module('calendardirective', [])
                            eventReceive: function (event) {			// external drop callback
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
-							   var job_end=moment(event.start).format('YYYY-MM-DD 23:59:59');
-                               event.end = moment(job_end);
+                               event.end = angular.copy((event.start));
+                               event.end = setLastMomentOfTheDay(event.end);
                                Api.ScheduleJob(ev.reportID, {
                                    job_start: event.start.format('YYYY-MM-DD')
                                }).then(function (res) {
@@ -263,9 +263,9 @@ angular.module('calendardirective', [])
                                        .format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" '
 													+'title="No foreman assigned to this job"></i></a>');
                                }
-                              if(event.status != 'scheduled'){
-                                  event.editable = false;
-                              }
+                              //if(event.status != 'scheduled'){
+                              //    event.editable = false;
+                              //}
                                //else {
                                //    //element.css('background-color', '#FFB347')
                                //}
@@ -293,7 +293,7 @@ angular.module('calendardirective', [])
                                        alert(res.conflict_msg);
                                    }
                                });
-										setTimeout(function(){	updateTotals() },1000);
+								setTimeout(function(){	updateTotals() },1000);
                            },
                            eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
                                if(el.reportID == undefined){
@@ -303,18 +303,21 @@ angular.module('calendardirective', [])
                                var sTime, eTime;
                                sTime =  moment(el.start).format('YYYY-MM-DD HH:mm:ss');
                                if(el._allDay == false && el.end == undefined){
-                                   el.end = moment(el.start.format('YYYY-MM-DD 23:59:59'));
+                                   el.end = angular.copy((el.start));
+                                   el.end = setLastMomentOfTheDay(el.end);
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
                                }
                                else if (el.end == undefined){
-                                   el.end = moment(el.start.format('YYYY-MM-DD 23:59:59'));
+                                  //el.end = moment(el.start.format('YYYY-MM-DD 23:59:59'));
+                                  //el.end = angular.copy(moment(el.start.format('YYYY-MM-DD 23:59:59')));
+                                   el.end = angular.copy((el.start));
+                                   el.end = setLastMomentOfTheDay(el.end);
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
                                }
                                else
 										 {
                                    eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
 										 }
-
                                Api.ScheduleJob(el.reportID, {
                                    job_start: sTime,
                                    job_end: eTime
@@ -339,7 +342,6 @@ angular.module('calendardirective', [])
 
             $scope.onMouseHoverJob = function () {
                 $("#tooltip").removeClass("hide").addClass("show");
-
             };
 
             $scope.onMouseLeaveJob = function () {
@@ -971,6 +973,13 @@ angular.module('calendardirective', [])
                         break;
                     }
                 }
+            }
+
+            function setLastMomentOfTheDay(moment){
+                moment.hour('23');
+                moment.minute('59');
+                moment.seconds('59');
+                return  moment;
             }
 
 

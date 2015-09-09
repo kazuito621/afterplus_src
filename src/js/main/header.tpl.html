@@ -19,6 +19,8 @@
 					 <li ng-if="auth.isAtleast('inventory')"><a href='/go/changelog' ng-click='onClickWhatsNew()' target=_new>What's New?</a></li>
 
 				
+					<li><a href='#' onclick='return false;' iframe-popup url="http://dev.arborplus.com/go/dash?token={{auth.data().token}}">iframe test </a></li>
+
 						<!-- login as different user in entity -->
                 <li ng-if="relatedUsers" class="divider"></li>
                 <li ng-if="relatedUsers"><a href='#' style='color:#aaa;' onclick='return false;'>Login as Entity:</li>

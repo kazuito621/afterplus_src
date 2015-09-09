@@ -56,7 +56,7 @@ app.service('ReportService',
 	}
 
 	this.getBlankReport = function(){
-		this.report={name:'Untitled Report', items:[], services:[], siteID:this.siteID};
+		this.report={name:'Untitled Estimate', items:[], services:[], siteID:this.siteID};
 		$rootScope.$broadcast('onLoadReport', this.report);
 		return this.report;
 	}

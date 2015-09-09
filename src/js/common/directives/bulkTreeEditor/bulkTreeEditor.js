@@ -73,9 +73,8 @@ app.directive('bulkTreeEditor',
                         scope.selected.chgPriceByPercent=1;
 
                         var currentYear=new Date().getFullYear();
-                        for(var i=1;i<=5;i++){
-                            currentYear++;
-                            scope.yearRecommendation.push(currentYear);
+                        for(var i=1;i<=6;i++){
+                            scope.yearRecommendation.push(currentYear++);
                         }
                         scope.selected.changeYearTo=scope.yearRecommendation[0];
                         scope.selected.addedTreatRecomYear=scope.yearRecommendation[0];

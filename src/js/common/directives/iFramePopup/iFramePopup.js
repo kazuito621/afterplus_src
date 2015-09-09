@@ -5,11 +5,7 @@ app.directive('iframePopup',
 
             var linker = function (scope, el, attrs) {
                 var modal;
-
-                if (angular.isDefined(attrs.url)) {
-                    // scope.url = cfg.apiBaseUrl()+scope.$eval(attrs.url);
-                    scope.url = scope.$eval(attrs.url);
-                }
+                scope.url = attrs.url;
                 if (angular.isDefined(attrs.title)) {
                     scope.title = scope.$eval(attrs.title);
                 }

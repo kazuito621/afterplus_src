@@ -304,4 +304,16 @@ angular.module('arborPlusFilters', [])
 			    };
 	})
 
+	// Used for the /#trees page "year filter" drop down list.
+	// Any years which dont have counts... remove them
+	.filter('filterYearFilters', function(){
+			return function(data){
+				var out=[];
+				_.each(data, function(d){
+					if(d.count>0) out.push(d);
+				});
+				return out;
+			}
+	})
+
 	;

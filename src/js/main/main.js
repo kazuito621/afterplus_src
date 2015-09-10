@@ -26,6 +26,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
       , isAtleast: angular.bind(Auth, Auth.isAtleast)
 		, hasPerm: angular.bind(Auth, Auth.hasPerm)
 		, data: angular.bind(Auth, Auth.data)
+		, getHost: function(){ return cfg.host() }
     }
 
     $rootScope.entityID = cfg.getEntityID();

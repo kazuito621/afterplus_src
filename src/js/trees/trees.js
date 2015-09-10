@@ -330,7 +330,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     console.log('Report with id %s loaded', id);
                     console.log(report);
                     console.log('About to show site %s for report', report.siteID);
-                    showSite(report.siteID);
+                    //showSite(report.siteID);
                 });
             };
 
@@ -444,10 +444,12 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
             var lastSiteID=-1;
-            s.onSelectSiteID = function (id) {
+            s.onSelectSiteID = function (id,ShouldChangeUrl) {
                 if(lastSiteID==id) return; // Prevents loading same things twice
                 else lastSiteID=id;
                 s.selected.siteID = id;
+                if(ShouldChangeUrl==true)
+                   $location.search({ siteID: id});
                 ReportService.setSiteID(id);
 
                 if (s.data.mode() != 'trees') return;
@@ -1914,7 +1916,7 @@ console.debug(" show mapp trees -------- ");
                 // // console.log('On init data in sites');
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {// Parms solution to fix the double map load... (and comment out the following)
 
-                    if (!gMap && !$location.search().reportID && !$location.search().reportID) { // Imdad's solution to fix the double map load
+                    if (!gMap && !$location.search().reportID && !$location.search().siteID) { // Imdad's solution to fix the double map load
                         ////            // This if condition is blocking to override the satellite view.
                         console.log('Map not initialized in $onInitData event');
                         s.openTreesOrSites();

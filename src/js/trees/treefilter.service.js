@@ -75,7 +75,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 	 * pine tree filters! 
 	 * Algorithm steps:
      *  1) we filter trees and filters separately (filterTheFilters/filterTrees methods)
-     *  2) there are 8 filter groups: species/dbh/rating/treatments/caDamage/caDamagePotential/building/powerline
+     *  2) there are 9 filter groups: species/dbh/rating/treatments/caDamage/caDamagePotential/building/powerline/years
      *  3) to calculate filters count for filter-group we should
      *      a) remove filter query of current type
      *      b) filter trees with rest of filter query
@@ -105,7 +105,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         this.data.containsContradictingFilters = false;
 
         // split filter groups based on selectedFiltrs - which should be calculated separately/together
-        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline'];
+        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline', 'years'];
         var filtersToCountSeparately = [];
         _.each(selectedFilters, function(sf){
             if (filtersToCountSeparately.indexOf(sf.type) == -1){
@@ -164,7 +164,9 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 			filterArray = _.extract(idata.filters, filterName);	
 			if(!filterArray || !exist[filterName]) return;
 
-			idName = (filterName=='treatments') ? 'treatmentTypeID' : filterName + "ID";
+			if( filterName=='treatments' ) idName='treatmentTypeID';
+			else if( filterName=='years' ) idName='id';
+			else idName=filterName+'ID';
 
 			_.each(filterArray, function(filterItm) {
 				// if the count is in exist, then set it, else set to 0
@@ -604,6 +606,21 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
                         }
                         break;
                     }
+
+							// year:{2015:55, 2016:22}
+							case ('years'):{
+                        if (!tree.recoYears) break;
+                      	if (!exist[filterName]) exist[filterName] = {};
+								 _.each(tree.recoYears, function (rYear) {
+									  if (exist[filterName][rYear]) exist[filterName][rYear]++;
+									  else {
+											exist[filterName][rYear]=1;
+											that.data.filterTypeCounts[filterName]++;
+									  }
+								 });
+                        break;
+						   }
+
                     case ('caDamage'):{
                         if (!exist.caDamage) exist.caDamage = {};
                         if (tree.caDamage.toLowerCase() == "yes") {

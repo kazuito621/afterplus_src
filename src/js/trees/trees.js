@@ -1320,13 +1320,6 @@ console.debug(" show mapp trees -------- ");
                                     s.trees.push(response);
                                     if (infowindow)  infowindow.close();
 
-                                    var timeOut = setTimeout(function () {
-                                        var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
-                                        if (treeEl !== undefined && treeEl.length > 0)
-                                            treeEl.click();
-                                        clearTimeout(timeOut);
-                                    }, 1000);
-
                                     google.maps.event.clearListeners(marker, 'click');
                                     google.maps.event.addListener(marker, 'click', function (event) {
                                         if (!infowindow)
@@ -1342,6 +1335,17 @@ console.debug(" show mapp trees -------- ");
                                             }
                                         });
                                     });
+
+
+												//todo... why wont new tree show up here?!!?
+
+                                    var timeOut = setTimeout(function () {
+                                        var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
+                                        if (treeEl !== undefined && treeEl.length > 0)
+                                            treeEl.click();
+                                        clearTimeout(timeOut);
+                                    }, 1000);
+
                                     s.MarkerAdded = false;
                                 });
                             }

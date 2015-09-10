@@ -623,7 +623,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
                     case ('caDamage'):{
                         if (!exist.caDamage) exist.caDamage = {};
-                        if (tree.caDamage.toLowerCase() == "yes") {
+								tree.caDamage = tree.caDamage || '';
+                        if (tree.caDamage && tree.caDamage.toLowerCase() == "yes") {
                             if (exist.caDamage[tree.treeID]) exist.caDamage[tree.treeID]++;
                             else {
                                 exist.caDamage[tree.treeID] = 1;

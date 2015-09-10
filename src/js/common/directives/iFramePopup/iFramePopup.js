@@ -6,6 +6,7 @@ app.directive('iframePopup',
             var linker = function (scope, el, attrs) {
                 var modal;
                 scope.url = attrs.url;
+					 scope.title = attrs.ititle;
                 if (angular.isDefined(attrs.title)) {
                     scope.title = scope.$eval(attrs.title);
                 }
@@ -14,12 +15,17 @@ app.directive('iframePopup',
                 }
                 scope.openModal = function () {
                     if (!modal) {
-                        modal = $modal({ scope: scope, template: '/js/common/directives/iFramePopup/iFramePopup.tpl.html', show: false });
+                        modal = $modal({ 
+									scope: scope, 
+									template: '/js/common/directives/iFramePopup/iFramePopup.tpl.html', 
+									show: false
+								});
                     }
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
                         $(document).keyup(hideOnEscape);
+					 			$('iframe#iframe-modal').height( $(window).height() * .85 )
                     });
                 };
 

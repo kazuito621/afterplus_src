@@ -61,6 +61,8 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
                 mode = 'edit';
             }
             s.tree = tree;
+				s.tTreeID=tree.treeID
+				console.debug("tree: "+tree.treeID);
 
             s.slides6 = [];
             s.carouselIndex6 = 1;

@@ -23,12 +23,12 @@
                     </span>
                 </h2>
                 <span ng-bind="tree.speciesID|speciesID2Name:'bot':this"></span><br>
-                <span ng-bind="'(treeID:' + treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
+                <span ng-bind="'(treeID:' + tree.treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
 
                 <dl class="dl-horizontal">
                     <dt>Diameter:</dt>
                     <dd>
-                        <div ng-if="mode=='edit'" class="pullright">
+                        <div ng-if="tree.mode=='edit'" class="pullright">
                             <a href ng-if="auth.isAtleast('inventory')" e-ng-options="obj.dbhID as obj.diameter for obj in initData.filters.dbh" editable-select="tree.dbhID">
                                 {{ tree.dbhID | dbhID2Name:this  || "(not specified)"}}
                             </a>
@@ -36,11 +36,11 @@
                                 {{ tree.dbhID | dbhID2Name:this  || "(not specified)"}}
                             </span>
                         </div>
-                        <div ng-if="mode!='edit'" class="pullleft centerText">&nbsp; {{tree.dbhID | dbhID2Name:this}}</div>
+                        <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.dbhID | dbhID2Name:this}}</div>
                     </dd>
                     <dt>Rating:</dt>
                     <dd>
-                        <div ng-if="mode=='edit'" class="pullright centerText">
+                        <div ng-if="tree.mode=='edit'" class="pullright centerText">
                             <a href ng-if="auth.isAtleast('inventory')" e-ng-options="obj.ratingID as obj.ratingID + ' - ' + obj.rating_desc for obj in initData.filters.ratings" editable-select="tree.ratingID">
                                 {{tree.ratingID}} - {{ tree.ratingID | ratingID2Name:this  || "(not specified)"}}
                             </a>
@@ -48,35 +48,35 @@
                                 {{tree.ratingID}} - {{ tree.ratingID | ratingID2Name:this  || "(not specified)"}}
                             </span>
                         </div>
-                        <div ng-if="mode!='edit'" class="pullleft centerText">&nbsp; {{tree.ratingID|ratingID2Name:this}}</div>
+                        <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.ratingID|ratingID2Name:this}}</div>
                     </dd>
                     <dt>Near powerline?</dt>
                     <dd>
-                        <div ng-if="mode=='edit'" class="pullright centerText">
+                        <div ng-if="tree.mode=='edit'" class="pullright centerText">
                             <a href ng-if="auth.isAtleast('inventory')" e-ng-options="obj for obj in ynOptions"  editable-radiolist="tree.powerline">{{tree.powerline || "(not specified)"}}</a>
                             <span ng-if="!auth.isAtleast('inventory')" e-ng-options="obj for obj in ynOptions">{{tree.powerline || "(not specified)"}}</span>
                         </div>
-                        <div ng-if="mode!='edit'" class="pullleft centerText">&nbsp; {{tree.powerline}}</div>
+                        <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.powerline}}</div>
                     </dd>
                     <dt>Near building?</dt>
                     <dd>
-                        <div ng-if="mode=='edit'" class="pullright centerText">
+                        <div ng-if="tree.mode=='edit'" class="pullright centerText">
                             <a href ng-if="auth.isAtleast('inventory')" e-ng-options="obj for obj in ynOptions"  editable-radiolist="tree.building">{{tree.building || "(not specified)"}}</a>
                             <span ng-if="!auth.isAtleast('inventory')" e-ng-options="obj for obj in ynOptions">{{tree.building || "(not specified)"}}</span>
                         </div>
-                        <div ng-if="mode!='edit'" class="pullleft centerText">&nbsp; {{tree.building}}</div>
+                        <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.building}}</div>
                     </dd>
                     <dt>Hardscape damage?</dt>
                     <dd>
-                        <div ng-if="mode=='edit'" class="pullright centerText">
+                        <div ng-if="tree.mode=='edit'" class="pullright centerText">
                             <a href ng-if="auth.isAtleast('inventory')" e-ng-options="obj for obj in ynpOptions"  editable-radiolist="tree.caDamage">{{tree.caDamage || "(not specified)"}}</a>
                             <span ng-if="!auth.isAtleast('inventory')" e-ng-options="obj for obj in ynpOptions">{{tree.caDamage || "(not specified)"}}</span>
                         </div>
-                        <div ng-if="mode!='edit'" class="pullleft centerText">&nbsp; {{tree.caDamage}}</div>
+                        <div ng-if="tree.mode!='edit'" class="pullleft centerText">&nbsp; {{tree.caDamage}}</div>
                     </dd>
                 </dl>
                 <div class="clearfix"></div>
-                <h3>Notes <span ng-if="mode=='edit'">(click to edit)</span></h3>
+                <h3>Notes <span ng-if="tree.mode=='edit'">(click to edit)</span></h3>
                 <a href="#" editable-textarea="tree.notes" e-rows="3" e-cols="40">
                     <pre>{{ tree.notes || '(no notes)' }}</pre>
                 </a>
@@ -126,7 +126,7 @@
                     </table>
                 </div>
 
-                <div ng-if="mode!='rollover'" class=''>
+                <div ng-if="tree.mode!='rollover'" class=''>
                     <button class='navButton' ng-click="save();">Save</button>
                     &nbsp;<a ng-click="onCancel()" bs-tooltip class='hand' title="Hotkey: Press Escape to cancel">Cancel</a>
                 </div>

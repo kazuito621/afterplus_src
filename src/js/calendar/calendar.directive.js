@@ -1,4 +1,34 @@
-﻿function commaDigits(val){
+﻿/*
+*                    Important
+*       Things that you know before yous start
+*       FullCalendar is jqury controll here were using it with Angular JS.
+*       KEY things to know.
+*       Full Calendar always returns the event end date value as the next day of when the event ends.
+*       Suppose there is an event that starts from 1st Jan to 3rd Jan. So you would expect that in those callback you
+*       will get event.start = 1st Jan 12.00.00AM & event.end = 3rd Jan 11.59.59 PM OR event.start = 1st Jan & event.end = 3rd Jan.
+*       BUT in reality fullCalendar will return event.end = 4th Jan.
+*       Because it means that the event will no more exist at 4th Jan 12.00.00 AM or 4 Jan anymore. That's how it works.
+*
+*       AND another important thing. If you put specific time on the event value
+*       it will not be considered as a full day (11:59:59 AM means it will end at 1 sec before 12.00.00 AM), thus it will not be resizable.
+*       Because events that contains specific hour minute second value in their start/end value are not resizable.
+*
+*       Now how it is working,
+*
+*       Post: When we send data to server we get the event.end value, remove one second & send. So server gets event.end = 3rd Jan 11:59:59 PM
+*       Initialize : When we get value from server, we add 1 day with end value & eliminate the hour minute second value.
+*           Like server sent us end value : 3 Jan 11.59.59 AM. We then add 1 extra day and ignore the HH MM SS, and fetch the value to fullCalendar control
+*           Which is then 4 Jan. & according to fullCalendar design, start = 1 Jan & End = 4 Jan means the event span is 1st Jan, 2nd Jan & 3rd Jan.
+*           & that's what we meant.
+*       Open Modal : When we open modal, in order to avoid showing 4th Jan in end value field,
+*                   we subtract 1 second from it and show the DATE part in end value field.
+*
+*      TIPS:
+*      Don't change the datetime value of events by force. It will create more bug & confusion.
+*
+* */
+
+function commaDigits(val){
 	while (/(\d+)(\d{3})/.test(val.toString())){
 		val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
 	}
@@ -69,12 +99,17 @@ angular.module('calendardirective', [])
                            }
                            else if(field.job_start)
 									{
+                                        var eMoment;
 										obj.type='Scheduled';
-										obj.start=moment(field.job_start).format('YYYY-MM-DD 00:00:00');
-										if( field.job_end )
-											obj.end=moment(field.job_end).format('YYYY-MM-DD 23:59:59');
-										else
-											obj.end=moment(field.job_start).format('YYYY-MM-DD 23:59:59');
+										obj.start=moment(field.job_start).format('YYYY-MM-DD');
+										if( field.job_end ) {
+                                            eMoment = moment(field.job_end);
+                                        }
+										else {
+                                            eMoment = moment(field.job_start);
+                                        }
+                                        obj.end = eMoment.add(1, 'days');
+                                        obj.end = eMoment.format('YYYY-MM-DD');
                                         $scope.ScheduledJobs.push(obj);
                            }
 
@@ -162,9 +197,9 @@ angular.module('calendardirective', [])
                            defaultTimedEventDuration: '04:00:00',
                            startEditable: true,
                            durationEditable: true,
-                           events:  function(st, end, tz, callback){ 
-											callback( filterJobs() );
-									},
+                           events:  function(st, end, tz, callback){
+								callback( filterJobs() );
+						   },
                            select: function (start, end) {
                                var title = prompt('Event Title:');
                                var eventData;
@@ -545,7 +580,7 @@ angular.module('calendardirective', [])
                 $scope.showWeekendWork = isDateSpanWeekend(event.start, event.end);
 					 $scope.job_start_unix=event.start.format('X');
 					 $scope.job_end_unix=event.end.format('X')-1; // Because fullCallendar always gives the next day which is 12.00.00 AM,
-					                                              // so have substract 1s to get 11:59:59 of prev date.
+					                                              // so have subtract  1s to get 11:59:59 of prev date.
 			}
 
 				/**

@@ -75,7 +75,7 @@ angular.module('calendardirective', [])
 											obj.end=moment(field.job_end).format('YYYY-MM-DD 23:59:59');
 										else
 											obj.end=moment(field.job_start).format('YYYY-MM-DD 23:59:59');
-                               $scope.ScheduledJobs.push(obj);
+                                        $scope.ScheduledJobs.push(obj);
                            }
 
 									// setup filtering 
@@ -154,11 +154,11 @@ angular.module('calendardirective', [])
                            dropAccept: '.drop-accpted',
                            editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
                            droppable: $scope.dropablefullcalendar,
-									eventLimit: true,
-									timezone: 'local',
-									views:{
-										week:{eventLimit:false}
-									},
+							eventLimit: true,
+							timezone: 'local',
+							views:{
+								week:{eventLimit:false}
+							},
                            defaultTimedEventDuration: '04:00:00',
                            startEditable: true,
                            durationEditable: true,
@@ -185,11 +185,14 @@ angular.module('calendardirective', [])
                                // if so, remove the element from the "Draggable Events" list
                                $(this).remove();
                            },
-                           eventReceive: function (event) {			// external drop callback
+                           eventReceive: function (event) {			// external drop callbackreturn;
                                var ev = $scope.getEventInfo(event.title);
                                $scope.estimateid = ev.reportID;
-                               event.end = angular.copy((event.start));
-                               event.end = setLastMomentOfTheDay(event.end);
+                               //event.start = event.start.local();
+                               convertLocalTime(event.start,event.end);
+                               //event.end = angular.copy((event.start));
+                               //event.end = setLastMomentOfTheDay(angular.copy(event.start));
+                               console.log(event.start.format('YYYY-MM-DD'));
                                Api.ScheduleJob(ev.reportID, {
                                    job_start: event.start.format('YYYY-MM-DD')
                                }).then(function (res) {
@@ -271,6 +274,7 @@ angular.module('calendardirective', [])
                                //}
                            },
                            eventResize: function (el, delta, revertFunc, jsEvent, ui, view) {
+                               convertLocalTime(el.start,el.end);
                                var html = $(view.el[0]).find(".fc-title").html();
                                html = html.replace("<br/>", "");
                                html = html.replace("<br>", "");
@@ -283,7 +287,7 @@ angular.module('calendardirective', [])
                                el.job_end = moment(el.end).format('YYYY-MM-DD HH:mm:ss')
                                updateArray(el.reportID,moment(el.job_start).format('YYYY-MM-DD hh:mm:ss'),moment(el.job_end).format('YYYY-MM-DD hh:mm:ss'));
                                //$('#calendar').fullCalendar('updateEvent', event);
-
+                                console.log( moment(el.start).format('YYYY-MM-DD HH:mm:ss') +'   '+moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss'));
                                Api.ScheduleJob(el.reportID, {
                                    //job_start: t.format('YYYY-MM-DD'),
                                    job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
@@ -296,6 +300,7 @@ angular.module('calendardirective', [])
 								setTimeout(function(){	updateTotals() },1000);
                            },
                            eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
+                               convertLocalTime(el.start,el.end);
                                if(el.reportID == undefined){
                                    var eventInfo=$scope.getEventInfo(el.title);
                                    el.reportID = eventInfo.reportID;
@@ -303,21 +308,16 @@ angular.module('calendardirective', [])
                                var sTime, eTime;
                                sTime =  moment(el.start).format('YYYY-MM-DD HH:mm:ss');
                                if(el._allDay == false && el.end == undefined){
-                                   el.end = angular.copy((el.start));
-                                   el.end = setLastMomentOfTheDay(el.end);
-                                   eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
+                                   eTime = moment(el.start).format('YYYY-MM-DD 23:59:59');
                                }
-                               else if (el.end == undefined){
-                                  //el.end = moment(el.start.format('YYYY-MM-DD 23:59:59'));
-                                  //el.end = angular.copy(moment(el.start.format('YYYY-MM-DD 23:59:59')));
-                                   el.end = angular.copy((el.start));
-                                   el.end = setLastMomentOfTheDay(el.end);
-                                   eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
+                               else if (el.end == undefined){  // When duration is 1
+                                   eTime = moment(el.start).format('YYYY-MM-DD 23:59:59');
                                }
                                else
-										 {
-                                   eTime = moment(el.end).format('YYYY-MM-DD HH:mm:ss');
+										 { // When duration is >1
+                                   eTime = moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss');
 										 }
+                               console.log(sTime+'   '+eTime);
                                Api.ScheduleJob(el.reportID, {
                                    job_start: sTime,
                                    job_end: eTime
@@ -543,12 +543,10 @@ angular.module('calendardirective', [])
 
             var setupModalDatePickers = function(event){
                 $scope.showWeekendWork = isDateSpanWeekend(event.start, event.end);
-					
 					 $scope.job_start_unix=event.start.format('X');
-					 $scope.job_end_unix=event.end.format('X');
-            }
-
-
+					 $scope.job_end_unix=event.end.format('X')-1; // Because fullCallendar always gives the next day which is 12.00.00 AM,
+					                                              // so have substract 1s to get 11:59:59 of prev date.
+			}
 
 				/**
 				 * Calc total days of work, taking weekend work into account
@@ -697,11 +695,9 @@ angular.module('calendardirective', [])
 
 					 if(!data.start) data.start=moment(moment(data.job_start).format('YYYY-MM-DD 00:00:00'));
 					 if(!data.end){
-					 	if(data.job_end)
-					 		data.end = moment(moment(data.job_end).format('YYYY-MM-DD 23:59:59'));
-						else
-					 		data.end = moment(moment(data.job_start).format('YYYY-MM-DD 23:59:59'));
-					}
+                         data.end = angular.copy(data.start);
+                         data.end.add(1, 'days'); // fullCalendar end date value should represnt the next day (12:00:00 AM) according to the fullCalendar design.
+					 }
 
                 $('#modalTitle').html('<span style="font-size:1.5em; font-weight:bold;">'+data.reportID + " - " + data.name 
 					 	+"</span> (<a href='#/trees?reportID="+data.reportID+"'>edit</a> | "
@@ -975,16 +971,19 @@ angular.module('calendardirective', [])
                 }
             }
 
-            function setLastMomentOfTheDay(moment){
-                moment.hour('23');
-                moment.minute('59');
-                moment.seconds('59');
-                return  moment;
+            var setLastMomentOfTheDay = function (mom){
+                mom.hour('23');
+                mom.minute('59');
+                mom.seconds('59');
+                return  mom;
             }
 
-
+            var convertLocalTime = function(startMoment,endMoment){
+                startMoment = startMoment.local();
+                if(endMoment!=undefined && endMoment!=null){
+                    endMoment = endMoment.local();
+                }
+            }
         }
-
-
     }
 });

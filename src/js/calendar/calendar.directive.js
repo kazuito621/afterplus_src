@@ -26,6 +26,15 @@
 *      TIPS:
 *      Don't change the datetime value of events by force. It will create more bug & confusion.
 *
+*      We are only changing the value of event object in 'convertLocalTime' method, because inspite of declaring timezone: 'local',
+ *     the fullCalendar control returning the datetime value in UTC format.
+ *     So, till now where we have FOUND that the UTC time is causing problem, we are using that function to convert it to local.
+ *     So, in future whenever we face issue with time/duration, we should check if that time is UTC or Local.
+ *     One way to determine is, Get the unix timestamp by event.end.format('X'), convert that here in http://www.epochconverter.com/ to see the human understandable exact time.
+ *
+ *     In future we will resolve this UTC problem of this fullCalendar controller by taking this solution into account
+ *              http://stackoverflow.com/questions/29158308/timezone-not-working-properly-for-fullcalendar
+*
 * */
 
 function commaDigits(val){
@@ -103,10 +112,10 @@ angular.module('calendardirective', [])
 										obj.type='Scheduled';
 										obj.start=moment(field.job_start).format('YYYY-MM-DD');
 										if( field.job_end ) {
-                                            eMoment = moment(field.job_end);
+                                            eMoment = moment(field.job_end).local();
                                         }
 										else {
-                                            eMoment = moment(field.job_start);
+                                            eMoment = moment(field.job_start).local();
                                         }
                                         obj.end = eMoment.add(1, 'days');
                                         obj.end = eMoment.format('YYYY-MM-DD');
@@ -243,6 +252,7 @@ angular.module('calendardirective', [])
                                console.log(event);
                            },
                            eventClick: function (data, jsEvent, view) {
+                               convertLocalTime(data.start,data.end)
                                $scope.openJob(data);
                            },
 							dayClick: function( date, evt, view ){

@@ -52,9 +52,17 @@ app.directive('treeEditModal', ['$modal','Api', '$location', function ($modal,Ap
         // added throttle, because on fist load, it might fire twice, once from init() on load,
         // and once from the $on(nav) event above
         var init = _.throttle(function (tree, mode) {
-            if(mode=='edit'){
-                s.openModal();
-            }
+
+				// if no history item exists (which happens if user clicked from the "estimates" page,
+				// then look it up
+				if(tree && !tree.history){
+					Api.getTree(tree.treeID).then(function(r){ 
+							if(r && r.history) s.tree.history = r.history;
+					});
+				}
+
+            if(mode=='edit') s.openModal();
+            
             //initTreeData();
             // todo -- editmode should be controlled by user privilege
             if (!mode) {

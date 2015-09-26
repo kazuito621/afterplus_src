@@ -21,7 +21,8 @@
 				<i class="fa fa-plus" style='visibility:hidden;'></i><!-- if this isnt here, the above rollover doesnt work right... wtf -->
 
 				<!-- i removed the ba-tooltip because it was messing up the clickability of the link -->
-            <a href ng-if="auth.isAtleast('inventory')" bulk-tree-editor site-id="siteID" treatments="treatments" title='Make Bulk Edits to this Property'><i class="fa fa-gear white _size6"></i></a>
+            <a href ng-if="auth.isAtleast('inventory')" bulk-tree-editor site-id="siteID" treatments="treatments" species="species"
+					title='Make Bulk Edits to this Property'><i class="fa fa-gear white _size6"></i></a>
 				<i class="fa fa-gear" style='visibility:hidden;'></i><!-- if this isnt here, the above rollover doesnt work right... wtf -->
 
 		</td>

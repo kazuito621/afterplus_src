@@ -134,12 +134,30 @@
                                         <div>
                                         <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%" 
 													 	ng-change="selected.IsChangeToTreatment=true"
-												ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
+														ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                         </select> 
 										</div>
                                         		 &nbsp;<br>
                                     </span>
                                     <br>
+
+                                    <span ng-style="selected.isSpeciesSelected?'':{'pointer-events':'none','color':'silver'}">
+                                        <label style="font-weight: bold">
+                                        	<input type="checkbox" ng-model="selected.IsChangeToSpecies"/>
+                                        	<span>Change Species to</span>
+										</label>
+                                        <br>
+                                        <div>
+                                        <select ng-model="selected.changeSpeciesTo" class="pull-right"  style="width: 40%;margin-right: 25%" 
+													 	ng-change="selected.IsChangeToSpecies=true"
+														ng-options="t.commonName for t in allSpecies" required>
+                                        </select> 
+										</div>
+                                        		 &nbsp;<br>
+                                    </span>
+                                    <br>
+
+
                                     <span ng-if="mode=='site'">
 										<label style="font-weight: bold">
                                     	    <input type="checkbox" ng-model="selected.IsChangeToYear" />

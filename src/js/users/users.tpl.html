@@ -64,21 +64,32 @@
             </thead>
             <tbody infinite-scroll="showMoreUsers()" infinite-scroll-distance="3">
             <tr ng-repeat="e in displayedUsers track by e.userID" class='hoverHotspot' id='item_{{e.reportID}}'>
-                <td  style="text-decoration:underline;cursor: pointer">
-                    <span ng-bind="e.email"  add-edit-user-modal="e" sites="sites" clients="initData.clients" on-save="refreshSites"></span>
-                    <a ng-if="e.role=='customer' && e.email!='No Results'" data-backdrop='static'
-                       data-keyboard=true
-                       bs-modal
-                       data-template="js/trees/emailReport.tpl.html"
+                <td>
+                    <span style='text-decoration:underline;cursor: pointer' ng-bind="e.email"  add-edit-user-modal="e" sites="sites" clients="initData.clients" on-save="refreshSites"></span>
+
+						<!-- email the user -->
+                    <button ng-if="e.role=='customer' && e.email!='No Results'" data-backdrop='static'
+                       bs-modal data-template="js/trees/emailReport.tpl.html" data-keyboard=true
                        ng-click="sendPortalLink(e)"
-                            ><i  bs-tooltip title="Send user a portal login link" class="fa fa-envelope" style="margin-left: 6px;"></i></a>
-                    <a ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information">
-                        <i class="fa fa-envelope" style="margin-left: 6px;"></i>
-                    </a>
+                            ><i  bs-tooltip title="Send user a portal login link" class="fa fa-envelope"></i></button>
+                    <button ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" 
+						  		user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information">
+                        <i class="fa fa-envelope"></i></button>
+
+
+						<!-- get portal link -->
+							<button ng-if="e.role=='customer'" type="button" data-placement="top-right" data-html="true" data-autoClose="true" data-autoclose="true"
+								data-content="<a href='{{e.portalLink}}' target=_new>{{e.portalLink}}</a>"
+								title="Portal Link for {{e.fName}}" data-trigger="click" bs-popover><i class="fa fa-link"></i></button>
+
+
                 </td>
                <!--<td ng-show="e.fName && e.lName" ng-bind="e.fName+' '+e.lName"></td>-->
                 <td  ng-bind="e.name"></td>
-                <td ng-bind="e.role"></td>
+                <td class='usertab-role {{e.role}}' style='text-transform: uppercase; font-size:.8em; font-weight:bold;'>
+					 	<span ng-if="e.disabled==1" style='color:#f33 !important;'>DISABLED</span>
+						<span ng-if="e.disabled!=1" class='userrole-{{e.role}}'>{{e.role}}</span>
+					</td>
                 <td ng-bind="e.sessionCount"></td>
                 <td>
                     <a href="" class="badge" style="background-color:blue" ng-bind="e.clientCount"></a>

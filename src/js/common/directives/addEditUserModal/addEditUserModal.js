@@ -89,6 +89,48 @@ app.directive('addEditUserModal',
 
                 };
 
+
+			
+					scope.sendPortalLink = function(user){
+					 var s=scope;
+                s.emailRpt={};
+                s.mode='addEditUsers';
+                s.type = 'sendPortalLink';
+                s.modalTitle = "Email Portal Link";
+                s.emailRpt.contactEmails = [];
+                s.emailRpt.cc_email = '';
+
+                s.emailRpt.ccEmails = [];
+
+                s.emailRpt.senderEmail = Auth.data().email;
+
+                s.emailRpt.subject = 'Manage your trees - Portal Login';
+                s.emailRpt.disableSendBtn = false;
+                s.emailRpt.sendBtnText = 'Send';
+                s.emailRpt.contactEmails.push(user.email); 
+                Api.getEmailPortalLink(user.userID).then(function(data){
+                    s.emailRpt.message = data;
+                })
+            };
+
+            scope.sendEmailPortalLink=function($hide, $show){
+					var s = scope;
+                s.emailRpt.disableSendBtn = true;
+                s.emailRpt.sendBtnText = 'Sending...';
+
+                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+
+                Api.sendEmailPortalLink(s.emailRpt)
+                    .then(function (msg) {
+                        s.emailRpt.disableSendBtn = false;
+                        s.emailRpt.sendBtnText = 'Send';
+                        $hide();
+                    });
+            }
+
+
+
+
                 scope.closeModal = function () {
 
                     modal.hide();

@@ -64,14 +64,14 @@
                 <td>{{s.treeCount}}</td>
                 <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
                 <td>
-                    <a ng-show="s.userCustCount>0" site-users-edit-modal site="s"
-                       class='fa fa-user olive hand' bs-tooltip title='A CUSTOMER contact exists. Click to edit.'></a>
+                    <a ng-show="s.userCustCount>0" site-users-edit-modal site="s" sites="sites" clients="initData.clients"
+                       class='fa fa-user olive hand' bs-tooltip title='Edit Contacts for {{s.siteName}}'></a>
                     <a ng-show="s.userSalesCount>0" site-users-edit-modal site="s"
-                       class='fa fa-user red hand' bs-tooltip title='A SALES contact exists. Click to edit.'></a>
+                       class='fa fa-user red hand' bs-tooltip title='Edit Contacts for {{s.siteName}}'></a>
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
 					<a ng-show="s.userCustCount<1 || s.userStaffCount<1" site-users-edit-modal site="s" 
-					   class="fa fa-frown-o _red _size6 hand" bs-tooltip title="Property is missing client contacts or company sales reps!"></a> 
+					   class="fa fa-frown-o _red _size6 hand" bs-tooltip title='Add Contacts for {{s.siteName}}'></a> 
 					&nbsp;
 					<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
 					   class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;

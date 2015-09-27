@@ -37,6 +37,23 @@
 														  <input type="checkbox" ng-model="newContact.showStatInDash" ng-change="selectionChanged()"/> Show user in dashboard
 													 </label>
 												</div>
+												
+												<div style='padding:2em 0 0 2em;'>
+												  <button ng-if="newContact.role.roleCode=='customer' || newContact.role=='customer'" data-backdrop='static'
+													  bs-modal data-template="js/trees/emailReport.tpl.html" data-keyboard=true
+													  ng-click="sendPortalLink(newContact)"
+															 ><i class="fa fa-envelope"></i> Send Login Info to Customer</button>
+
+												  <button ng-if="newContact.role.roleCode!='customer' && newContact.role!='customer'" confirm-popup="'Email this user their login information?'" 
+														user-id="e.userID" callback="sendLoginInfo">
+														<i class="fa fa-envelope"></i> Send Login Info to User</button>
+												</div>
+
+
+
+
+
+
 												<ul clas="row" style="margin: 2em 0; background-color: #aaa; padding:1.5em; color:#fff; font-wieght:bold; font-size:1.3em;">
 													 <li ng-repeat="roleDesc in newContact.role.permDesc">
 														  {{roleDesc}}

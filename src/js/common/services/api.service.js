@@ -78,8 +78,8 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         getInitData: function () { return initData; },
         // returns a promise... for .then() when refresh is done
         refreshInitData: function () { return init(true); },
-        getEmailPortalLink:function(){ //GET /template/emailPortalLink
-            return  Rest.one('template/emailPortalLink').get();
+        getEmailPortalLink:function(uid){ //GET /template/emailPortalLink
+            return  Rest.one('template/emailPortalLink/'+uid).get();
         },
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);

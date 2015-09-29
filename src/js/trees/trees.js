@@ -1122,8 +1122,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         s.cancelEditing(true);
                 });
 
-                s.confirmEditing = function () {
 
+					// When location of EXISTING TREE pin is confirmed
+                s.confirmEditing = function () {
                     if (s.currentEditableMarker != null) {
                         s.setAlert('Updating Location', { busy: true, time: "false" });
 
@@ -1133,7 +1134,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         tree.lattitude = position.lat();
                         tree.lat = position.lat();
                         tree.lng = position.lng();
-                        
 
                         Api.updateTree(tree).then(function (response) {
                             s.hideAllAlert();
@@ -1294,6 +1294,8 @@ console.debug(" show mapp trees -------- ");
                                     s.cancelMarker(s.treeMarkers.length - 1, false);
                             });
 
+
+									// When NEW TREE is confirmed location
                             s.confirmLocation = function (markerIndex) {
                                 s.setAlert('Saving tree', { busy: true, time: "false" });
                                 var marker = s.treeMarkers[markerIndex];
@@ -1303,21 +1305,22 @@ console.debug(" show mapp trees -------- ");
                                     longitude: position.lng(),
                                     lattitude: position.lat(),
                                     lat: position.lat(),
-                                    lng: position.lng()
+                                    lng: position.lng(),
+												building:'no', powerline:'no', caDamage:'no',
+												speciesID:1, dbhID:1, ratingID:5
                                 };
                                 Api.saveTree(tree).then(function (response) {
                                     s.hideAllAlert();
 
                                     var lastInsertedMarker = s.treeMarkers[s.treeMarkers.length - 1];
-
-                                    lastInsertedMarker.treeID = response.treeID;
+                                    tree.treeID = lastInsertedMarker.treeID = response.treeID;
                                     lastInsertedMarker.siteID = tree.siteID;
 
                                     lastInsertedMarker.tree = tree;
                                     lastInsertedMarker.info = getTreeTemplate(response);
                                     lastInsertedMarker.setIcon(setIconColor(response));
                                     markers_singleSite.push(lastInsertedMarker);
-                                    s.trees.push(response);
+                                    s.trees.push(tree);
                                     if (infowindow)  infowindow.close();
 
                                     google.maps.event.clearListeners(marker, 'click');

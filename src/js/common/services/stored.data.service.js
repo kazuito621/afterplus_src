@@ -134,7 +134,6 @@ app.service('storedData',
                     if(data.length!=0){
                         _.each(data,function(report,reportIdx){
                            if(merged.indexOf(reportIdx) == -1){ // Don't push those already replaced items
-                               var a=1;
                                storedEstimateData.unshift(report);
                            }
                         });

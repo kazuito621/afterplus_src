@@ -129,8 +129,25 @@
 										onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
 										<BR><BR>
 										<BR>
-								<span style='font-size:2.2em;'>${{price|formatPrice}}</span><BR>
 
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <span>
+                                            <span>Done</span>    <BR>
+                                            <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
+                                            <span>TODO</span>        <BR>
+                                            <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span><BR>
+                                            <span>Total</span>       <BR>
+                                            <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-5" style="margin: 5px">
+                                        <span ng-if="todo_price<price">
+                                            <span style='font-size:1.7em;'>{{(((price-todo_price)/price*100).toFixed(2))|formatPrice}}%</span><BR>
+                                            <span style="font-size: 1.2em;">Done</span>    <BR>
+                                        </span>
+                                    </div>
+                                </div>
                     </div>
                 </div>
                 <BR>
@@ -162,9 +179,12 @@
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-
-                <input type="button" class="btn btn-danger" 
-					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  " 
+                <button  class="btn btn-default pull-left"  ng-model="status"
+                        ng-options="s.value as s.txt for s in statuses"
+                        bs-select onclick="return false;" ng-change="updateStatus()">
+                </button>
+                <input type="button" class="btn btn-danger"
+					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
 						ng-click="UnscheduledJob()" value="Unschedule Job"></input> 
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="valueChanged = false">Close</button>
 

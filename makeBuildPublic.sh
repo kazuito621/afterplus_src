@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 
 PUBDIR=public
@@ -33,7 +33,9 @@ cd `dirname $0`
 
 BASEDIR=$PWD		## base dir of where script is located
 cd ../php/public
+[ $? != 0 ] && echo "Cant find dir ../php/public/" && exit 1
 PHPPUBDIR=$PWD		## php public dir
+echo "Found php public dir $PHPPUBDIR"
 
 ## Setup links
 cd $BASEDIR
@@ -55,15 +57,15 @@ ln -sf $BASEDIR/tree_images
 
 ## Check that it all worked
 [ ! -e api/apptop.php ] && echo "ERROR - SYMLINK DIDNT SET RIGHT: api" && exit 1
-[ ! -e go/tpl ] && echo "ERROR - SYMLINK DIDNT SET RIGHT:" && exit 1
-[ ! -e import/tmp ] && echo "ERROR - SYMLINK DIDNT SET RIGHT:" && exit 1
+[ ! -e go/tpl ] && echo "ERROR - SYMLINK DIDNT SET RIGHT: go/tpl" && exit 1
+[ ! -e import/tmp ] && echo "ERROR - SYMLINK DIDNT SET RIGHT: import/tmp" && exit 1
 [ ! -e tree_images/default.jpg ] && echo "ERROR - SYMLINK DIDNT SET RIGHT: tree_images" && exit 1
 echo "Symlinks verified"
 
 ## Backup last build dir, if the next build dir is not the same as current public
 cd $BASEDIR
 if [ -e $PUBDIR ] && [ "$(readlink public)" != "$NEXTBUILDDIR" ]; then
-	unlink lastPublicBuild
+	[ -e lastPublicBuild ] && unlink lastPublicBuild
 	mv -f $PUBDIR lastPublicBuild 
 	echo "Backedup last build: lastPublicDir --> $(readlink lastPublicDir)"
 fi
@@ -96,14 +98,18 @@ makeSym () {
 	fi
 }
 
-cd lastPublicBuild
-LPB=$PWD
-cd ..
-cd $PUBDIR
-makeSym js vendor.js $LPB 
-makeSym js scripts.js $LPB
-makeSym css vendor.css $LPB
-makeSym css main.css $LPB
+# If exist, link old js/css files in old public folder into new one 
+# in case any browsers had it cached
+if [ -e lastPublicBuild ]; then
+	cd lastPublicBuild
+	LPB=$PWD
+	cd ..
+	cd $PUBDIR
+	makeSym js vendor.js $LPB 
+	makeSym js scripts.js $LPB
+	makeSym css vendor.css $LPB
+	makeSym css main.css $LPB
+fi
 
 
 

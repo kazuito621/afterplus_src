@@ -44,8 +44,12 @@ function commaDigits(val){
 	return val;
 }
 
+
+
+
 angular.module('calendardirective', [])
-.directive('calendar', function () {
+.directive('calendar', ['$timeout',
+function ($timeout) {
     return {
         restrict: 'EA',
         replace: false,
@@ -405,18 +409,33 @@ angular.module('calendardirective', [])
                 $("#tooltip").removeClass("show").addClass("hide");
             };
 
-            $scope.search = function (serhtxt) {
+
+
+
+				var LSTO=null;
+				// Called when text changes in search box
+				// We are limited the search procesing by only calling
+				// to filter AFTER user is done typing for half a second
+            $scope.search = function (searchtxt) {
+					$timeout.cancel(LSTO);
+					LSTO=$timeout(function(){
+						doSearch($scope.searchtxt);
+					},550);
+            };
+
+            var doSearch = function (searchtxt) {
                 $scope.UnscheduledJobs = [];
                 $scope.ScheduledJobs = [];
-                if (serhtxt != null) {
+                if (searchtxt != null) {
                     $scope.job = [];
                     angular.forEach(uncheduledJobsBackUp, function (item) {
                         var titletxt = item.title;
                         if (titletxt !== undefined) {
+									item.siteName=''+item.siteName;
                             if (
-                                titletxt.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0 ||
-                                item.siteName.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0 ||
-                                item.reportID.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0
+                                titletxt.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
+                                item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
+                                item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
                             ) {
                                 $scope.UnscheduledJobs.push(item);
                             }
@@ -425,19 +444,21 @@ angular.module('calendardirective', [])
                    /// $('#calendar').fullCalendar('addEventSource', $scope.job);
                 }
                 else {
-                    $scope.UnscheduledJobs = uncheduledJobsBackUp;
+                    $scope.UnscheduledJobs = angular.copy(uncheduledJobsBackUp);
                    // $('#calendar').fullCalendar('addEventSource', $scope.ScheduledJobs);
                 }
 
-                if (serhtxt != null) {
+                if (searchtxt != null) {
                     $scope.job = [];
                     angular.forEach(scheduledJobsBackUp, function (item) {
                         var titletxt = item.title;
+								console.debug(titletxt  );
                         if (titletxt !== undefined) {
+									item.siteName=''+item.siteName;
                             if (
-                                titletxt.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0 ||
-                                item.siteName.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0 ||
-                                item.reportID.toString().toLowerCase().indexOf(serhtxt.toString().toLowerCase()) >= 0
+                                titletxt.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
+                                item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
+                                item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
                             ) {
                                 $scope.ScheduledJobs.push(item);
                             }
@@ -923,12 +944,14 @@ angular.module('calendardirective', [])
 					}
 				});
 
-				var stats=['approved','scheduled','completed','invoiced','paid'];
+				var stats=['scheduled','completed','invoiced','paid'];
 				_.each(stats, function(s){
 					st[s]='$' + shortenPrice(st[s]);
 					var c=$('.small-tag.'+s);
 					if(c) c.text(s+' = '+st[s]);
 				});
+
+				$('#approved-jobs-title').text('Approved ($'+shortenPrice(st['approved'])+')');
 			}
 
 
@@ -1067,4 +1090,4 @@ angular.module('calendardirective', [])
             }
         }
     }
-});
+}]);

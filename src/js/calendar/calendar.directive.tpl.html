@@ -49,11 +49,12 @@
 					  ng-model="filter_job_userID"
 					  ng-change="filterByJobUserID()">
 				 <option class="option" ng-repeat="u in jobUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
-			</select>
+			</select><BR>
+			 <input style='width:150px;height:1.5em;' type="text" id="searchJob" ng-model="searchtxt" ng-keyup="search(searchtxt)" placeholder="Search"/>
 		</div>
 		<div id='external-events' style="">
 			 <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" placeholder="Search"/>
-             <h4 style="margin:0 0 .5em; 0">Approved {{total.approved}}</h4>
+             <h4 style="margin:0 0 .5em;">Approved {{total.approved}}</h4>
 			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
 			 	ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
 				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
@@ -70,7 +71,7 @@
 
 		<!-- color key -->
 		<div style='clear:both;padding:2em;'>
-			<span class='small-tag approved'> APPROVED </span> &nbsp; 
+			<!--<span class='small-tag approved'> APPROVED </span> &nbsp; -->
 			<span class='small-tag scheduled'> SCHED </span> &nbsp; 
 			<span class='small-tag completed'> COMPLETED </span> &nbsp; 
 			<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
@@ -132,16 +133,16 @@
                                 <div class="row">
                                     <div class="col-sm-5">
                                         <span>
-                                            <span>Done</span>    <BR>
+                                            <span>DONE:</span>    <BR>
                                             <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
-                                            <span>TODO</span>        <BR>
+                                            <span>TODO:</span>        <BR>
                                             <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span><BR>
-                                            <span>Total</span>       <BR>
+                                            <span>TOTAL:</span>       <BR>
                                             <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
                                         </span>
                                     </div>
                                     <div class="col-sm-5" style="margin: 5px">
-                                        <span ng-if="todo_price<price">
+                                        <span ng-if="todo_price<total_price">
                                             <span style='font-size:1.7em;'>{{(((price-todo_price)/price*100).toFixed(2))|formatPrice}}%</span><BR>
                                             <span style="font-size: 1.2em;">Done</span>    <BR>
                                         </span>

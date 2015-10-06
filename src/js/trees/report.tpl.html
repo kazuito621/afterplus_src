@@ -175,6 +175,9 @@
                             <p><span style='font-weight:bold;'>{{desc.treatmentType}}</span> - {{desc.desc}}</p><br>
                         </div>
                     </div>
+                    <div class="section-container" style="margin-top: 19px;">
+                        <side-note report-id="{{report.reportID}}" note-type='report_internal'></side-note>
+                    </div>
                     <div class="logo-container" ng-if="affiliations.length">
 						<span class='logo' ng-repeat="af in affiliations">
 							<img src='img/afil/{{af}}'>

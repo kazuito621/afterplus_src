@@ -149,17 +149,29 @@
                            style="text-decoration: none;"></a>
                     </td>
                 </tr>
+
             </tbody>
         </table>
     </div>
 
-    <div class="action-float-bar" ng-show="checkedEstimates.ids.length > 0">
+    <div class="action-float-bar" >
         <div class="container">
             <div class="action-float-bar-inner">
-                <i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp;
-                <a href="#" ng:cloak ng-click="duplicate($event)" style="margin-left: 50px;">
-                    Duplicate
-                </a>
+                <div class="row">
+                    <div class="col-sm-7">
+                        <span ng-show="checkedEstimates.ids.length > 0">
+                            <i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp;
+                            <a href="#" ng:cloak ng-click="duplicate($event)" style="margin-left: 50px;">
+                                Duplicate
+                            </a>
+                        </span>
+                    </div>
+                    <div class="col-sm-5 pull-right">
+                        <span class="pull-left" style="color: white;">
+                            Total : ${{displayedTotalPrice(displayedEstimates)|formatPrice}}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -185,11 +185,25 @@
                             <p><span style='font-weight:bold;'>{{desc.treatmentType}}</span> - {{desc.desc}}</p><br>
                         </div>
                     </div>
+						
+
+						  <div style='clear:both; margin:0.5em;'><BR></div>
+						  <hr>
+						  <div style='clear:both; margin:0.5em;'><BR></div>
+
+
+			
+							<div id='internal-note-container' style='min-height:50px;'>
+            	     		<side-note report-id="{{report.reportID}}" note-type='report_internal'></side-note>
+							</div>
+
+							&nbsp;
                     <div class="logo-container" ng-if="affiliations.length">
-						<span class='logo' ng-repeat="af in affiliations">
-							<img src='img/afil/{{af}}'>
-						</span>
+								<span class='logo' ng-repeat="af in affiliations">
+									<img src='img/afil/{{af}}'>
+								</span>
                     </div>
+
 						  <div style='clear:both; margin:0.5em;'><BR></div>
 						<div ng-if="estimate_footer" ng-bind-html="estimate_footer" style='padding-top:2em;line-height:1.3em;'></div>
                 </div>

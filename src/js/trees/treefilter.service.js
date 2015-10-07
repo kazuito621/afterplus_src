@@ -33,10 +33,11 @@
 **/
 
 
-app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $rootScope) {
+app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', function($timeout, $rootScope,ReportService) {
 
 	// private properties
-	var selectedFilters=[]		
+	var selectedFilters=[],
+        RS = ReportService;
 
 
 	// public properties
@@ -48,7 +49,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 			 ,lastFilterCount:0                         // { species:2 }  (ie. there are 2 different types of species)
              ,containsContradictingFilters : false
     }
-	this.trees;						
+	this.trees;
+    var self= this;
 
 
 	// public methods
@@ -105,7 +107,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         this.data.containsContradictingFilters = false;
 
         // split filter groups based on selectedFiltrs - which should be calculated separately/together
-        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline', 'years'];
+        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline', 'years','onlyInEstimate'];
         var filtersToCountSeparately = [];
         _.each(selectedFilters, function(sf){
             if (filtersToCountSeparately.indexOf(sf.type) == -1){
@@ -266,6 +268,12 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
                         filterAr[itm.type].selected = false;
                     }
                     break;
+                case('onlyInEstimate'):
+                    if(filt[itm.type]==true){
+
+                        filt[itm.type] = false;
+                    }
+                    break;
             }
 		});
 		this.data.lastFilterCount=selectedFilters.length;
@@ -291,7 +299,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		var filterCounts={};			//ie. {'species':3, 'dbg':1}
 		var satisfiedFilterCounts={};
 		var totalFilterTypes=0, totalSatisfiedFilterTypes=0, yearFilterOk, treatmentFilterOk;
-                var buildingFilter, caDamageFilter, powerlineFilter, caDamagePotentialFilter;
+                var buildingFilter, caDamageFilter, powerlineFilter, caDamagePotentialFilter,doesExistOnReport;
                  
 
 		// loop through each filter, and see if it applies to the tree
@@ -307,6 +315,9 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
             // building, hardscape damage, and powerline flags
             buildingFilter=caDamageFilter=powerlineFilter=nonePropFilter=false;
 
+            if(filter.type == 'onlyInEstimate'){
+                doesExistOnReport = (self._IsTreeExistsOnReport(tree) ==  true)?true:false;
+            }
             if(filter.type == "caDamage"){
                 caDamageFilter = (tree.caDamage == 'yes')?true:false;
             }
@@ -332,7 +343,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 			// now evaluate the tree against this particular filter
   			var idName=filter.type + "ID"; 		//ie. "species" + "ID" = "speciesID"
-			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||  yearFilterOk || treatmentFilterOk ){
+			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||
+                yearFilterOk || treatmentFilterOk || doesExistOnReport){
 				// if we havent recored this as a "satisfied filter", then do so...
 				if( !satisfiedFilterCounts[filter.type] ){
 					totalSatisfiedFilterTypes++;
@@ -343,6 +355,15 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		})
 		return (totalSatisfiedFilterTypes >= totalFilterTypes);
 	}
+
+    this._IsTreeExistsOnReport = function(tree){
+        for(var i = 0;i<RS.report.items.length; i++){
+            if(RS.report.items[i].treeID == tree.treeID){
+                return true;
+            }
+        }
+        return false;
+    }
 
 	/** 
 	 * Format of selectedFilter, is an array of objects:

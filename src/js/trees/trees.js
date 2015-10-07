@@ -177,6 +177,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
+            s.initData.filters.onlyInEstimate = false;
             s.filters.years = [
                 { id: moment().add(-2, 'year').format('YYYY'), desc: '2 years ago', old: 'yes' },
                 { id: moment().add(-1, 'year').format('YYYY'), desc: '1 year ago', old: 'yes' },
@@ -338,6 +339,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
                     var reportID = $location.search().reportID;
                     if (reportID) {
+                        s.initData.filters.onlyInEstimate = true;
+                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate); // When existing estimate is opened, 'Only Trees on Estimate' checkbox is checked
                         showReport(reportID);
                         return;
                     }
@@ -504,6 +507,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Wil be fired when user select report id from recent drop down.
             s.$on('OnLoadReportEvent', function (evt, data) {
+                s.report = data;
                 if (data.siteID == undefined || data.siteID == "")
                     return;
 

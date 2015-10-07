@@ -42,7 +42,20 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="filter-container" ng-show="report!=undefined && report!=null">
+                                    <div class="filterHeader filter-header">
+                                        <!--<label for="">
+                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
+                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
+                                            Only Trees on Estimate
+                                        </label>-->
+                                        <label class="" style="">
+                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
+                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
+                                            Only Trees on Estimate
+                                        </label>
+                                    </div>
+                                </div>
                                 <!--FILTER SECTION: SPECIES-->
                                 <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
                                 <!-- END SPECIES FILTER SECTION -->

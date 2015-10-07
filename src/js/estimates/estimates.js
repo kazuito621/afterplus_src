@@ -389,7 +389,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     var totalPrice = 0;
     s.displayedTotalPrice =function(displayedEstimates){
         var count = s.displayedEstimates.length;
-        if (count === estimates.length) {
+        if (count === estimates.length && totalPrice!=0) {
             return totalPrice;
         }
         totalPrice = 0;

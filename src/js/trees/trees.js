@@ -340,7 +340,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var reportID = $location.search().reportID;
                     if (reportID) {
                         s.initData.filters.onlyInEstimate = true;
-                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate); // When existing estimate is opened, 'Only Trees on Estimate' checkbox is checked
                         showReport(reportID);
                         return;
                     }
@@ -451,8 +450,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if(lastSiteID==id) return; // Prevents loading same things twice
                 else lastSiteID=id;
                 s.selected.siteID = id;
-                if(ShouldChangeUrl==true)
+                if(ShouldChangeUrl==true){  // When user changed site from the site dropdown.
                    $location.search({ siteID: id});
+                   s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                }
                 ReportService.setSiteID(id);
 
                 if (s.data.mode() != 'trees') return;
@@ -510,7 +511,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.report = data;
                 if (data.siteID == undefined || data.siteID == "")
                     return;
-
+                if(s.report.reportID){
+                    s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
+                }else{
+                    s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                }
                 s.onSelectSiteID(data.siteID);
             });
 
@@ -1795,6 +1800,7 @@ console.debug(" show mapp trees -------- ");
             self.makeFiltersObject = function () {
                 var opts = {};
                 _.each(s.TFSdata.selectedFilters, function (filt) {
+                    if(filt.type == 'onlyInEstimate') return;
                     var idName = (filt.type == 'year' || filt.type == 'miscProperty') ? filt.type : filt.type + 'ID';
                     if (!opts[idName]) opts[idName] = [];
                     opts[idName].push(filt.id);

@@ -386,6 +386,19 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		}, 500);
 	});
 
+    var totalPrice = 0;
+    s.displayedTotalPrice =function(displayedEstimates){
+        var count = s.displayedEstimates.length;
+        if (count === estimates.length && totalPrice!=0) {
+            return totalPrice;
+        }
+        totalPrice = 0;
+        displayedEstimates.forEach(function(i){
+            totalPrice+= parseInt(i.total_price);
+        })
+        return totalPrice;
+    }
+
 	s.onCustClickStatus = function(reportID, hashLink, status){
 		return $location.path('/estimate/'+hashLink);
 	}

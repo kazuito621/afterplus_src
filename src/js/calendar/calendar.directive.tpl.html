@@ -49,12 +49,13 @@
 					  ng-model="filter_job_userID"
 					  ng-change="filterByJobUserID()">
 				 <option class="option" ng-repeat="u in jobUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
-			</select>
+			</select><BR>
+			 <input style='width:150px;height:1.5em;' type="text" id="searchJob" ng-model="searchtxt" ng-keyup="search(searchtxt)" placeholder="Search"/>
 		</div>
 		<div id='external-events' style="">
-			 <h4 style="margin:0 0 .5em; 0">Approved Jobs</h4>
-			 <input type="text" id="searchJob" ng-model="serhtxt" ng-keyup="search(serhtxt)" placeholder="Search"/>
-
+           <h4 style="margin:0 0 .5em; line-height:1.3em;">
+			  		<span style='font-weight:bold;'>Approved:</span> 
+			  		${{total.approved | formatPrice:'noCents' }}</h4>
 			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
 			 	ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
 				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
@@ -71,7 +72,7 @@
 
 		<!-- color key -->
 		<div style='clear:both;padding:2em;'>
-			<span class='small-tag approved'> APPROVED </span> &nbsp; 
+			<!--<span class='small-tag approved'> APPROVED </span> &nbsp; -->
 			<span class='small-tag scheduled'> SCHED </span> &nbsp; 
 			<span class='small-tag completed'> COMPLETED </span> &nbsp; 
 			<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
@@ -129,8 +130,25 @@
 										onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
 										<BR><BR>
 										<BR>
-								<span style='font-size:2.2em;'>${{price|formatPrice}}</span><BR>
 
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <span>
+                                            <span>DONE:</span>    <BR>
+                                            <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
+                                            <span>TODO:</span>        <BR>
+                                            <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span><BR>
+                                            <span>TOTAL:</span>       <BR>
+                                            <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-5" style="margin: 5px">
+                                        <span ng-if="todo_price<total_price">
+                                            <span style='font-size:1.7em;'>{{(((price-todo_price)/price*100).toFixed(2))|formatPrice}}%</span><BR>
+                                            <span style="font-size: 1.2em;">Done</span>    <BR>
+                                        </span>
+                                    </div>
+                                </div>
                     </div>
                 </div>
                 <BR>
@@ -162,9 +180,12 @@
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-
-                <input type="button" class="btn btn-danger" 
-					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  " 
+                <button  class="btn btn-default pull-left"  ng-model="status"
+                        ng-options="s.value as s.txt for s in statuses"
+                        bs-select onclick="return false;" ng-change="updateStatus()">
+                </button>
+                <input type="button" class="btn btn-danger"
+					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
 						ng-click="UnscheduledJob()" value="Unschedule Job"></input> 
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="valueChanged = false">Close</button>
 

@@ -136,7 +136,20 @@ app.directive('addEditUserModal',
                     modal.hide();
                 };
 
+                var passMisMatch = function(){
+                    if(scope.newContact.newPass!=undefined || scope.newContact.newPass!=''){
+                        if(scope.newContact.newPass!=scope.newContact.newPassConfirm){
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
                 scope.SaveUser = function (event) {
+                    if(passMisMatch()==true){
+                        scope.passMisMatch = true;
+                        return;
+                    } else scope.passMisMatch = false;
                     var user={};
                     if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
                         scope.newContact.role==undefined){
@@ -147,8 +160,9 @@ app.directive('addEditUserModal',
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
+                    user.pass = scope.newContact.newPass;
 
-						  if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
+					if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
                     
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];

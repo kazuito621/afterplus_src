@@ -177,6 +177,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
+            s.initData.filters.onlyInEstimate = false;
             s.filters.years = [
                 { id: moment().add(-2, 'year').format('YYYY'), desc: '2 years ago', old: 'yes' },
                 { id: moment().add(-1, 'year').format('YYYY'), desc: '1 year ago', old: 'yes' },
@@ -338,6 +339,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
                     var reportID = $location.search().reportID;
                     if (reportID) {
+                        //s.initData.filters.onlyInEstimate = true;
                         showReport(reportID);
                         return;
                     }
@@ -448,8 +450,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if(lastSiteID==id) return; // Prevents loading same things twice
                 else lastSiteID=id;
                 s.selected.siteID = id;
-                if(ShouldChangeUrl==true)
+                if(ShouldChangeUrl==true){  // When user changed site from the site dropdown.
                    $location.search({ siteID: id});
+                   s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                }
                 ReportService.setSiteID(id);
 
                 if (s.data.mode() != 'trees') return;
@@ -504,9 +508,18 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Wil be fired when user select report id from recent drop down.
             s.$on('OnLoadReportEvent', function (evt, data) {
+                s.report = data;
                 if (data.siteID == undefined || data.siteID == "")
                     return;
-
+                if(s.report.reportID ){
+                    if(s.initData.filters.onlyInEstimate != true) {// DO NOTHING
+                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
+                    }
+                }else {
+                    if(s.initData.filters.onlyInEstimate != false) {// DO NOTHING
+                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                    }
+                }
                 s.onSelectSiteID(data.siteID);
             });
 
@@ -1794,6 +1807,7 @@ console.debug(" show mapp trees -------- ");
             self.makeFiltersObject = function () {
                 var opts = {};
                 _.each(s.TFSdata.selectedFilters, function (filt) {
+                    if(filt.type == 'onlyInEstimate') return;
                     var idName = (filt.type == 'year' || filt.type == 'miscProperty') ? filt.type : filt.type + 'ID';
                     if (!opts[idName]) opts[idName] = [];
                     opts[idName].push(filt.id);
@@ -1819,9 +1833,6 @@ console.debug(" show mapp trees -------- ");
 
                 Api.getSites(opts).then(self.getSitesCB);
             };
-
-
-
 
             var getTreeListings = function () {
                 if (s.selected.siteID <= 0)

@@ -42,7 +42,23 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="filter-container" ng-show="report.siteID!=undefined && report.siteID!=''">
+                                    <div class="filterHeader filter-header">
+                                        <!--<label for="">
+                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
+                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
+                                            Only Trees on Estimate
+                                        </label>-->
+                                        <label class="" >
+                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
+                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
+																&nbsp; 
+															<span style="font-size:.8em !important;">
+                                            		Show Only Trees on Estimate
+															</span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <!--FILTER SECTION: SPECIES-->
                                 <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
                                 <!-- END SPECIES FILTER SECTION -->

@@ -75,7 +75,7 @@ var ReportCtrl = app.controller(
                 s.report = rpt;                
                 
                 //Use to load site on basis of recent selected report in tree.js
-                $rootScope.$broadcast('OnLoadReportEvent', { siteID: rpt.siteID });
+                $rootScope.$broadcast('OnLoadReportEvent', { siteID: rpt.siteID,reportID:rpt.reportID });
 
                 s.siteOfReport = {}
                 s.report.customers=[]

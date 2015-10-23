@@ -242,7 +242,7 @@ angular.module('arborPlusFilters', [])
 	.filter('formatPrice', function(){
 		return function( val, opt ){
 			if(!val) return val;
-			val = val.toFixed(2).toString();
+			val = parseFloat(val).toFixed(2).toString();
 
 			if( opt == 'noCents' )
 				val = val.replace(/\.[0-9]+/,'');

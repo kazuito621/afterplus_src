@@ -202,23 +202,42 @@ app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', func
 		this.data.treeResultsCount=0;
 		
 		var isActiveFilters = (selectedFilters.length>0);
+
+        var onlyInEstimateFilterAdded = false;
+        for( var i=0; i<selectedFilters.length; i++ ){
+            if(selectedFilters[i].type == 'onlyInEstimate'){
+                onlyInEstimateFilterAdded = true;
+            }
+        }
 		// loop through each tree, and see if a filter applies to it
 		for( var i=0; i<this.trees.length; i++ ){
 			
 			// if no active filters, then show all trees
 			if( !isActiveFilters ){ 
-				this.trees[i].hide=false; 
+				this.trees[i].hide=false;
+                this.trees[i].localTreeID = undefined;
 				this.data.treeResultsCount++;
 				continue; 
 			}
 
 			if( this._isTreeInFilter(this.trees[i]) ){
 				this.trees[i].hide=false;
+                if(onlyInEstimateFilterAdded){
+                    // this localTreeID is used to generate the pin number in map.
+                    // Show pin with number when 'show only trees in estimate' filter is on.'
+                    this.trees[i].localTreeID=this.getLocalTreeID(this.trees[i]);
+                }
 				this.data.treeResultsCount++;
 			}else{
+                this.trees[i].localTreeID = undefined;
 				this.trees[i].hide=true;
 			}
 		}
+        if(onlyInEstimateFilterAdded){
+            this.trees = _.sortBy(this.trees, function(n) {
+                return n.localTreeID;
+            });
+        }
         this.filterTheFilters(this.trees, selectedFilters);
 
 		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);	
@@ -363,6 +382,15 @@ app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', func
             }
         }
         return false;
+    }
+
+    this.getLocalTreeID = function(tree){
+       var idx =  _.findObj(RS.groupedItems, 'treeID', tree.treeID,true);
+        if(idx>-1) {
+            idx++;
+            return idx;
+        }
+        else return -1;
     }
 
 	/** 

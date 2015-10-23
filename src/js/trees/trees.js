@@ -339,7 +339,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
                     var reportID = $location.search().reportID;
                     if (reportID) {
-                        s.initData.filters.onlyInEstimate = true;
+                        //s.initData.filters.onlyInEstimate = true;
                         showReport(reportID);
                         return;
                     }
@@ -511,10 +511,14 @@ var TreesCtrl = app.controller('TreesCtrl',
                 s.report = data;
                 if (data.siteID == undefined || data.siteID == "")
                     return;
-                if(s.report.reportID){
-                    s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
-                }else{
-                    s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                if(s.report.reportID ){
+                    if(s.initData.filters.onlyInEstimate != true) {// DO NOTHING
+                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
+                    }
+                }else {
+                    if(s.initData.filters.onlyInEstimate != false) {// DO NOTHING
+                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                    }
                 }
                 s.onSelectSiteID(data.siteID);
             });
@@ -1826,9 +1830,6 @@ console.debug(" show mapp trees -------- ");
 
                 Api.getSites(opts).then(self.getSitesCB);
             };
-
-
-
 
             var getTreeListings = function () {
                 if (s.selected.siteID <= 0)

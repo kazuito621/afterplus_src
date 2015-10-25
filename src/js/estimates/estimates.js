@@ -54,13 +54,35 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         }
         return s.salesUsers;
     }
+    s.getFormanusers = function(){
+        function setForemanUsers() {
+            s.foremanUsers = [];
+            Api.GetForemans().then(function(foremanUsers){
+                _.each(foremanUsers, function(foremanUser){
+                    var shortEmail = foremanUser.email.substr(0, foremanUser.email.indexOf('@'));
+                    s.salesUsers.push({id: foremanUser.userID, email: foremanUser.email, shortEmail: shortEmail});
+                })
+            })
+        }
+        if (!s.foremanUsers){
+            setForemanUsers();
+        }
+        return s.foremanUsers;
+    }
+
 
     // callback when sales_user was changed for estimate
     s.updateEstimate = function(rpt){
         var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
         if (newSalesUser){
-            rpt.sales_email_short = newSalesUser.shortEmail;
+            //rpt.sales_email_short = newSalesUser.shortEmail;
             rpt.sales_email = newSalesUser.email;
+        }
+
+        var newForeman = _.findObj(s.foremanUsers, 'id', rpt.foreman_userID);
+        if (newForeman){
+            //rpt.sales_email_short = newSalesUser.shortEmail;
+            rpt.sales_email = newForeman.email;
         }
 
         Api.saveReport(rpt).then(function(data1){
@@ -72,7 +94,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		s.setAlert("Loading...", {time:8});
         var search = $location.search();
         cb = cb || angular.noop;
-        Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
+        Api.GetForemans()
+            .then(function (response) {});
+        Api.getRecentReports({ siteID: search.siteID /*timestamp:storedData.getEstimateTimeStamp() */}).then(function (data) {
             data=storedData.setEstimateData(data);
 				var isCust=Auth.is('customer');
 				_.each(data, function(d){

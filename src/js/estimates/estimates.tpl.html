@@ -54,7 +54,7 @@
                         ID <i ng-class="sh.columnClass('name')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('name')">
-                        Estimate Name <i ng-class="sh.columnClass('name')" class='silver'></i>
+                        Estimate/Job Name <i ng-class="sh.columnClass('name')" class='silver'></i>
                     </th>
                     <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
                         Site Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
@@ -119,6 +119,7 @@
 								ng-options="s.id as s.txt for s in data.statuses(e.status)"
 								bs-select onclick="return false;">
 						</button>
+						<a ng-if="auth.isAtleast('inventory') && e.status=='invoiced'" href='#'><i style='fa fa-fa-envelope-o'></i></a>
 						<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
 								ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)" style='cursor:pointer !important'
 								>{{ e.status | statusText }}</button>

@@ -209,6 +209,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 					return o.splice(3,2);		
 		
 				case 'completed': //show COMPL, INV, PAID
+					o[5].txt='SEND INVOICE';
 					return o.splice(4,3);		
 
 				case 'invoiced':	//show COMPL, INV, PAID

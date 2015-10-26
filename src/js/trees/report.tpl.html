@@ -32,10 +32,10 @@
                         <dl class="small">
                             <dt>
                                 Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
-                                Estimate ID: <span ng-bind="report.reportID"></span>
+                                {{report.reportType}} ID: <span ng-bind="report.reportID"></span>
                             </dt>
                         </dl>
-                        <h1 class="title" ng-bind="'Estimate for ' + report.siteName"></h1>
+                        <h1 class="title" ng-bind="report.reportType + ' for ' + report.siteName"></h1>
                         <p class="name">
                             <span ng-if="data.mode() === 'trees'">
                                <!-- <a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;-->

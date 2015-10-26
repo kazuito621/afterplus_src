@@ -30,24 +30,24 @@
 							<div class='silver'>Address:</div>
 							<div><input id="clientStreet" type="text" ng-model="client.street" size="40" address-auto-complete="updateAddess" address='client' bs-typeahead=""><div>
 
-							<div class='silver'>City:</div>
-							<div><input type="text" ng-model="client.city" size="40"></div>
+							<div class='silver'>City, State/Prov, Postal Code:</div>
+							<div>
+								<input type="text" ng-model="client.city" size="20">
+								<input type="text" ng-model="client.state" size="5">
+								<input type="text" ng-model="client.zip" size="10">
+							</div>
 
-							<div class='silver'>State:</div>
-							<div><input type="text" ng-model="client.state" size="10"></div>
 
-							<div class='silver'>Zip:</div>
-							<div><input type="text" ng-model="client.zip" size="20"></div>
-<!--
-							<div class='silver'>Contact Name:</div>
-							<div><input type="text" ng-model="client.contact" size="40"></div>
+							<div class='silver'>Accounts Receivable Contact:</div>
+							<div>
+								<input type="text" ng-model="client.contact" size="20" placeholder='Full Name'>
+								<input type="text" ng-model="client.contactPhone" size="20" placeholder='Phone'>
+							</div>
+							<div style='margin-top:1em;'>
+								<input type="text" ng-model="client.contactEmail" size="42" placeholder='Email'>
+							</div>
 
-							<div class='silver'>Contact Phone:</div>
-							<div><input type="text" ng-model="client.contactPhone" size="40"></div>
 
-							<div class='silver'>Contact Email:</div>
-							<div><input type="text" ng-model="client.contactEmail" size="40"></div>
--->
 							<!-- this is here so user can hit ENTER to submit form -->
 							<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 

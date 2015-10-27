@@ -46,6 +46,8 @@ app.config(['$routeProvider', '$locationProvider',
                 auth:false, reloadOnSearch:false
 				})
 
+				// /#/estimate/123 same as /#/invoice/123 ... so the next 2 blocks should always be identical
+				// so 
             .when('/estimate/:rptID', {
                 	templateUrl: "js/trees/trees.tpl.html"
                     ,auth:false, reloadOnSearch:false
@@ -57,6 +59,18 @@ app.config(['$routeProvider', '$locationProvider',
 							}]
                     }
                 })
+            .when('/invoice/:rptID', {
+                	templateUrl: "js/trees/trees.tpl.html"
+                    ,auth:false, reloadOnSearch:false
+                    ,resolve: {
+                      	//deps:['Api', function(Api){  return Api.getPromise(); }],
+						signin:['Auth', '$route', function(Auth, $route){
+								var rptID=$route.current.params.rptID;
+								return Auth.signInCustToken(rptID, true);
+							}]
+                    }
+                })
+
             .when("/trees", {
                 templateUrl: "js/trees/trees.tpl.html"
                 ,auth:true, reloadOnSearch:false

@@ -129,7 +129,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                 , showTreatmentList: false
                 , overrideTreatmentCodes: []		// array of treatment codes user selected in multi-box
                 // for adding trees to the estimate
-                , mode: function () { return s.renderPath[0]; }					// either "trees" or "estimate"
+                , mode: function () {    	// either "trees" or "estimate"
+					 		var m = s.renderPath[0]; 
+							// invoice, then force mode = estimate
+							return (m=='invoice') ? 'estimate' : m;
+					  }					
             };
             s.whoami = 'TreesCtrl';
             s.TFSdata;	//holds tree results count, etc. Remember, always put scope data into an object

@@ -60,7 +60,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
             Api.GetForemans().then(function(foremanUsers){
                 _.each(foremanUsers, function(foremanUser){
                     var shortEmail = foremanUser.email.substr(0, foremanUser.email.indexOf('@'));
-                    s.salesUsers.push({id: foremanUser.userID, email: foremanUser.email, shortEmail: shortEmail});
+                    s.foremanUsers.push({id: foremanUser.userID, email: foremanUser.email, shortEmail: shortEmail});
                 })
             })
         }
@@ -69,20 +69,19 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         }
         return s.foremanUsers;
     }
-
-
+    s.getFormanusers();
     // callback when sales_user was changed for estimate
     s.updateEstimate = function(rpt){
         var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
         if (newSalesUser){
-            //rpt.sales_email_short = newSalesUser.shortEmail;
+            rpt.sales_email_short = newSalesUser.shortEmail;
             rpt.sales_email = newSalesUser.email;
         }
 
-        var newForeman = _.findObj(s.foremanUsers, 'id', rpt.foreman_userID);
+        var newForeman = _.findObj(s.foremanUsers, 'id', rpt.job_userID);
         if (newForeman){
-            //rpt.sales_email_short = newSalesUser.shortEmail;
-            rpt.sales_email = newForeman.email;
+            rpt.foreman_email_short = newSalesUser.shortEmail;
+            rpt.foreman_email = newForeman.email;
         }
 
         Api.saveReport(rpt).then(function(data1){
@@ -94,8 +93,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		s.setAlert("Loading...", {time:8});
         var search = $location.search();
         cb = cb || angular.noop;
-        Api.GetForemans()
-            .then(function (response) {});
+
         Api.getRecentReports({ siteID: search.siteID /*timestamp:storedData.getEstimateTimeStamp() */}).then(function (data) {
             data=storedData.setEstimateData(data);
 				var isCust=Auth.is('customer');
@@ -111,6 +109,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 
 					d.sales_email_short=d.sales_email;
 					if(d.sales_email_short) d.sales_email_short=d.sales_email.split('@')[0];
+
+                    d.foreman_email_short=d.foreman_email;
+					if(d.foreman_email_short) d.foreman_email_short=d.foreman_email.split('@')[0];
 				});
             estimates = estFiltered = data;
             self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);

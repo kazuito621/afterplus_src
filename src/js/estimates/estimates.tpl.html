@@ -117,9 +117,9 @@
                     <td ng-if="auth.isAtleast('inventory')">
                         <a href e-ng-options="obj.id as obj.email for obj in foremanUsers"
                            onshow="getFormanusers()"
-                           editable-select="e.foreman_userID"
+                           editable-select="e.job_userID"
                            onaftersave="updateEstimate(e)">
-                            {{e.foreman_email}}
+                            {{e.foreman_email_short}}
                         </a>
                     </td>
                     <td>${{e.total_price|formatPrice}}</td>

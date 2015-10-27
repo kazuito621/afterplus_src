@@ -78,8 +78,6 @@ function ($timeout) {
 			    uncheduledJobsBackUp,
                 scheduledJobsBackUp;
 
-            $scope.statuses = ['Scheduled','Completed','Invoiced','Paid'];
-
             $scope.statuses = [
                 {value:'scheduled', txt:'Scheduled'},
                 {value:'completed', txt:'Completed'},

@@ -1,0 +1,101 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <h4 class="modal-title" id="modalTitle"><span style="font-size:1.5em; font-weight:bold;text-align: center">{{report.reportID}} - {{report.name}}</span> (<a href="#/trees?reportID="{{report.reportID}}>edit</a> | <a target="_new" href="{{report.url}}">view</a>)</h4>
+                <h4 ng-model="siteID" ng-show="true" class="modal-site ng-pristine ng-untouched ng-valid" id="modalSiteID"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6" style='text-align:left; line-height:1.4em;'>
+                        <b style='font-size:1.4em;'>{{ site.siteName }}</b><BR>
+                        {{ site.street }}<BR>
+                        {{ site.city }}, {{ site.state }}<BR>
+                        {{ site.zip }}
+								<span style='color:#999;'>
+									(<a target=_new href='http://maps.google.com/?q={{site.street}}, {{site.city}}, {{site.state}} {{site.zip}}'>map</a>)
+								</span>
+                        <BR><BR>
+
+                        <b style='font-size:1.2em;'>{{ site.contact }}</b><BR>
+                        <a href='{{site.email}}'>{{site.email}}</a><BR>
+                        {{ site.phone }}
+
+                    </div>
+                    <div class="col-md-6" style='text-align:left; line-height:1.3em;'>
+
+                        Foreman: <a href="#" editable-select="report.job_userID"
+                                    e-ng-options="g.userID as g.text for g in groups"
+                                    onaftersave="savejobtoforeman()">{{ report.foreman_email_short || 'Select a Foreman' }}</a>
+                        <BR><BR>
+
+                        Sales: <a href="#" editable-select="report.sales_userID"
+                                  e-ng-options="g.userID as g.text for g in groups"
+                                  onaftersave="savejobtoSalesUser()">{{ report.sales_email_short || 'Select a Sales Rep' }}</a>
+                        <BR><BR>
+                        <BR>
+
+                        <div class="row">
+                            <div class="col-sm-5">
+                                        <span>
+                                            <span>DONE:</span>    <BR>
+                                            <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
+                                            <span>TODO:</span>        <BR>
+                                            <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span><BR>
+                                            <span>TOTAL:</span>       <BR>
+                                            <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
+                                        </span>
+                            </div>
+                            <div class="col-sm-5" style="margin: 5px">
+                                        <span ng-if="todo_price<total_price">
+                                            <span style='font-size:1.7em;'>{{(((price-todo_price)/price*100).toFixed(2))|formatPrice}}%</span><BR>
+                                            <span style="font-size: 1.2em;">Done</span>    <BR>
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <BR>
+                <!--<div style='background-color:#F7F4E1;padding:1em;'>
+                    <div class="row">
+                        Start: <input class="" ng-model="job_start_unix" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                                      data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
+                                      data-placement='top'> &nbsp;
+                        End: <input class="" ng-model="job_end_unix" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                                    data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
+                                    data-placement='top'> &nbsp;
+                        Days: <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
+                                     type="number" min="1" style="width: 3.5em;">
+                        <button type="button" class="btn btn-primary" ng-show="valueChanged" ng-click="saveJobDates()">Save</button>
+                    </div>
+                    <div class="row" ng-show="showWeekendWork">
+                        <BR>
+                        <label style="font-size:1.1em;">Weekend Work?</label>
+                        <input type=radio value=0 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> No  &nbsp;
+                        <input type=radio value=1 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sat &nbsp;
+                        <input type=radio value=2 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sun &nbsp;
+                        <input type=radio value=3 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Both
+                    </div>
+                    <div>
+
+                    </div>
+                </div>--> <!-- }} body -->
+                <side-note report-id="{{reportID}}" note-type='report_internal'></side-note>
+                <div class="modal-footer">
+
+                    <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
+                    <button  class="btn btn-default pull-left"  ng-model="status"
+                             ng-options="s.value as s.txt for s in statuses"
+                             bs-select onclick="return false;" ng-change="updateStatus()">
+                    </button>
+                    <!--<input type="button" class="btn btn-danger"
+                           ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
+                           ng-click="UnscheduledJob()" value="Unschedule Job"></input>-->
+                    <button type="button" class="btn btn-primary"  ng-click="$hide()">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

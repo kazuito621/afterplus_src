@@ -86,7 +86,6 @@
                 </tr>
             </thead>
 
-
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
                 <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}' 
 					 	ng-style="e.delete==1?{'background-color':'#bbb'}:''">
@@ -96,10 +95,11 @@
                     <td ng-bind="e.reportID"></td>
                     <td>
 						<span ng-if="auth.isAtleast('inventory')">
-							<a href="#/trees?reportID={{e.reportID}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>&nbsp;
+							<a estimate-details="e" style="cursor: pointer;" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>&nbsp;
 							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' bs-tooltip title='{{e.saveCount}} revisions'><i class='fa fa-clock-o gray'></i></a>
 						</span>
 						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
+                        <a href="" class="badge" estimate-details="e" >{{e.count_internal_notes}}</a>
 					</td>
                     <td>
 						<span title="{{e.siteName}}">{{e.siteName_short}}</span> &nbsp; 

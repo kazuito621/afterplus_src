@@ -13,7 +13,8 @@
 			</div>
 		</div>
 		<div class="col-sm-4 col">
-			<div class="action-block action-block-2">
+			<span ng-if="report.status=='invoiced'" ng-class="'big-tag '+report.status" style='margin-top:.7em;'>INVOICE DUE</span>
+			<div class="action-block action-block-2" ng-show="report.status != 'invoiced'">
 				<ul class="stats list-unstyled list-inline row">
 					<li class="col-xs-4" ng-click="goToEstimatesList()" style="cursor: pointer;" bs-tooltip title='View All Estimates'>
 						<a href="#/estimates" class="stat">
@@ -43,12 +44,17 @@
 						<a href="#" class="btn btn-sm btn-block btn-green"><i class="fa fa-check"></i> Job Done</a>
 					</div>
 					<div class="col-xs-4 col">
+
+
+
 						<button ng-if="report.actionButton" tos-accept-button on-confirm-callback="approveEstimate()"
-                                class="btn btn-sm btn-block btn-green" ng-disabled="disableApproveButton">
-								<i class="fa fa-check"></i> Approve Estimate
-						</button>
+                                class="btn btn-sm btn-block btn-success" ng-disabled="disableApproveButton">
+								<i class="fa fa-check"></i> Approve Estimate</button>
+
+
 						<!-- possible values for status: approved, completed. billed, paid -->
-						<span ng-if="!report.actionButton" ng-class="'big-tag '+report.status" ng-bind='report.status'></span>
+						<span ng-if="!report.actionButton && report.status!='invoiced'" ng-class="'big-tag '+report.status" ng-bind='report.status'></span>
+
 					</div>
 					
 					<!-- hide for now, since the feature is not ready -->
@@ -56,10 +62,19 @@
 						<a href="#" class="btn btn-sm btn-block btn-orange"><i class="fa fa-times"></i> Request Changes</a>
 					</div>
 					<!-- hide for now, since the feature is not ready -->
-					<div class="col-xs-4 col" ng-if="report.token">
-						<a href="/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}" target=_new 
-						class="btn btn-sm btn-block btn-blue"><i class="fa fa-arrow-down"></i> Download PDF</a>
+					<div class="col-xs-4 col" ng-if="report.token && report.status!='invoiced' && report.status!='paid'">
+						<a href="/go/estimate/pdf/{{report.token}}" target=_new 
+						class="btn btn-sm btn-block btn-default" style='color:#333;'><i class="fa fa-arrow-down"></i>Download PDF</a>
 					</div>
+
+					<div class="col-xs-4 col" ng-if="report.token && (report.status=='invoiced' || report.status=='paid')"
+						style='padding-top:1em;'>
+						<a href="/go/invoice/pdf/{{report.token}}" target=_new>
+							<i class="fa fa-arrow-down"></i>Download PDF</a>
+					</div>
+
+
+						<button ng-if="report.status=='invoiced'" payment-popup class="btn btn-lg btn-block btn-success">PAY</button>
 					
 				</div>
 			</div>

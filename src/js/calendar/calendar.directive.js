@@ -257,6 +257,10 @@ function ($timeout) {
                                    if(res && res.conflict==1 && res.conflict_msg){
                                        alert(res.conflict_msg);
                                    }
+                                   else{
+                                       event.status = 'scheduled'
+                                       elm.fullCalendar('updateEvent', event);
+                                   }
                                });
                            },
 							eventDragStop: function( event, jsEvent, ui, view ){

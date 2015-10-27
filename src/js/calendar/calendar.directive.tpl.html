@@ -174,7 +174,7 @@
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                <button  class="btn btn-default pull-left"  ng-model="status"
+                <button  class="btn btn-default pull-left"  ng-model="status" ng-hide="type=='Unscheduled'"
                         ng-options="s.value as s.txt for s in statuses"
                         bs-select onclick="return false;" ng-change="updateStatus()">
                 </button>

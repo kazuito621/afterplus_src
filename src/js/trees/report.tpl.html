@@ -128,15 +128,29 @@
 
         <!--Directive is not performing anything what is the point having simple HTML in directive-->
         <div class="estimate-actions" ng-if="data.mode()=='trees'">
+
             <button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>
+
             <button class="btn btn-red clr-white"
+						ng-if='report.status!="completed" && report.status!="invoiced" && report.status!="paid"'
                     data-backdrop='static'
                     data-keyboard=true
                     bs-modal
                     data-template="js/trees/emailReport.tpl.html"
                     ng-click="initEmailModal()">
-                Send
+                Send Estimate
             </button>
+
+            <button class="btn btn-red clr-white"
+						ng-if='report.status=="completed" || report.status=="invoiced" || report.status=="paid"'
+                    data-backdrop='static'
+                    data-keyboard=true
+                    bs-modal
+                    data-template="js/trees/emailReport.tpl.html"
+                    ng-click="initEmailModal('invoice')">
+                Send Invoice
+            </button>
+
             &nbsp;
             <span ng-if="report.reportID">
                 <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}' 

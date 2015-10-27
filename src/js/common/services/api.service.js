@@ -130,7 +130,10 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             return Rest.all('estimate').getList(opt);
         },
         getEmailTemplate: function (opt) {
-            return Rest.one('template/emailReport').get(opt);
+		  		if(opt=='invoice')
+            	return Rest.one('template/emailInvoice').get();
+				else
+            	return Rest.one('template/emailReport').get();
         },
         getBulkEditInfo:function(opt){
             return Rest.one('bulkedit').get(opt);

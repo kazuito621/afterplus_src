@@ -26,7 +26,7 @@
                                 <a href="" ng-click="goToPropertyContacts($hide, $show)" style="color:grey">Edit</a>
                             </td>
                         </tr>
-                        <tr ng-if="type == 'sendReport' || type == 'sendPortalLink'">
+                        <tr ng-if="type == 'sendReport' || type == 'sendPortalLink' || type == 'sendInvoice'">
                             <td>To:</td>
                             <td>
                                 <br><tags-input id="emailField" is-writing-tag ng-style="(mode=='addEditUsers' && type == 'sendPortalLink')?{'pointer-events':'none', 'color': '#a9a9a9'}:''" ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
@@ -58,7 +58,7 @@
                                 <textarea form style='width:450px; height:220px;' ng-model="emailRpt.message"></textarea><BR>
 					 	<span>
                             <span style='color:#f33; font-weight:bold;'>The link will automatically be included in the email</span><BR>
-				 		    <label ng-if="type == 'sendReport'">
+				 		    <label ng-if="type == 'sendReport' || type=='sendInvoice'">
                                 <input type="checkbox" ng-model="emailRpt.sendCopy" >
                                 Send me a copy
                             </label>
@@ -75,7 +75,7 @@
                 <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
                 <button type="button" class="btn btn-primary" ng-if="type === 'bulkEstimate'" ng-click="sendBulkEstimate($hide, $show)"
                         ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
-                <button type="button" class="btn btn-primary" ng-if="type == 'sendReport'" ng-click="sendReport($hide, $show)"
+                <button type="button" class="btn btn-primary" ng-if="type == 'sendReport' || type == 'sendInvoice'" ng-click="sendReport($hide, $show)"
                         ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
                 <button type="button" class="btn btn-primary" ng-if="type == 'sendPortalLink'" ng-click="sendEmailPortalLink($hide, $show)"
                         ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>

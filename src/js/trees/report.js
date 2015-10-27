@@ -275,7 +275,9 @@ var ReportCtrl = app.controller(
                 RS.reportBackup= angular.copy(s.report); // This is for faster case save and navigate instantly.
             };
 
-            s.initEmailModal = function () {
+				// @param type - "invoice", or default is "estimate"
+            s.initEmailModal = function (type) {
+				
                 s.saveReport();
                 if (s.report.contact) {
                     var toName = s.report.contact.trim();
@@ -285,8 +287,10 @@ var ReportCtrl = app.controller(
                     }
                 }
                 alreadySkipped=[];
-                s.type = 'sendReport';
-                s.modalTitle = "Email: " + s.report.name;
+                s.type = (type=='invoice') ? 'sendInvoice' : 'sendReport';
+                s.modalTitle = (type=='invoice') ? "Send Invoice: "  : "Send Estimate: ";
+						s.modalTitle += s.report.name;
+
                 s.emailRpt.reportID = s.report.reportID;
                 s.emailRpt.siteID = s.report.siteID;
                 s.emailRpt.contactEmail = s.report.contactEmail;
@@ -296,7 +300,9 @@ var ReportCtrl = app.controller(
 
                 s.emailRpt.senderEmail = Auth.data().email;
 
-                s.emailRpt.subject = cfg.getEntity().name + " Estimate #" + s.report.reportID + " - " + s.report.name;
+                s.emailRpt.subject = cfg.getEntity().name 
+					 	+ ((type=='invoice') ? " Invoice #0" : " Estimate #")
+						+ s.report.reportID + " " + s.report.name;
                 s.emailRpt.disableSendBtn = false;
                 s.emailRpt.sendBtnText = 'Send';
 
@@ -318,7 +324,7 @@ var ReportCtrl = app.controller(
                         }
                     });
 
-				Api.getEmailTemplate().then(function(res){
+				Api.getEmailTemplate(type).then(function(res){
 					if(res){
 						s.emailRpt.message = res;
 					}

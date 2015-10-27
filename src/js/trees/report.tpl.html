@@ -191,9 +191,7 @@
 						  <hr>
 						  <div style='clear:both; margin:0.5em;'><BR></div>
 
-
-			
-							<div id='internal-note-container' style='min-height:50px;'>
+							<div id='internal-note-container' style='min-height:50px;' ng-if="auth.isAtleast('inventory')">
             	     		<side-note report-id="{{report.reportID}}" note-type='report_internal'></side-note>
 							</div>
 

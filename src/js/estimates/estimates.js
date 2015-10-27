@@ -94,7 +94,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         var search = $location.search();
         cb = cb || angular.noop;
 
-        Api.getRecentReports({ siteID: search.siteID /*timestamp:storedData.getEstimateTimeStamp() */}).then(function (data) {
+        Api.getRecentReports({ siteID: search.siteID ,timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
             data=storedData.setEstimateData(data);
 				var isCust=Auth.is('customer');
 				_.each(data, function(d){
@@ -112,6 +112,12 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 
                     d.foreman_email_short=d.foreman_email;
 					if(d.foreman_email_short) d.foreman_email_short=d.foreman_email.split('@')[0];
+
+                    if(d.status=='invoiced'){
+                        var a = moment();
+                        var b = moment(d.tstamp_updated);
+                        d.pastDue = a.diff(b, 'days');
+                    }
 				});
             estimates = estFiltered = data;
             self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);

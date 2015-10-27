@@ -99,7 +99,8 @@
 							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' bs-tooltip title='{{e.saveCount}} revisions'><i class='fa fa-clock-o gray'></i></a>
 						</span>
 						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
-                        <a href="" class="badge" estimate-details="e" >{{e.count_internal_notes}}</a>
+                        <a href="" class="badge" estimate-details="e" bs-tooltip title="Total internal notes" >{{e.count_internal_notes}}</a>
+                        <a href="" class="badge" ng-if="e.status=='invoiced'" style="color: white;" ng-style="(e.pastDue <30 )?{'background-color':'#6e6e6e'}:{'background-color':'#df0505'}"  bs-tooltip title="" >{{e.pastDue}} days past due</a>
 					</td>
                     <td>
 						<span title="{{e.siteName}}">{{e.siteName_short}}</span> &nbsp; 

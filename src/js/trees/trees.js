@@ -513,8 +513,12 @@ var TreesCtrl = app.controller('TreesCtrl',
             //Wil be fired when user select report id from recent drop down.
             s.$on('OnLoadReportEvent', function (evt, data) {
                 s.report = data;
-                if (data.siteID == undefined || data.siteID == "")
-                    return;
+                if (data.siteID == undefined || data.siteID == "") return;
+
+					 // required because in customer/estimate mode, the onFilterChange event
+					 // calls an api which produces an error in the UI "No sites match your filter"
+                if (s.data.mode() == 'estimate') return;
+
                 if(s.report.reportID ){
                     if(s.initData.filters.onlyInEstimate != true) {// DO NOTHING
                         s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
@@ -594,6 +598,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             s.clearFilters = function () {
+                s.filterSearch = { species: '', treatments: '' };
                 TFS.clearFilters(false);
                 s.onSelectYear(false);
                 if (!s.trees || !s.trees.length || s.trees.length < 1) {

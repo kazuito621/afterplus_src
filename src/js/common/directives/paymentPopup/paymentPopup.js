@@ -1,6 +1,6 @@
 app.directive('paymentPopup',
-    ['$modal',
-        function ($modal) {
+    ['$modal', 'Restangular',
+        function ($modal, Rest) {
             'use strict';
 
             var linker = function (scope, el, attrs) {
@@ -20,8 +20,15 @@ app.directive('paymentPopup',
                     modal.hide();
                 };
 
+					 scope.paymentInfo='';
+
                 var init = function () {
                     scope.approved = false;
+
+            			Rest.one('entity/paymentInfo').get().then(function(r){
+								scope.paymentInfo=r;
+							});
+
 
                     el.on('click', function (event) {
                         event.preventDefault();

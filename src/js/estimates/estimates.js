@@ -55,6 +55,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         return s.salesUsers;
     }
     s.getFormanusers = function(){
+		if(!Auth.isAtleast('inventory')) return;
         function setForemanUsers() {
             s.foremanUsers = [];
             Api.GetForemans().then(function(foremanUsers){

@@ -72,16 +72,23 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     s.getFormanusers();
     // callback when sales_user was changed for estimate
     s.updateEstimate = function(rpt){
+
+        var dispObj=_.findObj(s.displayedEstimates, 'reportID', rpt.reportID);
+		  if(!dispObj) dispObj={};
+
         var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
         if (newSalesUser){
-            rpt.sales_email_short = newSalesUser.shortEmail;
-            rpt.sales_email = newSalesUser.email;
+		  console.debug(newSalesUser);
+            dispObj.sales_email_short = rpt.sales_email_short = newSalesUser.shortEmail;
+            dispObj.sales_email = rpt.sales_email = newSalesUser.email;
+				dispObj.sales_userID = rpt.sales_userID;
         }
 
         var newForeman = _.findObj(s.foremanUsers, 'id', rpt.job_userID);
         if (newForeman){
-            rpt.foreman_email_short = newSalesUser.shortEmail;
-            rpt.foreman_email = newForeman.email;
+            dispObj.foreman_email_short = rpt.foreman_email_short = newForeman.shortEmail;
+            dispObj.foreman_email = rpt.foreman_email = newForeman.email;
+				dispObj.foreman_userID = rpt.job_userID;
         }
 
         Api.saveReport(rpt).then(function(data1){

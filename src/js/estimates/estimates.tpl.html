@@ -112,18 +112,15 @@
 					</td>
                     <td ng-if="auth.isAtleast('inventory')">
                         <a href e-ng-options="obj.id as obj.email for obj in salesUsers"
-                           onshow="getSalesUsers()"
-                           editable-select="e.sales_userID"
-                           onaftersave="updateEstimate(e)">
-                            {{e.sales_email_short}}
+                           onshow="getSalesUsers()" editable-select="e.sales_userID" onaftersave="updateEstimate(e)">
+                            {{ e.sales_email_short || '(none)' }}
                         </a>
                     </td>
+
                     <td ng-if="auth.isAtleast('inventory')">
                         <a href e-ng-options="obj.id as obj.email for obj in foremanUsers"
-                           onshow="getFormanusers()"
-                           editable-select="e.job_userID"
-                           onaftersave="updateEstimate(e)">
-                            {{e.foreman_email_short}}
+                           onshow="getFormanusers()" editable-select="e.job_userID" onaftersave="updateEstimate(e)">
+                            {{ e.foreman_email_short || '(none)' }}
                         </a>
                     </td>
                     <td>${{e.total_price|formatPrice}}</td>

@@ -107,7 +107,10 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				var isCust=Auth.is('customer');
 				_.each(data, function(d){
 					d.origStatus=d.status;
-					if(isCust && d.status=='sent') d.status='needs_approval';
+					if(isCust){
+						if(d.status=='sent') d.status='needs_approval';
+						if(d.status=='invoiced') d.status='payment_due';
+					}
 
 					if(d.siteName && d.siteName.length>40) d.siteName_short=d.siteName.substr(0,40)+'...';
 					else d.siteName_short=d.siteName
@@ -121,11 +124,11 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
                     d.foreman_email_short=d.foreman_email;
 					if(d.foreman_email_short) d.foreman_email_short=d.foreman_email.split('@')[0];
 
-                    if(d.status=='invoiced'){
-                        var a = moment();
-                        var b = moment(d.tstamp_updated);
-                        d.pastDue = a.diff(b, 'days');
-                    }
+					  if(d.status=='invoiced'){
+							var a = moment();
+							var b = moment(d.tstamp_updated);
+							d.pastDue = a.diff(b, 'days');
+					  }
 				});
             estimates = estFiltered = data;
             self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);
@@ -440,7 +443,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     }
 
 	s.onCustClickStatus = function(reportID, hashLink, status){
-		return $location.path('/estimate/'+hashLink);
+		var path=(status=='invoiced'||status=='paid'||status=='completed'||status=='payment_due') ? 'invoice' : 'estimate';
+		return $location.path('/'+path+'/'+hashLink);
 	}
 
 	init();

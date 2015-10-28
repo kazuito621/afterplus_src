@@ -352,6 +352,12 @@ footer
 		color: $needs_approval;
 	}
 
+	&.payment_due
+	{
+		border-color: $payment_due;
+		color: $payment_due;
+	}
+
 	&.completed
 	{
 		border-color: $completed;
@@ -396,6 +402,10 @@ footer
 	background-color: $needs_approval !important;
 	color: #fff !important;
 	}
+.clr-payment_due {
+	background-color: $payment_due !important;
+	color: #fff !important;
+	}
 .clr-completed {
 	background-color: $completed !important;
 	color: #fff !important;
@@ -419,6 +429,7 @@ footer
 	&.draft{ background:$draft; }
 	&.approved{ background: $approved; }
 	&.needs_approval{ background: $needs_approval; }
+	&.payment_due{ background: $payment_due; }
 	&.scheduled{ background: $scheduled; }
 	&.billed{ background: $billed; }
 	&.invoiced{ background: $invoiced; }

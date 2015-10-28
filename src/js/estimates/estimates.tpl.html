@@ -99,7 +99,7 @@
 							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' bs-tooltip title='{{e.saveCount}} revisions'><i class='fa fa-clock-o gray'></i></a>
 						</span>
 						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
-                        <a ng-if="e.count_internal_notes>0" href="" class="badge" estimate-details="e" 
+                        <a ng-if="auth.isAtleast('inventory') && e.count_internal_notes>0" href="" class="badge" estimate-details="e" 
 									bs-tooltip title="{{e.count_internal_notes}} internal notes" >{{e.count_internal_notes}}</a>
                         <a href="" class="badge" ng-if="e.status=='invoiced'" style="color: white;" 
 									ng-style="(e.pastDue <30 )?{'background-color':'#6e6e6e'}:{'background-color':'#df0505'}"  
@@ -124,17 +124,19 @@
                         </a>
                     </td>
                     <td>${{e.total_price|formatPrice}}</td>
+
+						  <!-- STATUS DROPDOWN -->
                     <td>
-						<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
-								ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
-								placeholder="{{e.status}}"
-								ng-options="s.id as s.txt for s in data.statuses(e.status)"
-								bs-select onclick="return false;">
-						</button>
-						<a ng-if="auth.isAtleast('inventory') && e.status=='invoiced'" href='#'><i style='fa fa-fa-envelope-o'></i></a>
-						<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
-								ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)" style='cursor:pointer !important'
-								>{{ e.status | statusText }}</button>
+							<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
+									ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
+									placeholder="{{e.status}}"
+									ng-options="s.id as s.txt for s in data.statuses(e.status)"
+									bs-select onclick="return false;">
+							</button>
+							<a ng-if="auth.isAtleast('inventory') && e.status=='invoiced'" href='#'><i style='fa fa-fa-envelope-o'></i></a>
+							<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
+									ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)" style='cursor:pointer !important'
+									>{{ e.status | statusText }}</button>
 					</td>
                     <td>
                         <a ng-if="auth.isAtleast('staff')" class="editable editable-click" status-dates="e"

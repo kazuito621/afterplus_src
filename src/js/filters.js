@@ -260,16 +260,11 @@ angular.module('arborPlusFilters', [])
 	.filter('statusText', function(){
 		return function( val ){
 			var o={ 
-					draft:'DRAFT',
 					sent:'NEEDS APPROVAL',
-					needs_approval:'NEEDS APPROVAL',
-					approved:'APPROVED',
-					completed:'COMPLETED',
-					paid:'PAID'
 				};
 			var v=o[val];
 			if(v) return v;
-			return val;
+			return val.toUpperCase().replace(/_/,' ');
 		}
 	})
 	

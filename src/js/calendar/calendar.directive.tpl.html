@@ -113,42 +113,36 @@
 
                     </div>
                     <div class="col-md-6" style='text-align:left; line-height:1.3em;'>
-						  
 
-                    <a href ng-if="auth.isAtleast('inventory')" editable-select='tree.speciesID' onaftersave="updateTreeName()"
-                       e-ng-options='obj.speciesID as obj.bothNames for obj in initData.filters.species'>
-                        {{ tree.commonName || '(not specified)' }}
-                    </a>
+					Foreman: <a href="#" editable-select="job_user.userID"
+							e-ng-options="g.userID as g.text for g in groups"
+							onaftersave="savejobtoforeman()">{{ job_user.name || 'Select a Foreman' }}</a>
+							<BR><BR>
 
-						  		Foreman: <a href="#" editable-select="job_user.userID"  
-										e-ng-options="g.userID as g.text for g in groups" 
-										onaftersave="savejobtoforeman()">{{ job_user.name || 'Select a Foreman' }}</a>
-										<BR><BR>
+					Sales: <a href="#" editable-select="sales_user.userID"
+							e-ng-options="g.userID as g.text for g in groups"
+							onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
+							<BR><BR>
+							<BR>
 
-								Sales: <a href="#" editable-select="sales_user.userID"  
-										e-ng-options="g.userID as g.text for g in groups" 
-										onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
-										<BR><BR>
-										<BR>
-
-                                <div class="row">
-                                    <div class="col-sm-5">
-                                        <span>
-                                            <span>DONE:</span>    <BR>
-                                            <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
-                                            <span>TODO:</span>        <BR>
-                                            <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span><BR>
-                                            <span>TOTAL:</span>       <BR>
-                                            <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
-                                        </span>
-                                    </div>
-                                    <div class="col-sm-5" style="margin: 5px">
-                                        <span ng-if="todo_price<total_price">
-                                            <span style='font-size:1.7em;'>{{(((price-todo_price)/price*100).toFixed(2))|formatPrice}}%</span><BR>
-                                            <span style="font-size: 1.2em;">Done</span>    <BR>
-                                        </span>
-                                    </div>
-                                </div>
+                     <div class="row">
+                         <div class="col-sm-5">
+                             <span>
+                                 <span>DONE:</span>    <BR>
+                                 <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
+                                 <span>TODO:</span>        <BR>
+                                 <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span><BR>
+                                 <span>TOTAL:</span>       <BR>
+                                 <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
+                             </span>
+                         </div>
+                         <div class="col-sm-5" style="margin: 5px">
+                             <span ng-if="todo_price<total_price">
+                                 <span style='font-size:1.7em;'>{{(((price-todo_price)/price*100).toFixed(2))|formatPrice}}%</span><BR>
+                                 <span style="font-size: 1.2em;">Done</span>    <BR>
+                             </span>
+                         </div>
+                     </div>
                     </div>
                 </div>
                 <BR>
@@ -180,7 +174,7 @@
             <div class="modal-footer">
 
                <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                <button  class="btn btn-default pull-left"  ng-model="status"
+                <button  class="btn btn-default pull-left"  ng-model="status" ng-hide="type=='Unscheduled'"
                         ng-options="s.value as s.txt for s in statuses"
                         bs-select onclick="return false;" ng-change="updateStatus()">
                 </button>

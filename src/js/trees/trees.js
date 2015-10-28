@@ -594,6 +594,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             }
 
             s.clearFilters = function () {
+                s.filterSearch = { species: '', treatments: '' };
                 TFS.clearFilters(false);
                 s.onSelectYear(false);
                 if (!s.trees || !s.trees.length || s.trees.length < 1) {

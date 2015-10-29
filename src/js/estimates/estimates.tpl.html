@@ -3,10 +3,14 @@
 
     <div class="table-header">
         <h1 class="pull-left">Reports</h1>
-        <div ng-if="auth.hasPerm('calendar_view')" class='class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"'
+
+        <div ng-if="auth.isAtleast('inventory') && auth.hasPerm('calendar_view')" class='class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"'
               style="max-width: 100%; width: auto;font-size: 23px;" ng-if="auth.isAtleast('staff')">
             <a style="color: white;" href="#/calendar" target='ap_calendar'>Job Calendar</a>
         </div>
+		  <div ng-if="auth.isAtleast('inventory')" class='pull-right btn btn-sm topMargin5 bottomMargin5' style='margin:1.2em 2em 0 0;font-size:1.1em'>
+				<a href='/go/reports?token={{auth.data().token}}' target='ap_reports'>Past Due Report</a>
+		  </div>
         <div class="clearfix"></div>
     </div>
 

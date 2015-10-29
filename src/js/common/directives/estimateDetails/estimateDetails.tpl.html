@@ -3,7 +3,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
-                <h4 class="modal-title" id="modalTitle"><span style="font-size:1.5em; font-weight:bold;text-align: center">{{report.reportID}} - {{report.name}}</span> (<a href="#/trees?reportID="{{report.reportID}}>edit</a> | <a target="_new" href="{{report.url}}">view</a>)</h4>
+                <h4 class="modal-title" id="modalTitle"><span style="font-size:1.5em; font-weight:bold;text-align: center">#{{report.reportID}} {{report.name}}</span> 
+					 &nbsp; <a class='btn btn=block btn-sm btn-primary' href="#/trees?reportID={{report.reportID}}" ng-click="$hide();"><i class='fa fa-pencil'></i> Edit</a> 
+					 <a target="_new" href="{{report.url}}">Cust View</a></h4>
                 <h4 ng-model="siteID" ng-show="true" class="modal-site ng-pristine ng-untouched ng-valid" id="modalSiteID"></h4>
             </div>
             <div class="modal-body">
@@ -85,7 +87,8 @@
                 <div class="modal-footer">
 
                     <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                    <button  class="btn btn-default pull-left"  ng-model="status"
+                    <button  ng-if="status=='completed' || status=='invoiced'"
+						  				class="btn btn-default pull-left"  ng-model="status"
                              ng-options="s.value as s.txt for s in statuses"
                              bs-select onclick="return false;" ng-change="updateStatus()">
                     </button>

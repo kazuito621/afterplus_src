@@ -16,7 +16,6 @@ app.directive('estimateDetails',
                 };
 
                 scope.statuses = [
-                    {value:'scheduled', txt:'Scheduled'},
                     {value:'completed', txt:'Completed'},
                     {value:'invoiced', txt:'Invoiced'},
                     {value:'paid', txt:'Paid'},

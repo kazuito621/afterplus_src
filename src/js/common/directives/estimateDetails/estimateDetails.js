@@ -3,8 +3,8 @@
  */
 
 app.directive('estimateDetails',
-    ['$modal','Api',
-        function ($modal,Api) {
+    ['$modal','Api','Restangular',
+        function ($modal,Api,Rest) {
             'use strict';
 
             var linker = function (scope, el, attrs){
@@ -30,6 +30,7 @@ app.directive('estimateDetails',
                     scope.todo_price = parseFloat(report.todo_price.replace(",", ""));
                     scope.status = (report.status);
                     scope.siteID = report.siteID;
+						  scope.report=report;
                     Api.getSiteById(scope.siteID, {}).
                         then(function (res) {
                             scope.site = res;
@@ -50,7 +51,6 @@ app.directive('estimateDetails',
                 };
 
                 scope.savejobtoforeman = function () {
-
                     Api.changeEstimateProperty(scope.report.reportID, {
                         job_userID: scope.report.job_userID
                     }).then(function (response) {
@@ -130,8 +130,30 @@ app.directive('estimateDetails',
                         modal.show();
                         $(document).keyup(hideOnEscape);
                     });
+
+
+						// load contacts
+						Rest.one('site/'+scope.report.siteID+'/users?role=customer').get().then(function(res){
+							if(!res){
+								var txt="<div class='estContacts'>"+scope.site.contact+"<br>"
+									+"<a href='mailto:"+scope.site.email+"' target=_new>"+scope.site.email+"</a><BR>"
+									+"Tel: "+scope.site.phone+"</div>";
+							}else{
+								var txt='';
+								var ct=0;
+								_.each(res, function(r){
+									ct++; if(ct>3) return false;
+									txt += '<div class="estContacts">'+r.fName + ' ' + r.lName + '<br>'
+									+'<a href="mailto:'+r.email+'" target=_new>'+r.email+'</a><br>'
+									+'Tel: '+r.phone + '</div>';
+								});
+							}
+							scope.contacts=txt;
+						});
                 });
+
             };
+
 
             return {
                 restrict: 'EA',

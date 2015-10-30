@@ -167,7 +167,7 @@
                 <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}' 
 				target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
 
-                <a ng-if='report.reportLink && report.reportID && (report.status=="invoiced" || report.status=="paid"' href='/go/invoice/pdf/{{report.token}}{{tree_cachebuster}}' 
+                <a ng-if='report.reportLink && report.reportID && (report.status=="invoiced" || report.status=="paid")' href='/go/invoice/pdf/{{report.token}}{{tree_cachebuster}}' 
 				target='_cust_view'>PDF Invoice</a> &nbsp;|&nbsp;
 
                 <a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'

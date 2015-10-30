@@ -49,6 +49,9 @@
 
     <div class='table-responsive' ng-if="displayedEstimates.length > 0">
         <table class='table table-striped' id='estimatesList'>
+
+
+
             <thead>
                 <tr>
                     <th class="td-check clickable-header text-center" ng-if="auth.isAtleast('inventory')">
@@ -89,6 +92,11 @@
                     <th style="min-width: 55px;"></th>
                 </tr>
             </thead>
+
+
+
+
+
 
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
                 <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}' 

@@ -1,4 +1,16 @@
 <div class="modal" tabindex="-1" role="dialog">
+<style>
+	.estContacts {
+		background-color:#f7f4e2;
+		border: 1px solid #e7e2c3;
+		padding:.2em .7em;
+		margin-bottom:.5em;
+		}
+	.estStatusItem {
+		margin-top:.5em;
+		}
+
+</style>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -18,9 +30,8 @@
 								</span>
                         <BR><BR>
 
-                        <b style='font-size:1.2em;'>{{ site.contact }}</b><BR>
-                        <a href='{{site.email}}'>{{site.email}}</a><BR>
-                        {{ site.phone }}
+                        <b style='font-size:1.2em;'>Contacts</b><BR>
+								<div ng-bind-html="contacts"></div>
 
                     </div>
                     <div class="col-md-6" style='text-align:left; line-height:1.3em;'>
@@ -28,23 +39,29 @@
                         Foreman: <a href="#" editable-select="report.job_userID"
                                     e-ng-options="g.userID as g.text for g in groups"
                                     onaftersave="savejobtoforeman()">{{ report.foreman_email_short || 'Select a Foreman' }}</a>
-                        <BR><BR>
-
+                        <BR>
                         Sales: <a href="#" editable-select="report.sales_userID"
                                   e-ng-options="g.userID as g.text for g in groups"
                                   onaftersave="savejobtoSalesUser()">{{ report.sales_email_short || 'Select a Sales Rep' }}</a>
                         <BR><BR>
-                        <BR>
 
                         <div class="row">
                             <div class="col-sm-5">
                                         <span>
-                                            <span>DONE:</span>    <BR>
-                                            <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
-                                            <span>TODO:</span>        <BR>
-                                            <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span><BR>
-                                            <span>TOTAL:</span>       <BR>
-                                            <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
+													 		<div class='estStatusItem'>
+															  <span>DONE:</span>    <BR>
+															  <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span>
+														  </div>
+
+													 		<div class='estStatusItem'>
+															  <span>TODO:</span>        <BR>
+															  <span style='font-size:1.7em;color: #ff0000'>${{(todo_price)|formatPrice}}</span>
+															 </div>
+
+													 		<div class='estStatusItem'>
+                                            		<span>TOTAL:</span>       <BR>
+                                           	 	<span style='font-size:1.7em;'>${{price|formatPrice}}</span>
+															 </div>
                                         </span>
                             </div>
                             <div class="col-sm-5" style="margin: 5px">

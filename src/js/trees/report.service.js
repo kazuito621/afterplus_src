@@ -56,7 +56,7 @@ app.service('ReportService',
 	}
 
 	this.getBlankReport = function(){
-		this.report={name:'Untitled Estimate', items:[], services:[], siteID:this.siteID};
+		this.report={name:'Untitled Estimate', items:[], services:[], siteID:this.siteID, reportType:'Estimate', siteName:'...'};
 		$rootScope.$broadcast('onLoadReport', this.report);
 		return this.report;
 	}
@@ -81,12 +81,10 @@ app.service('ReportService',
 						d.localTreeID=localID++;
 					})
 				}
-				console.debug("rpt st ");
-				console.debug(data.items);
-				console.debug("rpt end");
+				if(!that.report.reportType) that.report.reportType='Estimate';
 
-                that.setGrandTotal();
-                data.total = that.report.total;
+				 that.setGrandTotal();
+				 data.total = that.report.total;
 
 				$rootScope.$broadcast('onLoadReport', data);
 

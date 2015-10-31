@@ -2523,7 +2523,8 @@ footer {
 }
 /* line 9, ../scss/partials/_sites.scss */
 .action-float-bar .action-float-bar-inner {
-  background: #111111;
+  background: #666;
+  border-top: 1px solid #111111;
   padding: 15px 15px 35px 15px;
   box-shadow: 0 0px 9px rgba(0, 0, 0, 0.25);
 }

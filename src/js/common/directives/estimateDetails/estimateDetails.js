@@ -3,8 +3,8 @@
  */
 
 app.directive('estimateDetails',
-    ['$modal','Api','Restangular',
-        function ($modal,Api,Rest) {
+    ['$modal','Api','Restangular', '$sce',
+        function ($modal, Api, Rest, $sce) {
             'use strict';
 
             var linker = function (scope, el, attrs){

@@ -217,7 +217,8 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         addNote:function(noteType, reportID,text){
             return Rest.all('note/'+noteType+'/'+reportID).post({note:text});
         },
-        deleteNote:function(noteType, reportID,noteID){
+        deleteNote:function(noteType, reportID, noteID){
+		  console.debug('delnote noteid: ' + noteID );
            // DELETE /note/report/123/456
             return Rest.one('note/'+noteType+'/'+reportID+'/'+noteID).remove();
         },

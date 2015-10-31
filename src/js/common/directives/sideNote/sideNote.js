@@ -40,7 +40,7 @@ app.directive('sideNote',
                 }
                 scope.update=function(noteItem){
                     scope.addingNote = true;
-                    Api.editNote(scope.noteType, scope.reportID, noteItem.noteID, noteItem.note).then(function(data){
+                    Api.editNote(scope.noteType, scope.reportID, noteItem.noteID, scope.updatedText).then(function(data){
                         scope.addingNote = false;
                         scope.addNote = false;
                         scope.editNoteID = -1;

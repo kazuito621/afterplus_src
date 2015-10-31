@@ -104,6 +104,8 @@
                         <a href="" class="badge" ng-if="e.status=='invoiced'" style="color: white;" 
 									ng-style="(e.pastDue <30 )?{'background-color':'#6e6e6e'}:{'background-color':'#df0505'}"  
 									bs-tooltip title="" >{{e.pastDue}} days past due</a>
+                        <button ng-if="e.status=='invoiced'" send-report="e" type="invoice"  bs-tooltip title="Resend Invoice">
+                            <i class="fa fa-envelope"></i></button>
 					</td>
                     <td>
 						<span title="{{e.siteName}}">{{e.siteName_short}}</span> &nbsp; 
@@ -131,8 +133,9 @@
 									ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
 									placeholder="{{e.status}}"
 									ng-options="s.id as s.txt for s in data.statuses(e.status)"
-									bs-select onclick="return false;">
+									bs-select onclick="return false;" >
 							</button>
+                            <span ng-hide="true" send-report="e" type="report" id="sendReportBtn_{{e.reportID}}"></span>
 							<a ng-if="auth.isAtleast('inventory') && e.status=='invoiced'" href='#'><i style='fa fa-fa-envelope-o'></i></a>
 							<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
 									ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)" style='cursor:pointer !important'

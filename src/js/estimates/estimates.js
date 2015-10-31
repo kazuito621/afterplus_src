@@ -207,7 +207,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 					return;
 				}
 		}
-
+        if(st=='invoiced'){ // Trigger the directive because can not add directive to dropdown items
+            $( "#sendReportBtn_"+rpt.reportID ).click();
+        }
 		_setReportStatus(rpt);		
 	}
 

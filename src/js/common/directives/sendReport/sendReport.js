@@ -12,9 +12,6 @@ app.directive('sendReport',
                 scope.openModal = function () {
                     if (angular.isDefined(attrs.sendReport))
                         scope.report = scope.$eval(attrs.sendReport);
-                    if (angular.isDefined(attrs.type))
-                        scope.type = scope.$eval(attrs.type);
-
                     if (angular.isDefined(attrs.preCallBack))
                         scope.preCallBack = attrs.preCallBack;
                     if (angular.isDefined(attrs.postCallBack))
@@ -268,10 +265,6 @@ app.directive('sendReport',
                         scope.mode='new';
                         scope.addedClients = [];
                         scope.addedSites = [];
-                        scope.userID=null;
-                        if (angular.isDefined(attrs.sendReport)) {
-                            scope.type = attrs.sendReport;
-                        }
                         scope.openModal();
                     });
                 };

@@ -74,6 +74,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
     // callback when sales_user was changed for estimate
     s.updateEstimate = function(rpt){
 
+		if(rpt.foreman_userID) rpt.job_userID=rpt.foreman_userID;
+
         var dispObj=_.findObj(s.displayedEstimates, 'reportID', rpt.reportID);
 		  if(!dispObj) dispObj={};
 
@@ -92,8 +94,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				dispObj.foreman_userID = rpt.job_userID;
         }
 
-        Api.saveReport(rpt).then(function(data1){
-            //What should we do here? May be display some user-friendly message, that report was updated?
+        Api.saveReport(rpt).then(function(res){
+				if(res && res.msg) s.setStatus(res.msg, {time:3});
         })
     }
 
@@ -137,6 +139,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				if( s.data.filterTextEntry && s.data.filterTextEntry.lenght>1 ){
 					s.data.filterTextEntry = ' ' + s.data.filterTextEntry;
 				}
+				if(!s.data.salesForemanMode) s.data.salesForemanMode='sales'; 
         });
     };
 

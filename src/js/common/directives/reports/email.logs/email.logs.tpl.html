@@ -1,10 +1,10 @@
 
 <div ng-if="report.emailLogs && report.emailLogs.length">
-    Email logs:<BR>
+    <div style='font-size:.7em; font-weight:bold; padding:.2em 0 .6em 0; color:#667;'>EMAILS SENT</div>
     <table class='table ng-table-responsive ng-table'>
         <tr bindonce ng-table ng-repeat="itm in report.emailLogs">
             <td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
-                &nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}'>link</a>
+                &nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}-int'>link</a>
             </td>
             <td bo-text="itm.tstamp_sent || ''"></td>
             <td>

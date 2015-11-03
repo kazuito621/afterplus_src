@@ -16,9 +16,9 @@
             <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">{{auth.getLoginName()}} <span class="caret"></span></button>
             <ul class="dropdown-menu pull-right">
                 <li ng-if="auth.hasPerm('dashboard_view')"><a href="/go/dash?token={{auth.data().token}}" target='_new'>Dashboard</a></li>
-                <li><a href add-edit-user-modal="myself" sites="initData.sites" clients="initData.clients">My User Profile</a></li>
-                <li ng-if="auth.is('admin')"><a href='#' iframe-popup url="{{ auth.getHost() }}/go/settings?token={{auth.data().token}}" ititle='Company Settings'>Company Settings</a></li>
-					 <li ng-if="auth.isAtleast('inventory')"><a href='/go/changelog' ng-click='onClickWhatsNew()' target=_new>What's New?</a></li>
+                <li ng-if="auth.hasPerm('user_edit_self')"><a href add-edit-user-modal="myself" sites="initData.sites" clients="initData.clients">My User Profile</a></li>
+                <li ng-if="auth.is('admin') && auth.hasPerm('company_settings_edit')"><a href='#' iframe-popup url="{{ auth.getHost() }}/go/settings?token={{auth.data().token}}" ititle='Company Settings'>Company Settings</a></li>
+					 <li ng-if="auth.isAtleast('inventory') && auth.hasPerm('user_edit_self')"><a href='/go/changelog' ng-click='onClickWhatsNew()' target=_new>What's New?</a></li>
 
 						<!-- login as different user in entity -->
                 <li ng-if="relatedUsers" class="divider"></li>

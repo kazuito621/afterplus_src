@@ -151,7 +151,9 @@ app.config(['$routeProvider', '$locationProvider',
 				})
 				.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig){
 					headers=headers||{};
-					headers['X-token']=Auth.data().token;
+					var t=Auth.data().token;
+					if(t) headers['X-token']=Auth.data().token;
+
 					return {
 						headers:headers
 						,element:element

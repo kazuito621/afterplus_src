@@ -156,10 +156,10 @@ var ReportCtrl = app.controller(
             });
 
             var setDefaultSalesRep=function(){
-                s.report.sales_userID=Auth.authData.userID;
-                s.report.sales_email=Auth.authData.email;
-                s.report.sales_fname=Auth.authData.fName;
-                s.report.sales_lname=Auth.authData.lName;
+                s.report.sales_userID=Auth.data().userID;
+                s.report.sales_email=Auth.data().email;
+                s.report.sales_fname=Auth.data().fName;
+                s.report.sales_lname=Auth.data().lName;
             }
 
             s.$on('itemsAddedToReport', function () {

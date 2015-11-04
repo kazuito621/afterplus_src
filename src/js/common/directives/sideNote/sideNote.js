@@ -30,7 +30,7 @@ app.directive('sideNote',
                             scope.notes.push({
                                 note:scope.noteInput,
                                 history:'Just Now',
-                                name:Auth.authData.fName+' '+Auth.authData.lName
+                                name:Auth.data().fName+' '+Auth.data().lName
                             });
                             scope.noteInput='';
                         }

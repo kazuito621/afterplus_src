@@ -6,14 +6,15 @@ app.directive('sendReport',
     ['$modal', 'Api','$timeout','$q','$popover',
         function ($modal, Api,$timeout,$q,$popover) {
             'use strict';
-
             var linker = function (scope, el, attrs) {
                 var modal;
                 scope.openModal = function () {
                     if (angular.isDefined(attrs.sendReport))
+                    {
                         scope.report = scope.$eval(attrs.sendReport);
+                    }
                     if (angular.isDefined(attrs.type))
-                        scope.type = scope.$eval(attrs.type);
+                        scope.type = (attrs.type);
 
                     if (angular.isDefined(attrs.preCallBack))
                         scope.preCallBack = attrs.preCallBack;
@@ -21,9 +22,10 @@ app.directive('sendReport',
                         scope.postCallBack = attrs.postCallBack;
 
                     if (!modal)
-                        modal = $modal({scope: scope, template: '/js/trees/emailReport.tpl.html', show: false});
+                        modal = $modal({scope: scope, template: '/js/common/directives/sendReport/sendReport.tpl.html', show: false});
 
-                    scope.initEmailModal(scope.type);
+
+                    initEmailModal(scope.type);
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
@@ -33,16 +35,10 @@ app.directive('sendReport',
                 };
                 var alreadySkipped= [];
                 var contactEmailsBackup=[];
-                scope.initEmailModal = function (type) {
-                    //s.saveReport();
+                var initEmailModal = function (type) {
+                    if(scope.preCallBack)
+                        scope.$eval(scope.preCallBack)();
                     scope.emailRpt={}
-                    if (scope.report.contact) {
-                        var toName = scope.report.contact.trim();
-                        var tmp = toName.split(' ');
-                        if (tmp.length > 1) {
-                            toName = tmp[0];
-                        }
-                    }
                     alreadySkipped=[];
                     //scope.type = (type=='invoice') ? 'sendInvoice' : 'sendReport';
                     if(type=='invoice') {
@@ -71,23 +67,32 @@ app.directive('sendReport',
                     scope.emailRpt.disableSendBtn = false;
                     scope.emailRpt.sendBtnText = 'Send';
 
-                    Api.getSiteUsers(scope.emailRpt.siteID, 'customer')
-                        .then(function (res) {
-                            if (!res) {
-                                return;
-                            }
-                            var emList = [];
-                            _.each(res, function (r) {
-                                if (r && r.email) {
-                                    emList.push(r.email);
+                    if(scope.report.customer){
+                        scope.report.customer.forEach(function(item){
+                            scope.emailRpt.contactEmails.push(item.email);
+                        });
+                        scope.emailRpt.contactEmail = scope.emailRpt.contactEmails.join(', ');
+                        contactEmailsBackup = angular.copy(scope.emailRpt.contactEmails);
+                    }
+                    else{
+                        Api.getSiteUsers(scope.emailRpt.siteID, 'customer')
+                            .then(function (res) {
+                                if (!res) {
+                                    return;
+                                }
+                                var emList = [];
+                                _.each(res, function (r) {
+                                    if (r && r.email) {
+                                        emList.push(r.email);
+                                    }
+                                });
+                                if (emList) {
+                                    scope.emailRpt.contactEmail = emList.join(', ');
+                                    scope.emailRpt.contactEmails = emList;
+                                    contactEmailsBackup = angular.copy(emList);
                                 }
                             });
-                            if (emList) {
-                                scope.emailRpt.contactEmail = emList.join(', ');
-                                scope.emailRpt.contactEmails = emList;
-                                contactEmailsBackup = angular.copy(emList);
-                            }
-                        });
+                    }
 
                     Api.getEmailTemplate(type).then(function(res){
                         if(res){
@@ -95,32 +100,6 @@ app.directive('sendReport',
                         }
                     });
                 };
-
-                scope.sendEmailPortalLink=function($hide, $show){
-                    scope.emailRpt.disableSendBtn = true;
-                    scope.emailRpt.sendBtnText = 'Sending...';
-                    isNewEmails().then(function(data){
-                        if(data.indexOf(true)!=-1) {
-                            scope.emailRpt.disableSendBtn = false;
-                            scope.emailRpt.sendBtnText = 'Send';
-                            return;
-                        };
-                        _.each(scope.emailRpt.contactEmails,function(item){
-                            item.email = item.text;
-                        });
-                        // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                        scope.emailRpt.contactEmail =angular.copy(scope.emailRpt.contactEmails);
-                        scope.emailRpt.cc_email = _.pluck(scope.emailRpt.ccEmails, 'text').join(', ');
-//
-                        Api.sendEmailPortalLink(scope.emailRpt)
-                            .then(function (msg) {
-                                scope.emailRpt.disableSendBtn = false;
-                                scope.emailRpt.sendBtnText = 'Send';
-                                $hide();
-                            });
-                    });
-
-                }
 
                 scope.sendReport = function (hideFn, showFn) {
                     scope.emailRpt.disableSendBtn = true;
@@ -138,7 +117,7 @@ app.directive('sendReport',
                         // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
                         scope.emailRpt.contactEmail =angular.copy(scope.emailRpt.contactEmails);
                         scope.emailRpt.cc_email = _.pluck(scope.emailRpt.ccEmails, 'text').join(', ');
-
+                        scope.emailRpt.reportID = scope.report.reportID;
                         Api.sendReport(scope.emailRpt)
                             .then(function (res) {
                                 scope.emailRpt.disableSendBtn = false;
@@ -146,6 +125,7 @@ app.directive('sendReport',
                                 if (res.msg.trim().toLowerCase().match(/success/)){
                                     hideFn();
                                 }
+                                if(scope.postCallBack)scope.$eval(scope.postCallBack)();
                             });
                     });
                 };
@@ -231,23 +211,6 @@ app.directive('sendReport',
                         }
                     };
                 }
-                scope.sendPortalLink = function(user){
-                    scope.emailRpt={};
-                    scope.mode='addEditUsers';
-                    scope.type = 'sendPortalLink';
-                    scope.modalTitle = "Email Portal Link";
-                    scope.emailRpt.contactEmails = [];
-                    scope.emailRpt.cc_email = '';
-                    scope.emailRpt.ccEmails = [];
-                    scope.emailRpt.senderEmail = Auth.data().email;
-                    scope.emailRpt.subject = 'Manage your trees - Portal Login';
-                    scope.emailRpt.disableSendBtn = false;
-                    scope.emailRpt.sendBtnText = 'Send';
-                    scope.emailRpt.contactEmails.push(user.email);
-                    Api.getEmailPortalLink(user.userID).then(function(data){
-                        scope.emailRpt.message = data;
-                    })
-                };
 
                 scope.closeModal = function () {
                     modal.hide();

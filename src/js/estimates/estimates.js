@@ -218,7 +218,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		// todo -- we need a way for calls like this to know if a api calle failed.
 		// currently, both ok and fail, still calls the then()
 		Api.setReportStatus(rpt.reportID, rpt.status).then(function(d){
-			s.setAlert(d);
+			//s.setAlert(d);
 			if(d!='Status updated' && rpt.prevStatus){
 				rpt.status=rpt.prevStatus;
 			}

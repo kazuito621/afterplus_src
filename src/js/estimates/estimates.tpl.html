@@ -119,7 +119,7 @@
 									bs-tooltip title="{{e.count_internal_notes}} internal notes" >{{e.count_internal_notes}}</a>
                         <a ng-if="e.pastDue>=30" href="" class="badge" ng-if="e.status=='invoiced'" style="color: white; background-color:#df0505" 
 									bs-tooltip title="" >{{e.pastDue}} days past due</a>
-                        <a href='#' ng-if="e.status=='invoiced'" send-report="e" type="invoice"  bs-tooltip title="Re-Send Invoice">
+                        <a href='#' ng-if="e.status=='completed' || e.status=='invoiced'" send-report="e" type="invoice"  bs-tooltip title="Re/Send Invoice">
                             <i class="fa fa-envelope"></i></a>
 					</td>
                <td>

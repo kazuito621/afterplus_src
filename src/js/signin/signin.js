@@ -86,4 +86,12 @@ function ($scope, $timeout, $route, md5, $location, Auth, storage ){
 		s.goTrees();	
 	}
 
+	// if this is the demo site, put in the info immediately
+	if(cfg.host().match(/demo.arborplus/)){
+		s.login.email='demo@arborplus.com';
+		s.login.msg='Password is "demo"';
+	}
+
+
 }]);
+

@@ -74,43 +74,6 @@ var UserCtrl = app.controller('UserCtrl',
                 applyFilter();
             };
 
-            s.sendPortalLink=function(user){
-                s.emailRpt={};
-                s.mode='addEditUsers';
-                s.type = 'sendPortalLink';
-                s.modalTitle = "Email Portal Link";
-                s.emailRpt.contactEmails = [];
-                s.emailRpt.cc_email = '';
-
-                s.emailRpt.ccEmails = [];
-
-                s.emailRpt.senderEmail = Auth.data().email;
-
-                s.emailRpt.subject = 'Manage your trees - Portal Login';
-                s.emailRpt.disableSendBtn = false;
-                s.emailRpt.sendBtnText = 'Send';
-                s.emailRpt.contactEmails.push(user.email);
-                Api.getEmailPortalLink().then(function(data){
-                    s.emailRpt.message = data;
-                })
-            };
-
-            s.sendEmailPortalLink=function($hide, $show){
-                s.emailRpt.disableSendBtn = true;
-                s.emailRpt.sendBtnText = 'Sending...';
-
-                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
-
-                Api.sendEmailPortalLink(s.emailRpt)
-                    .then(function (msg) {
-                        s.emailRpt.disableSendBtn = false;
-                        s.emailRpt.sendBtnText = 'Send';
-                        $hide();
-                    });
-            }
-
-
             /*s.filterBy = function(type){
               if(type=='unassigned'){
                   userFiltered=[];

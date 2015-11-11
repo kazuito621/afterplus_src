@@ -5,12 +5,18 @@
         <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
         <br><br>
         <button ng-if="selected.siteID" class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
-        <button ng-if="selected.siteID" class="btn btn-blue clr-white"
+        <!--<button ng-if="selected.siteID" class="btn btn-blue clr-white"
                 data-backdrop='static'
                 data-keyboard=true
                 bs-modal
                 data-template="js/trees/emailReport.tpl.html"
                 ng-click="sendPortalLink()">
+            Send Portal Login To Customer
+        </button>-->
+
+        <button ng-if="selected.siteID" class="btn btn-blue clr-white"
+                send-portal-link="report"
+                >
             Send Portal Login To Customer
         </button>
     </div>
@@ -142,7 +148,7 @@
 
             <button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>
 
-            <button class="btn btn-red clr-white"
+            <!--<button class="btn btn-red clr-white"
 						ng-if='report.status!="completed" && report.status!="invoiced" && report.status!="paid"'
                     data-backdrop='static'
                     data-keyboard=true
@@ -150,9 +156,17 @@
                     data-template="js/trees/emailReport.tpl.html"
                     ng-click="initEmailModal()">
                 Send Estimate
+            </button>-->
+            <button class="btn btn-red clr-white"
+                    ng-if='report.status!="completed" && report.status!="invoiced" && report.status!="paid"'
+                    send-report="report"
+                    pre-call-back="saveReport"
+                    post-call-back="postSendReportCallBack"
+                    type="report">
+                Send Estimate
             </button>
 
-            <button class="btn btn-red clr-white"
+            <!--<button class="btn btn-red clr-white"
 						ng-if='report.status=="completed" || report.status=="invoiced" || report.status=="paid"'
                     data-backdrop='static'
                     data-keyboard=true
@@ -160,13 +174,20 @@
                     data-template="js/trees/emailReport.tpl.html"
                     ng-click="initEmailModal('invoice')">
                 Send Invoice
+            </button>-->
+            <button class="btn btn-red clr-white"
+                    ng-if='report.status=="completed" || report.status=="invoiced" || report.status=="paid"'
+                    pre-call-back="saveReport"
+                    post-call-back="postSendReportCallBack"
+                    send-report="report"
+                    type="invoice">
+                Send Invoice
             </button>
 
             &nbsp;
             <span ng-if="report.reportID">
                 <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}' 
 				target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
-
                 <a ng-if='report.reportLink && report.reportID && (report.status=="invoiced" || report.status=="paid")' href='/go/invoice/pdf/{{report.token}}{{tree_cachebuster}}' 
 				target='_cust_view'>PDF Invoice</a> &nbsp;|&nbsp;
 

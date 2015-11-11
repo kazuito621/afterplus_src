@@ -68,9 +68,7 @@
                     <span style='text-decoration:underline;cursor: pointer' ng-bind="e.email"  add-edit-user-modal="e" sites="sites" clients="initData.clients" on-save="refreshSites"></span>
 
 						<!-- email the user -->
-                    <button ng-if="e.role=='customer' && e.email!='No Results'" data-backdrop='static'
-                       bs-modal data-template="js/trees/emailReport.tpl.html" data-keyboard=true
-                       ng-click="sendPortalLink(e)"
+                    <button ng-if="e.role=='customer' && e.email!='No Results'" send-portal-link user="e"
                             ><i  bs-tooltip title="Send user a portal login link" class="fa fa-envelope"></i></button>
                     <button ng-if="e.role!='customer' && e.email!='No Results'" confirm-popup="'Email this user their login information?'" 
 						  		user-id="e.userID" callback="sendLoginInfo" bs-tooltip title="Send user their login information">

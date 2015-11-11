@@ -144,8 +144,8 @@
 									ng-options="s.id as s.txt for s in data.statuses(e.status)"
 									bs-select onclick="return false;" >
 							</button>
-                            <span ng-hide="true" send-report="e" type="invoice" id="sendReportBtn_{{e.reportID}}"></span>
-							<a ng-if="auth.isAtleast('inventory') && e.status=='invoiced'" href='#'><i style='fa fa-fa-envelope-o'></i></a>
+
+							<!-- link for customers -->
 							<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
 									ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)" style='cursor:pointer !important'
 									>{{ e.status | statusText }}</button>

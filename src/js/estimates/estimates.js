@@ -210,10 +210,13 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 					return;
 				}
 		}
-        if(st=='invoiced'){ // Trigger the directive because can not add directive to dropdown items
-            $( "#sendReportBtn_"+rpt.reportID ).click();
-        }
-		_setReportStatus(rpt);		
+
+		// trigger SEND INVOICE directive if needed 
+      if(st=='send_invoice'){
+    		$( "#sendReportBtn_"+rpt.reportID ).click();
+			rpt.status='...';
+		}else
+			_setReportStatus(rpt);		
 	}
 
 	// actually change the status
@@ -221,10 +224,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		// todo -- we need a way for calls like this to know if a api calle failed.
 		// currently, both ok and fail, still calls the then()
 		Api.setReportStatus(rpt.reportID, rpt.status).then(function(d){
-			//s.setAlert(d);
-			if(d!='Status updated' && rpt.prevStatus){
+			var m = (d && d.msg) ? d.msg : '';
+			if((!m || !m.match(/updated/i)) && rpt.prevStatus)
 				rpt.status=rpt.prevStatus;
-			}
 		});
 	}
 
@@ -255,12 +257,14 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				case 'scheduled': // show SCHEDULED, COMPLETED
 					return o.splice(3,2);		
 		
-				case 'completed': //show COMPL, INV, PAID
-					o[5].txt='SEND INVOICE';
-					return o.splice(4,3);		
+				case 'completed': //show COMPL, SEND INV, MARK AS INV, PAID
+					o[5].txt='MARK AS INVOICED';
+					o.splice(5,0,{id:'send_invoice', txt:'SEND INVOICE'});
+					return o.splice(4,4);		
 
-				case 'invoiced':	//show COMPL, INV, PAID
-					return o.splice(4,3);
+				case 'invoiced':	//show COMPL, INV, RESEND INVOICE, PAID
+					o.splice(5,0,{id:'send_invoice', txt:'RE-SEND INVOICE'});
+					return o.splice(4,4);
 
 				case 'paid': return o.splice(6,1); // NONE
 			}

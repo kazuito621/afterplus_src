@@ -214,7 +214,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		// trigger SEND INVOICE directive if needed 
       if(st=='send_invoice'){
     		$( "#sendReportBtn_"+rpt.reportID ).click();
-			rpt.status='...';
+			rpt.status='completed';
 		}else
 			_setReportStatus(rpt);		
 	}

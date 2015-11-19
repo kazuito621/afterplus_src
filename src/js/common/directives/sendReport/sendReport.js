@@ -36,7 +36,6 @@ app.directive('sendReport',
                         scope.$eval(scope.preCallBack)();
                     scope.emailRpt={}
                     alreadySkipped=[];
-                    //scope.type = (type=='invoice') ? 'sendInvoice' : 'sendReport';
                     if(type=='invoice') {
                         scope.type = 'sendInvoice';
                         scope.modalTitle = "Send Invoice: ";
@@ -122,6 +121,10 @@ app.directive('sendReport',
                                     hideFn();
                                 }
                                 if(scope.postCallBack)scope.$eval(scope.postCallBack)();
+
+
+                        			if(scope.type == 'sendInvoice')
+												scope.report.status='invoiced';
                             });
                     });
                 };

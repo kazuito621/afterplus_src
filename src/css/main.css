@@ -320,15 +320,17 @@ section.mainContent.mode_estimate{
 }
 
 .mwcImg {
-	max-width:100%;
-	/*height:auto;*/
-	height:100%;
+	max-width:100% !important;
+	max-height:100% !important;
+	height:auto !important;
+	width:auto !important;
+
 }
 .mwcImgCt {
 	float:left;
 	width:50%;
-    max-width: 170px;
-    max-height: 160px;
+    max-width: 165px;
+    max-height: 190px;
 	height:100%;
 }
 .mwcBody {

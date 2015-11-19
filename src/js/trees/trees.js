@@ -570,7 +570,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
             var updateMarker = function(tree){
                 var marker = self.findMarker(tree.treeID);
-                marker.info = getTreeTemplate(tree);
+                marker.info = getTreeInfoWindowHtml(tree);
                 infowindow.setContent(marker.info);
                 infowindow.open(gMap, marker);
             }
@@ -1236,7 +1236,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 				/**
 				 * Create HTML code that goes into the Google Maps InfoWindow 
 				 */
-            var getTreeTemplate = function (itm) {
+            var getTreeInfoWindowHtml = function (itm) {
                 var ratingD = (itm.ratingID > 0 && itm.ratingID < 6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
 					 
 					 var imgTxt = (itm.images && itm.images.length>1) ? '<div>('+itm.images.length + ' images)</div>' : '';
@@ -1339,7 +1339,7 @@ console.debug(" show mapp trees -------- ");
                                     lastInsertedMarker.siteID = tree.siteID;
 
                                     lastInsertedMarker.tree = tree;
-                                    lastInsertedMarker.info = getTreeTemplate(response);
+                                    lastInsertedMarker.info = getTreeInfoWindowHtml(response);
                                     lastInsertedMarker.setIcon(setIconColor(response));
                                     markers_singleSite.push(lastInsertedMarker);
                                     s.trees.push(tree);
@@ -1429,7 +1429,7 @@ console.debug(" show mapp trees -------- ");
                     if (!itm || !itm.treeID || itm.hide) return;
                     if (itm.commonName == null || itm.commonName == 'null' || !itm.commonName) itm.commonName = ' ';
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
-                        itm.info = getTreeTemplate(itm);
+                        itm.info = getTreeInfoWindowHtml(itm);
                     }
                     setIconColor(itm);
                     set2.push(itm)

@@ -594,7 +594,11 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.onFilterChange = function (filterType, ID, value) {
                 console.log('On filter change called with', filterType, ID, value);
                 TFS.onChange(filterType, ID, value);
-                if (!s.trees || !s.trees.length || s.trees.length < 1) getFilteredSiteIDs();
+                if ( (!s.trees || !s.trees.length || s.trees.length < 1)
+					 	&& filterType != 'onlyInEstimate' )
+					 {
+					 		getFilteredSiteIDs();
+					 }
             }
 
             s.clearFilters = function () {

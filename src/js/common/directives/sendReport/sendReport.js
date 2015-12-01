@@ -10,7 +10,8 @@ app.directive('sendReport',
                 var modal;
                 scope.openModal = function () {
                     if (angular.isDefined(attrs.sendReport)) 
-                        scope.report = scope.$eval(attrs.sendReport);
+                        //scope.report = scope.$eval(attrs.sendReport);
+                        scope.report = scope.$eval(attrs.getter)();
                     if (angular.isDefined(attrs.type))
                         scope.type = (attrs.type);
                     if (angular.isDefined(attrs.preCallBack))

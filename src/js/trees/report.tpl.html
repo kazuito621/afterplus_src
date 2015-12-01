@@ -159,7 +159,8 @@
             </button>-->
             <button class="btn btn-red clr-white"
                     ng-if='report.status!="completed" && report.status!="invoiced" && report.status!="paid"'
-                    send-report="report"
+                    send-report
+                    getter="getReport"
                     pre-call-back="saveReport"
                     post-call-back="postSendReportCallBack"
                     type="report">
@@ -179,7 +180,8 @@
                     ng-if='report.status=="completed" || report.status=="invoiced" || report.status=="paid"'
                     pre-call-back="saveReport"
                     post-call-back="postSendReportCallBack"
-                    send-report="report"
+                    send-report
+                    getter="getReport"
                     type="invoice">
                 Send Invoice
             </button>

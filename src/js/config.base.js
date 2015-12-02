@@ -5,7 +5,7 @@
 (function(){
 	if(!window.cfg){
 		window.cfg={
-		 devServer:'http://dev.arborplus.com'
+		 devServer:'http://aws.arborplus.com'
 		 ,hostAndPort:function(){
 			  return 'http://'+window.location.host;
 			  }

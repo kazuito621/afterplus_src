@@ -9,8 +9,13 @@ app.directive('sendReport',
             var linker = function (scope, el, attrs) {
                 var modal;
                 scope.openModal = function () {
-                    if (angular.isDefined(attrs.sendReport)) 
-                        scope.report = scope.$eval(attrs.sendReport);
+                    if (angular.isDefined(attrs.sendReport)){
+								var rg = scope.$eval(attrs.sendReport);
+								if(typeof rg == 'function') 					// check if its a funciton getter
+                        	scope.report = rg();
+								else													// or actual object
+									scope.report = rg;							
+							}
                     if (angular.isDefined(attrs.type))
                         scope.type = (attrs.type);
                     if (angular.isDefined(attrs.preCallBack))

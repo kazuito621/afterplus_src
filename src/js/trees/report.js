@@ -249,6 +249,10 @@ var ReportCtrl = app.controller(
 			    if( $location.search().siteID ) $location.search('siteID','');
             };
 
+            s.getReport = function(){
+                return s.report;
+            };
+
             s.saveReport = function (cb1,cb2) {
 
                 var allTreatmentsSaved = s.checkAllTreatmentCodeSaved();

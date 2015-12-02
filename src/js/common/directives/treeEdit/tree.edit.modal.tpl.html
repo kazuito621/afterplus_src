@@ -12,12 +12,13 @@
 
                 <div class="row">
                     <div class="col-md-5">
-                        <!--<div class="image"><a target=_new href='{{tree.imgLrg}}'><img ng-src="{{tree.imgMed + tree_cachebuster}}"/></a></div>-->
-                        <div class="carousel-demo" style="width: 100%">
-                            <ul rn-carousel rn-carousel-index="carouselIndex6" rn-carousel-deep-watch rn-carousel-buffered rn-carousel-controls class="carousel5">
-                                <li ng-repeat="slide in slides6 track by slide.id">
-                                    <a href='{{slide.link}}' target=_new ng-style="{'background-image': 'url(' + slide.img + ')'}"  
-													class="bgimage" style='display:block;'></a>
+                        <div ng-if="slides6.length<2" class="image"><a target=_new href='{{tree.imgLrg}}'><img ng-src="{{tree.imgMed + tree_cachebuster}}"/></a></div>
+                        <div ng-if="slides6.length>=2" class="carousel-demo" style="width: 100%">
+                            <ul rn-carousel rn-carousel-index="carouselIndex6" rn-carousel-deep-watch rn-carousel-buffered class="carousel5">
+                                <li ng-repeat="slide in slides6 track by slide.id" class='image'>
+
+<a target=_new href='{{slide.link}}'><img ng-src="{{slide.img}}"/></a>
+
                                 </li>
                             </ul>
                             <div rn-carousel-indicators ng-if="slides6.length > 1" slides="slides6" rn-carousel-index="carouselIndex6"></div>
@@ -37,7 +38,7 @@
                             </h2>
                             <span ng-bind="tree.speciesID|speciesID2Name:'bot':this"></span>
                             <br>
-                            <span ng-bind="'(treeID:' + treeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span>
+                				 <span ng-bind="'(treeID:' + tTreeID + ', SpeciesID:' + tree.speciesID + ', siteID:' + tree.siteID + ')'"></span><br><br>
                             <br>
                             <br>
 

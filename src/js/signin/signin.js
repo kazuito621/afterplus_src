@@ -13,13 +13,6 @@ function ($scope, $timeout, $route, md5, $location, Auth, storage ){
 
 	var q=$location.search()
 
-	if(q.redirect && q.redirect.match(/estimate/)){
-		// todo.. this is not right
-		Auth.data({sessionID:'111'});
-		$location.url(q.redirect);
-		return;
-	}
-
 	//check for a token, and sign them in
 	var token = $location.path().substr(1).split("/");
 	if(token && token[1]){
@@ -86,4 +79,12 @@ function ($scope, $timeout, $route, md5, $location, Auth, storage ){
 		s.goTrees();	
 	}
 
+	// if this is the demo site, put in the info immediately
+	if(cfg.host().match(/demo.arborplus/)){
+		s.login.email='demo@arborplus.com';
+		s.login.msg='Password is "demo"';
+	}
+
+
 }]);
+

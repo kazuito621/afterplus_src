@@ -12,10 +12,14 @@
 	</div>
 	<div class='panel-body' ng-if="!auth.isSignedIn()">
 		<form ng-submit="signIn();">
-		<input type="text" placeholder="email" ng-model="login.email" required><br>
-		<input type="password" placeholder="password" ng-model="login.pswd" required><BR><BR>
-		<button  type="submit" value="Login" class='btn btn-primary topSpace10' ng-click="signIn()"
-			ng-disabled='login.btnDisabled==true'	>Sign In</button>
+		<input type="text" placeholder="email" ng-model="login.email" required style='font-size:1.35em;'><br>
+		<input type="password" placeholder="password" ng-model="login.pswd" required style='font-size:1.35em; margin: .15em 0 .2em;'><BR>
+
+		<div ng-if='login.msg' ng-bind='login.msg' style='margin:.5em 0 .5em;color:#f33; margin-bottom:.4em;'></div>
+		<div>
+			<button type="submit" value="Login" class='btn btn-primary' ng-click="signIn()" style='font-size:1.5em;'
+				ng-disabled='login.btnDisabled==true'>Sign In</button>
+		</div>
 		<BR><BR>
 		<a href ng-click="forgotPassword()">I forgot my password</a>
 		</form>

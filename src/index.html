@@ -45,6 +45,10 @@
     <link href="js/calender/css/jquery-ui.css" rel="stylesheet" />
     <!-- endbuild -->
 
+<!-- Start of arborplus Zendesk :: See notes in main.js before editing -->
+<script>/*<![CDATA[*/if(!window.zEmbed){window.zEmbed=function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}};/*]]>*/</script>
+<!-- End of arborplus Zendesk Widget script -->
+
 </head>
 <body  ng-controller="MainCtrl">
 <noscript>
@@ -162,6 +166,7 @@
     <script src="js/common/directives/siteUsersEditModal/siteUsersEditModal.js"></script>
     <script src="js/common/directives/siteUsersMultiEditModal/siteUsersMultiEditModal.js"></script>
     <script src="js/common/directives/tosAcceptButton/tosAcceptButton.js"></script>
+    <script src="js/common/directives/paymentPopup/paymentPopup.js"></script>
     <script src="js/common/directives/userAutoComplete.js"></script>
     <script src="js/common/directives/sitesAutoComplete.js"></script>
     <script src="js/common/directives/addressAutoComplete.js"></script>
@@ -169,6 +174,11 @@
     <script src="js/common/directives/deleteWithConfirmButton/deleteWithConfirmButton.js"></script>
     <script src="js/common/directives/statusDates/statusDates.js"></script>
     <script src="js/common/directives/editableTextPopup/editableTextPopup.js"></script>
+    <script src="js/common/directives/iFramePopup/iFramePopup.js"></script>
+    <script src="js/common/directives/sendReport/sendReport.js"></script>
+    <script src="js/common/directives/sendPortalLink/sendPortalLink.js"></script>
+
+    <script src="js/common/directives/estimateDetails/estimateDetails.js"></script>
 
     <script src="js/common/directives/filters/filter.species/filter.species.js"></script>
     <script src="js/common/directives/filters/filter.treatment.type/filter.treatment.type.js"></script>

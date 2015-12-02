@@ -129,7 +129,11 @@ var TreesCtrl = app.controller('TreesCtrl',
                 , showTreatmentList: false
                 , overrideTreatmentCodes: []		// array of treatment codes user selected in multi-box
                 // for adding trees to the estimate
-                , mode: function () { return s.renderPath[0]; }					// either "trees" or "estimate"
+                , mode: function () {    	// either "trees" or "estimate"
+					 		var m = s.renderPath[0]; 
+							// invoice, then force mode = estimate
+							return (m=='invoice') ? 'estimate' : m;
+					  }					
             };
             s.whoami = 'TreesCtrl';
             s.TFSdata;	//holds tree results count, etc. Remember, always put scope data into an object
@@ -177,6 +181,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
+            s.initData.filters.onlyInEstimate = false;
             s.filters.years = [
                 { id: moment().add(-2, 'year').format('YYYY'), desc: '2 years ago', old: 'yes' },
                 { id: moment().add(-1, 'year').format('YYYY'), desc: '1 year ago', old: 'yes' },
@@ -330,7 +335,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     console.log('Report with id %s loaded', id);
                     console.log(report);
                     console.log('About to show site %s for report', report.siteID);
-                    showSite(report.siteID);
+                    //showSite(report.siteID);
                 });
             };
 
@@ -338,6 +343,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() === 'trees' && s.renderPath[0] === 'trees') {
                     var reportID = $location.search().reportID;
                     if (reportID) {
+                        //s.initData.filters.onlyInEstimate = true;
                         showReport(reportID);
                         return;
                     }
@@ -444,10 +450,14 @@ var TreesCtrl = app.controller('TreesCtrl',
             //		2. ACTIVE: Get trees for this site
             //		2. passive: $watch will update the map with TREES
             var lastSiteID=-1;
-            s.onSelectSiteID = function (id) {
+            s.onSelectSiteID = function (id,ShouldChangeUrl) {
                 if(lastSiteID==id) return; // Prevents loading same things twice
                 else lastSiteID=id;
                 s.selected.siteID = id;
+                if(ShouldChangeUrl==true){  // When user changed site from the site dropdown.
+                   $location.search({ siteID: id});
+                   s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                }
                 ReportService.setSiteID(id);
 
                 if (s.data.mode() != 'trees') return;
@@ -502,9 +512,22 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //Wil be fired when user select report id from recent drop down.
             s.$on('OnLoadReportEvent', function (evt, data) {
-                if (data.siteID == undefined || data.siteID == "")
-                    return;
+                s.report = data;
+                if (data.siteID == undefined || data.siteID == "") return;
 
+					 // required because in customer/estimate mode, the onFilterChange event
+					 // calls an api which produces an error in the UI "No sites match your filter"
+                if (s.data.mode() == 'estimate') return;
+
+                if(s.report.reportID ){
+                    if(s.initData.filters.onlyInEstimate != true) {// DO NOTHING
+                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
+                    }
+                }else {
+                    if(s.initData.filters.onlyInEstimate != false) {// DO NOTHING
+                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);
+                    }
+                }
                 s.onSelectSiteID(data.siteID);
             });
 
@@ -547,7 +570,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             });
             var updateMarker = function(tree){
                 var marker = self.findMarker(tree.treeID);
-                marker.info = getTreeTemplate(tree);
+                marker.info = getTreeInfoWindowHtml(tree);
                 infowindow.setContent(marker.info);
                 infowindow.open(gMap, marker);
             }
@@ -571,10 +594,15 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.onFilterChange = function (filterType, ID, value) {
                 console.log('On filter change called with', filterType, ID, value);
                 TFS.onChange(filterType, ID, value);
-                if (!s.trees || !s.trees.length || s.trees.length < 1) getFilteredSiteIDs();
+                if ( (!s.trees || !s.trees.length || s.trees.length < 1)
+					 	&& filterType != 'onlyInEstimate' )
+					 {
+					 		getFilteredSiteIDs();
+					 }
             }
 
             s.clearFilters = function () {
+                s.filterSearch = { species: '', treatments: '' };
                 TFS.clearFilters(false);
                 s.onSelectYear(false);
                 if (!s.trees || !s.trees.length || s.trees.length < 1) {
@@ -1120,8 +1148,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         s.cancelEditing(true);
                 });
 
-                s.confirmEditing = function () {
 
+					// When location of EXISTING TREE pin is confirmed
+                s.confirmEditing = function () {
                     if (s.currentEditableMarker != null) {
                         s.setAlert('Updating Location', { busy: true, time: "false" });
 
@@ -1131,7 +1160,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         tree.lattitude = position.lat();
                         tree.lat = position.lat();
                         tree.lng = position.lng();
-                        
 
                         Api.updateTree(tree).then(function (response) {
                             s.hideAllAlert();
@@ -1212,7 +1240,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 				/**
 				 * Create HTML code that goes into the Google Maps InfoWindow 
 				 */
-            var getTreeTemplate = function (itm) {
+            var getTreeInfoWindowHtml = function (itm) {
                 var ratingD = (itm.ratingID > 0 && itm.ratingID < 6) ? s.ratingTypes[itm.ratingID - 1].rating_desc : '';
 					 
 					 var imgTxt = (itm.images && itm.images.length>1) ? '<div>('+itm.images.length + ' images)</div>' : '';
@@ -1292,6 +1320,8 @@ console.debug(" show mapp trees -------- ");
                                     s.cancelMarker(s.treeMarkers.length - 1, false);
                             });
 
+
+									// When NEW TREE is confirmed location
                             s.confirmLocation = function (markerIndex) {
                                 s.setAlert('Saving tree', { busy: true, time: "false" });
                                 var marker = s.treeMarkers[markerIndex];
@@ -1301,29 +1331,23 @@ console.debug(" show mapp trees -------- ");
                                     longitude: position.lng(),
                                     lattitude: position.lat(),
                                     lat: position.lat(),
-                                    lng: position.lng()
+                                    lng: position.lng(),
+												building:'no', powerline:'no', caDamage:'no',
+												speciesID:1, dbhID:1, ratingID:5
                                 };
                                 Api.saveTree(tree).then(function (response) {
                                     s.hideAllAlert();
 
                                     var lastInsertedMarker = s.treeMarkers[s.treeMarkers.length - 1];
-
-                                    lastInsertedMarker.treeID = response.treeID;
+                                    tree.treeID = lastInsertedMarker.treeID = response.treeID;
                                     lastInsertedMarker.siteID = tree.siteID;
 
                                     lastInsertedMarker.tree = tree;
-                                    lastInsertedMarker.info = getTreeTemplate(response);
+                                    lastInsertedMarker.info = getTreeInfoWindowHtml(response);
                                     lastInsertedMarker.setIcon(setIconColor(response));
                                     markers_singleSite.push(lastInsertedMarker);
-                                    s.trees.push(response);
+                                    s.trees.push(tree);
                                     if (infowindow)  infowindow.close();
-
-                                    var timeOut = setTimeout(function () {
-                                        var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
-                                        if (treeEl !== undefined && treeEl.length > 0)
-                                            treeEl.click();
-                                        clearTimeout(timeOut);
-                                    }, 1000);
 
                                     google.maps.event.clearListeners(marker, 'click');
                                     google.maps.event.addListener(marker, 'click', function (event) {
@@ -1340,6 +1364,17 @@ console.debug(" show mapp trees -------- ");
                                             }
                                         });
                                     });
+
+
+												//todo... why wont new tree show up here?!!?
+
+                                    var timeOut = setTimeout(function () {
+                                        var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
+                                        if (treeEl !== undefined && treeEl.length > 0)
+                                            treeEl.click();
+                                        clearTimeout(timeOut);
+                                    }, 1000);
+
                                     s.MarkerAdded = false;
                                 });
                             }
@@ -1398,7 +1433,7 @@ console.debug(" show mapp trees -------- ");
                     if (!itm || !itm.treeID || itm.hide) return;
                     if (itm.commonName == null || itm.commonName == 'null' || !itm.commonName) itm.commonName = ' ';
                     if (s.data.mode() === 'trees' || s.data.mode() === 'estimate') {
-                        itm.info = getTreeTemplate(itm);
+                        itm.info = getTreeInfoWindowHtml(itm);
                     }
                     setIconColor(itm);
                     set2.push(itm)
@@ -1458,7 +1493,7 @@ console.debug(" show mapp trees -------- ");
             //			  2. FALSE == uncheck all
             //			  3. 'thisYear' == check all with recommendations this year
             //			  4. ARRAY of treeIDs - toggle all those treeIDs
-            s.toggleCheckedTrees = function (opt) {
+            s.toggleCheckedTrees = s.safeApplyFn( function (opt) {
                 if (opt instanceof Array) {							// option 4
                     _.remove(s.selectedTrees, function (t) {
                         return (opt.indexOf(t) >= 0);
@@ -1474,7 +1509,7 @@ console.debug(" show mapp trees -------- ");
                         });
                     }
                 }
-            };
+            });
 
             // when user adds/removes filter, we should remove selected trees that dont satisfy that filter
             s.filterSelectedTrees = function () {
@@ -1571,7 +1606,7 @@ console.debug(" show mapp trees -------- ");
                         if (added.length)
                             msg = '{0} trees added. Some did not have recommendations assigned'.format(added.length)
                         else
-                            msg = 'These trees did not have recommendations assigned.';
+                            msg = 'These trees did not have recommendations assigned, or are already assigned.';
                     }
                     s.setAlert(msg, { type: 'd', time: 10 });
                     s.toggleCheckedTrees(added);
@@ -1785,6 +1820,7 @@ console.debug(" show mapp trees -------- ");
             self.makeFiltersObject = function () {
                 var opts = {};
                 _.each(s.TFSdata.selectedFilters, function (filt) {
+                    if(filt.type == 'onlyInEstimate') return;
                     var idName = (filt.type == 'year' || filt.type == 'miscProperty') ? filt.type : filt.type + 'ID';
                     if (!opts[idName]) opts[idName] = [];
                     opts[idName].push(filt.id);
@@ -1810,9 +1846,6 @@ console.debug(" show mapp trees -------- ");
 
                 Api.getSites(opts).then(self.getSitesCB);
             };
-
-
-
 
             var getTreeListings = function () {
                 if (s.selected.siteID <= 0)
@@ -1914,7 +1947,7 @@ console.debug(" show mapp trees -------- ");
                 // // console.log('On init data in sites');
                 if (s.data.mode() === 'trees' && (!gMap || !gMap.j || gMap.j.id !== 'treeMap')) {// Parms solution to fix the double map load... (and comment out the following)
 
-                    if (!gMap && !$location.search().reportID && !$location.search().reportID) { // Imdad's solution to fix the double map load
+                    if (!gMap && !$location.search().reportID && !$location.search().siteID) { // Imdad's solution to fix the double map load
                         ////            // This if condition is blocking to override the satellite view.
                         console.log('Map not initialized in $onInitData event');
                         s.openTreesOrSites();

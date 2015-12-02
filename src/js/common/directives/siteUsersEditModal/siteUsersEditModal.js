@@ -14,6 +14,8 @@ app.directive('siteUsersEditModal',
 	        if (angular.isDefined(attrs.refreshSiteUsers)) {
 	            scope.refreshSiteUsers = scope.$eval(attrs.refreshSiteUsers);
 	        }
+	        if (angular.isDefined(attrs.sites)) scope.sites=scope.$eval(attrs.sites);
+	        if (angular.isDefined(attrs.clients)) scope.clients=scope.$eval(attrs.clients);
 
 	        window.sues = scope;
 

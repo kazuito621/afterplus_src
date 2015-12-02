@@ -5,12 +5,18 @@
         <recent-estimates model="rdata.recentReportID" recent-report-list="recentReportList" get-recent-report-title="getRecentReportTitle(report)"></recent-estimates>
         <br><br>
         <button ng-if="selected.siteID" class="btn btn-blue clr-white" ng-cloak ng-click="newReport();">New Estimate</button>
-        <button ng-if="selected.siteID" class="btn btn-blue clr-white"
+        <!--<button ng-if="selected.siteID" class="btn btn-blue clr-white"
                 data-backdrop='static'
                 data-keyboard=true
                 bs-modal
                 data-template="js/trees/emailReport.tpl.html"
                 ng-click="sendPortalLink()">
+            Send Portal Login To Customer
+        </button>-->
+
+        <button ng-if="selected.siteID" class="btn btn-blue clr-white"
+                send-portal-link="report"
+                >
             Send Portal Login To Customer
         </button>
     </div>
@@ -29,13 +35,24 @@
             <div class="row row-estimate">
                 <div class="col-md-6 col" style='min-height:100px;'>
                     <div class="estimate-info">
-                        <dl class="small">
+
+								<!-- INVOICE STUFF -->
+								<h2 ng-if="report.reportType=='Invoice'" style='font-size:2.2em;'>
+                         	Invoice ID: <span>0{{report.reportID}}</span>
+								</h2>
+
+
+								<!-- ESTIMATE STUFF -->
+                        <dl class="small" ng-if="report.reportType=='Estimate'">
                             <dt>
                                 Created: <span ng-bind="report.tstamp_updated"></span> &nbsp; &nbsp; &nbsp; &nbsp;
                                 Estimate ID: <span ng-bind="report.reportID"></span>
                             </dt>
                         </dl>
-                        <h1 class="title" ng-bind="'Estimate for ' + report.siteName"></h1>
+
+
+
+                        <h1 class="title" ng-bind="report.reportType + ' for ' + report.siteName" style='margin:.5em 0 .5em 0'></h1>
                         <p class="name">
                             <span ng-if="data.mode() === 'trees'">
                                <!-- <a href editable-text='report.name' class='reportName'>{{report.name}}</a> &nbsp;-->
@@ -116,21 +133,64 @@
         </div>
         <!--Estimate Summary Ends-->
 
+
+
+			<div id='summary-charts' ng-if="report.charts" style='padding:2em 0 2em 0;'>
+				<img src='{{report.charts.treatmentCategories}}'>
+				<img src='{{report.charts.treatments}}'>
+				<img src='{{report.charts.species}}'>
+			</div>
+
+
+
         <!--Directive is not performing anything what is the point having simple HTML in directive-->
         <div class="estimate-actions" ng-if="data.mode()=='trees'">
+
             <button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>
-            <button class="btn btn-red clr-white"
+
+            <!--<button class="btn btn-red clr-white"
+						ng-if='report.status!="completed" && report.status!="invoiced" && report.status!="paid"'
                     data-backdrop='static'
                     data-keyboard=true
                     bs-modal
                     data-template="js/trees/emailReport.tpl.html"
                     ng-click="initEmailModal()">
-                Send
+                Send Estimate
+            </button>-->
+            <button class="btn btn-red clr-white"
+                    ng-if='report.status!="completed" && report.status!="invoiced" && report.status!="paid"'
+                    send-report='getReport'
+                    pre-call-back="saveReport"
+                    post-call-back="postSendReportCallBack"
+                    type="report">
+                Send Estimate
             </button>
+
+            <!--<button class="btn btn-red clr-white"
+						ng-if='report.status=="completed" || report.status=="invoiced" || report.status=="paid"'
+                    data-backdrop='static'
+                    data-keyboard=true
+                    bs-modal
+                    data-template="js/trees/emailReport.tpl.html"
+                    ng-click="initEmailModal('invoice')">
+                Send Invoice
+            </button>-->
+            <button class="btn btn-red clr-white"
+                    ng-if='report.status=="completed" || report.status=="invoiced" || report.status=="paid"'
+                    pre-call-back="saveReport"
+                    post-call-back="postSendReportCallBack"
+                    send-report='getReport'
+                    type="invoice">
+                Send Invoice
+            </button>
+
             &nbsp;
             <span ng-if="report.reportID">
                 <a ng-if='report.reportLink && report.reportID' href='/go/estimate/pdf/{{report.token}}{{tree_cachebuster}}' 
 				target='_cust_view'>PDF Version</a> &nbsp;|&nbsp;
+                <a ng-if='report.reportLink && report.reportID && (report.status=="invoiced" || report.status=="paid")' href='/go/invoice/pdf/{{report.token}}{{tree_cachebuster}}' 
+				target='_cust_view'>PDF Invoice</a> &nbsp;|&nbsp;
+
                 <a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'
                    onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
             </span>
@@ -175,11 +235,23 @@
                             <p><span style='font-weight:bold;'>{{desc.treatmentType}}</span> - {{desc.desc}}</p><br>
                         </div>
                     </div>
+						
+
+						  <div style='clear:both; margin:0.5em;'><BR></div>
+						  <hr>
+						  <div style='clear:both; margin:0.5em;'><BR></div>
+
+							<div id='internal-note-container' style='min-height:50px;' ng-if="auth.isAtleast('inventory')">
+            	     		<side-note report-id="{{report.reportID}}" note-type='report_internal'></side-note>
+							</div>
+
+							&nbsp;
                     <div class="logo-container" ng-if="affiliations.length">
-						<span class='logo' ng-repeat="af in affiliations">
-							<img src='img/afil/{{af}}'>
-						</span>
+								<span class='logo' ng-repeat="af in affiliations">
+									<img src='img/afil/{{af}}'>
+								</span>
                     </div>
+
 						  <div style='clear:both; margin:0.5em;'><BR></div>
 						<div ng-if="estimate_footer" ng-bind-html="estimate_footer" style='padding-top:2em;line-height:1.3em;'></div>
                 </div>

@@ -240,10 +240,15 @@ angular.module('arborPlusFilters', [])
 
 	// add commas to number, and remove ".00" at end
 	.filter('formatPrice', function(){
-		return function( val ){
+		return function( val, opt ){
 			if(!val) return val;
-    		while (/(\d+)(\d{3})/.test(val.toString())){
-	    		val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+			val = parseFloat(val).toFixed(2).toString();
+
+			if( opt == 'noCents' )
+				val = val.replace(/\.[0-9]+/,'');
+			
+    		while (/(\d+)(\d{3})/.test(val)){
+	    		val = val.replace(/(\d+)(\d{3})/, '$1'+','+'$2');
 		   }
 			return val;
 			//return val.replace(/\.00$/,'');	// this removes .00 ...
@@ -255,16 +260,11 @@ angular.module('arborPlusFilters', [])
 	.filter('statusText', function(){
 		return function( val ){
 			var o={ 
-					draft:'DRAFT',
 					sent:'NEEDS APPROVAL',
-					needs_approval:'NEEDS APPROVAL',
-					approved:'APPROVED',
-					completed:'COMPLETED',
-					paid:'PAID'
 				};
 			var v=o[val];
 			if(v) return v;
-			return val;
+			return val.toUpperCase().replace(/_/,' ');
 		}
 	})
 	
@@ -302,6 +302,18 @@ angular.module('arborPlusFilters', [])
 	    return function(arr, start, end) {
 		     return (arr || []).slice(start, end);
 			    };
+	})
+
+	// Used for the /#trees page "year filter" drop down list.
+	// Any years which dont have counts... remove them
+	.filter('filterYearFilters', function(){
+			return function(data){
+				var out=[];
+				_.each(data, function(d){
+					if(d.count>0) out.push(d);
+				});
+				return out;
+			}
 	})
 
 	;

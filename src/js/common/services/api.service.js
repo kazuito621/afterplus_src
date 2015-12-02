@@ -12,8 +12,13 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
     var sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); };
 
     var isSignedIn = function () {
-        var authData = storage.get('authData');
-        return (authData && authData.userID > 0);
+			// check window name if we should use customer login info or not...  *** duplicated code in auth.service.js! ***
+			var n=''+window.name;
+			var isCust = (n.match(/^cust_/)) ? true : false;
+			var authObjName = (isCust) ? 'authData_cust' : 'authData_staff';
+
+			var authData = storage.get(authObjName); 
+        	return (authData && authData.userID > 0);
     };
 
     var loadSites = function () {
@@ -38,7 +43,10 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         return deferred.promise;
     };
 
-    var init = function (forceRefresh) {
+	 /**
+	  * @param useAuthData - OPTIONAL ... in some cases this could be passed in, so use the token in there
+	  */
+    var init = function (forceRefresh, useAuthData) {
         var deferred = $q.defer();
         if (!isSignedIn()) {
             deferred.resolve();
@@ -47,7 +55,12 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         } else {
             sendEvt('alert', { msg: 'Loading...', time: 3, type: 'ok' });
             var t=storedData.getNoSiteTimeStamp();
-            Rest.one('init?nosite=1&timestamp='+t).get().then(function (data) {
+
+				// this tokenStr is actually probably not needed, since in theory it should be added
+				// as a header through the Restangular interceptor in app.js... but just in case...
+				// if the useAuthData, is passed along, lets use it.
+				var tokenStr = (useAuthData && useAuthData.token) ? '&token='+useAuthData.token : '';
+            Rest.one('init?nosite=1&timestamp='+t+tokenStr).get().then(function (data) {
                 //extend filters, maybe better move this logic to server side
                 storedData.setInitData(data,t,'nosite');
                 storedData.setNoSiteTimeStamp(data.timestamp);
@@ -77,9 +90,9 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         getPromise: function () { return init(); },
         getInitData: function () { return initData; },
         // returns a promise... for .then() when refresh is done
-        refreshInitData: function () { return init(true); },
-        getEmailPortalLink:function(){ //GET /template/emailPortalLink
-            return  Rest.one('template/emailPortalLink').get();
+        refreshInitData: function (data) { return init(true, data); },
+        getEmailPortalLink:function(uid){ //GET /template/emailPortalLink
+            return  Rest.one('template/emailPortalLink/'+uid).get();
         },
         getSites: function (opts) {
             return Rest.all('siteID').getList(opts);
@@ -130,7 +143,10 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
             return Rest.all('estimate').getList(opt);
         },
         getEmailTemplate: function (opt) {
-            return Rest.one('template/emailReport').get(opt);
+		  		if(opt=='invoice')
+            	return Rest.one('template/emailInvoice').get();
+				else
+            	return Rest.one('template/emailReport').get();
         },
         getBulkEditInfo:function(opt){
             return Rest.one('bulkedit').get(opt);
@@ -214,7 +230,8 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         addNote:function(noteType, reportID,text){
             return Rest.all('note/'+noteType+'/'+reportID).post({note:text});
         },
-        deleteNote:function(noteType, reportID,noteID){
+        deleteNote:function(noteType, reportID, noteID){
+		  console.debug('delnote noteid: ' + noteID );
            // DELETE /note/report/123/456
             return Rest.one('note/'+noteType+'/'+reportID+'/'+noteID).remove();
         },

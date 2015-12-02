@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class='input-group'>
-                        <site-dropdown model="selected.siteID" on-change="onSelectSiteID(id)" data="filteredSites"></site-dropdown>
+                        <site-dropdown model="selected.siteID" on-change="onSelectSiteID(id,true)" data="filteredSites"></site-dropdown>
                     </div>
                 </div>
             </div>
@@ -28,7 +28,7 @@
                                                        class="fa fa-pencil _grey _size8 hoverHighlight hand"></i>
 											</span>
 											<span class="lnk">
-												<a href ng-click='reset()' bs-tooltip title='Reset'><i class="fa fa-rotate-left _red _size6 hoverHighlight"></i></a>
+												<a href ng-click='reset()' bs-tooltip title='Reset'><i class="fa fa-close _red _size6 hoverHighlight"></i></a>
 											</span>
         </div>
     </div>

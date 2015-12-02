@@ -26,6 +26,7 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
       , isAtleast: angular.bind(Auth, Auth.isAtleast)
 		, hasPerm: angular.bind(Auth, Auth.hasPerm)
 		, data: angular.bind(Auth, Auth.data)
+		, getHost: function(){ return cfg.host() }
     }
 
     $rootScope.entityID = cfg.getEntityID();
@@ -343,23 +344,56 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 				s.relatedUsers=r;
 			}
 		});
-
 		var d=s.auth.data();
 		var es=(d && d.entity && d.entity.shortname) ? d.entity.shortname : '';
 		window.name="arborplus_" + es;
 	}
- 	s.$on("onSignin", chkRelatedUsers);
+
+	/**
+	 Note about ZenDesk ...
+	 There is a snippet of code we copy/pasted from the Zendesk widget page
+	 ... we had to make modifications to it in the index.html ...
+		- Since we want to spawn the widget only for non-customers, I made these changes:
+		- At start... change window.zEmbed||function()...   to ...    if(!window.zEmbed){window.zEmbed=function(){ 
+		- At end..... change the invocation of it .. ie .("http...","arborplus")... to just end the function def... };
+		- and we'll let main/main.js  - updateZenDesk() func handle the invocation
+	**/
+   var updateZenDesk = function(){
+		if(!s.auth || !s.auth.isAtleast('inventory')) return;
+		if(!window.zEmbed) return;
+		window.zEmbed("https://assets.zendesk.com/embeddable_framework/main.js","arborplus.zendesk.com");
+		// wait for zendesk to load, then update the user identity
+		setTimeout(function(){
+			var d=Auth.data();
+			if(!zE || !d) return;
+			if(cfg && cfg.getEntity()){
+				var e=cfg.getEntity();
+				var org=e.name + ' (eid:'+d.entityID+')'
+			}else{
+				var org='EntityID: '+d.entityID;
+			}
+			zE.identify({
+				name: (d.fName) ? d.fName + ' ' + d.lName : d.email,
+				  email: d.email,
+				  externalId: d.userID,
+				  organization: org
+			});
+		},5000);
+   }
+   s.$on("onSignin", chkRelatedUsers);
+   s.$on("onSignin", updateZenDesk);
 	$timeout(chkRelatedUsers, 2000);
+	$timeout(updateZenDesk, 4000);
 
 
 
 	// check if were on the right subdomain, and forward to correct one
 	var e=cfg.getEntity();
-	if(e && e.domain_regex && e.domain_regex.length>1){
+	if(e && e.domain_regex && e.domain_regex.length>1 && e.appdomain){
 		var subdom = cfg.getSubDomain()
 		var dom = cfg.host().replace(/^http:../,'');
-		console.debug(" ...  "+dom + ' == ' + e.appdomain);
 		if(dom != e.appdomain){
+			console.debug(dom + " != " + e.appdomain + " ... so forwarding to " + e.appdomain );
 			var u =$location.absUrl();
 			var newURL = u.replace(new RegExp(dom), e.appdomain);  
 			window.location = newURL;

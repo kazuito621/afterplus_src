@@ -30,7 +30,7 @@ app.directive('sideNote',
                             scope.notes.push({
                                 note:scope.noteInput,
                                 history:'Just Now',
-                                name:Auth.authData.fName+' '+Auth.authData.lName
+                                name:Auth.data().fName+' '+Auth.data().lName
                             });
                             scope.noteInput='';
                         }
@@ -40,7 +40,7 @@ app.directive('sideNote',
                 }
                 scope.update=function(noteItem){
                     scope.addingNote = true;
-                    Api.editNote(scope.noteType, scope.reportID, noteItem.noteID, noteItem.note).then(function(data){
+                    Api.editNote(scope.noteType, scope.reportID, noteItem.noteID, scope.updatedText).then(function(data){
                         scope.addingNote = false;
                         scope.addNote = false;
                         scope.editNoteID = -1;
@@ -86,7 +86,7 @@ app.directive('sideNote',
                 scope.deleteCurrentItem = function () {
                     if (!scope.activePopover.itemID) return;
                     var itemID=scope.activePopover.itemID;
-                    Api.deleteNote(scope.reportID, itemID).then(function () {
+                    Api.deleteNote(scope.noteType, scope.reportID, itemID).then(function () {
                         if(false){ //TODO  if msg don't  indicates success,
 
                         }

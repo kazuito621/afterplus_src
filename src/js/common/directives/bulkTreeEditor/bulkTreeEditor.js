@@ -9,6 +9,7 @@ app.directive('bulkTreeEditor',
                 var modal;
                 window.sues = scope;
                 scope.allTreatments=[]; // Should show all the treatmens
+                scope.allSpecies=[];
                 scope.selected={};
                 scope.singleTreatmentSelected=false;
                 scope.yearRecommendation=[];
@@ -54,11 +55,6 @@ app.directive('bulkTreeEditor',
                         scope.dbh=filter('orderBy')(scope.dbh,'+dbh');
                         scope.species=filter('orderBy')(scope.species,"+''.toString()");
 
-
-                        //scope.allTreatments=scope.treatments; // should show all the treatmenst in 'ADD TREATNEBT RECOMMENDATION'
-
-
-
                         scope.selected.treatment=scope.treatments[0];
                         scope.selected.species=scope.species[0];
                         scope.selected.dbh=scope.dbh[0];
@@ -66,6 +62,7 @@ app.directive('bulkTreeEditor',
                             scope.selected.year=scope.years[0];
 
                         scope.selected.changeTreatmentTo=scope.allTreatments[0];
+								scope.selected.changeSpeciesTo=scope.allSpecies[0];
                         scope.selected.addedTreatRecom=scope.allTreatments[0];
 
                         scope.selected.IschgPrice=1;
@@ -73,9 +70,8 @@ app.directive('bulkTreeEditor',
                         scope.selected.chgPriceByPercent=1;
 
                         var currentYear=new Date().getFullYear();
-                        for(var i=1;i<=5;i++){
-                            currentYear++;
-                            scope.yearRecommendation.push(currentYear);
+                        for(var i=1;i<=6;i++){
+                            scope.yearRecommendation.push(currentYear++);
                         }
                         scope.selected.changeYearTo=scope.yearRecommendation[0];
                         scope.selected.addedTreatRecomYear=scope.yearRecommendation[0];
@@ -126,6 +122,9 @@ app.directive('bulkTreeEditor',
                     if(scope.selected.removeFromRecommendation == true) post.removeTreatment=1;
                     if(scope.selected.IsChangeToTreatment){
                         post.chgTreatment=scope.selected.changeTreatmentTo.treatmentTypeID;
+                    }
+                    if(scope.selected.IsChangeToSpecies){
+                        post.chgSpecies=scope.selected.changeSpeciesTo.speciesID;
                     }
 
                     if(scope.selected.IsChangeToYear){
@@ -186,6 +185,7 @@ app.directive('bulkTreeEditor',
                     scope.selected.isDbhSelected = false;
                     scope.selected.isSetPrice = false
                     scope.selected.IsChangeToTreatment = false
+                    scope.selected.IsChangeToSpecies = false
 						  scope.selected.removeFromRecommendation=false;
                     scope.singleTreatmentSelected = false;
                     scope.selectionChanged();
@@ -270,6 +270,9 @@ app.directive('bulkTreeEditor',
                     }
                     if (angular.isDefined(attrs.treatments)) {
                         scope.allTreatments = scope.$eval(attrs.treatments);
+                    }
+                    if (angular.isDefined(attrs.species)) {
+                        scope.allSpecies = scope.$eval(attrs.species);
                     }
                     if (angular.isDefined(attrs.savedReportCheck)) {
                         scope.savedReportCheck = scope.$eval(attrs.savedReportCheck);

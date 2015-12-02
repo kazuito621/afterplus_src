@@ -11,13 +11,15 @@
 
                     <section ng-if="data.mode()=='trees'">
 
-                        <div class="filter-container-title" ng:cloak ng-show="TFSdata.selectedFilters.length>0">
+							<div style='height:40px; padding:0; margin:0;'>
+    							<div class="filter-container-title" ng:cloak  ng-show="TFSdata.selectedFilters.length>0" >
                             <span ng-if="!TFSdata.containsContradictingFilters">{{TFSdata.selectedFilters.length}}&nbsp;</span>Filters Active &nbsp; <span class="lnk-clear">
                                 <a href ng-click='clearFilters();'>
                                     <i class="fa fa-times"></i>
                                 </a>
                             </span>
                         </div>
+							</div>
 
                         <div class="row row-xss">
                             <div class="col-xs-6 col">
@@ -40,7 +42,23 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="filter-container" ng-show="report.siteID!=undefined && report.siteID!=''">
+                                    <div class="filterHeader filter-header">
+                                        <!--<label for="">
+                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
+                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
+                                            Only Trees on Estimate
+                                        </label>-->
+                                        <label class="" >
+                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
+                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
+																&nbsp; 
+															<span style="font-size:.8em !important;">
+                                            		Show Only Trees on Estimate
+															</span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <!--FILTER SECTION: SPECIES-->
                                 <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
                                 <!-- END SPECIES FILTER SECTION -->
@@ -145,6 +163,7 @@
                                          selected-trees="selectedTrees"
                                          site-id="{{selected.siteID}}"
                                          treatments="initData.filters.treatments"
+													  species="initData.filters.species"
                                          count="TFSdata.treeResultsCount" edit-mode-css="{{editModeCss}}" set-status="setStatus(true)"></div>
 
                                     <trees-list></trees-list>

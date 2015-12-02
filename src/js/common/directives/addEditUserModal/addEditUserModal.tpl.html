@@ -12,23 +12,29 @@
                             <div class="containter">
                                 <div class="row" style="margin: 5px 2px 0px 5px;">
                                     <!--<form ng-submit="addNewSiteContact($event)">-->
-                                    <label class="col-sm-2" style="font-weight: bold">Email</label>
+                                    <label class="col-sm-3" style="font-weight: bold">Email</label>
                                     <input type="email" required placeholder="Email" style="width: 250px" 
 													ng-model="newContact.email" id='newContactEmail'> 
 													<span ng-if="newContact.userID" style='color:#ccc; font-size:.7em;'>
 														(userID: {{newContact.userID}})
 													</span>
 													<br>
-                                    <label class="col-sm-2" style="font-weight: bold">Name</label>
+                                    <label class="col-sm-3" style="font-weight: bold">Name</label>
                                     <input type="text" placeholder="First name" required style="width:125px" ng-model="newContact.fName">
                                     <input type="text" placeholder="Last name" required style="width:120px;" ng-model="newContact.lName"><br>
-                                    <label class="col-sm-2" style="font-weight: bold">Phone</label>
-                                    <input type="text" placeholder="Phone" style="width:250px;" ng-model="newContact.phone">
-
+                                    <label class="col-sm-3" style="font-weight: bold">Phone</label>
+                                    <input type="text" placeholder="Phone" style="width:250px;" ng-model="newContact.phone"><br>
+                                    <span ng-if="auth.is('admin')==true">
+                                        <label class="col-sm-3" style="font-weight: bold">Set Password</label>
+                                        <input type="text" placeholder="Password" style="width:125px;" ng-model="newContact.newPass"
+                                               ng-style="(passMisMatch==true)?{'border-color':'red', 'width': '125px'}:{'width': '125px;'}">
+                                        <input type="text" placeholder="Confirm Password" style="width:125px;" ng-model="newContact.newPassConfirm"
+                                           ng-style="(passMisMatch==true)?{'border-color':'red', 'width': '125px'}:{'width': '125px;'}">
+                                    </span>
 
 								<!-- hide stuff if user is editing themself -->
 								<div ng-if="editMyself != true">
-												<label class="col-sm-2" style="font-weight: bold">Role</label>
+												<label class="col-sm-3" style="font-weight: bold">Role</label>
 												<select ng-model="newContact.role" ng-options="role.name for role in userRoles"  required>
 													 <option>{{role.name}}</option>
 												</select> &nbsp;
@@ -37,6 +43,23 @@
 														  <input type="checkbox" ng-model="newContact.showStatInDash" ng-change="selectionChanged()"/> Show user in dashboard
 													 </label>
 												</div>
+												
+												<div style='padding:2em 0 0 2em;'>
+												  <button ng-if="newContact.role.roleCode=='customer' || newContact.role=='customer'" data-backdrop='static'
+													  bs-modal data-template="js/trees/emailReport.tpl.html" data-keyboard=true
+													  ng-click="sendPortalLink(newContact)"
+															 ><i class="fa fa-envelope"></i> Send Login Info to Customer</button>
+
+												  <button ng-if="newContact.role.roleCode!='customer' && newContact.role!='customer'" confirm-popup="'Email this user their login information?'" 
+														user-id="e.userID" callback="sendLoginInfo">
+														<i class="fa fa-envelope"></i> Send Login Info to User</button>
+												</div>
+
+
+
+
+
+
 												<ul clas="row" style="margin: 2em 0; background-color: #aaa; padding:1.5em; color:#fff; font-wieght:bold; font-size:1.3em;">
 													 <li ng-repeat="roleDesc in newContact.role.permDesc">
 														  {{roleDesc}}

@@ -1,7 +1,45 @@
 /**
+
  Service for handling Rest gateway for Reports (estimates and invoices)
  A service is global - so Tree Controller and add items to the report,
  and Report Controller can build a UI based on the data
+
+
+ IMPORTANT NOTE ABOUT MULTI-LOGINS
+ =================================
+
+ One feature we have is we allow an admin/staff user to login, 
+ then "login as a customer" through a special link... such as:
+
+      /#/estimate/1111-33333-d3rdf   (known as a customer token)
+
+ When this happens we want to MAINTAIN THE STAFF LOGIN CREDNTIALS
+ and have a SIMULTANEOUS CUSTOMER LOGIN.
+
+ Why?
+ ----
+ In the past, for a sales person to check a customer link, they would
+ click it, then they would be logged out of themsevles, so they would have
+ to re-login everytime.
+
+ HOW THIS WORKS
+ --------------
+   - If a customer logs in, then we rename the current window to prefix: "cust_" + existing_window_name
+	   - Possible customer entry points:
+		   
+          /#/estimate/<cust_token>
+          /#/signin/<cust_token>   (portal login)
+			 /#/trees/?custToken=<cust_token>
+			 (normal login via passowrd at /#/signin)
+
+	- If a regular/staff login occurs, and the resulting user.role is not a customer, then we remove the "cust_" in the window name
+
+	- THEN... When the credentials are retreived (via Auth.data()) ...
+	  We check for the existance of "cust_" in the window name, and either retrieve:
+
+	   - authData_staff
+		- authData_cust
+
  **/
 app.service('Auth',
     ['$location', '$timeout', '$rootScope', 'md5', '$q', 'storage', 'Api',
@@ -21,10 +59,12 @@ app.service('Auth',
 
             // public properties
             // check for stored auth data
-            this.authData = storage.get('authData');
-            if (!this.authData) {
-                this.authData = defaultUserData;
-            }
+            this.authData_staff = storage.get('authData_staff');
+            if (!this.authData_staff) this.authData_staff = angular.copy(defaultUserData);
+            this.authData_cust = storage.get('authData_cust');
+            if (!this.authData_cust) this.authData_cust = angular.copy(defaultUserData);
+
+       
             this.userRoles = {};
 
             /**
@@ -33,19 +73,26 @@ app.service('Auth',
              * @param addToData BOOL - if true, extend/overwrite only the given values, do not replace the entire data object
              */
             this.data = function (data, addToData) {
+					 // check window name if we should use customer login info or not...  *** duplicated code in api.service.js! ***
+					 var n=''+window.name;
+					 var isCust = (n.match(/^cust_/)) ? true : false;
+					 var authObjName = (isCust) ? 'authData_cust' : 'authData_staff';
+
+					 var useAuthData = this[authObjName];
+
                 if (data === undefined) { //get
-                    if (!this.authData || !this.authData.token) {
-                        return defaultUserData;
-                    }
-                    return this.authData;
+                    if (!useAuthData || !useAuthData.token) return defaultUserData;
+                    return useAuthData;
                 }
                 //set
                 if (addToData) {
-                    _.assign(this.authData, data);
+                    _.assign(useAuthData, data);
                 } else {
-                    this.authData = data;
+                    useAuthData = data;
+
                 }
-                storage.set('authData', this.authData);
+					 this[authObjName] = useAuthData;
+                storage.set(authObjName, useAuthData);
             };
 
             this.isSignedIn = function () {
@@ -55,23 +102,51 @@ app.service('Auth',
             // After a login call, handle that and resolve the promise
             this.onDataBackFromSignIn = function (deferred, d) {
                 if (d && d.userID > 0) {
-                    this.data(d);
-                    if (d.requestedReportID) {
+						var role = (d.role && d.role=='customer') ? 'cust' : 'staff';
+						this.updateWindowName(role);
+
+                  this.data(d);
+                  if (d.requestedReportID) {
                         $rootScope.requestedReportID = d.requestedReportID;
-                    }
-					if(deferred){
+                  }
+						if(deferred){
                     	sendEvt('onSignin');
-						deferred.resolve(d);
-					}
-					return;
+							deferred.resolve(d);
+						}
+						return;
                 }
                 var msg = (d && d.msg) ? d.msg : 'Login failed';
                 if(deferred) deferred.reject(msg);
             };
 
+
+				/**
+				 * This is how we know if the current window holds a customer or staff login
+				 * (Since we retain both credentials simultaneously(
+				 * @param type: "cust" or "staff"
+				 */
+				this.updateWindowName = function(type){
+					var n=''+window.name;
+					if(!n){ // if no window name, make one up
+						n=''+Math.random();
+						n='ap_'+n.substr(-10);
+					}
+	
+					if(type=='cust'){ 	// set to cust if needed
+						if(!n.match(/^cust_/)) n='cust_'+n;
+					}else{ // unset cust if needed
+						if(n.match(/^cust_/)) n=n.substr(5);
+					}
+					window.name=n;
+				}
+
+
+
+
             // Returns a promise with either a resolve or a reject
 			// @param returnData BOOL - if false, call onDataBackFromSignin directly
             this.signInCustToken = function (custToken, waitForInit) {
+					this.updateWindowName('cust');
 
                 // if custToken is just a number (reportID), and a user is already signed in,
                 // then just use existing login info
@@ -86,7 +161,7 @@ app.service('Auth',
 					var that=this;
 					Api.signInCustToken(custToken, false).then(function(d){
 						that.onDataBackFromSignIn(false, d);
-						Api.refreshInitData().then(function(res){
+						Api.refreshInitData(d).then(function(res){
 							def.resolve(d);		
 						});
 					});

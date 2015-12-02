@@ -75,7 +75,7 @@ var ReportCtrl = app.controller(
                 s.report = rpt;                
                 
                 //Use to load site on basis of recent selected report in tree.js
-                $rootScope.$broadcast('OnLoadReportEvent', { siteID: rpt.siteID });
+                $rootScope.$broadcast('OnLoadReportEvent', { siteID: rpt.siteID,reportID:rpt.reportID });
 
                 s.siteOfReport = {}
                 s.report.customers=[]
@@ -156,10 +156,10 @@ var ReportCtrl = app.controller(
             });
 
             var setDefaultSalesRep=function(){
-                s.report.sales_userID=Auth.authData.userID;
-                s.report.sales_email=Auth.authData.email;
-                s.report.sales_fname=Auth.authData.fName;
-                s.report.sales_lname=Auth.authData.lName;
+                s.report.sales_userID=Auth.data().userID;
+                s.report.sales_email=Auth.data().email;
+                s.report.sales_fname=Auth.data().fName;
+                s.report.sales_lname=Auth.data().lName;
             }
 
             s.$on('itemsAddedToReport', function () {
@@ -249,6 +249,10 @@ var ReportCtrl = app.controller(
 			    if( $location.search().siteID ) $location.search('siteID','');
             };
 
+            s.getReport = function(){
+                return s.report;
+            };
+
             s.saveReport = function (cb1,cb2) {
 
                 var allTreatmentsSaved = s.checkAllTreatmentCodeSaved();
@@ -275,250 +279,14 @@ var ReportCtrl = app.controller(
                 RS.reportBackup= angular.copy(s.report); // This is for faster case save and navigate instantly.
             };
 
-            s.initEmailModal = function () {
-                s.saveReport();
-                if (s.report.contact) {
-                    var toName = s.report.contact.trim();
-                    var tmp = toName.split(' ');
-                    if (tmp.length > 1) {
-                        toName = tmp[0];
-                    }
-                }
-                alreadySkipped=[];
-                s.type = 'sendReport';
-                s.modalTitle = "Email: " + s.report.name;
-                s.emailRpt.reportID = s.report.reportID;
-                s.emailRpt.siteID = s.report.siteID;
-                s.emailRpt.contactEmail = s.report.contactEmail;
-                s.emailRpt.cc_email = '';
-
-                s.emailRpt.ccEmails = [];
-
-                s.emailRpt.senderEmail = Auth.data().email;
-
-                s.emailRpt.subject = cfg.getEntity().name + " Estimate #" + s.report.reportID + " - " + s.report.name;
-                s.emailRpt.disableSendBtn = false;
-                s.emailRpt.sendBtnText = 'Send';
-
-                Api.getSiteUsers(s.emailRpt.siteID, 'customer')
-                    .then(function (res) {
-                        if (!res) {
-                            return;
-                        }
-                        var emList = [];
-                        _.each(res, function (r) {
-                            if (r && r.email) {
-                                emList.push(r.email);
-                            }
-                        });
-                        if (emList) {
-                            s.emailRpt.contactEmail = emList.join(', ');
-                            s.emailRpt.contactEmails = emList;
-                            contactEmailsBackup = angular.copy(emList);
-                        }
-                    });
-
-				Api.getEmailTemplate().then(function(res){
-					if(res){
-						s.emailRpt.message = res;
-					}
-				});
-            };
-
-            s.sendPortalLink=function(){
-                s.saveReport();
-                if (s.report.contact) {
-                    var toName = s.report.contact.trim();
-                    var tmp = toName.split(' ');
-                    if (tmp.length > 1) {
-                        toName = tmp[0];
-                    }
-                }
-                alreadySkipped=[];
-                s.type = 'sendPortalLink';
-                s.modalTitle = "Email Portal Link";
-                s.emailRpt.reportID = s.report.reportID;
-                s.emailRpt.siteID = s.report.siteID;
-                s.emailRpt.contactEmail = s.report.contactEmail;
-                s.emailRpt.cc_email = '';
-
-                s.emailRpt.ccEmails = [];
-
-                s.emailRpt.senderEmail = Auth.data().email;
-
-                s.emailRpt.subject = 'Manage your trees - Portal Login';
-                s.emailRpt.disableSendBtn = false;
-                s.emailRpt.sendBtnText = 'Send';
-
-                Api.getSiteUsers(s.emailRpt.siteID, 'customer')
-                    .then(function (res) {
-                        if (!res) {
-                            return;
-                        }
-                        var emList = [];
-                        _.each(res, function (r) {
-                            if (r && r.email) {
-                                emList.push(r.email);
-                            }
-                        });
-                        if (emList) {
-                            s.emailRpt.contactEmail = emList.join(', ');
-                            s.emailRpt.contactEmails = emList;
-                            contactEmailsBackup = angular.copy(emList);
-                        }
-                    });
-                Api.getEmailPortalLink().then(function(data){
-                    s.emailRpt.message = data;
-                })
+            s.postSendReportCallBack=function(){
+                //$timeout(function(){ updateEmailLogs(); },2000);
+                $timeout(function(){ updateEmailLogs(); },4000);
+                //$timeout(function(){ updateEmailLogs(); },12000);
+                //$timeout(function(){ updateEmailLogs(); },30000);
             }
-
-            var enterUserInfo = function(email){
-                var sm= s.$new();
-                sm.email=email;
-                if (sm.popover && typeof sm.popover.hide === 'function') {
-                    sm.popover.hide();
-                }
-                // create new one
-                var el = $('#emailField');
-                if(!sm.popover)
-                    sm.popover = $popover(el, {
-                        scope: sm,
-                        template: '/js/common/directives/enterUserInfo/enterUserInfo.tpl.html',
-                        animation: 'am-flip-x',
-                        placement: 'bottom'
-                    });
-                //show popover
-                sm.popover.$promise.then(function () {
-                    sm.popover.show();
-                });
-                sm.cancel = function(){
-                    alreadySkipped.push(email);
-                    if (sm.popover && typeof sm.popover.hide === 'function') {
-                        el.off();
-                        sm.popover.hide();
-                    }
-                };
-                sm.ok = function(){
-                    var idx = _.findObj(s.emailRpt.contactEmails, 'text', sm.email, true);
-                    s.emailRpt.contactEmails[idx].fname = this.fname;
-                    s.emailRpt.contactEmails[idx].lname = this.lname;
-                    s.emailRpt.contactEmails[idx].phone = this.phone;
-                    alreadySkipped.push(email);
-                    if (sm.popover && typeof sm.popover.hide === 'function') {
-                        el.off();
-                        sm.popover.hide();
-                    }
-                };
-            }
-
-            var alreadySkipped= [];
-
-            var isNewEmails = function(){
-                var deferred = $q.defer();
-                var newAdded = [];
-                console.log(contactEmailsBackup)
-                console.log(s.emailRpt.contactEmails)
-                _.each(s.emailRpt.contactEmails,function(item){
-                   var idx = contactEmailsBackup.indexOf(item.text);
-                    //var idx = _.findObj(contactEmailsBackup, 'text', item.text,true);
-                    if (idx == -1){
-                        var alreadySkippedIdx = alreadySkipped.indexOf(item.text);
-                        if(alreadySkippedIdx == -1) {
-                            newAdded.push(item.text);
-                        }
-                    }
-                });
-                if(newAdded.length==0){
-                    $timeout(function(){ deferred.resolve([false]); },100);
-                    return deferred.promise;
-                    return;
-                }
-                var apis=[];
-                _.each(newAdded,function(item){
-                    var deferred = $q.defer();
-                    apis.push(deferred.promise);
-                    Api.user.lookUp({email:item}).then(function (data) {
-                        if(data.length == 0){
-                            enterUserInfo(item);
-                            deferred.resolve(true);
-                        }
-                        else {
-                            deferred.resolve(false);
-                        }
-                    });
-                });
-
-                $q.all(apis)
-                    .then(function(values) {
-                        console.log(values);
-                        deferred.resolve(values);
-                    });
-
-                return deferred.promise;
-            }
-            s.sendEmailPortalLink=function($hide, $show){
-                s.emailRpt.disableSendBtn = true;
-                s.emailRpt.sendBtnText = 'Sending...';
-                isNewEmails().then(function(data){
-                    if(data.indexOf(true)!=-1) {
-                        s.emailRpt.disableSendBtn = false;
-                        s.emailRpt.sendBtnText = 'Send';
-                        return;
-                    };
-                    _.each(s.emailRpt.contactEmails,function(item){
-                       item.email = item.text;
-                    });
-                   // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                    s.emailRpt.contactEmail =angular.copy(s.emailRpt.contactEmails);
-                    s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
-//
-                    Api.sendEmailPortalLink(s.emailRpt)
-                        .then(function (msg) {
-                            s.emailRpt.disableSendBtn = false;
-                            s.emailRpt.sendBtnText = 'Send';
-                            $hide();
-                        });
-                    $timeout(function(){ updateEmailLogs(); },2000);
-                    $timeout(function(){ updateEmailLogs(); },4000);
-                    $timeout(function(){ updateEmailLogs(); },12000);
-                    $timeout(function(){ updateEmailLogs(); },30000);
-                });
-
-            }
-            s.sendReport = function (hideFn, showFn) {
-                s.emailRpt.disableSendBtn = true;
-                s.emailRpt.sendBtnText = 'Sending and verifying...';
-
-                isNewEmails().then(function(data){
-                    if(data.indexOf(true)!=-1) {
-                        s.emailRpt.disableSendBtn = false;
-                        s.emailRpt.sendBtnText = 'Send';
-                        return;
-                    };
-                    _.each(s.emailRpt.contactEmails,function(item){
-                        item.email = item.text;
-                    });
-                    // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                    s.emailRpt.contactEmail =angular.copy(s.emailRpt.contactEmails);
-                    s.emailRpt.cc_email = _.pluck(s.emailRpt.ccEmails, 'text').join(', ');
-
-                    Api.sendReport(s.emailRpt)
-                        .then(function (res) {
-                            s.emailRpt.disableSendBtn = false;
-                            s.emailRpt.sendBtnText = 'Send';
-                            if (res.msg.trim().toLowerCase().match(/success/)){
-                                hideFn();
-                            }
-                        });
-                    $timeout(function(){ updateEmailLogs(); },2000);
-                    $timeout(function(){ updateEmailLogs(); },4000);
-                    $timeout(function(){ updateEmailLogs(); },12000);
-                    $timeout(function(){ updateEmailLogs(); },30000);
-                });
-            };
-
 			var updateEmailLogs = function(){
-				Api.getEmailLogs(s.emailRpt.reportID).then(function(d){
+				Api.getEmailLogs(s.report.reportID).then(function(d){
 					if(d && d[0] && d[0].senderID) s.report.emailLogs=d;
 				});
 			}

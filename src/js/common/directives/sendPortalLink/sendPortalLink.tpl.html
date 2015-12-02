@@ -1,0 +1,65 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="modalTitle">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="modal-title" ng-bind="modalTitle"></h4>
+            </div>
+            <div class="modal-body"> <!-- //// BODY START ///// -->
+
+
+                <form class="form-inline">
+                    <table cellpadding='2'>
+                        <tr>
+                            <td>To:</td>
+                            <td>
+                                <br><tags-input id="emailField" is-writing-tag ng-style="(mode=='addEditUsers')?{'pointer-events':'none', 'color': '#a9a9a9'}:''" ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
+                            </td>
+                        </tr>
+                        <!-- Comment out for now, because the backend isnt ready for this... see branch tim/22 for #wip
+                        <tr>
+                            <td>CC:</td>
+                            <td>
+                                <br><tags-input ng-model="emailRpt.ccEmails" placeholder="Add email"></tags-input><br>
+                            </td>
+                        </tr>
+                        -->
+                        <tr>
+                            <td>From:</td>
+                            <td>
+                                <input type="text" ng-model="emailRpt.senderEmail" size=55 readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Subject:</td>
+                            <td>
+                                <input type="text" ng-model="emailRpt.subject" size=55>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>
+                                <textarea form style='width:450px; height:220px;' ng-model="emailRpt.message"></textarea><BR>
+					 	<span>
+                            <span style='color:#f33; font-weight:bold;'>The link will automatically be included in the email</span><BR>
+				 		    <!--<label ng-if="type == 'sendReport' || type=='sendInvoice'">
+                                <input type="checkbox" ng-model="emailRpt.sendCopy" >
+                                Send me a copy
+                            </label>-->
+                        </span>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+
+            </div><!-- }}}} .modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="sendEmailPortalLink($hide, $show)"
+                        ng-disabled='emailRpt.disableSendBtn'>{{emailRpt.sendBtnText}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+

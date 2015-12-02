@@ -32,7 +32,7 @@
                                                         <span ng-if="mode=='report'">Treatment</span>
 													</label>
 													<select ng-model="selected.treatment" style="width: 40%" ng-change="selectionChanged({turnOn:'isTreatmentSelected'})"  
-														ng-options="t.treatmentType for t in treatments" required>
+														ng-options="t.treatmentType + ' (' + t.count + ')' for t in treatments" required>
 													</select>
 												</div>
 												<br>
@@ -40,14 +40,14 @@
                                         <input type="checkbox" ng-model="selected.isSpeciesSelected" ng-change="selectionChanged()"/> Species
                                     </label>
                                     <select ng-model="selected.species" style="width: 40%" ng-change="selectionChanged({turnOn:'isSpeciesSelected'})" 
-													ng-options="s.commonName for s in species" required>
+													ng-options="s.commonName + ' (' + s.count + ')' for s in species" required>
                                     </select>
 												<BR>
                                     <label class="" style="font-weight: bold;width: 33%">
                                         <input type="checkbox" ng-model="selected.isDbhSelected" ng-change="selectionChanged()"/> DBH
                                     </label>
                                     <select ng-model="selected.dbh" style="width: 40%" ng-change="selectionChanged({turnOn:'isDbhSelected'})" 
-													ng-options="d.diameter for d in dbh" required>
+													ng-options="d.diameter + ' (' + d.count + ')' for d in dbh" required>
                                     </select>
                                     <br>
 
@@ -57,7 +57,7 @@
                                             Year
                                         </label>
                                         <select ng-if="mode='site'" ng-model="selected.year" style="width: 40%" ng-change="selectionChanged({turnOn:'isYearSelected'})"
-													 		ng-options="y.year for y in years" required>
+													 		ng-options="y.year + ' (' + y.count + ')' for y in years" required>
                                         </select> &nbsp;<br>
                                     </span>
                                 </div>
@@ -134,12 +134,30 @@
                                         <div>
                                         <select ng-model="selected.changeTreatmentTo" class="pull-right"  style="width: 40%;margin-right: 25%" 
 													 	ng-change="selected.IsChangeToTreatment=true"
-												ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
+														ng-options="t.treatmentType for t in allTreatments|orderBy:'treatmentType'" required>
                                         </select> 
 										</div>
                                         		 &nbsp;<br>
                                     </span>
                                     <br>
+
+                                    <span ng-style="selected.isSpeciesSelected?'':{'pointer-events':'none','color':'silver'}">
+                                        <label style="font-weight: bold">
+                                        	<input type="checkbox" ng-model="selected.IsChangeToSpecies"/>
+                                        	<span>Change Species to</span>
+										</label>
+                                        <br>
+                                        <div>
+                                        <select ng-model="selected.changeSpeciesTo" class="pull-right"  style="width: 40%;margin-right: 25%" 
+													 	ng-change="selected.IsChangeToSpecies=true"
+														ng-options="t.commonName for t in allSpecies" required>
+                                        </select> 
+										</div>
+                                        		 &nbsp;<br>
+                                    </span>
+                                    <br>
+
+
                                     <span ng-if="mode=='site'">
 										<label style="font-weight: bold">
                                     	    <input type="checkbox" ng-model="selected.IsChangeToYear" />

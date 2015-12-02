@@ -33,10 +33,11 @@
 **/
 
 
-app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $rootScope) {
+app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', function($timeout, $rootScope,ReportService) {
 
 	// private properties
-	var selectedFilters=[]		
+	var selectedFilters=[],
+        RS = ReportService;
 
 
 	// public properties
@@ -48,7 +49,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 			 ,lastFilterCount:0                         // { species:2 }  (ie. there are 2 different types of species)
              ,containsContradictingFilters : false
     }
-	this.trees;						
+	this.trees;
+    var self= this;
 
 
 	// public methods
@@ -75,7 +77,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 	 * pine tree filters! 
 	 * Algorithm steps:
      *  1) we filter trees and filters separately (filterTheFilters/filterTrees methods)
-     *  2) there are 8 filter groups: species/dbh/rating/treatments/caDamage/caDamagePotential/building/powerline
+     *  2) there are 9 filter groups: species/dbh/rating/treatments/caDamage/caDamagePotential/building/powerline/years
      *  3) to calculate filters count for filter-group we should
      *      a) remove filter query of current type
      *      b) filter trees with rest of filter query
@@ -105,7 +107,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
         this.data.containsContradictingFilters = false;
 
         // split filter groups based on selectedFiltrs - which should be calculated separately/together
-        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline'];
+        var filtersToCountTogether = ['species', 'dbh', 'rating', 'treatments', 'caDamage', 'caDamagePotential', 'building', 'powerline', 'years','onlyInEstimate'];
         var filtersToCountSeparately = [];
         _.each(selectedFilters, function(sf){
             if (filtersToCountSeparately.indexOf(sf.type) == -1){
@@ -164,7 +166,9 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 			filterArray = _.extract(idata.filters, filterName);	
 			if(!filterArray || !exist[filterName]) return;
 
-			idName = (filterName=='treatments') ? 'treatmentTypeID' : filterName + "ID";
+			if( filterName=='treatments' ) idName='treatmentTypeID';
+			else if( filterName=='years' ) idName='id';
+			else idName=filterName+'ID';
 
 			_.each(filterArray, function(filterItm) {
 				// if the count is in exist, then set it, else set to 0
@@ -198,23 +202,42 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		this.data.treeResultsCount=0;
 		
 		var isActiveFilters = (selectedFilters.length>0);
+
+        var onlyInEstimateFilterAdded = false;
+        for( var i=0; i<selectedFilters.length; i++ ){
+            if(selectedFilters[i].type == 'onlyInEstimate'){
+                onlyInEstimateFilterAdded = true;
+            }
+        }
 		// loop through each tree, and see if a filter applies to it
 		for( var i=0; i<this.trees.length; i++ ){
 			
 			// if no active filters, then show all trees
 			if( !isActiveFilters ){ 
-				this.trees[i].hide=false; 
+				this.trees[i].hide=false;
+                this.trees[i].localTreeID = undefined;
 				this.data.treeResultsCount++;
 				continue; 
 			}
 
 			if( this._isTreeInFilter(this.trees[i]) ){
 				this.trees[i].hide=false;
+                if(onlyInEstimateFilterAdded){
+                    // this localTreeID is used to generate the pin number in map.
+                    // Show pin with number when 'show only trees in estimate' filter is on.'
+                    this.trees[i].localTreeID=this.getLocalTreeID(this.trees[i]);
+                }
 				this.data.treeResultsCount++;
 			}else{
+                this.trees[i].localTreeID = undefined;
 				this.trees[i].hide=true;
 			}
 		}
+        if(onlyInEstimateFilterAdded){
+            this.trees = _.sortBy(this.trees, function(n) {
+                return n.localTreeID;
+            });
+        }
         this.filterTheFilters(this.trees, selectedFilters);
 
 		$rootScope.$broadcast('onTreeFilterUpdate', this.trees);	
@@ -264,6 +287,12 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
                         filterAr[itm.type].selected = false;
                     }
                     break;
+                case('onlyInEstimate'):
+                    if(filt[itm.type]==true){
+
+                        filt[itm.type] = false;
+                    }
+                    break;
             }
 		});
 		this.data.lastFilterCount=selectedFilters.length;
@@ -289,7 +318,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		var filterCounts={};			//ie. {'species':3, 'dbg':1}
 		var satisfiedFilterCounts={};
 		var totalFilterTypes=0, totalSatisfiedFilterTypes=0, yearFilterOk, treatmentFilterOk;
-                var buildingFilter, caDamageFilter, powerlineFilter, caDamagePotentialFilter;
+                var buildingFilter, caDamageFilter, powerlineFilter, caDamagePotentialFilter,doesExistOnReport;
                  
 
 		// loop through each filter, and see if it applies to the tree
@@ -305,6 +334,9 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
             // building, hardscape damage, and powerline flags
             buildingFilter=caDamageFilter=powerlineFilter=nonePropFilter=false;
 
+            if(filter.type == 'onlyInEstimate'){
+                doesExistOnReport = (self._IsTreeExistsOnReport(tree) ==  true)?true:false;
+            }
             if(filter.type == "caDamage"){
                 caDamageFilter = (tree.caDamage == 'yes')?true:false;
             }
@@ -330,7 +362,8 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 
 			// now evaluate the tree against this particular filter
   			var idName=filter.type + "ID"; 		//ie. "species" + "ID" = "speciesID"
-			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||  yearFilterOk || treatmentFilterOk ){
+			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||
+                yearFilterOk || treatmentFilterOk || doesExistOnReport){
 				// if we havent recored this as a "satisfied filter", then do so...
 				if( !satisfiedFilterCounts[filter.type] ){
 					totalSatisfiedFilterTypes++;
@@ -341,6 +374,24 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
 		})
 		return (totalSatisfiedFilterTypes >= totalFilterTypes);
 	}
+
+    this._IsTreeExistsOnReport = function(tree){
+        for(var i = 0;i<RS.report.items.length; i++){
+            if(RS.report.items[i].treeID == tree.treeID){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    this.getLocalTreeID = function(tree){
+       var idx =  _.findObj(RS.groupedItems, 'treeID', tree.treeID,true);
+        if(idx>-1) {
+            idx++;
+            return idx;
+        }
+        else return -1;
+    }
 
 	/** 
 	 * Format of selectedFilter, is an array of objects:
@@ -604,9 +655,25 @@ app.service('TreeFilterService', ['$timeout', '$rootScope', function($timeout, $
                         }
                         break;
                     }
+
+							// year:{2015:55, 2016:22}
+							case ('years'):{
+                        if (!tree.recoYears) break;
+                      	if (!exist[filterName]) exist[filterName] = {};
+								 _.each(tree.recoYears, function (rYear) {
+									  if (exist[filterName][rYear]) exist[filterName][rYear]++;
+									  else {
+											exist[filterName][rYear]=1;
+											that.data.filterTypeCounts[filterName]++;
+									  }
+								 });
+                        break;
+						   }
+
                     case ('caDamage'):{
                         if (!exist.caDamage) exist.caDamage = {};
-                        if (tree.caDamage.toLowerCase() == "yes") {
+								tree.caDamage = tree.caDamage || '';
+                        if (tree.caDamage && tree.caDamage.toLowerCase() == "yes") {
                             if (exist.caDamage[tree.treeID]) exist.caDamage[tree.treeID]++;
                             else {
                                 exist.caDamage[tree.treeID] = 1;

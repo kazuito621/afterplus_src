@@ -89,12 +89,67 @@ app.directive('addEditUserModal',
 
                 };
 
+
+			
+					scope.sendPortalLink = function(user){
+					 var s=scope;
+                s.emailRpt={};
+                s.mode='addEditUsers';
+                s.type = 'sendPortalLink';
+                s.modalTitle = "Email Portal Link";
+                s.emailRpt.contactEmails = [];
+                s.emailRpt.cc_email = '';
+
+                s.emailRpt.ccEmails = [];
+
+                s.emailRpt.senderEmail = Auth.data().email;
+
+                s.emailRpt.subject = 'Manage your trees - Portal Login';
+                s.emailRpt.disableSendBtn = false;
+                s.emailRpt.sendBtnText = 'Send';
+                s.emailRpt.contactEmails.push(user.email); 
+                Api.getEmailPortalLink(user.userID).then(function(data){
+                    s.emailRpt.message = data;
+                })
+            };
+
+            scope.sendEmailPortalLink=function($hide, $show){
+					var s = scope;
+                s.emailRpt.disableSendBtn = true;
+                s.emailRpt.sendBtnText = 'Sending...';
+
+                s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+
+                Api.sendEmailPortalLink(s.emailRpt)
+                    .then(function (msg) {
+                        s.emailRpt.disableSendBtn = false;
+                        s.emailRpt.sendBtnText = 'Send';
+                        $hide();
+                    });
+            }
+
+
+
+
                 scope.closeModal = function () {
 
                     modal.hide();
                 };
 
+                var passMisMatch = function(){
+                    if(scope.newContact.newPass!=undefined || scope.newContact.newPass!=''){
+                        if(scope.newContact.newPass!=scope.newContact.newPassConfirm){
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
                 scope.SaveUser = function (event) {
+                    if(passMisMatch()==true){
+                        scope.passMisMatch = true;
+                        return;
+                    } else scope.passMisMatch = false;
                     var user={};
                     if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
                         scope.newContact.role==undefined){
@@ -105,8 +160,9 @@ app.directive('addEditUserModal',
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
+                    user.pass = scope.newContact.newPass;
 
-						  if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
+					if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
                     
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];

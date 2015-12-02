@@ -54,17 +54,48 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         }
         return s.salesUsers;
     }
-
+    s.getFormanusers = function(){
+		if(!Auth.isAtleast('inventory')) return;
+        function setForemanUsers() {
+            s.foremanUsers = [];
+            Api.GetForemans().then(function(foremanUsers){
+                _.each(foremanUsers, function(foremanUser){
+                    var shortEmail = foremanUser.email.substr(0, foremanUser.email.indexOf('@'));
+                    s.foremanUsers.push({id: foremanUser.userID, email: foremanUser.email, shortEmail: shortEmail});
+                })
+            })
+        }
+        if (!s.foremanUsers){
+            setForemanUsers();
+        }
+        return s.foremanUsers;
+    }
+    s.getFormanusers();
     // callback when sales_user was changed for estimate
     s.updateEstimate = function(rpt){
+
+		if(rpt.foreman_userID) rpt.job_userID=rpt.foreman_userID;
+
+        var dispObj=_.findObj(s.displayedEstimates, 'reportID', rpt.reportID);
+		  if(!dispObj) dispObj={};
+
         var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
         if (newSalesUser){
-            rpt.sales_email_short = newSalesUser.shortEmail;
-            rpt.sales_email = newSalesUser.email;
+		  console.debug(newSalesUser);
+            dispObj.sales_email_short = rpt.sales_email_short = newSalesUser.shortEmail;
+            dispObj.sales_email = rpt.sales_email = newSalesUser.email;
+				dispObj.sales_userID = rpt.sales_userID;
         }
 
-        Api.saveReport(rpt).then(function(data1){
-            //What should we do here? May be display some user-friendly message, that report was updated?
+        var newForeman = _.findObj(s.foremanUsers, 'id', rpt.job_userID);
+        if (newForeman){
+            dispObj.foreman_email_short = rpt.foreman_email_short = newForeman.shortEmail;
+            dispObj.foreman_email = rpt.foreman_email = newForeman.email;
+				dispObj.foreman_userID = rpt.job_userID;
+        }
+
+        Api.saveReport(rpt).then(function(res){
+				if(res && res.msg) s.setStatus(res.msg, {time:3});
         })
     }
 
@@ -72,12 +103,16 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		s.setAlert("Loading...", {time:8});
         var search = $location.search();
         cb = cb || angular.noop;
-        Api.getRecentReports({ siteID: search.siteID, timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
+
+        Api.getRecentReports({ siteID: search.siteID ,timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
             data=storedData.setEstimateData(data);
 				var isCust=Auth.is('customer');
 				_.each(data, function(d){
 					d.origStatus=d.status;
-					if(isCust && d.status=='sent') d.status='needs_approval';
+					if(isCust){
+						if(d.status=='sent') d.status='needs_approval';
+						if(d.status=='invoiced') d.status='payment_due';
+					}
 
 					if(d.siteName && d.siteName.length>40) d.siteName_short=d.siteName.substr(0,40)+'...';
 					else d.siteName_short=d.siteName
@@ -87,6 +122,15 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 
 					d.sales_email_short=d.sales_email;
 					if(d.sales_email_short) d.sales_email_short=d.sales_email.split('@')[0];
+
+                    d.foreman_email_short=d.foreman_email;
+					if(d.foreman_email_short) d.foreman_email_short=d.foreman_email.split('@')[0];
+
+					  if(d.status=='invoiced'){
+							var a = moment();
+							var b = moment(d.tstamp_updated);
+							d.pastDue = a.diff(b, 'days');
+					  }
 				});
             estimates = estFiltered = data;
             self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);
@@ -95,6 +139,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				if( s.data.filterTextEntry && s.data.filterTextEntry.lenght>1 ){
 					s.data.filterTextEntry = ' ' + s.data.filterTextEntry;
 				}
+				if(!s.data.salesForemanMode) s.data.salesForemanMode='sales'; 
         });
     };
 
@@ -166,7 +211,12 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				}
 		}
 
-		_setReportStatus(rpt);		
+		// trigger SEND INVOICE directive if needed 
+      if(st=='send_invoice'){
+    		$( "#sendReportBtn_"+rpt.reportID ).click();
+			rpt.status='completed';
+		}else
+			_setReportStatus(rpt);		
 	}
 
 	// actually change the status
@@ -174,10 +224,9 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		// todo -- we need a way for calls like this to know if a api calle failed.
 		// currently, both ok and fail, still calls the then()
 		Api.setReportStatus(rpt.reportID, rpt.status).then(function(d){
-			s.setAlert(d);
-			if(d!='Status updated' && rpt.prevStatus){
+			var m = (d && d.msg) ? d.msg : '';
+			if((!m || !m.match(/updated/i)) && rpt.prevStatus)
 				rpt.status=rpt.prevStatus;
-			}
 		});
 	}
 
@@ -208,11 +257,14 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 				case 'scheduled': // show SCHEDULED, COMPLETED
 					return o.splice(3,2);		
 		
-				case 'completed': //show COMPL, INV, PAID
-					return o.splice(4,3);		
+				case 'completed': //show COMPL, SEND INV, MARK AS INV, PAID
+					o[5].txt='MARK AS INVOICED';
+					o.splice(5,0,{id:'send_invoice', txt:'SEND INVOICE'});
+					return o.splice(4,4);		
 
-				case 'invoiced':	//show COMPL, INV, PAID
-					return o.splice(4,3);
+				case 'invoiced':	//show COMPL, INV, RESEND INVOICE, PAID
+					o.splice(5,0,{id:'send_invoice', txt:'RE-SEND INVOICE'});
+					return o.splice(4,4);
 
 				case 'paid': return o.splice(6,1); // NONE
 			}
@@ -386,8 +438,22 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 		}, 500);
 	});
 
+    var totalPrice = 0;
+    s.displayedTotalPrice =function(displayedEstimates){
+        var count = s.displayedEstimates.length;
+        if (count === estimates.length && totalPrice!=0) {
+            return totalPrice;
+        }
+        totalPrice = 0;
+        displayedEstimates.forEach(function(i){
+            totalPrice+= parseInt(i.total_price);
+        })
+        return totalPrice;
+    }
+
 	s.onCustClickStatus = function(reportID, hashLink, status){
-		return $location.path('/estimate/'+hashLink);
+		var path=(status=='invoiced'||status=='paid'||status=='completed'||status=='payment_due') ? 'invoice' : 'estimate';
+		return $location.path('/'+path+'/'+hashLink);
 	}
 
 	init();

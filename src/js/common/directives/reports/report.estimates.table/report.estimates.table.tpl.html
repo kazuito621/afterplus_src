@@ -35,14 +35,12 @@
                 ng-mouseleave="hover=false;onItemRollOut(TreesCtrl.findMarker(item.treeID))"
                 id="rpt_item_{{item.treeID}}">
                 <td data-title="listing_image" class="td-image">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <tree-image-popover  item="item" cache-buster="tree_cachebuster" />
+                        <div class="">
+                            <tree-image-popover  item="item" cache-buster="tree_cachebuster" ng-click='$("a#xxyyz").click();'/>
                         </div>
-                        <div class="col-md-2">
-                            <a image-slide-show images="item.images" ng-if="item.images.length>1" href class="hoverDisplay">More images</a>
+                        <div ng-if="item.images.length>1">
+                            <a image-slide-show images="item.images" href style='font-size:.8em;'>More Pics</a>
                         </div>
-                    </div>
                 </td>
                 <td data-title="listing_ID" class="td-id">{{$index+1}}</td>
                 <td data-title="listing_species" class="td-name">{{item.dbhID | dbhID2Name:this }}

@@ -17,14 +17,9 @@ app.directive('imageSlideShow',
                     };
                     var modal;
                     $(el).click(function () {
-                        scope.images = [
-                            {imgLrg:'http://dev.arborplus.com/tree_images/default.jpg'},
-                            {imgLrg:'http://dev.arborplus.com/tree_images/default.jpg'},
-                            {imgLrg:'http://dev.arborplus.com/tree_images/default.jpg'},
-                            {imgLrg:'http://dev.arborplus.com/tree_images/default.jpg'}
-                        ]
+                        scope.images = scope.$eval(attrs.images);
                         // create new one
-                        if(!modal)
+                        if(!modal) 
                             modal =  $modal({scope: scope, template: '/js/common/directives/reports/imageSlideShow/imageSlideShow.tpl.html', show: false});
                         //show popover
                         modal.$promise.then(function () {
@@ -32,9 +27,6 @@ app.directive('imageSlideShow',
                             $(document).keyup(hideOnEscape);
                         });
                     });
-                },
-                scope: {
-                    images: '='
                 }
             }
 

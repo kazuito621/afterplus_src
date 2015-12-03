@@ -160,7 +160,7 @@ app.directive('sendPortalLink',
                     scope.emailRpt.disableSendBtn = false;
                     scope.emailRpt.sendBtnText = 'Send';
                     updateContactEmails(user);
-                    Api.getEmailPortalLink().then(function(data){
+                    Api.getEmailPortalLink(user.userID).then(function(data){
                         scope.emailRpt.message = data;
                     })
                 }

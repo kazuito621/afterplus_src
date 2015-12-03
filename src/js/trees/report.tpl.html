@@ -191,8 +191,7 @@
                 <a ng-if='report.reportLink && report.reportID && (report.status=="invoiced" || report.status=="paid")' href='/go/invoice/pdf/{{report.token}}{{tree_cachebuster}}' 
 				target='_cust_view'>PDF Invoice</a> &nbsp;|&nbsp;
 
-                <a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'
-                   onclick='return confirm("This will log you out. Continue?\n(Alternatively, you can copy and paste this into a completely different browser)");'>Customer View</a> &nbsp;|&nbsp;
+                <a ng-if='report.reportLink && report.reportID' href='{{report.reportLink}}' target='_cust_view'>Customer View</a> &nbsp;|&nbsp;
             </span>
             <a ng-if='report.reportID && report.saveCount>1' href='/go/estimate/revisions/{{report.token}}{{tree_cachebuster}}' target=_new>Past Revisions</a>
 

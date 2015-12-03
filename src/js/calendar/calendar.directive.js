@@ -89,8 +89,12 @@ function ($timeout) {
 
 
 			var getEventTitle = function(obj){
-				return obj.reportID+' $'+shortenPrice(obj.total_price)+'  ' 
-					 +userID2Name(obj.job_userID)+' - '+ obj.siteName;
+				var t = obj.reportID + ' $' + shortenPrice(obj.todo_price) + '  ';
+				if(obj.completed_perc>0)
+					t+= '[' + obj.completed_perc + '% DONE]  ';
+				
+				t+=userID2Name(obj.job_userID)+' - '+ obj.siteName;
+				return t;
 			}
 
 
@@ -347,10 +351,13 @@ function ($timeout) {
 							 // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
 							 ////var box = element.closest('table').find('th').eq(element.index())
 							 //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
-							 element.addClass('clr-'+event.status);
+
+							 // check if job in progress, else color it by status
+							 if(event.todo_price < event.total_price) element.addClass('clr-inprog')
+							 else element.addClass('clr-'+event.status);
+
 							 if (event.title === "" || event.title === null) {
 								  var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
-								  //element.css('background-color', '#77DD77');
 								  element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'
 										.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" '
 										+'title="No foreman assigned to this job"></i></a>');

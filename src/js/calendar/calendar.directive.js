@@ -88,6 +88,10 @@ function ($timeout) {
             ]
 
 
+			var getEventTitle = function(obj){
+				return obj.reportID+' $'+shortenPrice(obj.total_price)+'  ' 
+					 +userID2Name(obj.job_userID)+' - '+ obj.siteName;
+			}
 
 
       	var init = function(){
@@ -101,7 +105,27 @@ function ($timeout) {
 				apis.push(deferred1.promise);
 				apis.push(deferred2.promise);
 
-				Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
+				// get approved
+				setTimeout(function(){
+					Rest.all('estimate').getList({status:'approved'}).then(function(data){
+						_.each(data, function(field){
+							var obj=angular.copy(field);
+							obj.estimateUrl=obj.url;
+							delete obj.url;		//or else the calendar uses this as a link
+							obj.name = (field.name) ? field.name.trim() : '(blank name)';
+							obj.title=getEventTitle(field);
+							obj.price=obj.total_price;
+							obj.todo_price=obj.todo_price;
+							obj.id=field.reportID;
+							obj.type='Unscheduled';
+							s.UnscheduledJobs.push(obj);
+						});
+					});
+				}, 1000);
+
+				// TODO .. fetch by month using their own FETCH CALLER!
+			
+				Api.getRecentReports({schedSince:4}).then(function (data) {
 					 deferred1.resolve(data)
 				});
 				s.loadGroups(deferred2);
@@ -116,8 +140,7 @@ function ($timeout) {
 							obj.estimateUrl=obj.url;
 							delete obj.url;		//or else the calendar uses this as a link
 							obj.name = (field.name) ? field.name.trim() : '(blank name)';
-							obj.title=field.reportID+' - $'+shortenPrice(field.total_price)
-									+' - '+userID2Name(field.job_userID)+' - '+ obj.name;
+							obj.title=getEventTitle(field);
 							obj.price=obj.total_price;
 							obj.todo_price=obj.todo_price;
 							obj.id=field.reportID;
@@ -339,6 +362,7 @@ function ($timeout) {
 							 //    //element.css('background-color', '#FFB347')
 							 //}
 						},
+
 						eventResize: function (el, delta, revertFunc, jsEvent, ui, view) {
 							 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
 							 convertLocalTime(el.start,el.end);
@@ -364,6 +388,7 @@ function ($timeout) {
 							 });
 							setTimeout(function(){	updateTotals() },1000);
 						},
+
 						eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
 							 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
 							 convertLocalTime(el.start,el.end);
@@ -383,7 +408,6 @@ function ($timeout) {
 							 { // When duration is >1
 								  eTime = moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss');
 							 }
-							 console.log(sTime+'   '+eTime);
 							 Api.ScheduleJob(el.reportID, {
 								  job_start: sTime,
 								  job_end: eTime

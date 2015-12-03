@@ -65,20 +65,21 @@ function ($timeout) {
             var search = $location.search();
 
 				window.fcs=$scope;
-            $scope.UnscheduledJobs = [];
+				var s = $scope;
+            s.UnscheduledJobs = [];
             var bindexternalevents;
-            $scope.ScheduledJobs = [];
-            $scope.clickedEvent = {};
-			$scope.filter_job_userID=-99;
-			$scope.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
-			$scope.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
-            $scope.showWeekendWork = false;
+            s.ScheduledJobs = [];
+            s.clickedEvent = {};
+				s.filter_job_userID=-99;
+				s.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
+				s.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
+            s.showWeekendWork = false;
             var elm, 
 			    cal, 		// ref to calendar html obj
 			    uncheduledJobsBackUp,
                 scheduledJobsBackUp;
 
-            $scope.statuses = [
+            s.statuses = [
                 {value:'scheduled', txt:'Scheduled'},
                 {value:'completed', txt:'Completed'},
                 {value:'invoiced', txt:'Invoiced'},
@@ -90,11 +91,11 @@ function ($timeout) {
 
 
 
-      	$scope.init = function(){
+      	s.init = function(){
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
-				$scope.UnscheduledJobs = [];
-				$scope.ScheduledJobs = [];
-				$scope.clickedEvent = {};
+				s.UnscheduledJobs = [];
+				s.ScheduledJobs = [];
+				s.clickedEvent = {};
 				var apis=[];
 				var deferred1 = $q.defer();
 				var deferred2 = $q.defer();
@@ -104,12 +105,12 @@ function ($timeout) {
 				Api.getRecentReports({ siteID: search.siteID }).then(function (data) {
 					 deferred1.resolve(data)
 				});
-				$scope.loadGroups(deferred2);
+				s.loadGroups(deferred2);
 
 
 				$q.all(apis).then(function(values) {
 					  var data = values[0];
-					  $scope.jobUsers=[{userID:-99, name:'All', count:0}, {userID:-98, name:'Unassigned', count:0}];
+					  s.jobUsers=[{userID:-99, name:'All', count:0}, {userID:-98, name:'Unassigned', count:0}];
 					  angular.forEach(data, function (field) {
 
 							var obj=angular.copy(field);
@@ -123,7 +124,7 @@ function ($timeout) {
 							obj.id=field.reportID;
 							if( field.status=="approved"  ||  (field.status=="scheduled"  &&  field.job_start==undefined)) {
 								obj.type='Unscheduled';
-								$scope.UnscheduledJobs.push(obj);
+								s.UnscheduledJobs.push(obj);
 							}
 							else if(field.job_start)
 							{
@@ -138,25 +139,25 @@ function ($timeout) {
 											 }
 											 obj.end = eMoment.add(1, 'days');
 											 obj.end = eMoment.format('YYYY-MM-DD');
-											 $scope.ScheduledJobs.push(obj);
+											 s.ScheduledJobs.push(obj);
 							}
 
 							// setup filtering 
 							if(obj.job_userID){
-								var f=_.findObj($scope.jobUsers, 'userID', obj.job_userID);
+								var f=_.findObj(s.jobUsers, 'userID', obj.job_userID);
 								if(f) f.count++;
-								else $scope.jobUsers.push({userID: obj.job_userID, name: userID2Name(obj.job_userID), count:1});
+								else s.jobUsers.push({userID: obj.job_userID, name: userID2Name(obj.job_userID), count:1});
 							}else{
-								$scope.jobUsers[1].count++;	//unassigned
+								s.jobUsers[1].count++;	//unassigned
 							}
-							$scope.jobUsers[0].count++;		//all
+							s.jobUsers[0].count++;		//all
 						});
 
-					  uncheduledJobsBackUp = angular.copy($scope.UnscheduledJobs);
-					  scheduledJobsBackUp = angular.copy($scope.ScheduledJobs);
+					  uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
+					  scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
 
 					  // get event data from sched or unsched array based on reportID or event name in title box
-					  $scope.getEventInfo = function (eventName) {
+					  s.getEventInfo = function (eventName) {
 
 							eventName=''+eventName;
 							eventName=eventName.trim();
@@ -170,8 +171,8 @@ function ($timeout) {
 							}
 
 							var selectedEvent = null;
-							for (var index = 0; index <= $scope.UnscheduledJobs.length - 1; index++) {
-								 var event = $scope.UnscheduledJobs[index];
+							for (var index = 0; index <= s.UnscheduledJobs.length - 1; index++) {
+								 var event = s.UnscheduledJobs[index];
 								 if (event.reportID == rptID || event.title.trim() == eventName.trim()) {
 									  selectedEvent = event;
 									  break;
@@ -185,7 +186,7 @@ function ($timeout) {
 							externalevents.each(function () {
 								 var reportID=$(this).attr('data-reportID');
 								 var jobtitle = $(this).text();
-								 var ev = $scope.getEventInfo(reportID);
+								 var ev = s.getEventInfo(reportID);
 								 var pr = (ev && ev.price) ? ev.price : 0;
 
 								 $(this).data('event', {
@@ -215,8 +216,8 @@ function ($timeout) {
 							},
 							//defaultDate: '2015-02-12',
 							dropAccept: '.drop-accpted',
-							editable: $scope.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
-							droppable: $scope.dropablefullcalendar,
+							editable: s.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
+							droppable: s.dropablefullcalendar,
 					eventLimit: true,
 					timezone: 'local',
 					views:{
@@ -249,8 +250,8 @@ function ($timeout) {
 								 $(this).remove();
 							},
 							eventReceive: function (event) {			// external drop callbackreturn;
-								 var ev = $scope.getEventInfo(event.title);
-								 $scope.estimateid = ev.reportID;
+								 var ev = s.getEventInfo(event.title);
+								 s.estimateid = ev.reportID;
 								 //event.start = event.start.local();
 								 convertLocalTime(event.start,event.end);
 								 //event.end = angular.copy((event.start));
@@ -276,7 +277,7 @@ function ($timeout) {
 							},
 							eventClick: function (data, jsEvent, view) {
 								 convertLocalTime(data.start,data.end)
-								 $scope.openJob(data);
+								 s.openJob(data);
 							},
 					dayClick: function( date, evt, view ){
 
@@ -298,9 +299,9 @@ function ($timeout) {
 						if(tot>0){
 							niceTot = "$" + commaDigits(tot);
 							var msg=date.format("ddd M/DD") + " = " + niceTot;
-							var diff=Math.abs(Math.round($scope.goalPerDay-tot));
-							var undOvr = (tot>$scope.goalPerDay) ? " over)" : " UNDER!)";
-							var alType = (tot>$scope.goalPerDay) ? "ok" : "d";
+							var diff=Math.abs(Math.round(s.goalPerDay-tot));
+							var undOvr = (tot>s.goalPerDay) ? " over)" : " UNDER!)";
+							var alType = (tot>s.goalPerDay) ? "ok" : "d";
 							msg+=" ($"+diff+undOvr;
 							$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alType });
 						}else{
@@ -349,7 +350,7 @@ function ($timeout) {
 								 html = html.replace("<br>", "");
 								 $(".fc-title").html(html);
 								 if(el.reportID == undefined){
-									  var eventInfo=$scope.getEventInfo(el.title);
+									  var eventInfo=s.getEventInfo(el.title);
 									  el.reportID = eventInfo.reportID;
 								 }
 								 el.job_start = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
@@ -370,7 +371,7 @@ function ($timeout) {
 								 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
 								 convertLocalTime(el.start,el.end);
 								 if(el.reportID == undefined){
-									  var eventInfo=$scope.getEventInfo(el.title);
+									  var eventInfo=s.getEventInfo(el.title);
 									  el.reportID = eventInfo.reportID;
 								 }
 								 var sTime, eTime;
@@ -410,16 +411,16 @@ function ($timeout) {
 
 
 
-			$scope.saveGoalPerDay = function(){
-                Api.saveEntityInfo({goal_per_day:$scope.goalPerDay});
+			s.saveGoalPerDay = function(){
+                Api.saveEntityInfo({goal_per_day:s.goalPerDay});
 					 updateTotals();
 			}
 
-			$scope.onMouseHoverJob = function () {
+			s.onMouseHoverJob = function () {
 				 $("#tooltip").removeClass("hide").addClass("show");
 			};
 
-			$scope.onMouseLeaveJob = function () {
+			s.onMouseLeaveJob = function () {
 				 $("#tooltip").removeClass("show").addClass("hide");
 			};
 
@@ -430,18 +431,18 @@ function ($timeout) {
 			// Called when text changes in search box
 			// We are limited the search procesing by only calling
 			// to filter AFTER user is done typing for half a second
-			$scope.search = function (searchtxt) {
+			s.search = function (searchtxt) {
 				$timeout.cancel(LSTO);
 				LSTO=$timeout(function(){
-					doSearch($scope.searchtxt);
+					doSearch(s.searchtxt);
 				},550);
 			};
 
 			var doSearch = function (searchtxt) {
-				 $scope.UnscheduledJobs = [];
-				 $scope.ScheduledJobs = [];
+				 s.UnscheduledJobs = [];
+				 s.ScheduledJobs = [];
 				 if (searchtxt != null) {
-					  $scope.job = [];
+					  s.job = [];
 					  angular.forEach(uncheduledJobsBackUp, function (item) {
 							var titletxt = item.title;
 							if (titletxt !== undefined) {
@@ -451,19 +452,19 @@ function ($timeout) {
 									  item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
 									  item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
 								 ) {
-									  $scope.UnscheduledJobs.push(item);
+									  s.UnscheduledJobs.push(item);
 								 }
 							}
 					  });
-					 /// $('#calendar').fullCalendar('addEventSource', $scope.job);
+					 /// $('#calendar').fullCalendar('addEventSource', s.job);
 				 }
 				 else {
-					  $scope.UnscheduledJobs = angular.copy(uncheduledJobsBackUp);
-					 // $('#calendar').fullCalendar('addEventSource', $scope.ScheduledJobs);
+					  s.UnscheduledJobs = angular.copy(uncheduledJobsBackUp);
+					 // $('#calendar').fullCalendar('addEventSource', s.ScheduledJobs);
 				 }
 
 				 if (searchtxt != null) {
-					  $scope.job = [];
+					  s.job = [];
 					  angular.forEach(scheduledJobsBackUp, function (item) {
 							var titletxt = item.title;
 							console.debug(titletxt  );
@@ -474,22 +475,22 @@ function ($timeout) {
 									  item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
 									  item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
 								 ) {
-									  $scope.ScheduledJobs.push(item);
+									  s.ScheduledJobs.push(item);
 								 }
 							}
 					  });
 				 }
 				 else {
-					  $scope.ScheduledJobs = scheduledJobsBackUp;
+					  s.ScheduledJobs = scheduledJobsBackUp;
 				 }
 				 cal.fullCalendar( 'refetchEvents' );
 				 setTimeout(bindexternalevents, 30);
-				 //$('#calendar').fullCalendar('addEventSource', $scope.ScheduledJobs);
+				 //$('#calendar').fullCalendar('addEventSource', s.ScheduledJobs);
 
 			};
 
-			$scope.open = function (siteID) {
-				 $scope.user = {
+			s.open = function (siteID) {
+				 s.user = {
 					  group: 1,
 					  name: 'John Miclay' // original value
 				 };
@@ -500,45 +501,45 @@ function ($timeout) {
 				 $('#jobassignforemanpopup').modal();
 			};
 
-			$scope.loadGroups = function (deferred) {
+			s.loadGroups = function (deferred) {
 
 				 Api.GetForemans()
 				 .then(function (response) {
-					  $scope.groups = [];
+					  s.groups = [];
 					  angular.forEach(response, function (item) {
-							if(item.userID == $scope.clickedEvent.job_userID){
-								 $scope.job_user = { "userID": item.userID, "name": item.fName +' '+ item.lName };
+							if(item.userID == s.clickedEvent.job_userID){
+								 s.job_user = { "userID": item.userID, "name": item.fName +' '+ item.lName };
 							}
-							if(item.userID == $scope.clickedEvent.sales_userID){
-								 $scope.sales_user = { "userID": item.userID, "name": item.fName +' '+ item.lName };
+							if(item.userID == s.clickedEvent.sales_userID){
+								 s.sales_user = { "userID": item.userID, "name": item.fName +' '+ item.lName };
 							}
-							$scope.groups.push({ "userID": item.userID, "text": item.fName +' '+ item.lName,"fName":item.fName });
+							s.groups.push({ "userID": item.userID, "text": item.fName +' '+ item.lName,"fName":item.fName });
 					  });
-					  if(deferred) deferred.resolve($scope.groups); //
+					  if(deferred) deferred.resolve(s.groups); //
 				 });
 			};
 
 			var userID2Name = function(job_userID){
 				if(!job_userID) return 'n/a';
 				if(-99 == job_userID) return 'All'; // for filters
-				 for(var i = 0;i<$scope.groups.length;i++){
-					  if($scope.groups[i].userID == job_userID){
-							if($scope.groups[i].email)
-								return $scope.groups[i].replace(/@.*/,'');
+				 for(var i = 0;i<s.groups.length;i++){
+					  if(s.groups[i].userID == job_userID){
+							if(s.groups[i].email)
+								return s.groups[i].replace(/@.*/,'');
 							else
-								return $scope.groups[i].fName;
+								return s.groups[i].fName;
 					  }
 				 }
 				 return 'User '+job_userID;
 			}
-			$scope.init();
+			s.init();
 			//@@todo - update the counts in the dropdown! .. by knowing who was assigned before, and subtracting and adding
-			$scope.savejobtoforeman = function () {
-				var oldUserID=$scope.clickedEvent.job_userID;
-				var newUserID=$scope.job_user.userID;
-				$scope.job_user.name=userID2Name($scope.job_user.userID); 
+			s.savejobtoforeman = function () {
+				var oldUserID=s.clickedEvent.job_userID;
+				var newUserID=s.job_user.userID;
+				s.job_user.name=userID2Name(s.job_user.userID); 
 
-				var job = _.find($scope.ScheduledJobs, 'reportID', $scope.clickedEvent.reportID);
+				var job = _.find(s.ScheduledJobs, 'reportID', s.clickedEvent.reportID);
 				if(job) job.job_userID=newUserID;
 				/*
 				ok this makes no fucking sense to me... it seems that the schedulesjobs[] array 
@@ -550,40 +551,40 @@ function ($timeout) {
 
 				*/
 
-				 Api.changeEstimateProperty($scope.clickedEvent.reportID, {
-					  job_userID: $scope.job_user.userID
+				 Api.changeEstimateProperty(s.clickedEvent.reportID, {
+					  job_userID: s.job_user.userID
 				 }).then(function (response) {
-						$scope.clickedEvent.job_userID = $scope.job_user.userID;
+						s.clickedEvent.job_userID = s.job_user.userID;
 
 					  //@@todo .. duplicate code here! dont reassign the title again.. make a function for this WTF
-					  $scope.clickedEvent.title = $scope.clickedEvent.name? $scope.clickedEvent.reportID+' - '
-							+shortenPrice($scope.clickedEvent.price.replace(',',''))+' - '+userID2Name($scope.clickedEvent.job_userID)+' - '
-							+ $scope.clickedEvent.name.trim() : "Nil";
+					  s.clickedEvent.title = s.clickedEvent.name? s.clickedEvent.reportID+' - '
+							+shortenPrice(s.clickedEvent.price.replace(',',''))+' - '+userID2Name(s.clickedEvent.job_userID)+' - '
+							+ s.clickedEvent.name.trim() : "Nil";
 
 // if we do this, we lose the data on the object when its reloaded. stupid fucking bug
 //							updateFilter(oldUserID, newUserID);
                 });
             };
 
-            $scope.savejobtoSalesUser = function () {
-				$scope.sales_user.name=userID2Name($scope.sales_user.userID);
-                Api.changeEstimateProperty($scope.clickedEvent.reportID, {
-                    sales_userID:  $scope.sales_user.userID
+            s.savejobtoSalesUser = function () {
+				s.sales_user.name=userID2Name(s.sales_user.userID);
+                Api.changeEstimateProperty(s.clickedEvent.reportID, {
+                    sales_userID:  s.sales_user.userID
                 }).then(function (response) {
                     console.log(response);
-                    $scope.clickedEvent.sales_userID  = $scope.sales_user.userID;
+                    s.clickedEvent.sales_userID  = s.sales_user.userID;
                 });
             };
 
-            $scope.UnscheduledJob = function () {
-                var id = $scope.clickedEvent._id
-                Api.UnscheduledJob($scope.clickedEvent.reportID, {
+            s.UnscheduledJob = function () {
+                var id = s.clickedEvent._id
+                Api.UnscheduledJob(s.clickedEvent.reportID, {
 
                 }).then(function (res) {
-                    $scope.init();
+                    s.init();
                     elm.fullCalendar('removeEvents', id);
                 }).catch(function(res){
-                    $scope.init();
+                    s.init();
 					 });
 
                $('#fullCalModal').modal('hide');
@@ -602,7 +603,7 @@ function ($timeout) {
 				
 				   ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- */
 
-            $scope.groups = [];
+            s.groups = [];
             var job_start_backup_value ;
             var job_end_backup_value ;
             var getValueBackup = function(data){
@@ -615,32 +616,32 @@ function ($timeout) {
                     job_end_backup_value = data.end;
             }
 
-            $scope.saveJobDates = function(){
+            s.saveJobDates = function(){
 					// convert from unix back to iso
-					$scope.job_start=moment.unix($scope.job_start_unix).format('YYYY-MM-DD HH:mm:ss');
-					$scope.job_end=moment.unix($scope.job_end_unix).format('YYYY-MM-DD HH:mm:ss');
+					s.job_start=moment.unix(s.job_start_unix).format('YYYY-MM-DD HH:mm:ss');
+					s.job_end=moment.unix(s.job_end_unix).format('YYYY-MM-DD HH:mm:ss');
 
-                Api.ScheduleJob($scope.clickedEvent.reportID, {
-                    job_start: $scope.job_start,
-                    job_end: $scope.job_end
+                Api.ScheduleJob(s.clickedEvent.reportID, {
+                    job_start: s.job_start,
+                    job_end: s.job_end
                 }).then(function (res) {
                     if(res && res.conflict==1 && res.conflict_msg){
                         alert(res.conflict_msg);
                     }
-                    $scope.clickedEvent.start = moment($scope.job_start);
-                    $scope.clickedEvent.end = moment($scope.job_end).add(1, 'seconds');
-                    updateJobDuration($scope.clickedEvent.reportID,$scope.clickedEvent.start,$scope.clickedEvent.end);
-                    elm.fullCalendar('updateEvent', $scope.clickedEvent);
-                    $scope.valueChanged = false;
-                    $scope.showWeekendWork = isDateSpanWeekend($scope.job_start, $scope.job_end);
+                    s.clickedEvent.start = moment(s.job_start);
+                    s.clickedEvent.end = moment(s.job_end).add(1, 'seconds');
+                    updateJobDuration(s.clickedEvent.reportID,s.clickedEvent.start,s.clickedEvent.end);
+                    elm.fullCalendar('updateEvent', s.clickedEvent);
+                    s.valueChanged = false;
+                    s.showWeekendWork = isDateSpanWeekend(s.job_start, s.job_end);
                 });
 
             }
 
             var setupModalDatePickers = function(event){
-                $scope.showWeekendWork = isDateSpanWeekend(event.start, event.end);
-				$scope.job_start_unix=event.start.format('X');
-				$scope.job_end_unix=event.end.format('X')-1; // Because fullCallendar always gives the next day which is 12.00.00 AM,
+                s.showWeekendWork = isDateSpanWeekend(event.start, event.end);
+				s.job_start_unix=event.start.format('X');
+				s.job_end_unix=event.end.format('X')-1; // Because fullCallendar always gives the next day which is 12.00.00 AM,
 					                                              // so have subtract  1s to get 11:59:59 of prev date.
 			}
 
@@ -777,21 +778,21 @@ function ($timeout) {
 
 			
 
-			$scope.openJob = function(data){
-				 $scope.clickedEvent = data;
+			s.openJob = function(data){
+				 s.clickedEvent = data;
 
 				 if(data.reportID == undefined){
 					  getValueBackup(data);
 					  var tempId =  data._id;
-					  data=$scope.getEventInfo(data.title);
+					  data=s.getEventInfo(data.title);
 					  data.start = job_start_backup_value;
 					  data._start = job_start_backup_value;
 					  data.end = job_end_backup_value;
 					  data._end = job_end_backup_value;
 					  data._id = tempId;
 				 }
-				 $scope.jobdescription = data.price;
-				 $scope.selectedWeekendWork = (data.work_weekend)  ? data.work_weekend : 0;
+				 s.jobdescription = data.price;
+				 s.selectedWeekendWork = (data.work_weekend)  ? data.work_weekend : 0;
 
 				 if(!data.start) data.start=moment(moment(data.job_start).format('YYYY-MM-DD 00:00:00'));
 				 if(!data.end){
@@ -804,49 +805,49 @@ function ($timeout) {
 					+"<a href='"+data.estimateUrl+"' target=_new>view</a>)");
 				 //$('#modalBody').html("Price:" + data.price);
 
-				 $scope.price = data.price.replace(",", "");
-				 if(data.todo_price == undefined) data.todo_price = $scope.price;
-				 $scope.todo_price = parseFloat(data.todo_price.replace(",", ""));
-			$scope.status = (data.status);
+				 s.price = data.price.replace(",", "");
+				 if(data.todo_price == undefined) data.todo_price = s.price;
+				 s.todo_price = parseFloat(data.todo_price.replace(",", ""));
+			s.status = (data.status);
 
 				 setupModalDatePickers(data);
 
-				 $scope.siteID = data.siteID;
-				 $scope.sales_user = {  userID: -1, name:'' }
-				 $scope.job_user = {  userID: -1, name:'' }
-			$scope.job_user.userID = data.job_userID || -1;
-			$scope.sales_user.userID = data.sales_userID || -1;
+				 s.siteID = data.siteID;
+				 s.sales_user = {  userID: -1, name:'' }
+				 s.job_user = {  userID: -1, name:'' }
+			s.job_user.userID = data.job_userID || -1;
+			s.sales_user.userID = data.sales_userID || -1;
 
-				 Api.getSiteById($scope.siteID, {}).
+				 Api.getSiteById(s.siteID, {}).
 					  then(function (res) {
-							// copy over string and numbers to $scope
+							// copy over string and numbers to s
 							_.each(res, function(r, key){
 								if( typeof r == 'string' || typeof r == 'number' )
-									$scope[key]=r;
+									s[key]=r;
 							});
-							$scope.email=$scope.contactEmail;
-							$scope.phone=$scope.contactPhone;
+							s.email=s.contactEmail;
+							s.phone=s.contactPhone;
 
 							if(data.start)
-								$scope.job_start = data.start.format('YYYY-MM-DD');
+								s.job_start = data.start.format('YYYY-MM-DD');
 							if(data.end)
-								$scope.job_end = data.end.format('YYYY-MM-DD');
+								s.job_end = data.end.format('YYYY-MM-DD');
 							if(data.start && data.end){
-								$scope.duration = moment.duration(data.end.diff(data.start)).asDays();
-								$scope.duration = Math.ceil($scope.duration);
+								s.duration = moment.duration(data.end.diff(data.start)).asDays();
+								s.duration = Math.ceil(s.duration);
 							}
 //needed?
-							$scope.reportID = data.reportID;
+							s.reportID = data.reportID;
 					  });
-				 $scope.loadGroups();
+				 s.loadGroups();
 				 $('#fullCalModal').modal({backdrop:false});
 			}
 
-			$scope.weekendWorkChanged = function(weekendWorkID){
-				 Api.changeEstimateProperty($scope.clickedEvent.reportID, {
+			s.weekendWorkChanged = function(weekendWorkID){
+				 Api.changeEstimateProperty(s.clickedEvent.reportID, {
 					  work_weekend:  weekendWorkID
 				 }).then(function (response) {
-					  $scope.clickedEvent.work_weekend = weekendWorkID;
+					  s.clickedEvent.work_weekend = weekendWorkID;
 				 });
 			}
 
@@ -854,37 +855,37 @@ function ($timeout) {
 			/**
 			 * Note days... should start at 00:00:00 and end at 23:59:59
 			 */
-			$scope.onJobDateChange = function(type){
-				 $scope.valueChanged = true;
+			s.onJobDateChange = function(type){
+				 s.valueChanged = true;
 
 			//use the unix ... convert back
-			$scope.job_start=moment.unix($scope.job_start_unix).format('YYYY-MM-DD HH:mm:ss');
+			s.job_start=moment.unix(s.job_start_unix).format('YYYY-MM-DD HH:mm:ss');
 
 			 //if start was set after end, reset end
-			 if( $scope.job_start > $scope.job_end ) $scope.job_end=$scope.job_start;
+			 if( s.job_start > s.job_end ) s.job_end=s.job_start;
 
 				 if(type == 'days'){
-					  var temp=moment($scope.job_start);
-					  $scope.job_end = temp.add($scope.duration, 'days');
-					  $scope.job_end_unix = $scope.job_end.format('X')-1;
-				 } else if($scope.job_start){
-					  $scope.job_end=moment.unix($scope.job_end_unix).format('YYYY-MM-DD HH:mm:ss');
-						var d = Math.ceil(moment.duration(moment($scope.job_end).diff(moment($scope.job_start))).asDays());
-						$scope.duration = d;
+					  var temp=moment(s.job_start);
+					  s.job_end = temp.add(s.duration, 'days');
+					  s.job_end_unix = s.job_end.format('X')-1;
+				 } else if(s.job_start){
+					  s.job_end=moment.unix(s.job_end_unix).format('YYYY-MM-DD HH:mm:ss');
+						var d = Math.ceil(moment.duration(moment(s.job_end).diff(moment(s.job_start))).asDays());
+						s.duration = d;
 				 }
 			}
 
-			$scope.$watch('user.group', function (newVal, oldVal) {
+			s.$watch('user.group', function (newVal, oldVal) {
 				 if (newVal !== oldVal) {
-					  var selected = $filter('filter')($scope.groups, { userID: $scope.user.group });
-					  $scope.user.name = selected.length ? selected[0].text : null;
+					  var selected = $filter('filter')(s.groups, { userID: s.user.group });
+					  s.user.name = selected.length ? selected[0].text : null;
 				 }
 			});
 
-			$scope.$watch('sales_user.group', function (newVal, oldVal) {
+			s.$watch('sales_user.group', function (newVal, oldVal) {
 				 if (newVal !== oldVal) {
-					  var selected = $filter('filter')($scope.groups, { userID: $scope.sales_user.userID });
-					  $scope.sales_user.name = selected.length ? selected[0].text : null;
+					  var selected = $filter('filter')(s.groups, { userID: s.sales_user.userID });
+					  s.sales_user.name = selected.length ? selected[0].text : null;
 				 }
 			});
 
@@ -895,18 +896,18 @@ function ($timeout) {
 			}
 
 
-			//$scope.jobUserIDs=[{name:'xx', userID:123}];
+			//s.jobUserIDs=[{name:'xx', userID:123}];
 			// when filter drop down is changed
-			$scope.filterByJobUserID = function(){
+			s.filterByJobUserID = function(){
 					  cal.fullCalendar('refetchEvents');
 			}
 
-			$scope.updateStatus = function(s){
-				 Api.setReportStatus($scope.reportID, $scope.status).then(function(d){
+			s.updateStatus = function(s){
+				 Api.setReportStatus(s.reportID, s.status).then(function(d){
 					  //s.setAlert(d);
-					  updateJobStatus($scope.reportID,{status:$scope.status});
-					  $scope.clickedEvent.status = $scope.status
-					  elm.fullCalendar('updateEvent', $scope.clickedEvent);
+					  updateJobStatus(s.reportID,{status:s.status});
+					  s.clickedEvent.status = s.status
+					  elm.fullCalendar('updateEvent', s.clickedEvent);
 				 });
 			}
 
@@ -917,19 +918,19 @@ function ($timeout) {
 
 			return	;
 			// angular method.. but needs to call apply...
-			var idx=_.findObj($scope.jobUsers, 'userID', oldUserID, true);
+			var idx=_.findObj(s.jobUsers, 'userID', oldUserID, true);
 			if(f) f.count--;
-			var f=_.findObj($scope.jobUsers, 'userID', newUserID);
+			var f=_.findObj(s.jobUsers, 'userID', newUserID);
 			if(f) f.count++;
 		}
 
 		// provides the events to the calendar, and filters
 		// the array based on filter_job_userID
 		function filterJobs(){
-			var uid = $scope.filter_job_userID;
-			if(uid==-99) return $scope.ScheduledJobs;
+			var uid = s.filter_job_userID;
+			if(uid==-99) return s.ScheduledJobs;
 			var o=[];
-			_.each($scope.ScheduledJobs, function(e){
+			_.each(s.ScheduledJobs, function(e){
 				var show=false;
 				if(uid==-98 && !e.job_userID) show=true;
 				else if(e.job_userID == uid) show=true;
@@ -946,11 +947,11 @@ function ($timeout) {
 		}
 
 		function updateTotalBoxes(){
-			var t=0, st=$scope.total;
+			var t=0, st=s.total;
 			st.approved=st.scheduled=st.completed=st.invoiced=st.paid=0;
 
 			// approved
-			_.each($scope.UnscheduledJobs, function(j){
+			_.each(s.UnscheduledJobs, function(j){
 				if( j.price ) st.approved+=parseFloat(j.price);
 				else if( j.total_price) st.approved+=parseFloat(j.total_price);
 			});
@@ -996,7 +997,7 @@ function ($timeout) {
 
 
 		function paintDay(date){
-			var goal=$scope.goalPerDay;
+			var goal=s.goalPerDay;
 			var t=getDayTotal(date);
 			if(t===false) return;
 			var warnLevel=-1;
@@ -1026,7 +1027,7 @@ function ($timeout) {
 				_.each( events, function(e){
 					if(!e.todo_price) e.todo_price=e.total_price;
 					if(!e.todo_price){
-						var ev = $scope.getEventInfo(e.reportID);
+						var ev = s.getEventInfo(e.reportID);
 						if(ev.todo_price) e.todo_price=ev.todo_price;
 						if(ev.total_price) e.todo_price=ev.total_price;
 					}
@@ -1065,39 +1066,39 @@ function ($timeout) {
 			}
 
 			function updateJobDuration(reportID,start,end){  // where star and end is not moment type object.
-				 for(var i= 0;i<$scope.ScheduledJobs.length;i++){
-					  if($scope.ScheduledJobs[i].reportID == reportID){
-							$scope.ScheduledJobs[i].start = start;
-							$scope.ScheduledJobs[i].job_start = start;
-							$scope.ScheduledJobs[i].end = end;
-							$scope.ScheduledJobs[i].job_end = end;
+				 for(var i= 0;i<s.ScheduledJobs.length;i++){
+					  if(s.ScheduledJobs[i].reportID == reportID){
+							s.ScheduledJobs[i].start = start;
+							s.ScheduledJobs[i].job_start = start;
+							s.ScheduledJobs[i].end = end;
+							s.ScheduledJobs[i].job_end = end;
 							break;
 					  }
 				 }
-				 for(var i= 0;i<$scope.UnscheduledJobs.length;i++){
-					  if($scope.UnscheduledJobs[i].reportID == reportID){
-							$scope.UnscheduledJobs[i].start = start;
-							$scope.UnscheduledJobs[i].job_start = start;
-							$scope.UnscheduledJobs[i].end = end;
-							$scope.UnscheduledJobs[i].job_end = end;
+				 for(var i= 0;i<s.UnscheduledJobs.length;i++){
+					  if(s.UnscheduledJobs[i].reportID == reportID){
+							s.UnscheduledJobs[i].start = start;
+							s.UnscheduledJobs[i].job_start = start;
+							s.UnscheduledJobs[i].end = end;
+							s.UnscheduledJobs[i].job_end = end;
 							break;
 					  }
 				 }
-				 uncheduledJobsBackUp = angular.copy($scope.UnscheduledJobs);
-				 scheduledJobsBackUp = angular.copy($scope.ScheduledJobs);
+				 uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
+				 scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
 			}
 
 			function updateJobStatus(reportID,object){
-				 for(var i= 0;i<$scope.ScheduledJobs.length;i++){
-					  if($scope.ScheduledJobs[i].reportID == reportID){
+				 for(var i= 0;i<s.ScheduledJobs.length;i++){
+					  if(s.ScheduledJobs[i].reportID == reportID){
 							for (var property in object) {
 								 if (object.hasOwnProperty(property)) {
-									  $scope.ScheduledJobs[i][property]=object[property];
+									  s.ScheduledJobs[i][property]=object[property];
 								 }
 							}
 					  }
 				 }
-				 scheduledJobsBackUp = angular.copy($scope.ScheduledJobs);
+				 scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
 			}
 
             var convertLocalTime = function(startMoment,endMoment){

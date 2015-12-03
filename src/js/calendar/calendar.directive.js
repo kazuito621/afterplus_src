@@ -61,7 +61,8 @@ function ($timeout) {
             dropablefullcalendar: "@",
             eventfullcalendar: "@"
         },
-        controller: function ($rootScope, $scope, $element, $attrs, Api, $location, $filter,$q) {
+        controller: ['$rootScope', '$scope', '$element', '$attrs', 'Api', '$location', '$filter','$q', 'Restangular', 
+          function ($rootScope, $scope, $element, $attrs, Api, $location, $filter, $q, Rest) {
             var search = $location.search();
 
 				window.fcs=$scope;
@@ -89,9 +90,7 @@ function ($timeout) {
 
 
 
-
-
-      	s.init = function(){
+      	var init = function(){
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
 				s.UnscheduledJobs = [];
 				s.ScheduledJobs = [];
@@ -203,209 +202,204 @@ function ($timeout) {
 									  revertDuration: 0          //  original position after the drag
 								 });
 							});
-					  }
-
-					  setTimeout(bindexternalevents, 30);
-
-					  elm = $element.find("#calendar");
-					  window.cal = cal = elm.fullCalendar({
-							header: {
-								 left: 'prev,next today',
-								 center: 'title',
-								 right: 'month,basicWeek'
-							},
-							//defaultDate: '2015-02-12',
-							dropAccept: '.drop-accpted',
-							editable: s.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
-							droppable: s.dropablefullcalendar,
-					eventLimit: true,
-					timezone: 'local',
-					views:{
-						week:{eventLimit:false}
-					},
-							defaultTimedEventDuration: '04:00:00',
-							startEditable: true,
-							durationEditable: true,
-							events:  function(st, end, tz, callback){
-						callback( filterJobs() );
-					},
-							select: function (start, end) {
-								 var title = prompt('Event Title:');
-								 var eventData;
-								 if (title) {
-									  eventData = {
-											title: title,
-											start: start,
-											end: end
-									  };
-									  $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-								 }
-								 $('#calendar').fullCalendar('unselect');
-							},
-							drop: function (el, eventStart, ev, ui) {		// jquery ui external drop call: http://fullcalendar.io/docs/dropping/drop/
-								// without these here, the job detail box opens on drag
-								 $('.fc-title br').remove();
-								 //console.log(ev.helper[0].textContent);
-								 // if so, remove the element from the "Draggable Events" list
-								 $(this).remove();
-							},
-							eventReceive: function (event) {			// external drop callbackreturn;
-								 var ev = s.getEventInfo(event.title);
-								 s.estimateid = ev.reportID;
-								 //event.start = event.start.local();
-								 convertLocalTime(event.start,event.end);
-								 //event.end = angular.copy((event.start));
-								 //event.end = setLastMomentOfTheDay(angular.copy(event.start));
-								 console.log(event.start.format('YYYY-MM-DD'));
-								 Api.ScheduleJob(ev.reportID, {
-									  job_start: event.start.format('YYYY-MM-DD')
-								 }).then(function (res) {
-									  if(res && res.conflict==1 && res.conflict_msg){
-											alert(res.conflict_msg);
-									  }
-									  else{
-											event.status = 'scheduled'
-											elm.fullCalendar('updateEvent', event);
-									  }
-								 });
-							},
-					eventDragStop: function( event, jsEvent, ui, view ){
-						setTimeout(function(){	updateTotals() },1000);
-					},
-							xxupdateEvent: function (event) {
-								 console.log(event);
-							},
-							eventClick: function (data, jsEvent, view) {
-								 convertLocalTime(data.start,data.end)
-								 s.openJob(data);
-							},
-					dayClick: function( date, evt, view ){
-
-						// check for double click
-						var now=new Date().getTime();
-						if(now - view.lastDayClick < 400){
-							var v=elm.fullCalendar('getView');
-							if(v.name=='basicWeek' || v.name=='agendaWeek')
-								elm.fullCalendar('changeView', 'month');
-							else
-								elm.fullCalendar('changeView', 'basicWeek');
-							elm.fullCalendar('gotoDate', date);
-							return;
-						}
-						view.lastDayClick=now;
-
-						// dislay daily total
-						var tot=getDayTotal(date),diff;
-						if(tot>0){
-							niceTot = "$" + commaDigits(tot);
-							var msg=date.format("ddd M/DD") + " = " + niceTot;
-							var diff=Math.abs(Math.round(s.goalPerDay-tot));
-							var undOvr = (tot>s.goalPerDay) ? " over)" : " UNDER!)";
-							var alType = (tot>s.goalPerDay) ? "ok" : "d";
-							msg+=" ($"+diff+undOvr;
-							$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alType });
-						}else{
-							$rootScope.$broadcast('alert', { msg:'$0 Total! Give me some jobs!', time: 9, type: 'd' });
-						}
-					},
-					//dayRender: function( date, cell ){
-					//},
-					viewRender: function( view, cal ){
-						setTimeout(function(){
-							if(!updateTotals()){
-								setTimeout(function(){
-									updateTotals();
-								},2000);
-							}
-						},600);
-					},
-							eventRender: function (event, element, view) {
-								 $('.fc-title br').remove();
-
-								 /*WILL WORK ON IT LATER*/
-//
-								 // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
-								 ////var box = element.closest('table').find('th').eq(element.index())
-								 //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
-								 element.addClass('clr-'+event.status);
-								 if (event.title === "" || event.title === null) {
-									  var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
-									  //element.css('background-color', '#77DD77');
-									  element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'
-											.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" '
-											+'title="No foreman assigned to this job"></i></a>');
-								 }
-								//if(event.status != 'scheduled'){
-								//    event.editable = false;
-								//}
-								 //else {
-								 //    //element.css('background-color', '#FFB347')
-								 //}
-							},
-							eventResize: function (el, delta, revertFunc, jsEvent, ui, view) {
-								 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
-								 convertLocalTime(el.start,el.end);
-								 var html = $(view.el[0]).find(".fc-title").html();
-								 html = html.replace("<br/>", "");
-								 html = html.replace("<br>", "");
-								 $(".fc-title").html(html);
-								 if(el.reportID == undefined){
-									  var eventInfo=s.getEventInfo(el.title);
-									  el.reportID = eventInfo.reportID;
-								 }
-								 el.job_start = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
-								 el.job_end = moment(el.end).format('YYYY-MM-DD HH:mm:ss')
-								 console.log( moment(el.start).format('YYYY-MM-DD HH:mm:ss') +'   '+moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss'));
-								 Api.ScheduleJob(el.reportID, {
-									  //job_start: t.format('YYYY-MM-DD'),
-									  job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
-									  job_end: moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss')
-								 }).then(function (res) {
-									  if(res && res.conflict==1 && res.conflict_msg){
-											alert(res.conflict_msg);
-									  }
-								 });
-						setTimeout(function(){	updateTotals() },1000);
-							},
-							eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
-								 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
-								 convertLocalTime(el.start,el.end);
-								 if(el.reportID == undefined){
-									  var eventInfo=s.getEventInfo(el.title);
-									  el.reportID = eventInfo.reportID;
-								 }
-								 var sTime, eTime;
-								 sTime =  moment(el.start).format('YYYY-MM-DD HH:mm:ss');
-								 if(el._allDay == false && el.end == undefined){
-									  eTime = moment(el.start).format('YYYY-MM-DD 23:59:59');
-								 }
-								 else if (el.end == undefined){  // When duration is 1
-									  eTime = moment(el.start).format('YYYY-MM-DD 23:59:59');
-								 }
-								 else
-								 { // When duration is >1
-									  eTime = moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss');
-								 }
-								 console.log(sTime+'   '+eTime);
-								 Api.ScheduleJob(el.reportID, {
-									  job_start: sTime,
-									  job_end: eTime
-								 }).then(function (res) {
-									  if(res && res.conflict==1 && res.conflict_msg){
-											alert(res.conflict_msg);
-									  }
-								 });
-						setTimeout(function(){
-							updateTotals();
-						},600);
-							}
-
-					  });
+					 	}
+					 	setTimeout(bindexternalevents, 30);
+						initCalendar();
 				 });
-
      		} // end init()
 
 
+
+			var initCalendar = function(){
+
+				  elm = $element.find("#calendar");
+				  window.cal = cal = elm.fullCalendar({
+						header: {
+							 left: 'prev,next today',
+							 center: 'title',
+							 right: 'month,basicWeek'
+						},
+						//defaultDate: '2015-02-12',
+						dropAccept: '.drop-accpted',
+						editable: s.editablefullcalendar,     // Under calender events drag start on true and vice-versa.
+						droppable: s.dropablefullcalendar,
+						eventLimit: true,
+						timezone: 'local',
+						views:{ week:{eventLimit:false} },
+						defaultTimedEventDuration: '04:00:00',
+						startEditable: true,
+						durationEditable: true,
+						events:  function(st, end, tz, callback){
+							callback( filterJobs() );
+						},
+						select: function (start, end) {
+							 var title = prompt('Event Title:');
+							 var eventData;
+							 if (title) {
+								  eventData = {
+										title: title,
+										start: start,
+										end: end
+								  };
+								  $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+							 }
+							 $('#calendar').fullCalendar('unselect');
+						},
+						drop: function (el, eventStart, ev, ui) {		// jquery ui external drop call: http://fullcalendar.io/docs/dropping/drop/
+							// without these here, the job detail box opens on drag
+							 $('.fc-title br').remove();
+							 //console.log(ev.helper[0].textContent);
+							 // if so, remove the element from the "Draggable Events" list
+							 $(this).remove();
+						},
+						eventReceive: function (event) {			// external drop callbackreturn;
+							 var ev = s.getEventInfo(event.title);
+							 s.estimateid = ev.reportID;
+							 //event.start = event.start.local();
+							 convertLocalTime(event.start,event.end);
+							 //event.end = angular.copy((event.start));
+							 //event.end = setLastMomentOfTheDay(angular.copy(event.start));
+							 console.log(event.start.format('YYYY-MM-DD'));
+							 Api.ScheduleJob(ev.reportID, {
+								  job_start: event.start.format('YYYY-MM-DD')
+							 }).then(function (res) {
+								  if(res && res.conflict==1 && res.conflict_msg){
+										alert(res.conflict_msg);
+								  }
+								  else{
+										event.status = 'scheduled'
+										elm.fullCalendar('updateEvent', event);
+								  }
+							 });
+						},
+						eventDragStop: function( event, jsEvent, ui, view ){
+							setTimeout(function(){	updateTotals() },1000);
+						},
+						eventClick: function (data, jsEvent, view) {
+							 convertLocalTime(data.start,data.end)
+							 s.openJob(data);
+						},
+						dayClick: function( date, evt, view ){
+							// check for double click
+							var now=new Date().getTime();
+							if(now - view.lastDayClick < 400){
+								var v=elm.fullCalendar('getView');
+								if(v.name=='basicWeek' || v.name=='agendaWeek')
+									elm.fullCalendar('changeView', 'month');
+								else
+									elm.fullCalendar('changeView', 'basicWeek');
+								elm.fullCalendar('gotoDate', date);
+								return;
+							}
+							view.lastDayClick=now;
+
+							// dislay daily total
+							var tot=getDayTotal(date),diff;
+							if(tot>0){
+								niceTot = "$" + commaDigits(tot);
+								var msg=date.format("ddd M/DD") + " = " + niceTot;
+								var diff=Math.abs(Math.round(s.goalPerDay-tot));
+								var undOvr = (tot>s.goalPerDay) ? " over)" : " UNDER!)";
+								var alType = (tot>s.goalPerDay) ? "ok" : "d";
+								msg+=" ($"+diff+undOvr;
+								$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alType });
+							}else{
+								$rootScope.$broadcast('alert', { msg:'$0 Total! Give me some jobs!', time: 9, type: 'd' });
+							}
+						},
+						viewRender: function( view, cal ){
+							setTimeout(function(){
+								if(!updateTotals()){
+									setTimeout(function(){
+										updateTotals();
+									},2000);
+								}
+							},600);
+						},
+						eventRender: function (event, element, view) {
+							 $('.fc-title br').remove();
+
+							 /*WILL WORK ON IT LATER*/
+//
+							 // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
+							 ////var box = element.closest('table').find('th').eq(element.index())
+							 //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
+							 element.addClass('clr-'+event.status);
+							 if (event.title === "" || event.title === null) {
+								  var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
+								  //element.css('background-color', '#77DD77');
+								  element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'
+										.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" '
+										+'title="No foreman assigned to this job"></i></a>');
+							 }
+							//if(event.status != 'scheduled'){
+							//    event.editable = false;
+							//}
+							 //else {
+							 //    //element.css('background-color', '#FFB347')
+							 //}
+						},
+						eventResize: function (el, delta, revertFunc, jsEvent, ui, view) {
+							 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
+							 convertLocalTime(el.start,el.end);
+							 var html = $(view.el[0]).find(".fc-title").html();
+							 html = html.replace("<br/>", "");
+							 html = html.replace("<br>", "");
+							 $(".fc-title").html(html);
+							 if(el.reportID == undefined){
+								  var eventInfo=s.getEventInfo(el.title);
+								  el.reportID = eventInfo.reportID;
+							 }
+							 el.job_start = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
+							 el.job_end = moment(el.end).format('YYYY-MM-DD HH:mm:ss')
+							 console.log( moment(el.start).format('YYYY-MM-DD HH:mm:ss') +'   '+moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss'));
+							 Api.ScheduleJob(el.reportID, {
+								  //job_start: t.format('YYYY-MM-DD'),
+								  job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
+								  job_end: moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss')
+							 }).then(function (res) {
+								  if(res && res.conflict==1 && res.conflict_msg){
+										alert(res.conflict_msg);
+								  }
+							 });
+							setTimeout(function(){	updateTotals() },1000);
+						},
+						eventDrop: function (el, eventStart, revertFunc, jsEvent, ui, view) {
+							 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
+							 convertLocalTime(el.start,el.end);
+							 if(el.reportID == undefined){
+								  var eventInfo=s.getEventInfo(el.title);
+								  el.reportID = eventInfo.reportID;
+							 }
+							 var sTime, eTime;
+							 sTime =  moment(el.start).format('YYYY-MM-DD HH:mm:ss');
+							 if(el._allDay == false && el.end == undefined){
+								  eTime = moment(el.start).format('YYYY-MM-DD 23:59:59');
+							 }
+							 else if (el.end == undefined){  // When duration is 1
+								  eTime = moment(el.start).format('YYYY-MM-DD 23:59:59');
+							 }
+							 else
+							 { // When duration is >1
+								  eTime = moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss');
+							 }
+							 console.log(sTime+'   '+eTime);
+							 Api.ScheduleJob(el.reportID, {
+								  job_start: sTime,
+								  job_end: eTime
+							 }).then(function (res) {
+								  if(res && res.conflict==1 && res.conflict_msg){
+										alert(res.conflict_msg);
+								  }
+							 });
+							setTimeout(function(){
+								updateTotals();
+							},600);
+						}
+
+				  }); // calendar obj instantiation
+
+				} // initCalendar
 
 
 
@@ -532,7 +526,9 @@ function ($timeout) {
 				 }
 				 return 'User '+job_userID;
 			}
-			s.init();
+			init();
+
+
 			//@@todo - update the counts in the dropdown! .. by knowing who was assigned before, and subtracting and adding
 			s.savejobtoforeman = function () {
 				var oldUserID=s.clickedEvent.job_userID;
@@ -1107,6 +1103,6 @@ function ($timeout) {
                     endMoment = endMoment.local();
                 }
             }
-        }
+        }]// end controller func 
     }
 }]);

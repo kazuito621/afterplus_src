@@ -74,11 +74,11 @@
 		<!-- color key -->
 		<div style='clear:both;padding:2em;'>
 			<!--<span class='small-tag approved'> APPROVED </span> &nbsp; -->
-			<span class='small-tag scheduled'> SCHED </span> &nbsp; 
-			<span class='small-tag clr-inprog'> IN PROGRESS </span> &nbsp; 
-			<span class='small-tag completed'> COMPLETED </span> &nbsp; 
-			<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
-			<span class='small-tag paid'> PAID </span>
+			<span class='small-tag scheduled bigger-tag' data-text='SCHED'>SCHED</span> &nbsp; 
+			<span class='small-tag in_prog clr-in_prog bigger-tag' data-text='IN PROG'>IN PROG</span> &nbsp; 
+			<span class='small-tag completed bigger-tag' data-text='COMPL'>COMPLETED</span> &nbsp; 
+			<span class='small-tag invoiced bigger-tag' data-text='INVOIC'>INVOICED</span> &nbsp; 
+			<span class='small-tag paid bigger-tag' data-text='PAID YTD'>PAID</span>
 		</div>
 		<div>
 			Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>

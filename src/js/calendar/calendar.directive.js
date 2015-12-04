@@ -335,13 +335,7 @@ function ($timeout) {
 							}
 						},
 						viewRender: function( view, cal ){
-							setTimeout(function(){
-								if(!updateTotals()){
-									setTimeout(function(){
-										updateTotals();
-									},2000);
-								}
-							},600);
+							setTimeout(function(){ updateTotals(); },600);
 						},
 						eventRender: function (event, element, view) {
 							 $('.fc-title br').remove();
@@ -353,7 +347,7 @@ function ($timeout) {
 							 //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
 
 							 // check if job in progress, else color it by status
-							 if(event.todo_price < event.total_price) element.addClass('clr-inprog')
+							 if(event.todo_price < event.total_price) element.addClass('clr-in_prog')
 							 else element.addClass('clr-'+event.status);
 
 							 if (event.title === "" || event.title === null) {
@@ -423,9 +417,7 @@ function ($timeout) {
 										alert(res.conflict_msg);
 								  }
 							 });
-							setTimeout(function(){
-								updateTotals();
-							},600);
+							setTimeout(function(){ updateTotals(); },600);
 						}
 
 				  }); // calendar obj instantiation
@@ -918,7 +910,8 @@ function ($timeout) {
 
 			function shortenPrice($pr){
 				 if($pr<1000) return Math.round($pr);
-				 if($pr<10000) return  parseInt($pr).toString().substring(0, parseInt($pr).toString().length-3)+'k';
+				 if($pr<10000) return parseInt($pr).toString().substring(0, parseInt($pr).toString().length-3)+'k';
+				 if($pr>1000000) return (parseInt($pr)/1000000).toFixed(1) + 'M'
 				 return Math.floor(parseInt($pr)/1000)+"k";
 			}
 
@@ -966,42 +959,50 @@ function ($timeout) {
 			return o;
 		}
 
-			/** ========== PRICE CALCULATIONS PER DAY ============ **/
+
+		/** ========== PRICE CALCULATIONS PER DAY ============ **/
 
 		function updateTotals(){
 			updatePriceColors();
 			updateTotalBoxes();
 		}
 
-		function updateTotalBoxes(){
-			var t=0, st=s.total;
-			st.approved=st.scheduled=st.completed=st.invoiced=st.paid=0;
+
+		/**
+		 * Calc the prices for the totals of each status indicator at bottom of screen (ie. SCHED, COMPLETED, etc)
+		 */
+		var updateTotalBoxes = _.throttle(function(){
+
+			// get latest estimate totals from server
+			Rest.one('estimateTotals').get().then(function(r){
+				if(!r) return;
+				if(r.scheduled_all) s.total.scheduled_all = r.scheduled_all;
+
+
+				// new: not doing sched... since that would only be totals for this month
+				// using API call above to get totals for ALL
+				var stats=['in_prog', 'scheduled','completed','invoiced','paid'];
+				_.each(stats, function(s){
+					if(!r[s]) return;
+					var p = '$' + shortenPrice(r[s]);
+					var c = $('.small-tag.' + s);
+					if(c) c.text(c.attr('data-text')+': '+p);
+				});
+
+			});
+
 
 			// approved
+			var appr=0;
 			_.each(s.UnscheduledJobs, function(j){
-				if( j.price ) st.approved+=parseFloat(j.price);
-				else if( j.total_price) st.approved+=parseFloat(j.total_price);
+				if( j.total_price) appr += parseFloat(j.total_price);
+				else if( j.price ) appr += parseFloat(j.price);
 			});
-
-			var ev=cal.fullCalendar('clientEvents');
-			_.each(ev, function(e){
-				if(e.status && e.price){
-					st[e.status]+=parseFloat(e.price);
-				}
-			});
-
-			var stats=['scheduled','completed','invoiced','paid'];
-			_.each(stats, function(s){
-				st[s]='$' + shortenPrice(st[s]);
-				var c=$('.small-tag.'+s);
-				if(c) c.text(s+' = '+st[s]);
-			});
-
-			$('#approved-jobs-title').text('Approved ($'+shortenPrice(st['approved'])+')');
-		}
+			$('#approved-jobs-title').text('Approved ($'+shortenPrice(appr)+')');
+		},6000,{trailing:true});
 
 
-			// change color of all calendar day box backgrounds, based on $ amount
+		// Change color of all calendar day box backgrounds, based on $ amount ... if they hit their goals
 		function updatePriceColors(){
 			if(!cal || !cal.fullCalendar) return false;
 			var view=cal.fullCalendar('getView');

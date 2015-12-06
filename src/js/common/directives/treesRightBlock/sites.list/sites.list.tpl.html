@@ -2,7 +2,7 @@
 <div class="tree-list-outer" id="tree-list-container">
     <table class="tree-list-container">
         <tbody>
-        <tr bindonce ng-repeat="site in filteredSites" ng-show="site.siteName">
+        <tr ng-repeat="site in filteredSites" ng-show="site.siteName">
             <td class="td-check">
                 <input type="checkbox" checklist-model="selectedSites" checklist-value="site.siteID" id="site-result-checkbox-{{site.siteID}}">
             </td>

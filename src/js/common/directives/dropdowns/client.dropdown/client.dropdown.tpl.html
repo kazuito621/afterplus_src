@@ -3,5 +3,5 @@
          ng-model="model"
          ng-change="onChange({ id: model })">
     <option class="option" value="">Client</option>
-    <option bindonce class="option" ng-repeat="client in data" value="{{client.clientID}}" bo-bind="client.clientName"></option>
+    <option class="option" ng-repeat="client in data" value="{{client.clientID}}" ng-bind="::client.clientName"></option>
 </select>

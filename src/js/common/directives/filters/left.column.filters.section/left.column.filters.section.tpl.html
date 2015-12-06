@@ -21,7 +21,7 @@
                             <select  id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0"
                                      ng-model="selected.siteID"
                                      ng-change="onSelectSiteID(selected.siteID)">
-                                <option bindonce class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" bo-bind="site.siteName"></option>
+                                <option class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}" ng-bind="::site.siteName"></option>
                             </select>
                         </div>
                     </div>

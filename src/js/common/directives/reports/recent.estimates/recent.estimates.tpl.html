@@ -2,6 +2,6 @@
 <select title="Load Estimate" id="reportSelector" class="styled-select" ng-model="model">
     <option value="">Recent Estimates</option>
     <!-- todo-bindonce - was removed from here: "bindonce bo-value="r.reportID"" ... repalce this back if we can get the rebinder working -->
-    <option bindonce bo-value="r.reportID" ng-repeat="r in recentReportList" ng-bind="getRecentReportTitle({ report: r })">
+    <option ng-value="::r.reportID" ng-repeat="r in recentReportList" ng-bind="getRecentReportTitle({ report: r })">
     </option>
 </select>

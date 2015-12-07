@@ -4,30 +4,32 @@
     <div class="table-header">
         <h1 class="pull-left">Reports</h1>
 
-        <div ng-if="auth.isAtleast('inventory') && auth.hasPerm('calendar_view')" class='class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"'
-              style="max-width: 100%; width: auto;font-size: 23px;" ng-if="auth.isAtleast('staff')">
+        <div ng-if="auth.isAtleast('inventory') && auth.hasPerm('calendar_view')"
+             class='class="btn btn-lg btn-primary pull-right topMargin5 bottomMargin5"'
+             style="max-width: 100%; width: auto;font-size: 23px;" ng-if="auth.isAtleast('staff')">
             <a style="color: white;" href="#/calendar" target='ap_calendar'>Job Calendar</a>
         </div>
-		  <div ng-if="auth.isAtleast('inventory')" class='pull-right btn btn-sm topMargin5 bottomMargin5' style='margin:1.2em 2em 0 0;font-size:1.1em'>
-				<a href='/go/reports?token={{auth.data().token}}' target='ap_reports'>Past Due Report</a>
-		  </div>
+        <div ng-if="auth.isAtleast('inventory')" class='pull-right btn btn-sm topMargin5 bottomMargin5'
+             style='margin:1.2em 2em 0 0;font-size:1.1em'>
+            <a href='/go/reports?token={{auth.data().token}}' target='ap_reports'>Past Due Report</a>
+        </div>
         <div class="clearfix"></div>
     </div>
 
-	<div ng-if="auth.isAtleast('inventory')">
-		<div class='pull-right topMargin5'>
-			<div class="btn-group" bs-radio-group id="estimatesFilters" ng-model="status_filters_2">
-				<label ng-click="setStatusFilter('all')"class="btn btn-default">
+    <div ng-if="auth.isAtleast('inventory')">
+        <div class='pull-right topMargin5'>
+            <div class="btn-group" bs-radio-group id="estimatesFilters" ng-model="status_filters_2">
+                <label ng-click="setStatusFilter('all')" class="btn btn-default">
                     <input type="radio" value="all"> All</label>
                 <label ng-click="setStatusFilter('draft')" class="btn btn-default">
                     <input type="radio" value="draft"> Draft</label>
-				<label ng-click="setStatusFilter('sent')" class="btn btn-default">
+                <label ng-click="setStatusFilter('sent')" class="btn btn-default">
                     <input type="radio" value="sent"> Sent</label>
-				<label ng-click="setStatusFilter('approved')" class="btn btn-default">
+                <label ng-click="setStatusFilter('approved')" class="btn btn-default">
                     <input type="radio" value="approved"> Approved</label>
-				<label auth.hasPerm('calendar_view') ng-click="setStatusFilter('scheduled')" class="btn btn-default">
-                    <input type="radio" value="scheduled"> Scheduled</label>
-				<label ng-click="setStatusFilter('completed')" class="btn btn-default">
+                <label auth.hasPerm('calendar_view') ng-click="setStatusFilter('scheduled')" class="btn btn-default">
+                <input type="radio" value="scheduled"> Scheduled</label>
+                <label ng-click="setStatusFilter('completed')" class="btn btn-default">
                     <input type="radio" value="completed"> Completed</label>
                 <label ng-click="setStatusFilter('invoiced')" class="btn btn-default">
                     <input type="radio" value="invoiced"> Invoiced</label>
@@ -39,140 +41,149 @@
                     </a>
                 </span>
             </div>
-		</div>
-		<br>
-		<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
-		<a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''" class='fa fa-times _red _size5 hand'></a>
-		<span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
-	</div>
-	<BR><BR>
+        </div>
+        <br>
+        <input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'>
+        <a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''"
+           class='fa fa-times _red _size5 hand'></a>
+        <span class='gray'
+              ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
+    </div>
+    <BR><BR>
 
     <div class='table-responsive' ng-if="displayedEstimates.length > 0">
         <table class='table table-striped' id='estimatesList' style='margin-bottom:10em;'>
-
-
-
             <thead>
-                <tr>
-                    <th class="td-check clickable-header text-center" ng-if="auth.isAtleast('inventory')">
-                        <input type="checkbox" ng-checked="checkedEstimates.selectAll" ng-click="toggleAllEstimatesSelection()">
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('reportID')">
-                        ID <i ng-class="sh.columnClass('name')" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('name')">
-                        Estimate/Job Name <i ng-class="sh.columnClass('name')" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
-                        Site Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
-                    </th>
+            <tr>
+                <th class="td-check clickable-header text-center" ng-if="auth.isAtleast('inventory')">
+                    <input type="checkbox" ng-checked="checkedEstimates.selectAll"
+                           ng-click="toggleAllEstimatesSelection()">
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('reportID')">
+                    ID <i ng-class="sh.columnClass('name')" class='silver'></i>
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('name')">
+                    Estimate/Job Name <i ng-class="sh.columnClass('name')" class='silver'></i>
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('siteName')">
+                    Site Name <i ng-class="sh.columnClass('siteName')" class='silver'></i>
+                </th>
 
-                    <th ng-if="auth.isAtleast('inventory')" class="clickable-header" style="min-width: 124px;">
-                        <button ng-if="auth.isAtleast('inventory')" class="btn btn-default" 
-                                ng-model="data.salesForemanMode"
-                                ng-options="s.value as s.viewValue for s in [{value:'sales',viewValue:'Sales'},{value:'foreman',viewValue:'Foreman'}]"
-                                bs-select onclick="return false;">
-                        </button>
-                        <i ng-class="getDateColClass()" class='silver' 
-									ng-click="sh.sortByColumn((data.salesForemanMode=='sales')?'sales_userID':'job_userID')"></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('total_price')">
-                        Total <i ng-class="sh.columnClass('total_price')" class='silver'></i>
-                    </th>
-                    <th class="clickable-header" ng-click="sh.sortByColumn('status')">
-                        Status <i ng-class="sh.columnClass('status')" class='silver'></i>
-                    </th>
-                    <th ng-if="auth.isAtleast('inventory')" class="clickable-header" style="min-width: 124px;">
-                        <button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+getTstampHeaderClass()"
-                                ng-model="data.currentTstamp"
-                                ng-options="s.value as s.viewValue for s in data.tstampItems"
-                                bs-select onclick="return false;">
-                        </button>
-                        <i ng-class="getDateColClass()" class='silver' ng-click="sortDateCol()"></i>
-                    </th>
-                    <th ng-if="!auth.isAtleast('inventory')" class="clickable-header" ng-click="sh.sortByColumn('tstamp_updated')">
-                        Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
-                    </th>
-                    <th style="min-width: 55px;"></th>
-                </tr>
+                <th ng-if="auth.isAtleast('inventory')" class="clickable-header" style="min-width: 124px;">
+                    <button ng-if="auth.isAtleast('inventory')" class="btn btn-default"
+                            ng-model="data.salesForemanMode"
+                            ng-options="s.value as s.viewValue for s in [{value:'sales',viewValue:'Sales'},{value:'foreman',viewValue:'Foreman'}]"
+                            bs-select onclick="return false;">
+                    </button>
+                    <i ng-class="getDateColClass()" class='silver'
+                       ng-click="sh.sortByColumn((data.salesForemanMode=='sales')?'sales_userID':'job_userID')"></i>
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('total_price')">
+                    Total <i ng-class="sh.columnClass('total_price')" class='silver'></i>
+                </th>
+                <th class="clickable-header" ng-click="sh.sortByColumn('status')">
+                    Status <i ng-class="sh.columnClass('status')" class='silver'></i>
+                </th>
+                <th ng-if="auth.isAtleast('inventory')" class="clickable-header" style="min-width: 124px;">
+                    <button ng-if="auth.isAtleast('inventory')" class="btn btn-default"
+                            ng-class="'clr-'+getTstampHeaderClass()"
+                            ng-model="data.currentTstamp"
+                            ng-options="s.value as s.viewValue for s in data.tstampItems"
+                            bs-select onclick="return false;">
+                    </button>
+                    <i ng-class="getDateColClass()" class='silver' ng-click="sortDateCol()"></i>
+                </th>
+                <th ng-if="!auth.isAtleast('inventory')" class="clickable-header"
+                    ng-click="sh.sortByColumn('tstamp_updated')">
+                    Last Update <i ng-class="sh.columnClass('tstamp_updated')" class='silver'></i>
+                </th>
+                <th style="min-width: 55px;"></th>
+            </tr>
             </thead>
 
-
-
-
-
-
             <tbody infinite-scroll="showMoreEstimates()" infinite-scroll-distance="3">
-                <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}' 
-					 	ng-style="e.delete==1?{'background-color':'#bbb'}:''">
-                    <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
-                        <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)" ng-click="toggleEstimateSelection(e.reportID)">
-                    </td>
-                    <td ng-bind="e.reportID"></td>
-                    <td>
-						<span ng-if="auth.isAtleast('inventory')">
-							<a estimate-details="e" style="cursor: pointer;" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>&nbsp;
-							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' bs-tooltip title='{{e.saveCount}} revisions' target=_new><i class='fa fa-clock-o gray'></i></a>
-						</span>
-						<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
-                        <a ng-if="auth.isAtleast('inventory') && e.count_internal_notes>0" href="" class="badge" estimate-details="e" 
-									bs-tooltip title="{{e.count_internal_notes}} internal notes" >{{e.count_internal_notes}}</a>
-                        <a ng-if="e.pastDue>=30" href="" class="badge" ng-if="e.status=='invoiced'" style="color: white; background-color:#df0505" 
-									bs-tooltip title="" >{{e.pastDue}} days past due</a>
-                        <a href='#' id='sendReportBtn_{{e.reportID}}' ng-if="e.status=='completed' || e.status=='invoiced'" send-report="e" type="invoice"  
-									bs-tooltip title="Re/Send Invoice">
-                            	<i class="fa fa-envelope"></i>
-								</a>
-					</td>
-               <td>
-						<span title="{{e.siteName}}">{{e.siteName_short}}</span> &nbsp; 
-						<i site-edit-modal clients="initData.clients" site-id="e.siteID" 
-                           class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i>
-					</td>
-                    <td ng-if="auth.isAtleast('inventory')">
-                        <a href e-ng-options="obj.id as obj.email for obj in salesUsers"
-                           onshow="getSalesUsers()" editable-select="e[data.salesForemanMode+'_userID']" onaftersave="updateEstimate(e)">
-                            {{ e[data.salesForemanMode+'_email_short'] || '(none)' }}
-                        </a>
-                    </td>
+            <tr ng-repeat="e in displayedEstimates track by e.reportID" class='hoverHotspot' id='item_{{e.reportID}}'
+                ng-style="e.delete==1?{'background-color':'#bbb'}:''">
+                <td class="td-check text-center" ng-if="auth.isAtleast('inventory')">
+                    <input type="checkbox" ng-checked="isEstimateSelected(e.reportID)"
+                           ng-click="toggleEstimateSelection(e.reportID)">
+                </td>
+                <td ng-bind="e.reportID"></td>
+                <td>
+                    <span ng-if="auth.isAtleast('inventory')">
+                    <a estimate-details="e" style="cursor: pointer;" ng-bind="e.name_short" bs-tooltip
+                       title="{{e.name}}"></a>&nbsp;
+                    <a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' bs-tooltip
+                       title='{{e.saveCount}} revisions' target=_new><i class='fa fa-clock-o gray'></i></a>
+                    </span>
+                    <a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short"
+                       bs-tooltip title="{{e.name}}"></a>
+                    <a ng-if="auth.isAtleast('inventory') && e.count_internal_notes>0" href="" class="badge"
+                       estimate-details="e"
+                       bs-tooltip title="{{e.count_internal_notes}} internal notes">{{e.count_internal_notes}}</a>
+                    <a ng-if="e.pastDue>=30" href="" class="badge" ng-if="e.status=='invoiced'"
+                       style="color: white; background-color:#df0505"
+                       bs-tooltip title="">{{e.pastDue}} days past due</a>
+                    <a href='#' id='sendReportBtn_{{e.reportID}}' ng-if="e.status=='completed' || e.status=='invoiced'"
+                       send-report="e" type="invoice"
+                       bs-tooltip title="Re/Send Invoice">
+                        <i class="fa fa-envelope"></i>
+                    </a>
+                </td>
+                <td>
+                    <span title="{{e.siteName}}">{{e.siteName_short}}</span> &nbsp;
+                    <i site-edit-modal clients="initData.clients" site-id="e.siteID"
+                       class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip
+                       style="cursor: pointer;"></i>
+                </td>
+                <td ng-if="auth.isAtleast('inventory')">
+                    <a href e-ng-options="obj.id as obj.email for obj in salesUsers"
+                       onshow="getSalesUsers()" editable-select="e[data.salesForemanMode+'_userID']"
+                       onaftersave="updateEstimate(e)">
+                        {{ e[data.salesForemanMode+'_email_short'] || '(none)' }}
+                    </a>
+                </td>
 
-                    <td>${{e.total_price|formatPrice}}</td>
+                <td>${{e.total_price|formatPrice}}</td>
 
-						  <!-- STATUS DROPDOWN -->
-                    <td>
-							<button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
-									ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
-									placeholder="{{e.status}}"
-									ng-options="s.id as s.txt for s in data.statuses(e.status)"
-									bs-select onclick="return false;" >
-							</button>
+                <!-- STATUS DROPDOWN -->
+                <td>
+                    <button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
+                            ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
+                            placeholder="{{e.status}}"
+                            ng-options="s.id as s.txt for s in data.statuses(e.status)"
+                            bs-select onclick="return false;">
+                    </button>
 
-							<!-- link for customers -->
-							<button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status" ng-model='tmpx'
-									ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)" style='cursor:pointer !important'
-									>{{ e.status | statusText }}</button>
-					</td>
-                    <td>
-                        <a ng-if="auth.isAtleast('staff')" class="editable editable-click" status-dates="e"
-									bs-tooltip title="{{e[data.currentTstamp]}} " style="cursor: pointer;">
-                           	{{ e[data.currentTstamp] | formatDateFromNow:'showNone' }}
-                        </a>
-                        <span ng-if="false == auth.isAtleast('staff')" >
+                    <!-- link for customers -->
+                    <button type='button' ng-if="!auth.isAtleast('inventory')" class="btn btn-default"
+                            ng-class="'clr-'+e.status" ng-model='tmpx'
+                            ng-click="onCustClickStatus(e.reportID,e.hashLink,e.status)"
+                            style='cursor:pointer !important'
+                    >{{ e.status | statusText }}
+                    </button>
+                </td>
+                <td>
+                    <a ng-if="auth.isAtleast('staff')" class="editable editable-click" status-dates="e"
+                       bs-tooltip title="{{e[data.currentTstamp]}} " style="cursor: pointer;">
+                        {{ e[data.currentTstamp] | formatDateFromNow:'showNone' }}
+                    </a>
+                        <span ng-if="false == auth.isAtleast('staff')">
                            	{{ e[data.currentTstamp] | formatDateFromNow }}
                         </span>
-                    </td>
-                    <td>
-                        <a ng-if="auth.isAtleast('inventory') && (e.status=='draft' || e.status=='sent') && e.delete!=1"
-                           delete-with-confirm-button
-                           type="estimate"
-                           item-id="{{e.reportID}}"
-                           active-popover="activePopover"
-                           on-confirm-callback="deleteCurrentItem()"
-                           class="fa fa-times _red _size7 hand hoverDisplay"
-                           bs-tooltip title="Delete"
-                           style="text-decoration: none;"></a>
-                    </td>
-                </tr>
+                </td>
+                <td>
+                    <a ng-if="auth.isAtleast('inventory') && (e.status=='draft' || e.status=='sent') && e.delete!=1"
+                       delete-with-confirm-button
+                       type="estimate"
+                       item-id="{{e.reportID}}"
+                       active-popover="activePopover"
+                       on-confirm-callback="deleteCurrentItem()"
+                       class="fa fa-times _red _size7 hand hoverDisplay"
+                       bs-tooltip title="Delete"
+                       style="text-decoration: none;"></a>
+                </td>
+            </tr>
 
             </tbody>
         </table>

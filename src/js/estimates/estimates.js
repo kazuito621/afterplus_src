@@ -2,7 +2,9 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
   ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper', 'storedData',
     function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, storedData) {
       'use strict';
+      // Local vars initialization
       var s = window.ecs = $scope;
+      var totalPrice = 0;
       var myStateID = 'estimates',
         estimates = [], // array of original estimates
         estFiltered = [], // filtered list of estimates sites... which s.displayedSites uses as its source
@@ -15,6 +17,12 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         colSortOrder = {
           total_price: 'desc'
         };
+
+      // group the filters. so that if a status and a name is specified, both must match
+      // but if a name and email is specified, either can match
+      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email'], ['status']];
+
+      // Scope vars initialization
       s.displayedEstimates = [];
       s.data = {}; //overwritten later
       s.checkedEstimates = {
@@ -25,14 +33,98 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           return this.ids;
         }
       };
+      s.salesUsers = undefined;
 
+      //we use this object as a 'singletone' property for delete-with-confirm-button directive
+      //note, only one popover can be active on page
+      s.activePopover = {elem: {}, itemID: undefined};
+
+      s.data = {
+
+        /**
+         * Determine which status menu is available, based on what the current status is
+         * @param s STRING - currennt status ID
+         * @return ARRAY
+         */
+        statuses: function (s) {
+          var o = [{id: 'draft', txt: 'DRAFT', selectable: true},
+            {id: 'sent', txt: 'SENT', selectable: false},
+            {id: 'approved', txt: 'APPROVED', selectable: true},
+            {id: 'scheduled', txt: 'SCHEDULED', selectable: true},
+            {id: 'completed', txt: 'COMPLETED', selectable: true},
+            {id: 'invoiced', txt: 'INVOICED', selectable: true},
+            {id: 'paid', txt: 'PAID', selectable: true}];
+
+          switch (s) {
+          case 'draft': // show DRAFT, APPR, COMPL
+            return [o[0], o[2]];
+
+          case 'sent':
+          case 'approved': // show SENT, APPROVED, COMPLETED
+            return [o[1], o[2], o[4]];
+
+          case 'scheduled': // show SCHEDULED, COMPLETED
+            return o.splice(3, 2);
+
+          case 'completed': // show COMPL, SEND INV, MARK AS INV, PAID
+            o[5].txt = 'MARK AS INVOICED';
+            o.splice(5, 0, {id: 'send_invoice', txt: 'SEND INVOICE'});
+            return o.splice(4, 4);
+
+          case 'invoiced': // show COMPL, INV, RESEND INVOICE, PAID
+            o.splice(5, 0, {id: 'send_invoice', txt: 'RE-SEND INVOICE'});
+            return o.splice(4, 4);
+
+          case 'paid':
+            return o.splice(6, 1); // NONE
+          }
+          return o;
+        },
+
+        filterText: '',
+        getCount: function () {
+          if (estFiltered && estFiltered.length) {
+            return estFiltered.length;
+          }
+          return 0;
+        },
+        currentTstamp: 'tstamp_updated', // based on what status were filtering for, we may be displaying/sorting
+        // by different timestamp values in the list. For example, if were filtering by "sent"
+        // then we should display "tstamp_sent", not "tstamp_updated"
+        currentTstampHeader: 'Last Updated',
+        tstampItems: [
+          {viewValue: 'Created', value: 'tstamp_created'},
+          {viewValue: 'Updated', value: 'tstamp_updated'},
+          {viewValue: 'Sent', value: 'tstamp_sent'},
+          {viewValue: 'Approved', value: 'tstamp_approved'},
+          {viewValue: 'Scheduled', value: 'tstamp_scheduled'},
+          {viewValue: 'Completed', value: 'tstamp_completed'},
+          {viewValue: 'Invoiced', value: 'tstamp_invoiced'},
+          {viewValue: 'Paid', value: 'tstamp_paid'}
+        ]
+      };
+
+      s.sh = {
+        sortByColumn: function (col) {
+          self.applyFilter();
+          self.sh.setData(estFiltered);
+          estFiltered = self.sh.sortByColumn(col);
+          s.displayedEstimates = estFiltered.slice(0, 49);
+        },
+        columnClass: function (col) {
+          return self.sh.columnClass(col);
+        },
+        applySort: function () {
+          //@@todo - we git a bug here when radio buttons are used
+          //estFiltered = self.sh.makeSort(estFiltered);
+        }
+      };
+
+      // Self vars initialization
       this.fh = FilterHelper.fh();
-      // group the filters. so that if a status and a name is specified, both must match
-      // but if a name and email is specified, either can match
-      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email'], ['status']];
       this.fh.setFilterGroups(filterGroups);
 
-      s.salesUsers = undefined;
+      // Local methods
 
       // load and cache sales users
       var setSalesUsers = function () {
@@ -44,68 +136,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
             s.salesUsers.push({id: saleUser.userID, email: saleUser.email, shortEmail: shortEmail});
           });
-        });
-      };
-
-      // get from cache users data for report
-      s.getSalesUsers = function () {
-        if (!s.salesUsers) {
-          setSalesUsers();
-        }
-        return s.salesUsers;
-      };
-
-      s.getFormanusers = function () {
-        if (!Auth.isAtleast('inventory')) return;
-        function setForemanUsers () {
-          s.foremanUsers = [];
-          Api.GetForemans().then(function (foremanUsers) {
-            _.each(foremanUsers, function (foremanUser) {
-              var shortEmail = foremanUser.email.substr(0, foremanUser.email.indexOf('@'));
-              s.foremanUsers.push({id: foremanUser.userID, email: foremanUser.email, shortEmail: shortEmail});
-            });
-          });
-        }
-
-        if (!s.foremanUsers) {
-          setForemanUsers();
-        }
-        return s.foremanUsers;
-      };
-
-      s.getFormanusers();
-      // callback when sales_user was changed for estimate
-      s.updateEstimate = function (rpt) {
-
-        if (rpt.foreman_userID) {
-          rpt.job_userID = rpt.foreman_userID;
-        }
-
-        var dispObj = _.findObj(s.displayedEstimates, 'reportID', rpt.reportID);
-
-        if (!dispObj) {
-          dispObj = {};
-        }
-
-        var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
-        if (newSalesUser) {
-          console.debug(newSalesUser);
-          dispObj.sales_email_short = rpt.sales_email_short = newSalesUser.shortEmail;
-          dispObj.sales_email = rpt.sales_email = newSalesUser.email;
-          dispObj.sales_userID = rpt.sales_userID;
-        }
-
-        var newForeman = _.findObj(s.foremanUsers, 'id', rpt.job_userID);
-        if (newForeman) {
-          dispObj.foreman_email_short = rpt.foreman_email_short = newForeman.shortEmail;
-          dispObj.foreman_email = rpt.foreman_email = newForeman.email;
-          dispObj.foreman_userID = rpt.job_userID;
-        }
-
-        Api.saveReport(rpt).then(function (res) {
-          if (res && res.msg) {
-            s.setStatus(res.msg, {time: 3});
-          }
         });
       };
 
@@ -174,9 +204,105 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         });
       };
 
-      //we use this object as a 'singletone' property for delete-with-confirm-button directive
-      //note, only one popover can be active on page
-      s.activePopover = {elem: {}, itemID: undefined};
+      var clearFilter = function () {
+        self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: '', status: ''});
+        estFiltered = estimates;
+        s.sh.applySort();
+        s.displayedEstimates = estFiltered.slice(0, 49);
+      };
+
+      // actually change the status
+      var _setReportStatus = function (rpt) {
+        // todo -- we need a way for calls like this to know if a api calle failed.
+        // currently, both ok and fail, still calls the then()
+        Api.setReportStatus(rpt.reportID, rpt.status).then(function (d) {
+          var m = (d && d.msg) ? d.msg : '';
+          if ((!m || !m.match(/updated/i)) && rpt.prevStatus) {
+            rpt.status = rpt.prevStatus;
+          }
+        });
+      };
+
+      // Self methods
+
+      this.applyFilter = function () {
+        estFiltered = self.fh.applyFilter(estimates);
+        // without this line here, the filter gets messed up on the next filter execution
+        if (!estFiltered.length) {
+          estFiltered = [{
+            name_short: 'No Results',
+            reportID: '',
+            siteName_short: 'No Results',
+            total_price: 0,
+            status: 'none'
+          }];
+        }
+        s.sh.applySort();
+        s.displayedEstimates = estFiltered.slice(0, 49);
+      };
+
+      // Scope methods
+
+      // get from cache users data for report
+      s.getSalesUsers = function () {
+        if (!s.salesUsers) {
+          setSalesUsers();
+        }
+        return s.salesUsers;
+      };
+
+      s.getFormanusers = function () {
+        if (!Auth.isAtleast('inventory')) { return; }
+        function setForemanUsers() {
+          s.foremanUsers = [];
+          Api.GetForemans().then(function (foremanUsers) {
+            _.each(foremanUsers, function (foremanUser) {
+              var shortEmail = foremanUser.email.substr(0, foremanUser.email.indexOf('@'));
+              s.foremanUsers.push({id: foremanUser.userID, email: foremanUser.email, shortEmail: shortEmail});
+            });
+          });
+        }
+
+        if (!s.foremanUsers) {
+          setForemanUsers();
+        }
+        return s.foremanUsers;
+      };
+
+      // callback when sales_user was changed for estimate
+      s.updateEstimate = function (rpt) {
+
+        if (rpt.foreman_userID) {
+          rpt.job_userID = rpt.foreman_userID;
+        }
+
+        var dispObj = _.findObj(s.displayedEstimates, 'reportID', rpt.reportID);
+
+        if (!dispObj) {
+          dispObj = {};
+        }
+
+        var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
+        if (newSalesUser) {
+          console.debug(newSalesUser);
+          dispObj.sales_email_short = rpt.sales_email_short = newSalesUser.shortEmail;
+          dispObj.sales_email = rpt.sales_email = newSalesUser.email;
+          dispObj.sales_userID = rpt.sales_userID;
+        }
+
+        var newForeman = _.findObj(s.foremanUsers, 'id', rpt.job_userID);
+        if (newForeman) {
+          dispObj.foreman_email_short = rpt.foreman_email_short = newForeman.shortEmail;
+          dispObj.foreman_email = rpt.foreman_email = newForeman.email;
+          dispObj.foreman_userID = rpt.job_userID;
+        }
+
+        Api.saveReport(rpt).then(function (res) {
+          if (res && res.msg) {
+            s.setStatus(res.msg, {time: 3});
+          }
+        });
+      };
 
       //delete item method
       s.deleteCurrentItem = function () {
@@ -185,11 +311,10 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         Api.removeEstimateById(itemID).then(function () {
           if (false) { //TODO  if msg don't  indicates success,
             s.setAlert("There was an error deleting the estimate.", {type: 'd', time: 5});
-          }
-          else {
+          } else {
             s.setAlert('Deleted successfully.', {type: 'ok', time: 5});
           }
-        }, function err () {
+        }, function err() {
           s.setAlert("Estimate can't be deleted, try again later.", {type: 'd', time: 5});
         });
         var obj = _.findObj(estimates, 'reportID', itemID);
@@ -199,7 +324,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       };
 
       // based on the filter, also change which date is actually shown in the list.
-      // ie. if Sent is chosen, then date columb should be tstamp_sent
+      // ie. if Sent is chosen, then date column should be tstamp_sent
 
       s.setStatusFilter = function (status) {
         if (status === 'all') { status = ''; }
@@ -211,15 +336,13 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           s.data.currentTstampHeader = 'Last Updated';
         }
         self.fh.setFilter({status: status});
-        applyFilter();
+        self.applyFilter();
       };
 
       s.updateEstimateTime = function (e) {
         var postObj = {};
         postObj[s.data.currentTstamp] = e[s.data.currentTstamp];
-        Api.updateEstimateTime(e.reportID, postObj).then(function (res) {
-
-        });
+        Api.updateEstimateTime(e.reportID, postObj).then(function (res) {});
       };
 
       s.validateDate = function (data) {
@@ -228,7 +351,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         var date = new Date(data);
         if (date.getDate().toString() === 'NaN') { return 'Enter a valid datetime'; }
       };
-
 
       // do confirmation box if needed
       s.setReportStatus = function (rpt, prev) {
@@ -250,111 +372,20 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         }
       };
 
-      // actually change the status
-      var _setReportStatus = function (rpt) {
-        // todo -- we need a way for calls like this to know if a api calle failed.
-        // currently, both ok and fail, still calls the then()
-        Api.setReportStatus(rpt.reportID, rpt.status).then(function (d) {
-          var m = (d && d.msg) ? d.msg : '';
-          if ((!m || !m.match(/updated/i)) && rpt.prevStatus) {
-            rpt.status = rpt.prevStatus;
-          }
-        });
-      };
-
-      s.data = {
-
-        /**
-         * Determine which status menu is available, based on what the current status is
-         * @param s STRING - currennt status ID
-         * @return ARRAY
-         */
-        statuses: function (s) {
-          var o = [{id: 'draft', txt: 'DRAFT', selectable: true},
-            {id: 'sent', txt: 'SENT', selectable: false},
-            {id: 'approved', txt: 'APPROVED', selectable: true},
-            {id: 'scheduled', txt: 'SCHEDULED', selectable: true},
-            {id: 'completed', txt: 'COMPLETED', selectable: true},
-            {id: 'invoiced', txt: 'INVOICED', selectable: true},
-            {id: 'paid', txt: 'PAID', selectable: true}];
-
-          switch (s) {
-            case 'draft': // show DRAFT, APPR, COMPL
-              return [o[0], o[2]] ;
-
-            case 'sent':
-            case 'approved': // show SENT, APPROVED, COMPLETED
-              return [o[1], o[2], o[4]];
-
-            case 'scheduled': // show SCHEDULED, COMPLETED
-              return o.splice(3, 2);
-
-            case 'completed': // show COMPL, SEND INV, MARK AS INV, PAID
-              o[5].txt = 'MARK AS INVOICED';
-              o.splice(5, 0, {id: 'send_invoice', txt: 'SEND INVOICE'});
-              return o.splice(4, 4);
-
-            case 'invoiced': // show COMPL, INV, RESEND INVOICE, PAID
-              o.splice(5, 0, {id: 'send_invoice', txt: 'RE-SEND INVOICE'});
-              return o.splice(4, 4);
-
-            case 'paid':
-              return o.splice(6, 1); // NONE
-          }
-          return o;
-        },
-
-        filterText: '',
-        getCount: function () {
-          if (estFiltered && estFiltered.length) {
-            return estFiltered.length;
-          }
-          return 0;
-        },
-        currentTstamp: 'tstamp_updated', // based on what status were filtering for, we may be displaying/sorting
-        // by different timestamp values in the list. For example, if were filtering by "sent"
-        // then we should display "tstamp_sent", not "tstamp_updated"
-        currentTstampHeader: 'Last Updated',
-        tstampItems: [
-          {viewValue: 'Created', value: 'tstamp_created'},
-          {viewValue: 'Updated', value: 'tstamp_updated'},
-          {viewValue: 'Sent', value: 'tstamp_sent'},
-          {viewValue: 'Approved', value: 'tstamp_approved'},
-          {viewValue: 'Scheduled', value: 'tstamp_scheduled'},
-          {viewValue: 'Completed', value: 'tstamp_completed'},
-          {viewValue: 'Invoiced', value: 'tstamp_invoiced'},
-          {viewValue: 'Paid', value: 'tstamp_paid'}
-        ]
-      };
-
       s.sortDateCol = function () {
         s.sh.sortByColumn(s.data.currentTstamp);
       };
+
       s.getDateColHeader = function () {
         return s.data.currentTstampHeader;
       };
+
       s.getDateColClass = function () {
         return s.sh.columnClass(s.data.currentTstamp);
       };
+
       s.getTstampHeaderClass = function () {
         return _.findObj(s.data.tstampItems, 'value', s.data.currentTstamp).viewValue.toLowerCase();
-      };
-
-      s.sh = {
-        sortByColumn: function (col) {
-          applyFilter();
-          self.sh.setData(estFiltered);
-          estFiltered = self.sh.sortByColumn(col);
-          s.displayedEstimates = estFiltered.slice(0, 49);
-        },
-        columnClass: function (col) {
-          return self.sh.columnClass(col);
-        },
-        applySort: function () {
-
-          //@@todo - we git a bug here when radio buttons are used
-          //estFiltered = self.sh.makeSort(estFiltered);
-        }
       };
 
       s.showMoreEstimates = function () {
@@ -367,30 +398,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         s.displayedEstimates = s.displayedEstimates.concat(addon);
       };
 
-
-      var clearFilter = function () {
-        self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: '', status: ''});
-        estFiltered = estimates;
-        s.sh.applySort();
-        s.displayedEstimates = estFiltered.slice(0, 49);
-      };
-
-      var applyFilter = function () {
-        estFiltered = self.fh.applyFilter(estimates);
-        // without this line here, the filter gets messed up on the next filter execution
-        if (!estFiltered.length) {
-          estFiltered = [{
-            name_short: 'No Results',
-            reportID: '',
-            siteName_short: 'No Results',
-            total_price: 0,
-            status: 'none'
-          }];
-        }
-        s.sh.applySort();
-        s.displayedEstimates = estFiltered.slice(0, 49);
-      };
-
       s.reset = function () {
         //remove filter status on UI
         // there is a weird behavior of angular strap bs-radio component (view->model binding doesn't work),
@@ -401,7 +408,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         //clear search box
         s.data.filterTextEntry = '';
 
-        applyFilter();
+        self.applyFilter();
         storedData.setEstimateTimeStamp(null);
         init();
       };
@@ -450,10 +457,32 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           if (names.length) { msg += ': ' + names.join(', '); }
           s.setAlert(msg, {time: 10});
           init(function () {
-            applyFilter();
+            self.applyFilter();
           });
         });
       };
+
+      s.displayedTotalPrice = function (displayedEstimates) {
+        var count = s.displayedEstimates.length;
+        if (count === estimates.length && totalPrice !== 0) {
+          return totalPrice;
+        }
+        totalPrice = 0;
+        displayedEstimates.forEach(function (i) {
+          totalPrice += parseInt(i.total_price, 10);
+        });
+        return totalPrice;
+      };
+
+      s.onCustClickStatus = function (reportID, hashLink, status) {
+        var path = (status === 'invoiced' || status === 'paid' || status === 'completed' || status === 'payment_due') ? 'invoice' : 'estimate';
+        return $location.path('/' + path + '/' + hashLink);
+      };
+
+      // Initialization end
+      // ============================================================
+
+      // Watches
 
       // when search box is changed, then update the filters, but
       // add delay so we dont over work the browser.
@@ -467,43 +496,27 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           if (txt === '' || !txt) {
             if (old) {
               self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: ''});
-              applyFilter();
+              self.applyFilter();
             }
           } else if (!isNaN(txt)) {
             // if search entry is a number, search by siteID and name
             self.fh.setFilter({reportID: txt, name: txt, siteName: txt});
-            applyFilter();
+            self.applyFilter();
           } else {
             // if just letters, then search by name and city, and sales person
             self.fh.setFilter({siteName: txt, name: txt, sales_email: txt});
-            applyFilter();
+            self.applyFilter();
           }
         }, 500);
       });
 
-      var totalPrice = 0;
-      s.displayedTotalPrice = function (displayedEstimates) {
-        var count = s.displayedEstimates.length;
-        if (count === estimates.length && totalPrice !== 0) {
-          return totalPrice;
-        }
-        totalPrice = 0;
-        displayedEstimates.forEach(function (i) {
-          totalPrice += parseInt(i.total_price);
-        });
-        return totalPrice;
-      };
-
-      s.onCustClickStatus = function (reportID, hashLink, status) {
-        var path = (status === 'invoiced' || status === 'paid' || status === 'completed' || status === 'payment_due') ? 'invoice' : 'estimate';
-        return $location.path('/' + path + '/' + hashLink);
-      };
-
-      init();
       s.$on('nav', function (e, data) {
         if (data.new === myStateID) { init(); }
       });
 
+      // Run stuff
+      s.getFormanusers();
+      init();
     }]);
 
 

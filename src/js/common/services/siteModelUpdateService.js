@@ -1,38 +1,40 @@
 /**
-	Service for updates to various site models.
-**/
-app.service('SiteModelUpdateService', 
-	[
-	function() {
-	
-	var site = {};
-	var sites = {};
-	var reportSite = {};
+ Service for updates to various site models.
+ **/
+app.service('SiteModelUpdateService',
+  [
+    function () {
 
-	this.updateSiteModels=function(mysite){
-		if (!$.isEmptyObject(this.sites)){
-			this.site = mysite;
-			$.each(this.sites, function(index, curSite){
-				if (mysite.siteID == curSite.siteID) {
-					curSite.siteName = mysite.siteName;
-					return false; //break
-				}
-			});
-			this.updateReportSiteModel();
-		}
-	}
-	this.setSites=function(sites){
-		this.sites = sites;
-	}
+      var site = {};
+      var sites = {};
+      var reportSite = {};
 
-	this.setReportSiteModel=function(report){
-		this.reportSite = report;
-	}
+      this.updateSiteModels = function (mysite) {
+        if (!$.isEmptyObject(this.sites)) {
+          this.site = mysite;
+          $.each(this.sites, function (index, curSite) {
+            if (mysite.siteID === curSite.siteID) {
+              curSite.siteName = mysite.siteName;
+              return false; //break
+            }
+          });
+          this.updateReportSiteModel();
+        }
+      };
 
-	this.updateReportSiteModel=function(){
-		try{
-			this.reportSite.siteName = this.site.siteName;
-			this.reportSite.zip = this.site.zip;
-		}catch(e){}
-	}
-}]);
+      this.setSites = function (sites) {
+        this.sites = sites;
+      };
+
+      this.setReportSiteModel = function (report) {
+        this.reportSite = report;
+      };
+
+      this.updateReportSiteModel = function () {
+        try {
+          this.reportSite.siteName = this.site.siteName;
+          this.reportSite.zip = this.site.zip;
+        } catch (e) {
+        }
+      };
+    }]);

@@ -58,7 +58,8 @@
 			  		<span style='font-weight:bold;'>Approved:</span> 
 			  		${{total.approved | formatPrice:'noCents' }}</h4>
 			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
-			 	ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
+			 	ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
+				ng-click="openJob(singleJob)" 
 				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
 				 	{{singleJob.title}}
 			 </div>

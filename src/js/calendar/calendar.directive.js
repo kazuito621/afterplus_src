@@ -124,6 +124,7 @@ function ($timeout) {
 							obj.type='Unscheduled';
 							s.UnscheduledJobs.push(obj);
 						});
+					 	setTimeout(bindexternalevents, 30);
 					});
 				}, 1000);
 
@@ -207,35 +208,34 @@ function ($timeout) {
 							return selectedEvent;
 					  }
 
-					  bindexternalevents =function () {
-							var externalevents = $("#external-events .fc-event");
-							externalevents.each(function () {
-								 var reportID=$(this).attr('data-reportID');
-								 var jobtitle = $(this).text();
-								 var ev = s.getEventInfo(reportID);
-								 var pr = (ev && ev.price) ? ev.price : 0;
-
-								 $(this).data('event', {
-									  reportID: (ev && ev.reportID) ? ev.reportID : '',
-									  title: jobtitle,     // use the element's text as the event title
-									  price: pr,
-									  stick: true            // maintain when user navigates (see docs on the renderEvent method)
-								 });
-
-								 // make the event draggable using jQuery UI
-								 $(this).draggable({
-									  zIndex: 999,
-									  revert: true,               // will cause the event to go back to its
-									  revertDuration: 0          //  original position after the drag
-								 });
-							});
-					 	}
-					 	setTimeout(bindexternalevents, 30);
 						initCalendar();
 				 });
      		} // end init()
 
 
+			var bindexternalevents =function () {
+				var externalevents = $("#external-events .fc-event");
+				externalevents.each(function () {
+					 var reportID=$(this).attr('data-reportID');
+					 var jobtitle = $(this).text();
+					 var ev = s.getEventInfo(reportID);
+					 var pr = (ev && ev.price) ? ev.price : 0;
+
+					 $(this).data('event', {
+						  reportID: (ev && ev.reportID) ? ev.reportID : '',
+						  title: jobtitle,     // use the element's text as the event title
+						  price: pr,
+						  stick: true            // maintain when user navigates (see docs on the renderEvent method)
+					 });
+
+					 // make the event draggable using jQuery UI
+					 $(this).draggable({
+						  zIndex: 999,
+						  revert: true,               // will cause the event to go back to its
+						  revertDuration: 0          //  original position after the drag
+					 });
+				});
+			}
 
 			var initCalendar = function(){
 

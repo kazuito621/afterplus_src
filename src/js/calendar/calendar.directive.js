@@ -397,7 +397,7 @@ function ($timeout) {
 							 if(event.todo_price < event.total_price) element.addClass('clr-in_prog')
 							 else element.addClass('clr-'+event.status);
 
-//							if(event.title) element.attr('title', event.title);
+							if(event.title) element.attr('title', event.title);
 
 							//if event spans more than 2 days, then remove double height
 							var duration = moment.duration(event.end.diff(event.start)).asDays();

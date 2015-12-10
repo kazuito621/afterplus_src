@@ -89,11 +89,15 @@ function ($timeout) {
 
 
 			var getEventTitle = function(obj){
-				var t = obj.reportID + ' $' + shortenPrice(obj.todo_price) + '  ';
+				var t = obj.reportID + ' $' + shortenPrice(obj.todo_price) + ' ';
+
 				if(obj.completed_perc>0)
-					t+= '[' + obj.completed_perc + '% DONE]  ';
-				
-				t+=userID2Name(obj.job_userID)+' - '+ obj.siteName;
+					t+= '[' + obj.completed_perc + '% DONE] ';
+
+				t += userID2Name(obj.job_userID) + ' - ';
+				t += shortenName(obj.siteName);
+
+				if( obj.city ) t += ' (' + obj.city+')';
 				return t;
 			}
 
@@ -116,7 +120,7 @@ function ($timeout) {
 							var obj=angular.copy(field);
 							obj.estimateUrl=obj.url;
 							delete obj.url;		//or else the calendar uses this as a link
-							obj.name = (field.name) ? field.name.trim() : '(blank name)';
+							obj.name = (field.name) ? field.name.trim() : ' ';
 							obj.title=getEventTitle(field);
 							obj.price=obj.total_price;
 							obj.todo_price=obj.todo_price;
@@ -213,6 +217,38 @@ function ($timeout) {
      		} // end init()
 
 
+			var shortNameMap = {
+				apartments:'Apts',
+				apartment:'Apt',
+				village: 'Vill',
+				street: 'St',
+				terrace: '',
+				gardens: '',
+				plaza: '',
+				building: 'Bldg',
+				association: 'Assoc',
+				station: 'Stn',
+				apartment: 'Apt',
+				condominium: 'Condo',
+				condominiums: 'Condos',
+				mountain: 'Mtn',
+				place: 'Pl',
+				street: 'St',
+				point: 'Pt',
+				office: 'Ofc',
+				center: 'Ctr'
+			}
+			var snMatch=/center|office|point|street|place|apartments|apartment|village|street|terrace|gardens|plaza|building|association|station|apartment|condominium|condominiums|mountain/gi;
+			var shortenName = function(n){
+				if(!n) return ''; 
+				else n=String(n);
+				if(n.length<10) return n;
+				if(n.length>35) return n.substr(0,33)+'...';
+				return n.replace(snMatch, function(m){
+					return shortNameMap[m.toLowerCase()];
+				});
+			}
+		
 			var bindexternalevents =function () {
 				var externalevents = $("#external-events .fc-event");
 				externalevents.each(function () {
@@ -287,6 +323,7 @@ function ($timeout) {
 							 //event.end = angular.copy((event.start));
 							 //event.end = setLastMomentOfTheDay(angular.copy(event.start));
 							 console.log(event.start.format('YYYY-MM-DD'));
+							 var jobStart = event.start.format('YYYY-MM-DD') + ' 00:00:00';
 							 Api.ScheduleJob(ev.reportID, {
 								  job_start: event.start.format('YYYY-MM-DD')
 							 }).then(function (res) {
@@ -296,6 +333,15 @@ function ($timeout) {
 								  else{
 										event.status = 'scheduled'
 										elm.fullCalendar('updateEvent', event);
+
+										// todo ? in case job confirmation comes back different?
+										/*
+										if( jobStart != res.job_start ){
+											console.debug(res.job_start  );
+											console.debug('!!!! job start is diff... not '+jobStart  );
+										}
+										*/
+										
 								  }
 							 });
 						},
@@ -337,11 +383,12 @@ function ($timeout) {
 						viewRender: function( view, cal ){
 							setTimeout(function(){ updateTotals(); },600);
 						},
+
+						// called for every job event box
 						eventRender: function (event, element, view) {
-							 $('.fc-title br').remove();
+//							 $('.fc-title br').remove();
 
 							 /*WILL WORK ON IT LATER*/
-//
 							 // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
 							 ////var box = element.closest('table').find('th').eq(element.index())
 							 //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
@@ -350,18 +397,27 @@ function ($timeout) {
 							 if(event.todo_price < event.total_price) element.addClass('clr-in_prog')
 							 else element.addClass('clr-'+event.status);
 
+//							if(event.title) element.attr('title', event.title);
+
+							//if event spans more than 2 days, then remove double height
+							var duration = moment.duration(event.end.diff(event.start)).asDays();
+							if( duration > 2 ){
+								element.css('height','1em');
+							}
+
+
+							/* this if or adding a "!" icon if no foreman assigned 
 							 if (event.title === "" || event.title === null) {
 								  var onMouseHoverJob = "angular.element(this).scope().onMouseHoverJob({0})".format(event.title);
 								  element.find(".fc-content").append('<a href="#"  style="float:right;margin-top:-15px;0" onmouseover="{0}">'
 										.format(onMouseHoverJob) + '<i class="glyphicon glyphicon-exclamation-sign" style="color:red;" '
 										+'title="No foreman assigned to this job"></i></a>');
-							 }
+							 } */
+
+
 							//if(event.status != 'scheduled'){
 							//    event.editable = false;
 							//}
-							 //else {
-							 //    //element.css('background-color', '#FFB347')
-							 //}
 						},
 
 						eventResize: function (el, delta, revertFunc, jsEvent, ui, view) {
@@ -378,13 +434,23 @@ function ($timeout) {
 							 el.job_start = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
 							 el.job_end = moment(el.end).format('YYYY-MM-DD HH:mm:ss')
 							 console.log( moment(el.start).format('YYYY-MM-DD HH:mm:ss') +'   '+moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss'));
-							 Api.ScheduleJob(el.reportID, {
-								  //job_start: t.format('YYYY-MM-DD'),
-								  job_start: moment(el.start).format('YYYY-MM-DD HH:mm:ss'),
-								  job_end: moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss')
-							 }).then(function (res) {
+
+							 var js=moment(el.start).format('YYYY-MM-DD HH:mm:ss');
+							 var je=moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss');
+							 Api.ScheduleJob(el.reportID, { job_start:js, job_end:je } )
+							   .then(function (res) {
 								  if(res && res.conflict==1 && res.conflict_msg){
 										alert(res.conflict_msg);
+								  }else{
+
+										// todo ? in case job confirmation comes back different?
+										/*
+										if( jobStart != res.job_start ){
+											console.debug(res.job_start  );
+											console.debug('!!!! job start is diff... not '+jobStart  );
+										}
+										*/
+
 								  }
 							 });
 							setTimeout(function(){	updateTotals() },1000);
@@ -537,7 +603,7 @@ function ($timeout) {
 			};
 
 			var userID2Name = function(job_userID){
-				if(!job_userID) return 'n/a';
+				if(!job_userID) return ' ';
 				if(-99 == job_userID) return 'All'; // for filters
 				 for(var i = 0;i<s.groups.length;i++){
 					  if(s.groups[i].userID == job_userID){

@@ -394,6 +394,10 @@ footer
 	background-color: $scheduled !important;
 	color: #fff !important;
 	}
+.clr-in_prog {
+	background-color: $in_prog !important;
+	color: #fff !important;
+	}
 .clr-invoiced {
 	background-color: $invoiced !important;
 	color: #fff !important;
@@ -431,6 +435,7 @@ footer
 	&.needs_approval{ background: $needs_approval; }
 	&.payment_due{ background: $payment_due; }
 	&.scheduled{ background: $scheduled; }
+	&.in_prog{ background: $in_prog; }
 	&.billed{ background: $billed; }
 	&.invoiced{ background: $invoiced; }
 	&.completed{ background: $completed; }

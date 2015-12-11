@@ -390,7 +390,7 @@ function ($timeout) {
 
 						// called for every job event box
 						eventRender: function (event, element, view) {
-//							 $('.fc-title br').remove();
+							 //$('.fc-title br').remove();
 
 							 /*WILL WORK ON IT LATER*/
 							 // var box = $( "div.fc-bg" ).find("[data-date='"+event.start.format('YYYY-MM-DD')+"']");
@@ -404,9 +404,12 @@ function ($timeout) {
 							if(event.title) element.attr('title', event.title);
 
 							//if event spans more than 2 days, then remove double height
-							var duration = moment.duration(event.end.diff(event.start)).asDays();
-							if( duration > 2 ){
-								element.css('height','1em');
+							if(event.end && event.end.diff){
+								var duration = moment.duration(event.end.diff(event.start)).asDays();
+								if( duration > 2 ){
+									element.css('height','1.2em');
+									element.find('.fc-title').css('height','1.2em');
+								}
 							}
 
 

@@ -187,34 +187,38 @@ function ($timeout) {
 					  uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
 					  scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
 
-					  // get event data from sched or unsched array based on reportID or event name in title box
-					  s.getEventInfo = function (eventName) {
-
-							eventName=''+eventName;
-							eventName=eventName.trim();
-
-							if(!isNaN(eventName)){		// if its a number, its a reportID
-								var rptID=eventName
-							}else{
-								// try to lookup by ID first
-								var m=eventName.match(/([0-9]+)[ -]/);
-								if(m) var rptID=m[1];
-							}
-
-							var selectedEvent = null;
-							for (var index = 0; index <= s.UnscheduledJobs.length - 1; index++) {
-								 var event = s.UnscheduledJobs[index];
-								 if (event.reportID == rptID || event.title.trim() == eventName.trim()) {
-									  selectedEvent = event;
-									  break;
-								 }
-							}
-							return selectedEvent;
-					  }
 
 						initCalendar();
 				 });
      		} // end init()
+
+
+
+		  // get event data from sched or unsched array based on reportID or event name in title box
+		  var getEventInfo = function (eventName) {
+
+				eventName=''+eventName;
+				eventName=eventName.trim();
+
+				if(!isNaN(eventName)){		// if its a number, its a reportID
+					var rptID=eventName
+				}else{
+					// try to lookup by ID first
+					var m=eventName.match(/([0-9]+)[ -]/);
+					if(m) var rptID=m[1];
+				}
+
+				var selectedEvent = null;
+				for (var index = 0; index <= s.UnscheduledJobs.length - 1; index++) {
+					 var event = s.UnscheduledJobs[index];
+					 if (event.reportID == rptID || event.title.trim() == eventName.trim()) {
+						  selectedEvent = event;
+						  break;
+					 }
+				}
+				return selectedEvent;
+		  }
+
 
 
 			var shortNameMap = {
@@ -254,7 +258,7 @@ function ($timeout) {
 				externalevents.each(function () {
 					 var reportID=$(this).attr('data-reportID');
 					 var jobtitle = $(this).text();
-					 var ev = s.getEventInfo(reportID);
+					 var ev = getEventInfo(reportID);
 					 var pr = (ev && ev.price) ? ev.price : 0;
 
 					 $(this).data('event', {
@@ -316,7 +320,7 @@ function ($timeout) {
 							 $(this).remove();
 						},
 						eventReceive: function (event) {			// external drop callbackreturn;
-							 var ev = s.getEventInfo(event.title);
+							 var ev = getEventInfo(event.title);
 							 s.estimateid = ev.reportID;
 							 //event.start = event.start.local();
 							 convertLocalTime(event.start,event.end);
@@ -428,7 +432,7 @@ function ($timeout) {
 							 html = html.replace("<br>", "");
 							 $(".fc-title").html(html);
 							 if(el.reportID == undefined){
-								  var eventInfo=s.getEventInfo(el.title);
+								  var eventInfo=getEventInfo(el.title);
 								  el.reportID = eventInfo.reportID;
 							 }
 							 el.job_start = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
@@ -460,7 +464,7 @@ function ($timeout) {
 							 updateJobDuration(el.reportID,el.start.format('YYYY-MM-DD'),el.end.format('YYYY-MM-DD'));
 							 convertLocalTime(el.start,el.end);
 							 if(el.reportID == undefined){
-								  var eventInfo=s.getEventInfo(el.title);
+								  var eventInfo=getEventInfo(el.title);
 								  el.reportID = eventInfo.reportID;
 							 }
 							 var sTime, eTime;
@@ -869,7 +873,7 @@ function ($timeout) {
 				 if(data.reportID == undefined){
 					  getValueBackup(data);
 					  var tempId =  data._id;
-					  data=s.getEventInfo(data.title);
+					  data=getEventInfo(data.title);
 					  data.start = job_start_backup_value;
 					  data._start = job_start_backup_value;
 					  data.end = job_end_backup_value;
@@ -1121,7 +1125,7 @@ function ($timeout) {
 				_.each( events, function(e){
 					if(!e.todo_price) e.todo_price=e.total_price;
 					if(!e.todo_price){
-						var ev = s.getEventInfo(e.reportID);
+						var ev = getEventInfo(e.reportID);
 						if(ev.todo_price) e.todo_price=ev.todo_price;
 						if(ev.total_price) e.todo_price=ev.total_price;
 					}

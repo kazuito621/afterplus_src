@@ -3,9 +3,11 @@
  */
 
 (function(){
+	var h=window.location.host;
+
 	if(!window.cfg){
 		window.cfg={
-		 devServer:'http://dev.arborplus.com'
+		 devServer:(h.match(/aws.arborplus/)) ? 'http://aws.arborplus.com' : 'http://dev.arborplus.com'
 		 ,hostAndPort:function(){
 			  return 'http://'+window.location.host;
 			  }
@@ -33,9 +35,8 @@
 		}
 	}
 
-	var h=window.location.host;
 	// if dev server, load basic config, then attempt load from dev server
-	var isDev = (h.match(/(localh|127.0.0|0.0.0|:9000|dev\.)/));
+	var isDev = (h.match(/(aws.arborplus|localh|127.0.0|0.0.0|:9000|dev\.)/));
 	if(isDev){
 		var devEnt=[];
 		devEnt[1]={name:'Easy Tree Service', medname:'Easy Tree', shortname:'easytree', isTcia:1,

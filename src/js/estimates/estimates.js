@@ -308,14 +308,19 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       s.deleteCurrentItem = function () {
         if (!s.activePopover.itemID) { return; }
         var itemID = s.activePopover.itemID;
-        Api.removeEstimateById(itemID).then(function () {
-          if (false) { //TODO  if msg don't  indicates success,
-            s.setAlert("There was an error deleting the estimate.", {type: 'd', time: 5});
-          } else {
-            s.setAlert('Deleted successfully.', {type: 'ok', time: 5});
-          }
-        }, function err() {
-          s.setAlert("Estimate can't be deleted, try again later.", {type: 'd', time: 5});
+
+        Api.removeEstimateById(itemID).then(function (res) {
+		  		if(res.reportID){
+              	s.setAlert('Deleted: #'+res.reportID, {type:'ok',time:5});
+        			var idx = _.findObj(estimates, 'reportID', res.reportID, true);
+					if(idx){ 
+						estimates.splice(idx,1);
+            		storedData.setEstimateData(estimates, {force:1});
+						console.debug(estimates  );
+					}
+				}
+        }, function err(){
+            s.setAlert("Error 887 deleting estimate.",{type:'d',time:5});
         });
         var obj = _.findObj(estimates, 'reportID', itemID);
         obj.delete = 1;

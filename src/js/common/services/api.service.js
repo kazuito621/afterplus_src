@@ -306,7 +306,6 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       removeClientById: function (id) {
         return Rest.one('client', id).remove();
       },
-      // Estimates
       getSitesList: function () {
         return Rest.all('site').getList();
       },

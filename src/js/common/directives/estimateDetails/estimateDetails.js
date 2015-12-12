@@ -30,6 +30,8 @@ app.directive('estimateDetails',
                     scope.status = (report.status);
                     scope.siteID = report.siteID;
 						  scope.report=report;
+						  var reportType=(report.status=='invoiced' || report.status=='paid') ? 'invoice' : 'estimate';
+						  scope.pdfUrl = '/go/'+reportType+'/pdf/'+report.token;
                     Api.getSiteById(scope.siteID, {}).
                         then(function (res) {
                             scope.site = res;

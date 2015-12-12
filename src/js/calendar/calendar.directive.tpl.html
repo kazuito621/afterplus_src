@@ -32,6 +32,22 @@
         display: inline;
     }
 
+	 .fc-title {
+			display: block;
+			height:2em;
+			line-height:1.05em;
+			word-break: break-all;
+			padding-top: .2em;
+			padding-bottom: .2em;
+	 }
+	 .fc-content {
+			white-space:normal !important;
+	  }
+	  .fc-today {
+			background-color: #99c2fb;
+	  }
+
+
 	 /* Override some calendar options */
 	 .fc-agenda-view .fc-day-grid .fc-row {
 	 		min-height: 35em; /* all-day section will never get shorter than this */
@@ -57,7 +73,8 @@
 			  		<span style='font-weight:bold;'>Approved:</span> 
 			  		${{total.approved | formatPrice:'noCents' }}</h4>
 			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
-			 	ng-click="openJob(singleJob)" ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
+			 	ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
+				ng-click="openJob(singleJob)" 
 				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
 				 	{{singleJob.title}}
 			 </div>
@@ -73,10 +90,11 @@
 		<!-- color key -->
 		<div style='clear:both;padding:2em;'>
 			<!--<span class='small-tag approved'> APPROVED </span> &nbsp; -->
-			<span class='small-tag scheduled'> SCHED </span> &nbsp; 
-			<span class='small-tag completed'> COMPLETED </span> &nbsp; 
-			<span class='small-tag invoiced'> INVOICED </span> &nbsp; 
-			<span class='small-tag paid'> PAID </span>
+			<span class='small-tag scheduled bigger-tag' data-text='SCHED'>SCHED</span> &nbsp; 
+			<span class='small-tag in_prog' data-text='IN PROG'>IN PROG</span> &nbsp; 
+			<span class='small-tag completed bigger-tag' data-text='COMPL'>COMPLETED</span> &nbsp; 
+			<span class='small-tag invoiced bigger-tag' data-text='INVOIC'>INVOICED</span> &nbsp; 
+			<span class='small-tag paid bigger-tag' data-text='PAID YTD'>PAID</span>
 		</div>
 		<div>
 			Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>

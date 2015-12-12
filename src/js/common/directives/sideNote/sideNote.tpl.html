@@ -20,7 +20,7 @@
 		  <!-- editor -->
         <div  ng-show="n.noteID == editNoteID">
             <form class="form-inline">
-            <textarea class="col-md-12" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="updatedText">
+            <textarea class="col-md-12" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type note here..." ng-model="updatedText">
             </textarea>
                 <div class='col-md-12 pull-right' style='padding:1em;'>
                     <button type="button" class="btn btn-success btn-xs" ng-click="update(n)">OK</button>
@@ -31,7 +31,7 @@
             </form>
         </div>
 			
-        <div class="col-md-12 pull-left" style="text-align:left; margin: 10px; line-height:1.3em; " ng-bind="n.note"> </div>
+        <div class="col-md-12 pull-left" style="text-align:left; margin: 10px; line-height:1.3em; white-space:pre;" ng-bind="n.note"> </div>
         <div class="col-md-2 pull-right hoverHotspot" style="margin: 10px;">
 		  <!--
             <i class="fa fa-pencil _grey _size4 hoverDisplay" ng-click="editNote(n)" title="Edit" bs-tooltip style="cursor: pointer;"></i>

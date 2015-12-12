@@ -65,9 +65,10 @@ $paid: #000;
 $paid_bg: #fff;
 $approved: #2ECC40;
 $billed: #ff4136;
-$scheduled: #ffa12d;
+$scheduled: #e78b1a;
 $invoiced: #ff4136;
 $payment_due: #ff4136;
+$in_prog: #b26418;
 
 
 @mixin font-g($font-size , $font-weight , $color , $line-height) 

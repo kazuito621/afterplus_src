@@ -116,8 +116,11 @@ app.service('storedData',
                 return storage.get('estimateData');
             }
 
-            this.setEstimateData=function(data){
-                if(data.length!=0 && self.estimateTimeStamp==1){
+				// @param opts: {force:1}  -- force overwrite of current array in memory}
+            this.setEstimateData=function(data, opts){
+					 if(!opts) opts={};
+                if(opts.force || (data.length!=0 && self.estimateTimeStamp==1)){
+					 console.debug('force '  );
                     storage.set('estimateData', data);
                 }
                 else if(data.length!=0 && self.estimateTimeStamp!=1){

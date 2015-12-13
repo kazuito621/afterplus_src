@@ -1,6 +1,6 @@
 <div class="col-md-12" style="margin-bottom: 20px; margin-top: 10px;">
     <h1 class="col-md-4 pull-left" style="font-weight: bold; font-size:1.2em;">Notes (internal)</h1>
-    <a href="" class="col-md-3 pull-right" ng-click="addNote=true">Add notes</a>
+    <a href="" class="col-md-3 pull-right" ng-click="addNote=true" style='text-decoration:underline;'>Add notes</a>
 
 		<!-- new note -->
     <div ng-show="addNote==true">
@@ -15,7 +15,7 @@
     </div>
 
 		<!-- existing notes -->
-    <div ng-repeat="n in notes | orderBy:'noteID':true">
+    <div ng-repeat="n in notes | orderBy:'noteID':true" class='hoverHotspot'>
 
 		  <!-- editor -->
         <div  ng-show="n.noteID == editNoteID">
@@ -31,18 +31,18 @@
             </form>
         </div>
 			
-        <div class="col-md-12 pull-left" style="text-align:left; margin: 10px; line-height:1.3em; white-space:pre;" ng-bind="n.note"> </div>
-        <div class="col-md-2 pull-right hoverHotspot" style="margin: 10px;">
+        <div class="col-md-12 pull-left" style="text-align:left; margin: 10px; line-height:1.3em; white-space:pre-line;" ng-bind="n.note"> </div>
+        <div class="col-md-2 pull-right" style="margin: 10px;">
 		  <!--
             <i class="fa fa-pencil _grey _size4 hoverDisplay" ng-click="editNote(n)" title="Edit" bs-tooltip style="cursor: pointer;"></i>
 			-->
-            <i class="fa fa-trash _grey _size4 hoverDisplay"
+            <i class="fa fa-trash _size4 hoverDisplay"
                delete-with-confirm-button
                type="note"
                item-id="{{n.noteID}}"
                active-popover="activePopover"
                on-confirm-callback="deleteCurrentItem()"
-               title="Delete" bs-tooltip style="cursor: pointer;"></i>
+               title="Delete" bs-tooltip style="cursor: pointer; color:#000;"></i>
         </div>
         <div class='col-md-5 pull-right' style="font-size:.9em; color: silver; text-align:right;">&mdash; {{n.name}}, {{n.history}}</div>
 		  <div class='col-md-12' style='clear:both;'><hr></div>

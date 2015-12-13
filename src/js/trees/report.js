@@ -31,14 +31,8 @@ var ReportCtrl = app.controller(
             };
 
             s.getRecentReportTitle = function (report) {
-                var res = '(' + report.reportID + ') ' + report.name + ' - ';
-				if(report.total_price) res+='$'+report.total_price+' - ';
-				res += report.tstamp_updated;
-
-                if (report.status)
-                    res += ' [' + report.status.toUpperCase() + ']';
-				
-                return res;
+                return '#' + report.reportID + ' [' + report.status.toUpperCase() + '] ' + report.name + ' - '
+						+ '$' + report.total_price + ' - ' + report.tstamp_updated.substr(0,10);
             };
 
             // let's watch the recentReportList property, and update on scope if it changes

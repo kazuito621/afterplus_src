@@ -297,7 +297,6 @@ function (Rest, $rootScope, $q, $location, storage,$http,storedData) {
         removeClientById: function (id) {
             return Rest.one('client', id).remove();
         },
-        // Estimates
         getSitesList: function () {
             return Rest.all('site').getList();
         },

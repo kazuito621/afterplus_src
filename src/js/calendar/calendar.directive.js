@@ -91,8 +91,10 @@ function ($timeout) {
 			var getEventTitle = function(obj){
 				var t = obj.reportID + ' $' + shortenPrice(obj.todo_price) + ' ';
 
-				if(obj.completed_perc>0)
-					t+= '[' + obj.completed_perc + '% DONE] ';
+				if(obj.status=='scheduled' && obj.completed_perc>0){
+					if(obj.completed_perc==100) t += '[DONE] ';
+					else t += '[' + obj.completed_perc + '%] ';
+				}
 
 				t += userID2Name(obj.job_userID) + ' - ';
 				t += shortenName(obj.siteName);

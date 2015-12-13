@@ -400,7 +400,7 @@ function ($timeout) {
 							 //box.html('<h1 style="position: absolute;bottom: 2px">'+element.totalCost+'$</h1>');
 
 							 // check if job in progress, else color it by status
-							 if(event.todo_price < event.total_price) element.addClass('clr-in_prog')
+							 if(event.status=='scheduled' && event.todo_price < event.total_price) element.addClass('clr-in_prog')
 							 else element.addClass('clr-'+event.status);
 
 							if(event.title) element.attr('title', event.title);

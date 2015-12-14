@@ -1,5 +1,5 @@
-var ActionCtrl = app.controller('ActionCtrl', ['$scope', '$location', '$timeout',
-function (s, $location, $timeout) {
+var ActionCtrl = app.controller('ActionCtrl', ['$scope', '$location', '$timeout', 'Auth',
+function (s, $location, $timeout, Auth) {
 	'use strict';
 
 	$timeout(function(){
@@ -19,10 +19,12 @@ function (s, $location, $timeout) {
 	};
 
 
-
 	// set "basic page" link
 	function setBasicPageLink(){
 		if(window.noBasicAlert==true) return jQuery("#basicAlert").hide();
+		
+		var d = (Auth.data) ? Auth.data() : {};
+		var userID = (d.userID) ? d.userID : 0;
 
 		var lnk=window.location.hash;
 		var hr=jQuery('#basic_pg_link');
@@ -32,7 +34,7 @@ function (s, $location, $timeout) {
 
 			// change link from #/estimate/XXX ---> to ---> /go/estimate/XXX
 			if(lnk.substr(0,1)=='#') lnk=lnk.substr(1);
-			lnk='/go'+lnk;
+			lnk='/go'+lnk+'?uid='+userID;
 			hr.attr('href',lnk);
 		}
 	}

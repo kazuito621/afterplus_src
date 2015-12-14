@@ -6,7 +6,7 @@
   'use strict';
   if (!window.cfg) {
     window.cfg = {
-      devServer: 'http://aws.arborplus.com',
+      devServer: 'http://dev.arborplus.com',
       hostAndPort: function () {
         return 'http://' + window.location.host;
       },

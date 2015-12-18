@@ -715,7 +715,6 @@ var TreesCtrl = app.controller('TreesCtrl',
 			var loadMap = function() {
             var deferred = $q.defer();
 				try{
-					console.log("load map ");
                 google.load(
                     "maps",
                     "3",
@@ -723,7 +722,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         other_params: 'sensor=false&libraries=places',
                         callback:
                             function () {
-						console.log("		-- google map callback ");
                                 var myOptions = { 
 										zoom: 1, tilt: 0, 
 										center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
@@ -834,7 +832,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 //todo - #optimze why are we looping twice? once here and again below....
                 _.each(s.filteredSites, function (site) {
-                    if (!site.lng || site.lng == 0 || !site.lat || site.lat == 0) return noLoc++;
+                    if (!(site.lng.length>5) || !(site.lat.length>5)) return noLoc++;
 
                     if (site.species && site.species.length > 0) numSpecies = site.species.length;
                     else numSpecies = 0;

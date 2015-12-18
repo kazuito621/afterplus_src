@@ -832,7 +832,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 //todo - #optimze why are we looping twice? once here and again below....
                 _.each(s.filteredSites, function (site) {
-                    if (!(site.lng.length>5) || !(site.lat.length>5)) return noLoc++;
+                    if (!site.lng || !site.lat || !(site.lng.length>5) || !(site.lat.length>5)) return noLoc++;
 
                     if (site.species && site.species.length > 0) numSpecies = site.species.length;
                     else numSpecies = 0;

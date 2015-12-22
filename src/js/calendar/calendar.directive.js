@@ -48,8 +48,8 @@ function commaDigits(val){
 
 
 angular.module('calendardirective', [])
-.directive('calendar', ['$timeout',
-function ($timeout) {
+.directive('calendar', ['$timeout', 'storage',
+function ($timeout, storage) {
     return {
         restrict: 'EA',
         replace: false,
@@ -71,7 +71,6 @@ function ($timeout) {
             var bindexternalevents;
             s.ScheduledJobs = [];
             s.clickedEvent = {};
-				s.filter_job_userID=-99;
 				s.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
 				s.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
             s.showWeekendWork = false;
@@ -105,6 +104,20 @@ function ($timeout) {
 
 
       	var init = function(){
+				var default_settings = {
+					month: moment().format('YYYY-MM')
+					,showStatus: {
+						scheduled: true,
+						in_prog: true,
+						completed: 0,
+						invoiced: 0,
+						paid: 0
+					}
+					,sales_userID:-99
+					,job_userID:-99
+				}
+				storage.bind(s, 'pageVars', {defaultValue:default_settings, storeName:'calendar_pageVars'});
+
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
 				s.UnscheduledJobs = [];
 				s.ScheduledJobs = [];
@@ -143,10 +156,38 @@ function ($timeout) {
 
 
 				$q.all(apis).then(function(values) {
-					  var data = values[0];
-					  s.jobUsers=[{userID:-99, name:'All', count:0}, {userID:-98, name:'Unassigned', count:0}];
-					  angular.forEach(data, function (field) {
+					estimates = values[0];
+					processEstimates();
+					uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
+					scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
+					initCalendar();
 
+					// fix dropdowns... just in case... cuz sometimes, they werent binding via angular!
+					setTimeout(function(){
+						if(s.pageVars.job_userID != -99)
+							$("#foreman_filter").val( s.pageVars.job_userID );
+
+						if(s.pageVars.job_userID != -99)
+							$("#sales_filter").val( s.pageVars.sales_userID );
+
+						s.onFilterChange({noRefresh:true});
+					},300);
+
+				});
+
+     		} // end init()
+
+
+			// setup property name fields
+			// setup filtering
+			var processEstimates = function(type){
+				if(!estimates || !estimates.length) return;
+
+				var allJ=[{userID:-99, name:'All Foremen', count:0}, {userID:-98, name:'Unassigned', count:0}];
+				var allS=[{userID:-99, name:'All Sales', count:0}, {userID:-98, name:'Unassigned', count:0}];
+				var jobUsers=[], salesUsers=[], suids={}, juids={};
+	
+				angular.forEach(estimates, function (field) {
 							var obj=angular.copy(field);
 							obj.estimateUrl=obj.url;
 							delete obj.url;		//or else the calendar uses this as a link
@@ -155,44 +196,46 @@ function ($timeout) {
 							obj.price=obj.total_price;
 							obj.todo_price=obj.todo_price;
 							obj.id=field.reportID;
-							if( field.status=="approved"  ||  (field.status=="scheduled"  &&  field.job_start==undefined)) {
-								obj.type='Unscheduled';
-								s.UnscheduledJobs.push(obj);
-							}
-							else if(field.job_start)
-							{
-											 var eMoment;
+							if(field.job_start) {
+								var eMoment;
 								obj.type='Scheduled';
 								obj.start=moment(field.job_start).format('YYYY-MM-DD');
-								if( field.job_end ) {
-												  eMoment = moment(field.job_end).local();
-											 }
-								else {
-												  eMoment = moment(field.job_start).local();
-											 }
-											 obj.end = eMoment.add(1, 'days');
-											 obj.end = eMoment.format('YYYY-MM-DD');
-											 s.ScheduledJobs.push(obj);
+								if( field.job_end ) 
+								  eMoment = moment(field.job_end).local();
+								else 
+								  eMoment = moment(field.job_start).local();
+								 obj.end = eMoment.add(1, 'days');
+								 obj.end = eMoment.format('YYYY-MM-DD');
+								 s.ScheduledJobs.push(obj);
 							}
 
 							// setup filtering 
+							if(obj.sales_userID){
+								if( suids[obj.sales_userID] ) suids[obj.sales_userID]++;
+								else suids[obj.sales_userID]=1;
+							}else allS[1].count++;
+											
 							if(obj.job_userID){
-								var f=_.findObj(s.jobUsers, 'userID', obj.job_userID);
-								if(f) f.count++;
-								else s.jobUsers.push({userID: obj.job_userID, name: userID2Name(obj.job_userID), count:1});
-							}else{
-								s.jobUsers[1].count++;	//unassigned
-							}
-							s.jobUsers[0].count++;		//all
-						});
+								if( juids[obj.job_userID] ) juids[obj.job_userID]++;
+								else juids[obj.job_userID]=1;
+							}else allJ[1].count++;
 
-					  uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
-					  scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
+							allS[0].count++;
+							allJ[0].count++;
+					});
 
-
-						initCalendar();
-				 });
-     		} // end init()
+					if( allS[1].count==0 ) allS.splice(1);
+					_.each(suids, function(ct,id){
+						salesUsers.push({userID: id, name: userID2Name(id), count:ct});
+					});
+					s.salesUsers = allS.concat(salesUsers);
+				
+					if( allJ[1].count==0 ) allJ.splice(1);
+					_.each(juids, function(ct,id){
+						jobUsers.push({userID: id, name: userID2Name(id), count:ct});
+					});
+					s.jobUsers = allJ.concat(jobUsers);
+			}
 
 
 
@@ -575,6 +618,7 @@ function ($timeout) {
 				 else {
 					  s.ScheduledJobs = scheduledJobsBackUp;
 				 }
+				 $('#searchJob').css('background-color', (!searchtxt || searchtxt=='') ? '' : onFilterHighlightColorC);
 				 cal.fullCalendar( 'refetchEvents' );
 				 setTimeout(bindexternalevents, 30);
 				 //$('#calendar').fullCalendar('addEventSource', s.ScheduledJobs);
@@ -675,10 +719,10 @@ function ($timeout) {
                 Api.UnscheduledJob(s.clickedEvent.reportID, {
 
                 }).then(function (res) {
-                    s.init();
+                    //init();
                     elm.fullCalendar('removeEvents', id);
                 }).catch(function(res){
-                    s.init();
+                    //s.init();
 					 });
 
                $('#fullCalModal').modal('hide');
@@ -991,10 +1035,13 @@ function ($timeout) {
 			}
 
 
-			//s.jobUserIDs=[{name:'xx', userID:123}];
 			// when filter drop down is changed
-			s.filterByJobUserID = function(){
-					  cal.fullCalendar('refetchEvents');
+			s.onFilterChange = function(opt){
+				$('#sales_filter').css('background-color', ( s.pageVars.sales_userID == -99 ) ? '' : onFilterHighlightColorC);
+				$('#foreman_filter').css('background-color', ( s.pageVars.job_userID == -99 ) ? '' : onFilterHighlightColorC);
+
+				if(!opt || !opt.noRefresh)
+					cal.fullCalendar('refetchEvents');
 			}
 
 			s.updateStatus = function(s){
@@ -1022,14 +1069,26 @@ function ($timeout) {
 		// provides the events to the calendar, and filters
 		// the array based on filter_job_userID
 		function filterJobs(){
-			var uid = s.filter_job_userID;
-			if(uid==-99) return s.ScheduledJobs;
+			var juid = s.pageVars.job_userID;
+			var suid = s.pageVars.sales_userID;
 			var o=[];
 			_.each(s.ScheduledJobs, function(e){
-				var show=false;
-				if(uid==-98 && !e.job_userID) show=true;
-				else if(e.job_userID == uid) show=true;
-				if(show) o.push(e);
+				var show=0;
+
+				if(s.pageVars.showStatus[e.status]) show++;
+				else return;
+
+				if(suid==-99) show++;
+				else if(suid==-98 && !e.sales_userID) show++;
+				else if(e.sales_userID == suid) show++;
+				else return;
+				
+				if(juid==-99) show++;
+				else if(juid==-98 && !e.job_userID) show++;
+				else if(e.job_userID == juid) show++;
+				else return;
+
+				o.push(e);
 			});
 			return o;
 		}

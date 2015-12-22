@@ -1,23 +1,27 @@
 ﻿<style type="text/css">
-	
+         
+			
+			
+		.filter_dropdown {
+			width:100%;
+			margin-bottom:.3em;
+			font-size:1.2em;
+		}
+
   		.fc-time { 
 			display:none;
 		}
     .search {
         background: none repeat scroll 0 0 #eee;
         border: 1px solid #ccc;
-        float: left;
-        padding: 0 10px;
+        padding: 0 10px 0 0;
         text-align: left;
-        width: 150px;
-        position: absolute;
+        width: 100%;
     }
 
     #searchJob {
-        width: 129px;
-        margin-left: 0%;
-        margin-top: 2%;
-        margin-bottom: 2%;
+        width: 100%;
+		  margin: 0 0 .3em 0;
     }
 
     .position {
@@ -49,6 +53,47 @@
 	  }
 
 
+
+        #external-events {
+            padding: 0 10px;
+            border: 1px solid #ccc;
+            background: #eee;
+            text-align: left;
+        }
+
+            #external-events h4 {
+                font-size: 16px;
+                margin-top: 0;
+                padding-top: 1em;
+            }
+
+            #external-events .fc-event {
+                margin: 10px 0;
+                cursor: pointer;
+            }
+
+            #external-events p {
+                margin: 1.5em 0;
+                font-size: 11px;
+                color: #666;
+            }
+
+                #external-events p input {
+                    margin: 0;
+                    vertical-align: middle;
+                }
+
+		#calendar-tags div {
+			margin-bottom:.35em;
+			width:100%;
+		}
+		#calendar-tags .small-tags {
+			width:80%;
+		}
+		#calendar-tags select {
+		}
+
+
 	 /* Override some calendar options */
 	 .fc-agenda-view .fc-day-grid .fc-row {
 	 		min-height: 35em; /* all-day section will never get shorter than this */
@@ -60,14 +105,37 @@
 </style>
 
 <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-2">
 		<div style='margin:0 0 1em; text-align:left;'>
-			<select id="foreman_filter" class='' 
-					  ng-model="filter_job_userID"
-					  ng-change="filterByJobUserID()">
+			<select class='filter_dropdown' id="sales_filter" 
+					  ng-model="pageVars.sales_userID"
+					  ng-change="onFilterChange()">
+				 <option class="option" ng-repeat="u in salesUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
+			</select><BR>
+			<select id="foreman_filter" class='filter_dropdown'
+					  ng-model="pageVars.job_userID"
+					  ng-change="onFilterChange()">
 				 <option class="option" ng-repeat="u in jobUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
 			</select><BR>
-			 <input style='width:150px;height:1.5em;' type="text" id="searchJob" ng-model="searchtxt" ng-keyup="search(searchtxt)" placeholder="Search"/>
+
+			 <input style='width:100%; height:1.5em;' type="text" id="searchJob" ng-model="searchtxt" ng-keyup="search(searchtxt)" placeholder="Search"/>
+
+
+			<!-- color key -->
+			<div id='calendar-tags' style='clear:both;padding:.5em 0; width:100%;'>
+				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()"> 
+						<span class='small-tag scheduled' data-text='SCHED'>SCHED</span></div>
+				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()"> 
+						<span class='small-tag in_prog' data-text='IN PROG'>IN PROG</span></div>
+				<div><input type='checkbox' ng-model='pageVars.showStatus.completed' ng-change="onFilterChange()"> 
+						<span class='small-tag completed' data-text='COMPL'>COMPLETED</span></div>
+				<div><input type='checkbox' ng-model='pageVars.showStatus.invoiced' ng-change="onFilterChange()"> 
+						<span class='small-tag invoiced' data-text='INVOIC'>INVOICED</span></div>
+				<div><input type='checkbox' ng-model='pageVars.showStatus.paid' ng-change="onFilterChange()"> 
+						<span class='small-tag paid' data-text='PAID YTD'>PAID</span></div>
+			</div>
+
+
 		</div>
 		<div id='external-events' style="">
            <h4 style="margin:0 0 .5em; line-height:1.3em;">
@@ -87,16 +155,6 @@
 	</div><!-- }} col -->
 	<div class='col-md-9'>
 		<div id='calendar'></div>
-
-		<!-- color key -->
-		<div style='clear:both;padding:2em;'>
-			<!--<span class='small-tag approved'> APPROVED </span> &nbsp; -->
-			<span class='small-tag scheduled bigger-tag' data-text='SCHED'>SCHED</span> &nbsp; 
-			<span class='small-tag in_prog' data-text='IN PROG'>IN PROG</span> &nbsp; 
-			<span class='small-tag completed bigger-tag' data-text='COMPL'>COMPLETED</span> &nbsp; 
-			<span class='small-tag invoiced bigger-tag' data-text='INVOIC'>INVOICED</span> &nbsp; 
-			<span class='small-tag paid bigger-tag' data-text='PAID YTD'>PAID</span>
-		</div>
 		<div>
 			Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>
 		</div>

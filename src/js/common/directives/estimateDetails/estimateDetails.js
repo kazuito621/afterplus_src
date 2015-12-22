@@ -11,7 +11,11 @@ app.directive('estimateDetails',
                 var hideOnEscape = function(e){
                     if(e.keyCode === 27){
                         $(document).unbind('keyup', hideOnEscape);
-                        scope.modal.hide();
+								if(scope.modal && scope.modal.hide){
+                        	scope.modal.hide();
+								}else{
+									console.debug('ERROR Hiding, scope.modal doesnt exist');
+								} 
                     }
                 };
 

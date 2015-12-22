@@ -1,6 +1,6 @@
 var EstimatesListCtrl = app.controller('EstimatesListCtrl', 
-['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper','storedData',
-function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper,storedData) {
+['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
+function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
     'use strict';
     var s = window.ecs = $scope;
 	var myStateID='estimates',
@@ -104,8 +104,8 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
         var search = $location.search();
         cb = cb || angular.noop;
 
-        Api.getRecentReports({ siteID: search.siteID ,timestamp:storedData.getEstimateTimeStamp() }).then(function (data) {
-            data=storedData.setEstimateData(data);
+        Api.getRecentReports({ timestamp:1 }).then(function (data) {
+
 				var isCust=Auth.is('customer');
 				_.each(data, function(d){
 					d.origStatus=d.status;
@@ -156,10 +156,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
               	s.setAlert('Deleted: #'+res.reportID, {type:'ok',time:5});
         			var idx = _.findObj(estimates, 'reportID', res.reportID, true);
 					if(idx){ 
-					console.debug('idx: ' + idx  );
 						estimates.splice(idx,1);
-            		storedData.setEstimateData(estimates, {force:1});
-						console.debug(estimates  );
 					}
 				}
         }, function err(){
@@ -363,9 +360,7 @@ function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelp
 
         //clear search box
         s.data.filterTextEntry = '';
-
         applyFilter();
-        storedData.setEstimateTimeStamp(null);
         init();
     };
 

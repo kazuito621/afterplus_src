@@ -1,6 +1,6 @@
 var EstimatesListCtrl = app.controller('EstimatesListCtrl',
-  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper', 'storedData',
-    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, storedData) {
+  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
+    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
       'use strict';
       // Local vars initialization
       var s = window.ecs = $scope;
@@ -144,11 +144,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         var search = $location.search();
         cb = cb || angular.noop;
 
-        Api.getRecentReports({
-          siteID: search.siteID,
-          timestamp: storedData.getEstimateTimeStamp()
-        }).then(function (data) {
-          data = storedData.setEstimateData(data);
+        Api.getRecentReports({ timestamp:1 }).then(function (data) {
           var isCust = Auth.is('customer');
           _.each(data, function (d) {
             d.origStatus = d.status;
@@ -315,8 +311,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         			var idx = _.findObj(estimates, 'reportID', res.reportID, true);
 					if(idx){ 
 						estimates.splice(idx,1);
-            		storedData.setEstimateData(estimates, {force:1});
-						console.debug(estimates  );
 					}
 				}
         }, function err(){
@@ -414,7 +408,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         s.data.filterTextEntry = '';
 
         self.applyFilter();
-        storedData.setEstimateTimeStamp(null);
         init();
       };
 

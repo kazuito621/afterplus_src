@@ -110,14 +110,12 @@
                 </td>
                 <td ng-bind="e.reportID"></td>
                 <td>
-                    <span ng-if="auth.isAtleast('inventory')">
-                    <a estimate-details="e" style="cursor: pointer;" ng-bind="e.name_short" bs-tooltip
-                       title="{{e.name}}"></a>&nbsp;
-                    <a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' bs-tooltip
-                       title='{{e.saveCount}} revisions' target=_new><i class='fa fa-clock-o gray'></i></a>
-                    </span>
-                    <a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short"
-                       bs-tooltip title="{{e.name}}"></a>
+						<span ng-if="auth.isAtleast('inventory')">
+							<a estimate-details="e" style="cursor: pointer;" title="{{e.name}}" ng-bind="e.name_short" ></a>&nbsp;
+							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' 
+								title='{{e.saveCount}} revisions' target=_new><i class='fa fa-clock-o gray'></i></a>
+						   </span>
+							<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
                     <a ng-if="auth.isAtleast('inventory') && e.count_internal_notes>0" href="" class="badge"
                        estimate-details="e"
                        bs-tooltip title="{{e.count_internal_notes}} internal notes">{{e.count_internal_notes}}</a>

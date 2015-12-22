@@ -118,7 +118,7 @@
     // if dev js... load the config
     var hnp = cfg.hostAndPort();
     if (hnp.match(/9000/)) {
-      $.getScript('http://dev.arborplus.com/go/config.js')
+      $.getScript('http://dev.arborplus.com/go/config.js');
     }
   }
 })();

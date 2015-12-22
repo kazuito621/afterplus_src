@@ -161,7 +161,20 @@ function ($timeout, storage) {
 					uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
 					scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
 					initCalendar();
+
+					// fix dropdowns... just in case... cuz sometimes, they werent binding via angular!
+					setTimeout(function(){
+						if(s.pageVars.job_userID != -99)
+							$("#foreman_filter").val( s.pageVars.job_userID );
+
+						if(s.pageVars.job_userID != -99)
+							$("#sales_filter").val( s.pageVars.sales_userID );
+
+						s.onFilterChange({noRefresh:true});
+					},300);
+
 				});
+
      		} // end init()
 
 
@@ -605,6 +618,7 @@ function ($timeout, storage) {
 				 else {
 					  s.ScheduledJobs = scheduledJobsBackUp;
 				 }
+				 $('#searchJob').css('background-color', (!searchtxt || searchtxt=='') ? '' : onFilterHighlightColorC);
 				 cal.fullCalendar( 'refetchEvents' );
 				 setTimeout(bindexternalevents, 30);
 				 //$('#calendar').fullCalendar('addEventSource', s.ScheduledJobs);
@@ -705,10 +719,10 @@ function ($timeout, storage) {
                 Api.UnscheduledJob(s.clickedEvent.reportID, {
 
                 }).then(function (res) {
-                    s.init();
+                    //init();
                     elm.fullCalendar('removeEvents', id);
                 }).catch(function(res){
-                    s.init();
+                    //s.init();
 					 });
 
                $('#fullCalModal').modal('hide');
@@ -1022,8 +1036,12 @@ function ($timeout, storage) {
 
 
 			// when filter drop down is changed
-			s.onFilterChange = function(){
-				cal.fullCalendar('refetchEvents');
+			s.onFilterChange = function(opt){
+				$('#sales_filter').css('background-color', ( s.pageVars.sales_userID == -99 ) ? '' : onFilterHighlightColorC);
+				$('#foreman_filter').css('background-color', ( s.pageVars.job_userID == -99 ) ? '' : onFilterHighlightColorC);
+
+				if(!opt || !opt.noRefresh)
+					cal.fullCalendar('refetchEvents');
 			}
 
 			s.updateStatus = function(s){

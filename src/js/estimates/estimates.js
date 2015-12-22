@@ -460,15 +460,16 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         });
       };
 
-      s.displayedTotalPrice = function (displayedEstimates) {
-        var count = s.displayedEstimates.length;
-        if (count === estimates.length && totalPrice !== 0) {
-          return totalPrice;
-        }
-        totalPrice = 0;
-        displayedEstimates.forEach(function (i) {
-          totalPrice += parseInt(i.total_price, 10);
-        });
+      s.displayedTotalPrice = function () {
+			var list = estFiltered;
+			var count = list.length;
+      	if (count === estimates.length && totalPrice !== 0) {
+          	return totalPrice;
+        	}
+        	totalPrice = 0;
+		  	list.forEach(function(i){
+          	totalPrice += parseInt(i.total_price, 10);
+        	});
         return totalPrice;
       };
 

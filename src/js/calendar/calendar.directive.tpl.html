@@ -62,9 +62,14 @@
 <div class="row">
 	<div class="col-md-3">
 		<div style='margin:0 0 1em; text-align:left;'>
+			<select id="sales_filter" class='' 
+					  ng-model="filter_sales_userID"
+					  ng-change="filterByUserID()">
+				 <option class="option" ng-repeat="u in salesUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
+			</select><BR>
 			<select id="foreman_filter" class='' 
 					  ng-model="filter_job_userID"
-					  ng-change="filterByJobUserID()">
+					  ng-change="filterByUserID()">
 				 <option class="option" ng-repeat="u in jobUsers" value="{{u.userID}}">{{u.name}} ({{u.count}})</option>
 			</select><BR>
 			 <input style='width:150px;height:1.5em;' type="text" id="searchJob" ng-model="searchtxt" ng-keyup="search(searchtxt)" placeholder="Search"/>

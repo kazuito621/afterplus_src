@@ -48,8 +48,8 @@ function commaDigits(val){
 
 
 angular.module('calendardirective', [])
-.directive('calendar', ['$timeout',
-function ($timeout) {
+.directive('calendar', ['$timeout', 'storage',
+function ($timeout, storage) {
     return {
         restrict: 'EA',
         replace: false,
@@ -71,8 +71,6 @@ function ($timeout) {
             var bindexternalevents;
             s.ScheduledJobs = [];
             s.clickedEvent = {};
-				s.filter_job_userID=-99;
-				s.filter_sales_userID=-99;
 				s.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
 				s.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
             s.showWeekendWork = false;
@@ -106,6 +104,20 @@ function ($timeout) {
 
 
       	var init = function(){
+				var default_settings = {
+					month: moment().format('YYYY-MM')
+					,showStatus: {
+						scheduled: true,
+						in_prog: true,
+						completed: 0,
+						invoiced: 0,
+						paid: 0
+					}
+					,sales_userID:-99
+					,job_userID:-99
+				}
+				storage.bind(s, 'pageVars', {defaultValue:default_settings, storeName:'calendar_pageVars'});
+
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
 				s.UnscheduledJobs = [];
 				s.ScheduledJobs = [];
@@ -1010,7 +1022,7 @@ function ($timeout) {
 
 
 			// when filter drop down is changed
-			s.filterByUserID = function(type){
+			s.onFilterChange = function(){
 				cal.fullCalendar('refetchEvents');
 			}
 
@@ -1039,23 +1051,26 @@ function ($timeout) {
 		// provides the events to the calendar, and filters
 		// the array based on filter_job_userID
 		function filterJobs(){
-			var juid = s.filter_job_userID;
-			var suid = s.filter_sales_userID;
-			if(suid==-99 && juid==-99) return s.ScheduledJobs;
+			var juid = s.pageVars.job_userID;
+			var suid = s.pageVars.sales_userID;
 			var o=[];
-			filerNum=2;
 			_.each(s.ScheduledJobs, function(e){
 				var show=0;
+
+				if(s.pageVars.showStatus[e.status]) show++;
+				else return;
 
 				if(suid==-99) show++;
 				else if(suid==-98 && !e.sales_userID) show++;
 				else if(e.sales_userID == suid) show++;
-
+				else return;
+				
 				if(juid==-99) show++;
 				else if(juid==-98 && !e.job_userID) show++;
 				else if(e.job_userID == juid) show++;
+				else return;
 
-				if(2==show) o.push(e);
+				o.push(e);
 			});
 			return o;
 		}

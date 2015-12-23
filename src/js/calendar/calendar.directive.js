@@ -67,9 +67,10 @@ function ($timeout, storage) {
 
 				window.fcs=$scope;
 				var s = $scope;
-            s.UnscheduledJobs = [];
+				var onFilterHighlightColor = '#ffdc71';
             var bindexternalevents;
             s.ScheduledJobs = [];
+            s.UnscheduledJobs = [];
             s.clickedEvent = {};
 				s.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
 				s.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
@@ -77,7 +78,7 @@ function ($timeout, storage) {
             var elm, 
 			    cal, 		// ref to calendar html obj
 			    uncheduledJobsBackUp,
-                scheduledJobsBackUp;
+             scheduledJobsBackUp;
 
             s.statuses = [
                 {value:'scheduled', txt:'Scheduled'},
@@ -131,6 +132,7 @@ function ($timeout, storage) {
 				// get approved
 				setTimeout(function(){
 					Rest.all('estimate').getList({status:'approved'}).then(function(data){
+						var jobs=[];
 						_.each(data, function(field){
 							var obj=angular.copy(field);
 							obj.estimateUrl=obj.url;
@@ -141,8 +143,10 @@ function ($timeout, storage) {
 							obj.todo_price=obj.todo_price;
 							obj.id=field.reportID;
 							obj.type='Unscheduled';
-							s.UnscheduledJobs.push(obj);
+							jobs.push(obj);
 						});
+						s.UnscheduledJobs = jobs;
+						uncheduledJobsBackUp = angular.copy(jobs);
 					 	setTimeout(bindexternalevents, 30);
 					});
 				}, 1000);
@@ -158,7 +162,6 @@ function ($timeout, storage) {
 				$q.all(apis).then(function(values) {
 					estimates = values[0];
 					processEstimates();
-					uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
 					scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
 					initCalendar();
 
@@ -174,8 +177,8 @@ function ($timeout, storage) {
 					},300);
 
 				});
-
      		} // end init()
+
 
 
 			// setup property name fields
@@ -576,8 +579,15 @@ function ($timeout, storage) {
 			var doSearch = function (searchtxt) {
 				 s.UnscheduledJobs = [];
 				 s.ScheduledJobs = [];
-				 if (searchtxt != null) {
-					  s.job = [];
+				 if (!searchtxt || searchtxt==''){ 
+					  s.ScheduledJobs = angular.copy(scheduledJobsBackUp);
+					  s.UnscheduledJobs = angular.copy(uncheduledJobsBackUp);
+					  var hiColor='';
+				 }else{
+				
+					var sched=[], unsched=[];
+
+					// filter approved jobs
 					  angular.forEach(uncheduledJobsBackUp, function (item) {
 							var titletxt = item.title;
 							if (titletxt !== undefined) {
@@ -587,19 +597,14 @@ function ($timeout, storage) {
 									  item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
 									  item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
 								 ) {
-									  s.UnscheduledJobs.push(item);
+									  unsched.push(item);
 								 }
 							}
 					  });
-					 /// $('#calendar').fullCalendar('addEventSource', s.job);
-				 }
-				 else {
-					  s.UnscheduledJobs = angular.copy(uncheduledJobsBackUp);
-					 // $('#calendar').fullCalendar('addEventSource', s.ScheduledJobs);
-				 }
+						s.UnscheduledJobs = unsched;
 
-				 if (searchtxt != null) {
-					  s.job = [];
+
+					// filter sched jobs
 					  angular.forEach(scheduledJobsBackUp, function (item) {
 							var titletxt = item.title;
 							console.debug(titletxt  );
@@ -610,20 +615,20 @@ function ($timeout, storage) {
 									  item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
 									  item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
 								 ) {
-									  s.ScheduledJobs.push(item);
+									  sched.push(item);
 								 }
 							}
 					  });
-				 }
-				 else {
-					  s.ScheduledJobs = scheduledJobsBackUp;
-				 }
-				 $('#searchJob').css('background-color', (!searchtxt || searchtxt=='') ? '' : onFilterHighlightColorC);
+						s.ScheduledJobs = sched;
+						var hiColor=onFilterHighlightColor;
+					}
+				
+
+				 $('#searchJob').css('background-color', hiColor);
 				 cal.fullCalendar( 'refetchEvents' );
 				 setTimeout(bindexternalevents, 30);
-				 //$('#calendar').fullCalendar('addEventSource', s.ScheduledJobs);
-
 			};
+
 
 			s.open = function (siteID) {
 				 s.user = {

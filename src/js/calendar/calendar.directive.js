@@ -577,6 +577,7 @@ function ($timeout, storage) {
 			};
 
 			var doSearch = function (searchtxt) {
+				searchtxt=searchtxt.toString().toLowerCase();
 				 if (!searchtxt || searchtxt==''){ 
 					  s.schedJobs = angular.copy(schedBackup);
 					  s.unschedJobs = angular.copy(unschedBackup);
@@ -591,9 +592,9 @@ function ($timeout, storage) {
 							if (titletxt !== undefined) {
 								item.siteName=''+item.siteName;
 								 if (
-									  titletxt.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
-									  item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
-									  item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
+									  item.siteName.toString().toLowerCase().indexOf(searchtxt) >= 0 ||
+									  item.reportID.toString().toLowerCase().indexOf(searchtxt) >= 0 ||
+									  item.name.toString().toLowerCase().indexOf(searchtxt) >= 0
 								 ) {
 									  unsched.push(item);
 								 }
@@ -608,9 +609,9 @@ function ($timeout, storage) {
 							if (titletxt !== undefined) {
 								item.siteName=''+item.siteName;
 								 if (
-									  titletxt.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
-									  item.siteName.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0 ||
-									  item.reportID.toString().toLowerCase().indexOf(searchtxt.toString().toLowerCase()) >= 0
+									  item.siteName.toString().toLowerCase().indexOf(searchtxt) >= 0 ||
+									  item.reportID.toString().toLowerCase().indexOf(searchtxt) >= 0 ||
+									  item.name.toString().toLowerCase().indexOf(searchtxt) >= 0
 								 ) {
 									  sched.push(item);
 								 }

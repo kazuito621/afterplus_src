@@ -147,6 +147,7 @@ function ($timeout, storage) {
 						});
 						s.unschedJobs = jobs;
 						unschedBackup = angular.copy(jobs);
+						updateTotals();
 					 	setTimeout(bindexternalevents, 30);
 					});
 				}, 1000);
@@ -1102,7 +1103,9 @@ function ($timeout, storage) {
 		function updateTotals(){
 			updatePriceColors();
 			updateTotalBoxes();
+			updateApprovedTotal();
 		}
+
 
 
 		/**
@@ -1115,7 +1118,6 @@ function ($timeout, storage) {
 				if(!r) return;
 				if(r.scheduled_all) s.total.scheduled_all = r.scheduled_all;
 
-
 				// new: not doing sched... since that would only be totals for this month
 				// using API call above to get totals for ALL
 				var stats=['in_prog', 'scheduled','completed','invoiced','paid'];
@@ -1125,18 +1127,19 @@ function ($timeout, storage) {
 					var c = $('.small-tag.' + s);
 					if(c) c.text(c.attr('data-text')+': '+p);
 				});
-
 			});
+		},5000,{trailing:true});
 
-
-			// approved
+	
+		var updateApprovedTotal = function(){
 			var appr=0;
 			_.each(s.unschedJobs, function(j){
 				if( j.total_price) appr += parseFloat(j.total_price);
 				else if( j.price ) appr += parseFloat(j.price);
 			});
 			$('#approved-jobs-title').text('Approved ($'+shortenPrice(appr)+')');
-		},6000,{trailing:true});
+			$scope.total.approved = shortenPrice(appr);
+		}
 
 
 		// Change color of all calendar day box backgrounds, based on $ amount ... if they hit their goals

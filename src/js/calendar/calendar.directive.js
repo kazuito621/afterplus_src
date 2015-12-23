@@ -69,16 +69,16 @@ function ($timeout, storage) {
 				var s = $scope;
 				var onFilterHighlightColor = '#ffdc71';
             var bindexternalevents;
-            s.ScheduledJobs = [];
-            s.UnscheduledJobs = [];
+            s.schedJobs = [];
+            s.unschedJobs = [];
             s.clickedEvent = {};
 				s.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
 				s.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
             s.showWeekendWork = false;
             var elm, 
 			    cal, 		// ref to calendar html obj
-			    uncheduledJobsBackUp,
-             scheduledJobsBackUp;
+			    unschedBackup,
+             schedBackup;
 
             s.statuses = [
                 {value:'scheduled', txt:'Scheduled'},
@@ -120,8 +120,8 @@ function ($timeout, storage) {
 				storage.bind(s, 'pageVars', {defaultValue:default_settings, storeName:'calendar_pageVars'});
 
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
-				s.UnscheduledJobs = [];
-				s.ScheduledJobs = [];
+				s.unschedJobs = [];
+				s.schedJobs = [];
 				s.clickedEvent = {};
 				var apis=[];
 				var deferred1 = $q.defer();
@@ -145,8 +145,8 @@ function ($timeout, storage) {
 							obj.type='Unscheduled';
 							jobs.push(obj);
 						});
-						s.UnscheduledJobs = jobs;
-						uncheduledJobsBackUp = angular.copy(jobs);
+						s.unschedJobs = jobs;
+						unschedBackup = angular.copy(jobs);
 					 	setTimeout(bindexternalevents, 30);
 					});
 				}, 1000);
@@ -162,7 +162,7 @@ function ($timeout, storage) {
 				$q.all(apis).then(function(values) {
 					estimates = values[0];
 					processEstimates();
-					scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
+					schedBackup = angular.copy(s.schedJobs);
 					initCalendar();
 
 					// fix dropdowns... just in case... cuz sometimes, they werent binding via angular!
@@ -209,7 +209,7 @@ function ($timeout, storage) {
 								  eMoment = moment(field.job_start).local();
 								 obj.end = eMoment.add(1, 'days');
 								 obj.end = eMoment.format('YYYY-MM-DD');
-								 s.ScheduledJobs.push(obj);
+								 s.schedJobs.push(obj);
 							}
 
 							// setup filtering 
@@ -257,8 +257,8 @@ function ($timeout, storage) {
 				}
 
 				var selectedEvent = null;
-				for (var index = 0; index <= s.UnscheduledJobs.length - 1; index++) {
-					 var event = s.UnscheduledJobs[index];
+				for (var index = 0; index <= s.unschedJobs.length - 1; index++) {
+					 var event = s.unschedJobs[index];
 					 if (event.reportID == rptID || event.title.trim() == eventName.trim()) {
 						  selectedEvent = event;
 						  break;
@@ -577,18 +577,16 @@ function ($timeout, storage) {
 			};
 
 			var doSearch = function (searchtxt) {
-				 s.UnscheduledJobs = [];
-				 s.ScheduledJobs = [];
 				 if (!searchtxt || searchtxt==''){ 
-					  s.ScheduledJobs = angular.copy(scheduledJobsBackUp);
-					  s.UnscheduledJobs = angular.copy(uncheduledJobsBackUp);
+					  s.schedJobs = angular.copy(schedBackup);
+					  s.unschedJobs = angular.copy(unschedBackup);
 					  var hiColor='';
 				 }else{
 				
 					var sched=[], unsched=[];
 
 					// filter approved jobs
-					  angular.forEach(uncheduledJobsBackUp, function (item) {
+					  angular.forEach(unschedBackup, function (item) {
 							var titletxt = item.title;
 							if (titletxt !== undefined) {
 								item.siteName=''+item.siteName;
@@ -601,13 +599,12 @@ function ($timeout, storage) {
 								 }
 							}
 					  });
-						s.UnscheduledJobs = unsched;
+						s.unschedJobs = unsched;
 
 
 					// filter sched jobs
-					  angular.forEach(scheduledJobsBackUp, function (item) {
+					  angular.forEach(schedBackup, function (item) {
 							var titletxt = item.title;
-							console.debug(titletxt  );
 							if (titletxt !== undefined) {
 								item.siteName=''+item.siteName;
 								 if (
@@ -619,7 +616,7 @@ function ($timeout, storage) {
 								 }
 							}
 					  });
-						s.ScheduledJobs = sched;
+						s.schedJobs = sched;
 						var hiColor=onFilterHighlightColor;
 					}
 				
@@ -682,7 +679,7 @@ function ($timeout, storage) {
 				var newUserID=s.job_user.userID;
 				s.job_user.name=userID2Name(s.job_user.userID); 
 
-				var job = _.find(s.ScheduledJobs, 'reportID', s.clickedEvent.reportID);
+				var job = _.find(s.schedJobs, 'reportID', s.clickedEvent.reportID);
 				if(job) job.job_userID=newUserID;
 				/*
 				ok this makes no fucking sense to me... it seems that the schedulesjobs[] array 
@@ -1077,7 +1074,7 @@ function ($timeout, storage) {
 			var juid = s.pageVars.job_userID;
 			var suid = s.pageVars.sales_userID;
 			var o=[];
-			_.each(s.ScheduledJobs, function(e){
+			_.each(s.schedJobs, function(e){
 				var show=0;
 
 				if(s.pageVars.showStatus[e.status]) show++;
@@ -1133,7 +1130,7 @@ function ($timeout, storage) {
 
 			// approved
 			var appr=0;
-			_.each(s.UnscheduledJobs, function(j){
+			_.each(s.unschedJobs, function(j){
 				if( j.total_price) appr += parseFloat(j.total_price);
 				else if( j.price ) appr += parseFloat(j.price);
 			});
@@ -1233,39 +1230,39 @@ function ($timeout, storage) {
 			}
 
 			function updateJobDuration(reportID,start,end){  // where star and end is not moment type object.
-				 for(var i= 0;i<s.ScheduledJobs.length;i++){
-					  if(s.ScheduledJobs[i].reportID == reportID){
-							s.ScheduledJobs[i].start = start;
-							s.ScheduledJobs[i].job_start = start;
-							s.ScheduledJobs[i].end = end;
-							s.ScheduledJobs[i].job_end = end;
+				 for(var i= 0;i<s.schedJobs.length;i++){
+					  if(s.schedJobs[i].reportID == reportID){
+							s.schedJobs[i].start = start;
+							s.schedJobs[i].job_start = start;
+							s.schedJobs[i].end = end;
+							s.schedJobs[i].job_end = end;
 							break;
 					  }
 				 }
-				 for(var i= 0;i<s.UnscheduledJobs.length;i++){
-					  if(s.UnscheduledJobs[i].reportID == reportID){
-							s.UnscheduledJobs[i].start = start;
-							s.UnscheduledJobs[i].job_start = start;
-							s.UnscheduledJobs[i].end = end;
-							s.UnscheduledJobs[i].job_end = end;
+				 for(var i= 0;i<s.unschedJobs.length;i++){
+					  if(s.unschedJobs[i].reportID == reportID){
+							s.unschedJobs[i].start = start;
+							s.unschedJobs[i].job_start = start;
+							s.unschedJobs[i].end = end;
+							s.unschedJobs[i].job_end = end;
 							break;
 					  }
 				 }
-				 uncheduledJobsBackUp = angular.copy(s.UnscheduledJobs);
-				 scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
+				 unschedBackup = angular.copy(s.unschedJobs);
+				 schedBackup = angular.copy(s.schedJobs);
 			}
 
 			function updateJobStatus(reportID,object){
-				 for(var i= 0;i<s.ScheduledJobs.length;i++){
-					  if(s.ScheduledJobs[i].reportID == reportID){
+				 for(var i= 0;i<s.schedJobs.length;i++){
+					  if(s.schedJobs[i].reportID == reportID){
 							for (var property in object) {
 								 if (object.hasOwnProperty(property)) {
-									  s.ScheduledJobs[i][property]=object[property];
+									  s.schedJobs[i][property]=object[property];
 								 }
 							}
 					  }
 				 }
-				 scheduledJobsBackUp = angular.copy(s.ScheduledJobs);
+				 schedBackup = angular.copy(s.schedJobs);
 			}
 
             var convertLocalTime = function(startMoment,endMoment){

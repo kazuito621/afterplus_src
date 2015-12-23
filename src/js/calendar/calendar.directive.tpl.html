@@ -141,7 +141,7 @@
            <h4 style="margin:0 0 .5em; line-height:1.3em;">
 			  		<span style='font-weight:bold;'>Approved:</span> 
 			  		${{total.approved | formatPrice:'noCents' }}</h4>
-			 <div class='fc-event drop-accpted' ng-repeat="singleJob in UnscheduledJobs | orderBy:'reportID'" 
+			 <div class='fc-event drop-accpted' ng-repeat="singleJob in unschedJobs | orderBy:'reportID'" 
 			 	ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
 				ng-click="openJob(singleJob)" 
 				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">

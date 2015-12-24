@@ -19,6 +19,7 @@ module.exports = function (grunt) {
     require('time-grunt')(grunt);
 
     grunt.loadNpmTasks('grunt-html2js');
+	 grunt.loadNpmTasks('grunt-git-describe');
 
     // Define the configuration for all the tasks
     grunt.initConfig({
@@ -29,6 +30,15 @@ module.exports = function (grunt) {
             app: require('./bower.json').appPath || 'src',
             dist: 'dist', 
         },
+
+		  pkg: grunt.file.readJSON('package.json'),
+
+		  'git-describe': {
+			 options: {
+				prop: 'meta.revision'
+			 }
+			 ,me: {}
+		  },
 
         // Watches files for changes and runs tasks based on the changed files
         watch: {
@@ -457,6 +467,25 @@ module.exports = function (grunt) {
     });
 
 
+	grunt.registerTask('tag-revision', 'Tag the current build revision', function () {
+	  grunt.task.requires('git-describe');
+
+		grunt.event.once('git-describe', function (rev) {
+			grunt.log.writeln("Git Revision: " + rev);
+
+			  grunt.file.write('dist/version.json', JSON.stringify({
+				 git_commit_id: rev.object,
+				 tag: rev.tag,
+				 date: grunt.template.today()
+			  }));
+
+		 });    
+		 grunt.task.run('git-describe');
+	});
+
+	grunt.registerTask('version', ['git-describe', 'tag-revision']);
+
+
     grunt.registerTask('serve', function (target) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'connect:dist:keepalive']);
@@ -529,6 +558,7 @@ module.exports = function (grunt) {
       'rev',
       'usemin',
       'htmlmin',
+		'version',
       'copy:css_php'
     ]);
 
@@ -542,4 +572,5 @@ module.exports = function (grunt) {
       'shell:npm_install',
       'shell:update_webdriver'
     ]);
+
 };

@@ -1031,8 +1031,15 @@ function ($timeout, storage) {
 				 }
 			});
 
+			/**
+			 * Shorten Price, whether Thousands or Millions
+			 *   $989.89 		==> $989			// < 1000 = take off cents und
+			 *   $7893.33 		==> $7.8k		// < 10,000 = abbreviate with one digit
+			 *   $29001.11 	==> $29k			// < 1 Million ... 
+			 *   $3600000		==> $3.6M		// > 1 Million
+			 */
 			function shortenPrice($pr){
-				 if($pr<1000) return Math.round($pr);
+				 if($pr<1000) return Math.round($pr);		
 				 if($pr<10000) return parseInt($pr).toString().substring(0, parseInt($pr).toString().length-3)+'k';
 				 if($pr>1000000) return (parseInt($pr)/1000000).toFixed(1) + 'M'
 				 return Math.floor(parseInt($pr)/1000)+"k";

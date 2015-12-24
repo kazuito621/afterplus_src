@@ -131,7 +131,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
       })
       .when("/calendar", {
         templateUrl: "js/calendar/calendar.html",
-        auth: false, reloadOnSearch: false,
+        auth: true, reloadOnSearch: false,
         resolve: {
           deps: ['Api', function (Api) {
             return Api.getPromise();

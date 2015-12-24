@@ -6,23 +6,27 @@
   'use strict';
   if (!window.cfg) {
     window.cfg = {
-      devServer: 'http://dev.arborplus.com',
       hostAndPort: function () {
         return 'http://' + window.location.host;
-      },
+      }
       // @return hostname ie. "http://app.aplustree.com"
-      host: function () {
+      ,host: function () {
         return 'http://' + window.location.host.replace(/:[0-9]+$/, '');
-      },
-      apiBaseUrl: function () {
-        var h = this.host() || '';
-        if (h.match(/(localh|127.0.0|0.0.0)/)) {
-          h = this.devServer;
-        }
-        return h + '/api/v2.0';
-        //else return 'http://dev.arborplus.com/api/v2.0';
-      },
-      getEntityID: function () {
+      }
+		,apiBaseUrl_set:''
+		,apiBaseUrl: function(){
+			if(this.apiBaseUrl_set) return this.apiBaseUrl_set;
+
+			if( this.hostAndPort().match(/app.aplustree.com:9000/) ){
+				var server='http://app.arborplus.com';
+			}else if( this.hostAndPort().match(/:9000/) || this.host().match(/(localh|127.0.0|0.0.0)/)) {
+				var server='http://dev.arborplus.com';
+			}
+
+			this.apiBaseUrl_set = server+'/api/v2.0';
+			return this.apiBaseUrl_set;
+		}
+      ,getEntityID: function () {
         return this.entityID;
       }, // dev.aplustree
       getEntity: function () {

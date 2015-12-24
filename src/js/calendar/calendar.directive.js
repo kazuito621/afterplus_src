@@ -175,7 +175,7 @@ function ($timeout, storage) {
 							$("#sales_filter").val( s.pageVars.sales_userID );
 
 						s.onFilterChange({noRefresh:true});
-					},300);
+					},500);
 
 				});
      		} // end init()
@@ -1048,8 +1048,8 @@ function ($timeout, storage) {
 
 			// when filter drop down is changed
 			s.onFilterChange = function(opt){
-				$('#sales_filter').css('background-color', ( s.pageVars.sales_userID == -99 ) ? '' : onFilterHighlightColorC);
-				$('#foreman_filter').css('background-color', ( s.pageVars.job_userID == -99 ) ? '' : onFilterHighlightColorC);
+				$('#sales_filter').css('background-color', ( s.pageVars.sales_userID == -99 ) ? '' : onFilterHighlightColor);
+				$('#foreman_filter').css('background-color', ( s.pageVars.job_userID == -99 ) ? '' : onFilterHighlightColor);
 
 				if(!opt || !opt.noRefresh)
 					cal.fullCalendar('refetchEvents');

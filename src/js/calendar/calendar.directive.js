@@ -175,7 +175,7 @@ function ($timeout, storage, $filter) {
 							$("#sales_filter").val( s.pageVars.sales_userID );
 
 						s.onFilterChange({noRefresh:true});
-					}400);
+					},400);
 
 				});
      		} // end init()

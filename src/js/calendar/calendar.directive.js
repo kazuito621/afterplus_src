@@ -48,8 +48,8 @@ function commaDigits(val){
 
 
 angular.module('calendardirective', [])
-.directive('calendar', ['$timeout', 'storage',
-function ($timeout, storage) {
+.directive('calendar', ['$timeout', 'storage', '$filter',
+function ($timeout, storage, $filter) {
     return {
         restrict: 'EA',
         replace: false,
@@ -89,7 +89,7 @@ function ($timeout, storage) {
 
 
 			var getEventTitle = function(obj){
-				var t = obj.reportID + ' $' + shortenPrice(obj.todo_price) + ' ';
+				var t = obj.reportID + ' $' + $filter('shortenNumber')(obj.todo_price) + ' ';
 
 				if(obj.status=='scheduled' && obj.completed_perc>0){
 					if(obj.completed_perc==100) t += '[DONE] ';
@@ -171,11 +171,11 @@ function ($timeout, storage) {
 						if(s.pageVars.job_userID != -99)
 							$("#foreman_filter").val( s.pageVars.job_userID );
 
-						if(s.pageVars.job_userID != -99)
+						if(s.pageVars.sales_userID != -99)
 							$("#sales_filter").val( s.pageVars.sales_userID );
 
 						s.onFilterChange({noRefresh:true});
-					},500);
+					}400);
 
 				});
      		} // end init()
@@ -700,7 +700,7 @@ function ($timeout, storage) {
 
 					  //@@todo .. duplicate code here! dont reassign the title again.. make a function for this WTF
 					  s.clickedEvent.title = s.clickedEvent.name? s.clickedEvent.reportID+' - '
-							+shortenPrice(s.clickedEvent.price.replace(',',''))+' - '+userID2Name(s.clickedEvent.job_userID)+' - '
+							+$filter('shortenNumber')(s.clickedEvent.price.replace(',',''))+' - '+userID2Name(s.clickedEvent.job_userID)+' - '
 							+ s.clickedEvent.name.trim() : "Nil";
 
 // if we do this, we lose the data on the object when its reloaded. stupid fucking bug
@@ -1031,20 +1031,6 @@ function ($timeout, storage) {
 				 }
 			});
 
-			/**
-			 * Shorten Price, whether Thousands or Millions
-			 *   $989.89 		==> $989			// < 1000 = take off cents und
-			 *   $7893.33 		==> $7.8k		// < 10,000 = abbreviate with one digit
-			 *   $29001.11 	==> $29k			// < 1 Million ... 
-			 *   $3600000		==> $3.6M		// > 1 Million
-			 */
-			function shortenPrice($pr){
-				 if($pr<1000) return Math.round($pr);		
-				 if($pr<10000) return parseInt($pr).toString().substring(0, parseInt($pr).toString().length-3)+'k';
-				 if($pr>1000000) return (parseInt($pr)/1000000).toFixed(1) + 'M'
-				 return Math.floor(parseInt($pr)/1000)+"k";
-			}
-
 
 			// when filter drop down is changed
 			s.onFilterChange = function(opt){
@@ -1119,18 +1105,18 @@ function ($timeout, storage) {
 		 * Calc the prices for the totals of each status indicator at bottom of screen (ie. SCHED, COMPLETED, etc)
 		 */
 		var updateTotalBoxes = _.throttle(function(){
-
 			// get latest estimate totals from server
 			Rest.one('estimateTotals').get().then(function(r){
 				if(!r) return;
+				console.debug(r  );
 				if(r.scheduled_all) s.total.scheduled_all = r.scheduled_all;
 
 				// new: not doing sched... since that would only be totals for this month
 				// using API call above to get totals for ALL
-				var stats=['in_prog', 'scheduled','completed','invoiced','paid'];
+				var stats=['in_prog_todo', 'in_prog_done', 'scheduled','completed','invoiced','paid'];
 				_.each(stats, function(s){
 					if(!r[s]) return;
-					var p = '$' + shortenPrice(r[s]);
+					var p = '$' + $filter('shortenNumber')(r[s]);
 					var c = $('.small-tag.' + s);
 					if(c) c.text(c.attr('data-text')+': '+p);
 				});
@@ -1144,8 +1130,8 @@ function ($timeout, storage) {
 				if( j.total_price) appr += parseFloat(j.total_price);
 				else if( j.price ) appr += parseFloat(j.price);
 			});
-			$('#approved-jobs-title').text('Approved ($'+shortenPrice(appr)+')');
-			$scope.total.approved = shortenPrice(appr);
+			var sn = $filter('shortenNumber')(appr);
+			$('#approved-jobs-title').text('Approved ($'+sn+')');
 		}
 
 

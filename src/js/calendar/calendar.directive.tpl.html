@@ -124,23 +124,36 @@
 			<!-- color key -->
 			<div id='calendar-tags' style='clear:both;padding:.5em 0; width:100%;'>
 				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()"> 
-						<span class='small-tag scheduled' data-text='SCHED'>SCHED</span></div>
-				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()"> 
-						<span class='small-tag in_prog' data-text='IN PROG'>IN PROG</span></div>
+						<span class='small-tag scheduled' data-text='SCHED'
+							title='Amount of work that is scheduled (or in progress) which is left todo (scheduled total MINUS individual items which is already marked done)'
+							>SCHED</span></div>
+				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()" style='visibility:hidden !important;'> 
+						<span class='small-tag in_prog in_prog_todo' data-text='&gt;TODO'
+							title='Amount of work left todo only for jobs that have already been started (ie. at least $1 marked complete)'
+							>&gt;TODO</span></div>
+				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()" style='visibility:hidden !important;'> 
+						<span class='small-tag in_prog in_prog_done' data-text='&gt;DONE'
+							title='Amount of work completed only for jobs that have already been started (ie. at least $1 marked complete)'
+							>&gt;DONE</span></div>
 				<div><input type='checkbox' ng-model='pageVars.showStatus.completed' ng-change="onFilterChange()"> 
-						<span class='small-tag completed' data-text='COMPL'>COMPLETED</span></div>
+						<span class='small-tag completed' data-text='COMPL'
+							title='Total for jobs fully complete'
+							>COMPLETED</span></div>
 				<div><input type='checkbox' ng-model='pageVars.showStatus.invoiced' ng-change="onFilterChange()"> 
-						<span class='small-tag invoiced' data-text='INVOIC'>INVOICED</span></div>
+						<span class='small-tag invoiced' data-text='INVOIC'
+							title='Total for jobs that have been invoiced, but not paid yet'
+							>INVOICED</span></div>
 				<div><input type='checkbox' ng-model='pageVars.showStatus.paid' ng-change="onFilterChange()"> 
-						<span class='small-tag paid' data-text='PAID YTD'>PAID</span></div>
+						<span class='small-tag paid' data-text='PAID YTD'
+							title='Total paid since Jan 1 of this year'
+							>PAID</span></div>
 			</div>
 
 
 		</div>
 		<div id='external-events' style="">
-           <h4 style="margin:0 0 .5em; line-height:1.3em;">
-			  		<span style='font-weight:bold;'>Approved:</span> 
-			  		${{total.approved | formatPrice:'noCents' }}</h4>
+           <h4 id='approved-jobs-title' style="margin:0 0 .5em; line-height:1.3em; font-size:.8em;">
+			  		<span style='font-weight:bold;'>Approved </span></h4>
 			 <div class='fc-event drop-accpted' ng-repeat="singleJob in unschedJobs | orderBy:'reportID'" 
 			 	ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
 				ng-click="openJob(singleJob)" 

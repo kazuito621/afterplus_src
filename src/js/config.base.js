@@ -13,19 +13,21 @@
       ,host: function () {
         return 'http://' + window.location.host.replace(/:[0-9]+$/, '');
       }
-		,apiBaseUrl_set:''
-		,apiBaseUrl: function(){
+	  ,apiBaseUrl_set:''
+	  ,apiBaseUrl: function(){
 			if(this.apiBaseUrl_set) return this.apiBaseUrl_set;
 
 			if( this.hostAndPort().match(/app.aplustree.com:9000/) ){
 				var server='http://app.arborplus.com';
 			}else if( this.hostAndPort().match(/:9000/) || this.host().match(/(localh|127.0.0|0.0.0)/)) {
 				var server='http://dev.arborplus.com';
+			}else{
+				var server=this.hostAndPort();
 			}
 
 			this.apiBaseUrl_set = server+'/api/v2.0';
 			return this.apiBaseUrl_set;
-		}
+	  }
       ,getEntityID: function () {
         return this.entityID;
       }, // dev.aplustree

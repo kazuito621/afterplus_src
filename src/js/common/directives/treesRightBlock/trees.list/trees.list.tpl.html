@@ -11,7 +11,7 @@
                 <td class="td-img">
                     <label for="tree-result-checkbox-{{tree.treeID}}">
                         <div tooltip-html-unsafe="{{listingPopoverContent}}" popover-trigger="mouseenter">
-                            <img ng-src="::tree.imgSm" data-treeid='{{tree.treeID}}'
+                            <img src="{{::tree.imgSm}}" data-treeid='{{tree.treeID}}'
                                  ng-click="onTreeImageRollover(tree.treeID);"
                                  ng-mouseover="onTreeImageRollover(tree.treeID);"
                                  ng-mouseleave="onTreeImageRollout(tree.treeID);"

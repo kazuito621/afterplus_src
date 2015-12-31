@@ -2,7 +2,7 @@
 <div class="treeEditBox edit-tree-container">
     <div class="row">
         <div class="col-md-6">
-            <div class="image"><img ng-src="{{tree.imgMed + tree_cachebuster}}"/></div>
+            <div class="image"><img src="{{ tree.imgMed + tree_cachebuster }}"/></div>
 
 				<div ng-if="tree.images && tree.images.length>1" ng-repeat="itm in tree.images | slice : 0 : -1 | reverse ">
 					<img src='{{itm.imgSm2}}' 

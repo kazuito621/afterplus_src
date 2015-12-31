@@ -152,7 +152,6 @@ function ($timeout, storage, $filter) {
 					});
 				}, 1000);
 
-				// TODO .. fetch by month using their own FETCH CALLER!
 			
 				Api.getRecentReports({schedSince:4}).then(function (data) {
 					 deferred1.resolve(data)
@@ -435,9 +434,12 @@ function ($timeout, storage, $filter) {
 
 						// Triggered when a new date-range is rendered, or when the view type switches.
 						viewRender: function( view, cal ){
-							setTimeout(function(){ updateTotals(); },600);
-							s.pageVars.viewName=view.name;			
-							s.pageVars.startDate=view.start.format('YYYY-MM-DD');
+							setTimeout(function(){ updateTotals(); }, 600);
+							s.pageVars.viewName=view.name;	
+							if(view.name=='month')
+								s.pageVars.startDate = view.start.add(14, 'days').format('YYYY-MM-DD');
+							else
+								s.pageVars.startDate=view.start.format('YYYY-MM-DD');
 						},
 
 						// called for every job event box
@@ -547,7 +549,7 @@ function ($timeout, storage, $filter) {
 
 				  }; // end init Obj
 
-					if(s.pageVars.startDate) initObj.defaultDate=s.pageVars.startDate;	
+					if(s.pageVars.startDate && s.pageVars.startDate.match(/^2[0-9]{3}--/)) initObj.defaultDate=s.pageVars.startDate;	
 					if(s.pageVars.viewName) initObj.defaultView=s.pageVars.viewName;
 
 				  	elm = $element.find("#calendar");
@@ -801,7 +803,8 @@ function ($timeout, storage, $filter) {
 
 
 			/**
-			 * Calc total days of work, taking weekend work into account
+			 * Calc total days of work of an event, taking weekend work into account.
+			 * Also, do not include days in the past
 			 * @param e eventObj (which should have vars: start, end, work_weekend
 			 *						work_weekend: 0=no weekends, 1=work on sat, 2=work on sun, 3=work both
 			 * @return INT
@@ -1153,12 +1156,12 @@ function ($timeout, storage, $filter) {
 
 		// Change color of all calendar day box backgrounds, based on $ amount ... if they hit their goals
 		function updateDayGoalColor(){
-			if(!cal || !cal.fullCalendar) return false;
+			if(!cal || !cal.fullCalendar || !s.goalPerDay) return false;
 			var view=cal.fullCalendar('getView');
 			if(view.name=='month'){
 				var t,dt,st=view.start;
-				for( var d=moment(view.start); d.isBefore(view.end); d.add(1, 'days') ){
-					paintDay(d);
+				for( var d=moment(); d.isBefore(view.end); d.add(1, 'days') ){
+					paintDay(d, s.goalPerDay);
 				}
 			}
 
@@ -1173,8 +1176,7 @@ function ($timeout, storage, $filter) {
 		}
 
 
-		function paintDay(date){
-			var goal=s.goalPerDay;
+		function paintDay(date, goal){
 			var t=getDayTotal(date);
 			if(t===false) return;
 			var warnLevel=-1;
@@ -1196,8 +1198,7 @@ function ($timeout, storage, $filter) {
 
 			// get a total price for a given day
 			function getDayTotal(today){
-				if(!today) return false;
-				if(!cal || !cal.fullCalendar) return false;
+				if(!today || !cal || !cal.fullCalendar) return false;
 				var events=cal.fullCalendar('clientEvents');
 				var mev=[];  // matched events
 				var tot=0;

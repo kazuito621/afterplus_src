@@ -469,13 +469,14 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('tag-revision', 'Tag the current build revision', function () {
 	  grunt.task.requires('git-describe');
+		var hostname = require("os").hostname();
 
 		grunt.event.once('git-describe', function (rev) {
 			grunt.log.writeln("Git Revision: " + rev);
 
-			  grunt.file.write('dist/version.json', JSON.stringify({
+			  grunt.file.write('dist/version.txt', JSON.stringify({
 				 git_commit_id: rev.object,
-				 tag: rev.tag,
+			    build_host:hostname,
 				 date: grunt.template.today()
 			  }));
 

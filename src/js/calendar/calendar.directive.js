@@ -1039,6 +1039,9 @@ function ($timeout, storage, $filter) {
 
 				if(!opt || !opt.noRefresh)
 					cal.fullCalendar('refetchEvents');
+
+				updateTotalBoxes();
+				updateApprovedTotal();
 			}
 
 			s.updateStatus = function(s){
@@ -1094,7 +1097,7 @@ function ($timeout, storage, $filter) {
 		/** ========== PRICE CALCULATIONS PER DAY ============ **/
 
 		function updateTotals(){
-			updatePriceColors();
+			updateDayGoalColor();
 			updateTotalBoxes();
 			updateApprovedTotal();
 		}
@@ -1105,8 +1108,12 @@ function ($timeout, storage, $filter) {
 		 * Calc the prices for the totals of each status indicator at bottom of screen (ie. SCHED, COMPLETED, etc)
 		 */
 		var updateTotalBoxes = _.throttle(function(){
+
+			var juid = s.pageVars.job_userID;
+			var suid = s.pageVars.sales_userID;
+
 			// get latest estimate totals from server
-			Rest.one('estimateTotals').get().then(function(r){
+			Rest.one('estimateTotals').get({sales_userID:suid, job_userID:juid}).then(function(r){
 				if(!r) return;
 				console.debug(r  );
 				if(r.scheduled_all) s.total.scheduled_all = r.scheduled_all;
@@ -1136,7 +1143,7 @@ function ($timeout, storage, $filter) {
 
 
 		// Change color of all calendar day box backgrounds, based on $ amount ... if they hit their goals
-		function updatePriceColors(){
+		function updateDayGoalColor(){
 			if(!cal || !cal.fullCalendar) return false;
 			var view=cal.fullCalendar('getView');
 			if(view.name=='month'){

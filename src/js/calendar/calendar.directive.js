@@ -327,13 +327,11 @@ function ($timeout, storage, $filter) {
 			}
 
 			var initCalendar = function(){
-
-				  elm = $element.find("#calendar");
-				  window.cal = cal = elm.fullCalendar({
+				  var initObj = {
 						header: {
-							 left: 'prev,next today',
+							 left: 'prev,next',
 							 center: 'title',
-							 right: 'month,basicWeek'
+							 right: 'month,basicWeek,basicDay'
 						},
 						//defaultDate: '2015-02-12',
 						dropAccept: '.drop-accpted',
@@ -345,9 +343,11 @@ function ($timeout, storage, $filter) {
 						defaultTimedEventDuration: '04:00:00',
 						startEditable: true,
 						durationEditable: true,
+
 						events:  function(st, end, tz, callback){
 							callback( filterJobs() );
 						},
+
 						select: function (start, end) {
 							 var title = prompt('Event Title:');
 							 var eventData;
@@ -394,7 +394,6 @@ function ($timeout, storage, $filter) {
 											console.debug('!!!! job start is diff... not '+jobStart  );
 										}
 										*/
-										
 								  }
 							 });
 						},
@@ -433,8 +432,12 @@ function ($timeout, storage, $filter) {
 								$rootScope.$broadcast('alert', { msg:'$0 Total! Give me some jobs!', time: 9, type: 'd' });
 							}
 						},
+
+						// Triggered when a new date-range is rendered, or when the view type switches.
 						viewRender: function( view, cal ){
 							setTimeout(function(){ updateTotals(); },600);
+							s.pageVars.viewName=view.name;			
+							s.pageVars.startDate=view.start.format('YYYY-MM-DD');
 						},
 
 						// called for every job event box
@@ -542,7 +545,13 @@ function ($timeout, storage, $filter) {
 							setTimeout(function(){ updateTotals(); },600);
 						}
 
-				  }); // calendar obj instantiation
+				  }; // end init Obj
+
+					if(s.pageVars.startDate) initObj.defaultDate=s.pageVars.startDate;	
+					if(s.pageVars.viewName) initObj.defaultView=s.pageVars.viewName;
+
+				  	elm = $element.find("#calendar");
+					window.cal = cal = elm.fullCalendar( initObj );
 
 				} // initCalendar
 

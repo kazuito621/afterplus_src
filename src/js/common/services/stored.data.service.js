@@ -27,7 +27,6 @@ app.service('storedData',
           _.each(propertiesToCheck, function (item) {
             if (item.indexOf('.') !== -1) {		// if theres a ".", then split it
               var parts = item.split('.');
-				  console.debug(parts);
               if (!self.storedData[parts[0]]) 
                 self.storedData[parts[0]] = {};
 

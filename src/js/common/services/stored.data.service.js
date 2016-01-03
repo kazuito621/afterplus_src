@@ -22,14 +22,15 @@ app.service('storedData',
 
       this.getInitData = function () {
         self.storedData = storage.get('initData');
-        if (self.storedData === null) { // For the first time in life
+        if (!self.storedData) {  // For the first time in life
           self.storedData = {};
           _.each(propertiesToCheck, function (item) {
-            if (item.indexOf('.') !== -1) {
+            if (item.indexOf('.') !== -1) {		// if theres a ".", then split it
               var parts = item.split('.');
-              if (self.storedData[parts[0]] === null) {
+				  console.debug(parts);
+              if (!self.storedData[parts[0]]) 
                 self.storedData[parts[0]] = {};
-              }
+
               self.storedData[parts[0]][parts[1]] = {};
             } else {
               self.storedData[item] = {};

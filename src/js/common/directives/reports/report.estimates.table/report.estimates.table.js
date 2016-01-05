@@ -19,9 +19,7 @@ app.directive('reportEstimatesTable',
                 $scope.$watch('groupedItems', function () {
                     $scope.total = $scope.groupedItems.length;
                     $scope.limit = 100;
-                    $scope.timeoutID = window.setTimeout(function () {
-                        $scope.setLimit();
-                    }, 1000);
+                    $scope.timeoutID = $scope.setLimit();
                 });
 
                 //$scope.overLimit = false;
@@ -45,9 +43,7 @@ app.directive('reportEstimatesTable',
                         //Do Nothing
                     }
                     else {
-                        setTimeout(function () {  
                             $scope.setLimit();
-                        }, 1000);
                     }
                 }
             }]

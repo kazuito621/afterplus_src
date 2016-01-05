@@ -6,7 +6,7 @@
             <td>{{itm.senderEmail}} <i class='fa fa-arrow-right'></i> {{itm.recipientEmail}}
                 &nbsp; <a ng-if="itm.link" target='new' href='{{itm.link}}-int'>link</a>
             </td>
-            <td ng-bind="::itm.tstamp_sent || ''"></td>
+            <td>{{ ::itm.tstamp_sent || '' }}</td>
             <td>
                 <span ng-show="itm.resultMessage" ng-class="'emaillogResult '+itm.resultMessage" ng-bind='itm.resultMessage'></span>
             </td>

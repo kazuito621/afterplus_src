@@ -4,5 +4,5 @@
         ng-change="onChange({ typeId: model })"
         ng-disabled="data.length === 0">
     <option class="option" value="">Client Type</option>
-    <option class="option" ng-repeat="clientType in data" value="{{clientType.clientTypeID}}" ng-bind="::clientType.name"></option>
+    <option class="option" ng-repeat="clientType in data" value="{{clientType.clientTypeID}}">{{ ::clientType.name }}</option>
 </select>

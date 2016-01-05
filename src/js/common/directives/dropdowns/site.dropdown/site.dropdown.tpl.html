@@ -3,5 +3,5 @@
          ng-model="model"
          ng-change="onChange({ id: model })">
     <option class="option" value="">{{ data.length>0 | ifElse:'Property':'Loading...' }}</option>
-    <option class="option" ng-repeat="site in data" value="{{site.siteID}}" ng-bind="::site.siteName"></option>
+    <option class="option" ng-repeat="site in data" value="{{site.siteID}}">{{ ::site.siteName }}</option>
 </select>

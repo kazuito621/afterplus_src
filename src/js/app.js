@@ -231,17 +231,16 @@ angular.element(document).ready(function () {
  *      dbg(a,bc,d,e,'Output a bunch of stuff')
  */
 function dbg () {
-  'use strict';
   var loopLen = arguments.length;
   if (arguments.length > 1) {
     var lastArg = arguments[arguments.length - 1];
     if (typeof lastArg === 'string') {
       loopLen -= 1;
-      //console.error( lastArg + ' ------------' )
+      console.error( lastArg + ' ------------' )
     }
   }
   for (var i = 0; i < loopLen; i++) {
-    //console.error( arguments[i] )
+    console.error( arguments[i] )
   }
 }
 

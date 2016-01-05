@@ -417,16 +417,26 @@ function ($timeout, storage, $filter) {
 							}
 							view.lastDayClick=now;
 
+							// if in the past, dont do anything... todo ... this should calculate actual work done
+							if( date.format('YYYYMMDD') < moment().format('YYYYMMDD') ) return;
+
 							// dislay daily total
-							var tot=getDayTotal(date),diff;
+							var tot=getDayTotal(date, {debug:true}),diff;
 							if(tot>0){
 								niceTot = "$" + commaDigits(tot);
 								var msg=date.format("ddd M/DD") + " = " + niceTot;
 								var diff=Math.abs(Math.round(s.goalPerDay-tot));
-								var undOvr = (tot>s.goalPerDay) ? " over)" : " UNDER!)";
-								var alType = (tot>s.goalPerDay) ? "ok" : "d";
-								msg+=" ($"+diff+undOvr;
-								$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alType });
+								var alertType='ok';
+
+								// warning if too far over
+								if( tot > (s.goalPerDay*1.2) ){
+									msg += " ( $"+diff+" OVER BOOKED!)";
+									alertType='d';
+								}else if( tot < s.goalPerDay ){
+									msg += " ($"+diff+" Under Goal!)";
+									alertType='d';
+								}
+								$rootScope.$broadcast('alert', { msg:msg, time: 9, type: alertType });
 							}else{
 								$rootScope.$broadcast('alert', { msg:'$0 Total! Give me some jobs!', time: 9, type: 'd' });
 							}
@@ -804,14 +814,22 @@ function ($timeout, storage, $filter) {
 
 			/**
 			 * Calc total days of work of an event, taking weekend work into account.
-			 * Also, do not include days in the past
 			 * @param e eventObj (which should have vars: start, end, work_weekend
 			 *						work_weekend: 0=no weekends, 1=work on sat, 2=work on sun, 3=work both
+			 * @param opt - optional object:
+			 *						excludePast: boolean - dont include days in the past
 			 * @return INT
 			 */
-			var getTotalDaysOfWork = function(e){
+			var getTotalDaysOfWork = function(e, opt){
+				opt=opt||{};
 				var d1=e.start.format('YYYYMMDD');
 				var d2=e.end.format('YYYYMMDD');
+
+				// the way the fullcalendar works is that the end date is actually 1 day past...
+				// so if you dragged form 1/1 to 1/4, the end date in fullcalendar is 1/5...
+				if(d2>d1) d2-=1;
+
+				if(opt.excludePast) d1=moment().format('YYYYMMDD');
 
 				var d,c=0,day,ds;
 				for(var di=d1; di<=d2; di++){
@@ -1159,8 +1177,12 @@ function ($timeout, storage, $filter) {
 			if(!cal || !cal.fullCalendar || !s.goalPerDay) return false;
 			var view=cal.fullCalendar('getView');
 			if(view.name=='month'){
-				var t,dt,st=view.start;
+				var dow,t,dt,st=view.start;
 				for( var d=moment(); d.isBefore(view.end); d.add(1, 'days') ){
+					// dont paint weekends
+					dow=d.format('d');
+					if( dow==0 || dow==6 ) continue;
+
 					paintDay(d, s.goalPerDay);
 				}
 			}
@@ -1178,15 +1200,17 @@ function ($timeout, storage, $filter) {
 
 		function paintDay(date, goal){
 			var t=getDayTotal(date);
-			if(t===false) return;
+			if(t===false || t<1) return;
+
 			var warnLevel=-1;
 			if(t < goal * .75) warnLevel=2;		//red less than 75% of goal
 			else if(t < goal ) warnLevel=1;		//orng 75-100% of goal
+			else if(t >= (goal * 1.25)) warnLevel=3;			//dark green .. OVER GOAL!
 			else if(t>=goal) warnLevel=0;			//green 100%
 
 			if(warnLevel>=0){
-				//				green			orgn       red
-				var colors=['#a7f49f', '#fbc972', '#fbacac'];
+				//				green			orgn       red			dark grn
+				var colors=['#B4FAAC', '#FAD784', '#FCBDBD', '#08BD92'];
 				var clr = colors[warnLevel];
 				var dt=date.format('YYYY-MM-DD');
 			//	var cell=$('td[data-date="'+dt+'"]')
@@ -1196,13 +1220,20 @@ function ($timeout, storage, $filter) {
 		}
 
 
+
 			// get a total price for a given day
-			function getDayTotal(today){
+			// @param today - moment object
+			// @param opt - options object:
+			//						debug:true - print out logic for calculating days
+			function getDayTotal(today, opt){
 				if(!today || !cal || !cal.fullCalendar) return false;
+				opt=opt||{};
+
 				var events=cal.fullCalendar('clientEvents');
-				var mev=[];  // matched events
 				var tot=0;
 				_.each( events, function(e){
+					var jobTotal=0;
+
 					if(!e.todo_price) e.todo_price=e.total_price;
 					if(!e.todo_price){
 						var ev = getEventInfo(e.reportID);
@@ -1226,19 +1257,19 @@ function ($timeout, storage, $filter) {
 							e.end.isAfter(today,'day')
 						)
 					){
-						
-						var totalDays=getTotalDaysOfWork(e);
-						var p=parseFloat(parseFloat(e.todo_price) / totalDays);
-						tot+=p;
-						mev.push(e);
+						var totalDays=getTotalDaysOfWork(e, {excludePast:true});
+						jobTotal = parseFloat(parseFloat(e.todo_price) / totalDays);
 
-					// job on single day
-					}else if( e.start.isSame(today,'day')){ 
-						tot+=parseFloat(e.todo_price);
-						mev.push(e);
+					}else if( e.start.isSame(today,'day')){ 							// job on single day
+						var totalDays=1;
+						jobTotal = parseFloat(e.todo_price);
 					}
 					else{
 					}
+
+					if(opt.debug && jobTotal>0)
+						console.debug("ReportID: "+e.reportID+" $"+jobTotal+"  ("+totalDays+" days)");
+					tot += jobTotal;
 				});
 				return Math.round(tot);
 			}

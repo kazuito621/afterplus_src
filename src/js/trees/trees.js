@@ -141,7 +141,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.filterSearch = { species: '', treatments: '' };
             s.selected = { clientTypeID: '', clientID: '', siteID: '', treatmentIDs: [] };
             s.filteredClients = [];	// all/filtered list of clients based on selected Client Type
-            s.filteredSites = [];				// all/filtered list of sites based on selected client
+            s.filteredSites = null;				// all/filtered list of sites based on selected client
             s.trees = [];			// result set of trees based on site selected
             s.selectedTrees = []; 	// treeIDs that have been SELECTED for inclusion in estimate
 
@@ -158,7 +158,7 @@ var TreesCtrl = app.controller('TreesCtrl',
             s.selectedValues = [];
             s.thisYear = moment().format('YYYY');
 
-            s.filteredSites = [];//s.initData.sites;
+            //s.filteredSites = [];//s.initData.sites;
 
             s.activePopover = { elem: {}, itemID: undefined };
            

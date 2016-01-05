@@ -27,10 +27,11 @@ app.service('storedData',
           _.each(propertiesToCheck, function (item) {
             if (item.indexOf('.') !== -1) {		// if theres a ".", then split it
               var parts = item.split('.');
-              if (!self.storedData[parts[0]]) 
-                self.storedData[parts[0]] = {};
+				  if(!parts[0]) return;
+					if (!self.storedData[parts[0]]) 
+						 self.storedData[parts[0]] = {};
 
-              self.storedData[parts[0]][parts[1]] = {};
+					  self.storedData[parts[0]][parts[1]] = {};
             } else {
               self.storedData[item] = {};
             }
@@ -60,7 +61,7 @@ app.service('storedData',
 
               if (data[parts[0]] === undefined || data[parts[0]][parts[1]] === undefined) { return; }
 
-              if (self.storedData[parts[0]] === null) {
+              if (!self.storedData[parts[0]]) {
                 self.storedData[parts[0]] = {};
               }
 
@@ -107,8 +108,6 @@ app.service('storedData',
 
 
       this.getEstimateData = function () {
-        //if(self.storedEstimateData==null )   //For the first time
-        //    self.storedEstimateData=storage.get('estimateData');
         return storage.get('estimateData');
       };
 

@@ -344,7 +344,7 @@ function ($timeout, storage, $filter) {
 						durationEditable: true,
 
 						events:  function(st, end, tz, callback){
-							callback( filterJobs() );
+							callback( fetchJobsFilter() );
 						},
 
 						select: function (start, end) {
@@ -1072,6 +1072,7 @@ function ($timeout, storage, $filter) {
 
 				updateTotalBoxes();
 				updateApprovedTotal();
+				filterApprovals();
 			}
 
 			s.updateStatus = function(s){
@@ -1098,7 +1099,7 @@ function ($timeout, storage, $filter) {
 
 		// provides the events to the calendar, and filters
 		// the array based on filter_job_userID
-		function filterJobs(){
+		function fetchJobsFilter(){
 			var juid = s.pageVars.job_userID;
 			var suid = s.pageVars.sales_userID;
 			var o=[];
@@ -1121,6 +1122,40 @@ function ($timeout, storage, $filter) {
 				o.push(e);
 			});
 			return o;
+		}
+
+		function filterApprovals(){
+			var juid = s.pageVars.job_userID;
+			var suid = s.pageVars.sales_userID;
+
+			var o=[];
+			var filtersActive=0;
+			if(suid > -99) filtersActive++;
+			if(juid > -99) filtersActive++;
+
+			if(filtersActive==0){
+				s.unschedJobs = angular.copy(unschedBackup);
+				return;
+			}
+
+			angular.forEach(unschedBackup, function (item) {
+				var match=0;
+				if( juid > -99 ){
+					 if ( juid == item.job_userID || (juid == -98 && !item.job_userID) ){
+						match++;
+					 }
+				}
+
+				if( suid > -99 ){
+					 if ( suid == item.sales_userID || (suid == -98 && !item.sales_userID) ){
+						match++;
+					 }
+				}
+
+				if(match == filtersActive)	o.push(item);
+			});
+
+			s.unschedJobs = o;
 		}
 
 

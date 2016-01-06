@@ -148,6 +148,9 @@
 							title='Total paid since Jan 1 of this year'
 							>PAID</span></div>
 			</div>
+		<div style='padding:.5em 0 .5em 0;'>
+			Goal/Day:  $<a href="#" editable-text="pageVars.goalPerDay" onaftersave="onUpdateGoalPerDay()">{{ pageVars.goalPerDay || '0' }}</a>
+		</div>
 
 
 		</div>
@@ -168,9 +171,6 @@
 	</div><!-- }} col -->
 	<div class='col-md-9'>
 		<div id='calendar'></div>
-		<div>
-			Goal/Day:  $<a href="#" editable-text="goalPerDay" onaftersave="saveGoalPerDay()">{{ goalPerDay || '0' }}</a>
-		</div>
 	</div><!-- }} col -->
 </div><!-- }} row -->
 <div style='margin:1em;'> &nbsp; </div>

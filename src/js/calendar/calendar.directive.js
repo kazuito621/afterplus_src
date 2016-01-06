@@ -72,7 +72,6 @@ function ($timeout, storage, $filter) {
             s.schedJobs = [];
             s.unschedJobs = [];
             s.clickedEvent = {};
-				s.goalPerDay=(cfg && cfg.entity && cfg.entity.goal_per_day) ? cfg.entity.goal_per_day : 0;
 				s.total={approved:0, scheduled:0, completed:0, invoiced:0, paid:0};
             s.showWeekendWork = false;
             var elm, 
@@ -117,7 +116,7 @@ function ($timeout, storage, $filter) {
 					,sales_userID:-99
 					,job_userID:-99
 				}
-				storage.bind(s, 'pageVars', {defaultValue:default_settings, storeName:'calendar_pageVars'});
+				storage.bind(s, 'pageVars', {defaultValue:default_settings, storeName:'calendar_pageVars', goalPerDay:1000});
 
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
 				s.unschedJobs = [];
@@ -425,14 +424,14 @@ function ($timeout, storage, $filter) {
 							if(tot>0){
 								niceTot = "$" + commaDigits(tot);
 								var msg=date.format("ddd M/DD") + " = " + niceTot;
-								var diff=Math.abs(Math.round(s.goalPerDay-tot));
+								var diff=Math.abs(Math.round(s.pageVars.goalPerDay-tot));
 								var alertType='ok';
 
 								// warning if too far over
-								if( tot > (s.goalPerDay*1.2) ){
+								if( tot > (s.pageVars.goalPerDay*1.2) ){
 									msg += " ( $"+diff+" OVER BOOKED!)";
 									alertType='d';
-								}else if( tot < s.goalPerDay ){
+								}else if( tot < s.pageVars.goalPerDay ){
 									msg += " ($"+diff+" Under Goal!)";
 									alertType='d';
 								}
@@ -569,12 +568,8 @@ function ($timeout, storage, $filter) {
 
 
 
-
-
-			s.saveGoalPerDay = function(){
-                Api.saveEntityInfo({goal_per_day:s.goalPerDay});
-					 updateTotals();
-			}
+			s.onUpdateGoalPerDay = function(){ updateTotals(); }
+		
 
 			s.onMouseHoverJob = function () {
 				 $("#tooltip").removeClass("hide").addClass("show");
@@ -1209,7 +1204,7 @@ function ($timeout, storage, $filter) {
 
 		// Change color of all calendar day box backgrounds, based on $ amount ... if they hit their goals
 		function updateDayGoalColor(){
-			if(!cal || !cal.fullCalendar || !s.goalPerDay) return false;
+			if(!cal || !cal.fullCalendar || !s.pageVars.goalPerDay) return false;
 			var view=cal.fullCalendar('getView');
 			if(view.name=='month'){
 				var dow,t,dt,st=view.start;
@@ -1218,7 +1213,7 @@ function ($timeout, storage, $filter) {
 					dow=d.format('d');
 					if( dow==0 || dow==6 ) continue;
 
-					paintDay(d, s.goalPerDay);
+					paintDay(d, s.pageVars.goalPerDay);
 				}
 			}
 

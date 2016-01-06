@@ -590,7 +590,7 @@ function ($timeout, storage, $filter) {
 				$timeout.cancel(LSTO);
 				LSTO=$timeout(function(){
 					doSearch(s.searchtxt);
-				},550);
+				},700);
 			};
 
 			var doSearch = function (searchtxt) {
@@ -600,25 +600,9 @@ function ($timeout, storage, $filter) {
 					  s.unschedJobs = angular.copy(unschedBackup);
 					  var hiColor='';
 				 }else{
+					filterApprovals();
 				
-					var sched=[], unsched=[];
-
-					// filter approved jobs
-					  angular.forEach(unschedBackup, function (item) {
-							var titletxt = item.title;
-							if (titletxt !== undefined) {
-								item.siteName=''+item.siteName;
-								 if (
-									  item.siteName.toString().toLowerCase().indexOf(searchtxt) >= 0 ||
-									  item.reportID.toString().toLowerCase().indexOf(searchtxt) >= 0 ||
-									  item.name.toString().toLowerCase().indexOf(searchtxt) >= 0
-								 ) {
-									  unsched.push(item);
-								 }
-							}
-					  });
-						s.unschedJobs = unsched;
-
+					var sched=[]
 
 					// filter sched jobs
 					  angular.forEach(schedBackup, function (item) {
@@ -637,7 +621,6 @@ function ($timeout, storage, $filter) {
 						s.schedJobs = sched;
 						var hiColor=onFilterHighlightColor;
 					}
-				
 
 				 $('#searchJob').css('background-color', hiColor);
 				 cal.fullCalendar( 'refetchEvents' );
@@ -1119,14 +1102,24 @@ function ($timeout, storage, $filter) {
 			return o;
 		}
 
-		function filterApprovals(){
+
+/*
+> TODO .. not done:
+>  - filter after assignment
+>  - search after assignment'
+*/
+		function filterApprovals(opt){
 			var juid = s.pageVars.job_userID;
 			var suid = s.pageVars.sales_userID;
+			var search = s.searchtxt || '';
+			search = search.toLowerCase().trim();
 
 			var o=[];
 			var filtersActive=0;
 			if(suid > -99) filtersActive++;
 			if(juid > -99) filtersActive++;
+			if(search.length>1) filtersActive++;
+
 
 			if(filtersActive==0){
 				s.unschedJobs = angular.copy(unschedBackup);
@@ -1145,6 +1138,15 @@ function ($timeout, storage, $filter) {
 					 if ( suid == item.sales_userID || (suid == -98 && !item.sales_userID) ){
 						match++;
 					 }
+				}
+
+				if( search.length > 1 ){
+					var sn = String(item.siteName).toLowerCase();
+					if (
+							  sn.indexOf(search) >= 0 ||
+							  item.reportID.toString().indexOf(search) >= 0 ||
+							  item.name.toString().toLowerCase().indexOf(search) >= 0
+					 ) { match++; }
 				}
 
 				if(match == filtersActive)	o.push(item);

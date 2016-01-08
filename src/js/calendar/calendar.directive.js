@@ -116,7 +116,8 @@ function ($timeout, storage, $filter) {
 					,sales_userID:-99
 					,job_userID:-99
 				}
-				storage.bind(s, 'pageVars', {defaultValue:default_settings, storeName:'calendar_pageVars', goalPerDay:1000});
+				storage.bind(s, 'pageVars', 
+					{defaultValue:default_settings, storeName:'calendar_pageVars', goalPerDay:1000, sales_userIDs:[], job_userIDs:[]});
 
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
 				s.unschedJobs = [];

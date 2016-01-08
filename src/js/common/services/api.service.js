@@ -8,7 +8,7 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
   function (Rest, $rootScope, $q, $location, storage, $http, storedData) {
     'use strict';
     window.Api = this; // TODO: this is a strict antipattern. We should get rid of this.
-    var initData = {};
+    var initData = {clients:[]};
     var sendEvt = function (id, obj) {
       $rootScope.$broadcast(id, obj);
     };

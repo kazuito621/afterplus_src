@@ -161,11 +161,15 @@ app.service('Auth',
 
         // if custToken is just a number (reportID), and a user is already signed in,
         // then just use existing login info
+		  // REMOVED !! 1/8/2016 (tim). ... reason:
+		  // if user was already logged in, and this executed, then the initData would be
+		  // blank!! ... because the next block doesnt get called...
+		  /*
         if (!isNaN(custToken) && this.isSignedIn()) {
           def = $q.defer();
           def.resolve(this.data());
           return def.promise;
-        }
+        }*/
 
         if (waitForInit) {
           def = $q.defer();

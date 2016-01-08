@@ -113,11 +113,13 @@ function ($timeout, storage, $filter) {
 						invoiced: 0,
 						paid: 0
 					}
-					,sales_userID:-99
-					,job_userID:-99
+					,sales_userIDs:[]
+					,job_userIDs:[]
 				}
 				storage.bind(s, 'pageVars', 
 					{defaultValue:default_settings, storeName:'calendar_pageVars', goalPerDay:1000, sales_userIDs:[], job_userIDs:[]});
+				if(!s.pageVars.sales_userIDs) s.pageVars.sales_userIDs=[];
+				if(!s.pageVars.job_userIDs) s.pageVars.job_userIDs=[];
 
 			 	$rootScope.$broadcast('alert', {msg:'Loading...', time:8});
 				s.unschedJobs = [];
@@ -167,12 +169,6 @@ function ($timeout, storage, $filter) {
 
 					// fix dropdowns... just in case... cuz sometimes, they werent binding via angular!
 					setTimeout(function(){
-						if(s.pageVars.job_userID != -99)
-							$("#foreman_filter").val( s.pageVars.job_userID );
-
-						if(s.pageVars.sales_userID != -99)
-							$("#sales_filter").val( s.pageVars.sales_userID );
-
 						s.onFilterChange({noRefresh:true});
 					},400);
 
@@ -186,10 +182,12 @@ function ($timeout, storage, $filter) {
 			var processEstimates = function(type){
 				if(!estimates || !estimates.length) return;
 
-				var allJ=[{userID:-99, name:'All Foremen', count:0}, {userID:-98, name:'Unassigned', count:0}];
-				var allS=[{userID:-99, name:'All Sales', count:0}, {userID:-98, name:'Unassigned', count:0}];
+				var allJ=[{userID:-98, name:'Unassigned', count:0}];
+				var allS=[{userID:-98, name:'Unassigned', count:0}];
 				var jobUsers=[], salesUsers=[], suids={}, juids={};
-	
+				var ALL_INDEX=0;
+				var UNASSIGNED_INDEX=0;
+
 				angular.forEach(estimates, function (field) {
 							var obj=angular.copy(field);
 							obj.estimateUrl=obj.url;
@@ -216,24 +214,24 @@ function ($timeout, storage, $filter) {
 							if(obj.sales_userID){
 								if( suids[obj.sales_userID] ) suids[obj.sales_userID]++;
 								else suids[obj.sales_userID]=1;
-							}else allS[1].count++;
+							}else allS[UNASSIGNED_INDEX].count++;
 											
 							if(obj.job_userID){
 								if( juids[obj.job_userID] ) juids[obj.job_userID]++;
 								else juids[obj.job_userID]=1;
-							}else allJ[1].count++;
+							}else allJ[UNASSIGNED_INDEX].count++;
 
-							allS[0].count++;
-							allJ[0].count++;
+							//allS[ALL_INDEX].count++;
+							//allJ[ALL_INDEX].count++;
 					});
 
-					if( allS[1].count==0 ) allS.splice(1);
+					if( allS[UNASSIGNED_INDEX].count==0 ) allS.splice(1);
 					_.each(suids, function(ct,id){
 						salesUsers.push({userID: id, name: userID2Name(id), count:ct});
 					});
 					s.salesUsers = allS.concat(salesUsers);
 				
-					if( allJ[1].count==0 ) allJ.splice(1);
+					if( allJ[UNASSIGNED_INDEX].count==0 ) allJ.splice(1);
 					_.each(juids, function(ct,id){
 						jobUsers.push({userID: id, name: userID2Name(id), count:ct});
 					});
@@ -1040,14 +1038,12 @@ function ($timeout, storage, $filter) {
 				 }
 			});
 
-
 			// when filter drop down is changed
 			s.onFilterChange = function(opt){
-				$('#sales_filter').css('background-color', ( s.pageVars.sales_userID == -99 ) ? '' : onFilterHighlightColor);
-				$('#foreman_filter').css('background-color', ( s.pageVars.job_userID == -99 ) ? '' : onFilterHighlightColor);
+				$('#sales_filter').css('background-color', ( s.pageVars.sales_userIDs.length==0 ) ? '' : onFilterHighlightColor);
+				$('#foreman_filter').css('background-color', ( s.pageVars.job_userIDs.length==0 ) ? '' : onFilterHighlightColor);
 
-				if(!opt || !opt.noRefresh)
-					cal.fullCalendar('refetchEvents');
+				if(!opt || !opt.noRefresh) cal.fullCalendar('refetchEvents');
 
 				updateTotalBoxes();
 				updateApprovedTotal();
@@ -1079,23 +1075,24 @@ function ($timeout, storage, $filter) {
 		// provides the events to the calendar, and filters
 		// the array based on filter_job_userID
 		function fetchJobsFilter(){
-			var juid = s.pageVars.job_userID;
-			var suid = s.pageVars.sales_userID;
+			var juid = s.pageVars.job_userIDs;
+			var suid = s.pageVars.sales_userIDs;
 			var o=[];
+
 			_.each(s.schedJobs, function(e){
 				var show=0;
 
 				if(s.pageVars.showStatus[e.status]) show++;
 				else return;
 
-				if(suid==-99) show++;
-				else if(suid==-98 && !e.sales_userID) show++;
-				else if(e.sales_userID == suid) show++;
+				if(suid.length == 0) show++;
+				else if(suid.indexOf(-98)>=0 && !e.sales_userID) show++;
+				else if(suid.indexOf(e.sales_userID)>=0) show++;
 				else return;
-				
-				if(juid==-99) show++;
-				else if(juid==-98 && !e.job_userID) show++;
-				else if(e.job_userID == juid) show++;
+		
+				if(juid.length == 0) show++;
+				else if(juid.indexOf(-98)>=0 && !e.job_userID) show++;
+				else if(juid.indexOf(e.job_userID)>=0) show++;
 				else return;
 
 				o.push(e);
@@ -1112,15 +1109,15 @@ function ($timeout, storage, $filter) {
 >  - search after assignment'
 */
 		function filterApprovals(opt){
-			var juid = s.pageVars.job_userID;
-			var suid = s.pageVars.sales_userID;
+			var juid = s.pageVars.job_userIDs;
+			var suid = s.pageVars.sales_userIDs;
 			var search = s.searchtxt || '';
 			search = search.toLowerCase().trim();
 
 			var o=[];
 			var filtersActive=0;
-			if(suid > -99) filtersActive++;
-			if(juid > -99) filtersActive++;
+			if(suid.length > 0) filtersActive++;
+			if(juid.length > 0) filtersActive++;
 			if(search.length>1) filtersActive++;
 
 
@@ -1131,14 +1128,14 @@ function ($timeout, storage, $filter) {
 
 			angular.forEach(unschedBackup, function (item) {
 				var match=0;
-				if( juid > -99 ){
-					 if ( juid == item.job_userID || (juid == -98 && !item.job_userID) ){
+				if( juid.length > 0 ){
+					 if ( juid.indexOf(item.job_userID)>=0 || (juid.indexOf(-98)>=0 && !item.job_userID) ){
 						match++;
 					 }
 				}
 
-				if( suid > -99 ){
-					 if ( suid == item.sales_userID || (suid == -98 && !item.sales_userID) ){
+				if( suid.length > 0 ){
+					 if ( suid.indexOf(item.sales_userID)>=0 || (suid.indexOf(-98)>=0 && !item.sales_userID) ){
 						match++;
 					 }
 				}
@@ -1174,8 +1171,8 @@ function ($timeout, storage, $filter) {
 		 */
 		var updateTotalBoxes = _.throttle(function(){
 
-			var juid = s.pageVars.job_userID;
-			var suid = s.pageVars.sales_userID;
+			var juid = s.pageVars.job_userIDs.join(',');
+			var suid = s.pageVars.sales_userIDs.join(',');
 
 			// get latest estimate totals from server
 			Rest.one('estimateTotals').get({sales_userID:suid, job_userID:juid}).then(function(r){

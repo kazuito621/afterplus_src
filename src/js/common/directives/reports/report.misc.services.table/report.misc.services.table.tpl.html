@@ -19,7 +19,7 @@
 		  <td data-title="service_desc" colspan="{{ data.mode()=='trees' && '1' || '2' }}">
             <a href editable-text='item.desc' ng-if='auth.isAtleast("inventory")'>{{item.desc}}</a>
             <span ng-if='!auth.isAtleast("inventory")'>{{item.desc}}</span>
-				<div ng-if="item.preset_descript">
+				<div ng-if="item.preset_descript && data.mode()=='trees'">
 					<div style='color:#aa;'>This description will also appear in the estimate footer:</div>
 					<div style='border:1px solid #aaa; padding:.5em; font-size:.9em;'>
 						{{ item.preset_descript }}

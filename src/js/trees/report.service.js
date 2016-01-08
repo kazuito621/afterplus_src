@@ -115,6 +115,7 @@ app.service('ReportService',
 	this.addMiscService = function(desc,qty,price, presetServiceID, preset_descript){
 		var miscService = {desc:desc,quantity:qty, price:price, presetServiceID:presetServiceID};
 		if(preset_descript) miscService.preset_descript = preset_descript;
+		if(presetServiceID) miscService.presetServiceID = presetServiceID;
 		this.report.services.push(miscService);
 	}
 
@@ -144,6 +145,13 @@ app.service('ReportService',
 			tc=itm.treatmentTypeCode;
 			if(!tc) return;
 			codes.push(tc);
+		});
+
+		// now check for descriptions needed for misc service presets
+		_.each(this.report.services, function(serv){
+			if(serv.presetServiceID){
+				codes.push('psid-'+serv.presetServiceID);
+			}
 		});
 		codes=_.uniq(codes);
 

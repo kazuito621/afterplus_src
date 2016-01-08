@@ -112,8 +112,9 @@ app.service('ReportService',
 		return m;
 	}
 	
-	this.addMiscService = function(desc,qty,price){
-		var miscService = {desc:desc,quantity:qty, price:price};
+	this.addMiscService = function(desc,qty,price, presetServiceID, preset_descript){
+		var miscService = {desc:desc,quantity:qty, price:price, presetServiceID:presetServiceID};
+		if(preset_descript) miscService.preset_descript = preset_descript;
 		this.report.services.push(miscService);
 	}
 

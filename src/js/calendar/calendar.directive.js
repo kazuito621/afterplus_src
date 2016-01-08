@@ -1105,6 +1105,8 @@ function ($timeout, storage, $filter) {
 
 /*
 > TODO .. not done:
+>  x - bug: filter, then search
+>  x - search then filter
 >  - filter after assignment
 >  - search after assignment'
 */

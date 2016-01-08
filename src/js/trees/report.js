@@ -285,15 +285,22 @@ var ReportCtrl = app.controller(
 				});
 			}
 
-            s.addMiscService = function (desc, qty, price) {
-                RS.addMiscService(desc, qty, price);
+            s.addMiscService = function (desc, qty, price, presetServiceID) {
+                RS.addMiscService(desc, qty, price, presetServiceID, s.service.preset_descript);
                 s.service.desc = "";
                 s.service.quantity = 1;
                 s.service.price = "";
+					 s.service.presetServiceID=0;
+					 s.preset_descript='';
             };
             s.setServiceDetails=function(service){
                 s.service.desc=service.name;
                 s.service.price=service.price;
+					 s.service.preset_descript=service.descript;
+					 s.service.presetServiceID=service.serviceID;
+					 setTimeout(function(){
+					 	$('button#addMiscService').click();
+					},300);
             }
             s.approveEstimate = function(){
                 s.disableApproveButton = true;

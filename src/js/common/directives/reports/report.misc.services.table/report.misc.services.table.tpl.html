@@ -19,6 +19,12 @@
 		  <td data-title="service_desc" colspan="{{ data.mode()=='trees' && '1' || '2' }}">
             <a href editable-text='item.desc' ng-if='auth.isAtleast("inventory")'>{{item.desc}}</a>
             <span ng-if='!auth.isAtleast("inventory")'>{{item.desc}}</span>
+				<div ng-if="item.preset_descript">
+					<div style='color:#aa;'>This description will also appear in the estimate footer:</div>
+					<div style='border:1px solid #aaa; padding:.5em; font-size:.9em;'>
+						{{ item.preset_descript }}
+					</div>
+				</div>
         </td>
             <td data-title="service_quantity">
                 <a href editable-text='item.quantity' ng-if='auth.isAtleast("inventory")'>{{item.quantity}}</a>
@@ -66,7 +72,7 @@
 									</span>
             </td>
             <td class="text-right">
-                <button class="btn btn-red clr-white" ng-click="addMiscService(service.desc,service.quantity,service.price)">ADD</button>
+                <button id='addMiscService' class="btn btn-red clr-white" ng-click="addMiscService(service.desc,service.quantity,service.price,service.presetServiceID)">ADD</button>
             </td>
 				<td></td>
         </tr>

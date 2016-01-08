@@ -2,6 +2,6 @@
 <select id="select_site" class='inpt inpt-select' ng-disabled="data.length === 0"
          ng-model="model"
          ng-change="onChange({ id: model })">
-    <option class="option" value="">{{ data | ifElse: ((data.length>0)| ifElse:'Property':'No Properties Here') :'Loading...' }}</option>
+    <option class="option" value="">{{ data | ifElse: ((data.length>0)| ifElse:'Property':'(No Properties)') :'Loading...' }}</option>
     <option class="option" ng-repeat="site in data" value="{{site.siteID}}">{{ ::site.siteName }}</option>
 </select>

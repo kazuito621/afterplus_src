@@ -229,7 +229,7 @@
                         <h6 ng-if="report.notes" class="section-sub-title" style='padding-bottom:1em;'>Notes</h6>
                         <span ng-bind-html="report.notes"></span><br><br>
 
-                        <h6 ng-if="treatmentDescriptions.length" class="section-sub-title">Definition of Treatments</h6>
+                        <h6 ng-if="treatmentDescriptions.length" class="section-sub-title" style='margin-bottom:1em;'>Definition of Treatments</h6>
                         <div ng-repeat=" desc in treatmentDescriptions ">
                             <p><span style='font-weight:bold;'>{{desc.treatmentType}}</span> - {{desc.desc}}</p><br>
                         </div>

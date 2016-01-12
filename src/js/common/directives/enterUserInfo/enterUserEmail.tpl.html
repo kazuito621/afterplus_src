@@ -1,0 +1,30 @@
+<div class='popover-container' style="position: absolute;">
+    <div class="alert alert-warning alert-dismissable" tabindex="-1" role="dialog">
+        <div>
+            <label style="width: 100%">Enter user email</label>
+            <form class="form-inline">
+                <div class="row beBlock" style="margin: 15px 2px 10px 20px;">
+                    <div>
+                        <label class="" style="font-weight: bold;width: 35%">
+                            <span>Email</span>
+                        </label>
+                        <input type="text" style="width: 63%" ng-model="email" placeholder="Enter E-mail">
+                    </div>
+                    <div style="width: 100%;margin: 2px">
+                        <button type="button" ng-disabled="" class="btn btn-default" ng-click="ok();">
+                            <i class="fa fa-check"></i>
+                            Save user
+                        </button>
+
+                        <button type="button" class="btn btn-default " ng-click="cancel()">
+                            <i class="fa fa-remove"></i>
+                            Close
+                        </button>
+                    </div>
+                    <br>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

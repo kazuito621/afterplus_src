@@ -136,6 +136,16 @@ app.directive('addEditUserModal',
                     modal.hide();
                 };
 
+                var isValidEmail = function() {
+                    console.log('new contact');
+                    console.log(scope.newContact);
+                    if (scope.newContact.email==undefined || !scope.newContact.email.match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+                        return false;
+                    }
+
+                    return true;
+                }
+
                 var passMisMatch = function(){
                     if(scope.newContact.newPass!=undefined || scope.newContact.newPass!=''){
                         if(scope.newContact.newPass!=scope.newContact.newPassConfirm){
@@ -146,10 +156,19 @@ app.directive('addEditUserModal',
                 }
 
                 scope.SaveUser = function (event) {
+                    if (!isValidEmail()) {
+                        scope.emailNotValid = true;
+                        return;
+                    } else {
+                        scope.emailNotValid = false;
+                    }
+
                     if(passMisMatch()==true){
                         scope.passMisMatch = true;
                         return;
-                    } else scope.passMisMatch = false;
+                    } else {
+                        scope.passMisMatch = false;
+                    }
                     var user={};
                     if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
                         scope.newContact.role==undefined){

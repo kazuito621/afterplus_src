@@ -1,4 +1,7 @@
 <div class='container' ng-controller="SitesCtrl">
+    <react-component name="Sites" props="{{s.siteName}}" watch-depth="reference"/>
+
+<!--
     <div class="table-header">
         <h1 class="pull-left">Properties</h1>
          <button type="button"
@@ -11,11 +14,11 @@
                 clients="initData.clients"
                 mode="new"
                 data-animation="am-fade-and-scale">
-               		<i class="fa fa-plus "></i> 
+               		<i class="fa fa-plus "></i>
 					New Property</button>
         <div class="clearfix"></div>
     </div>
-	<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
+	<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'>
 	<a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''" class='fa fa-times _red _size5 hand'></a>
 	<span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
 
@@ -70,8 +73,8 @@
                        class='fa fa-user red hand' bs-tooltip title='Edit Contacts for {{s.siteName}}'></a>
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
-					<a ng-show="s.userCustCount<1 || s.userStaffCount<1" site-users-edit-modal site="s" 
-					   class="fa fa-frown-o _red _size6 hand" bs-tooltip title='Add Contacts for {{s.siteName}}'></a> 
+					<a ng-show="s.userCustCount<1 || s.userStaffCount<1" site-users-edit-modal site="s"
+					   class="fa fa-frown-o _red _size6 hand" bs-tooltip title='Add Contacts for {{s.siteName}}'></a>
 					&nbsp;
 					<i site-edit-modal clients="initData.clients" site-id="s.siteID" on-save="refreshSites"
 					   class="fa fa-pencil _grey _size6 hoverDisplay" title="Edit" bs-tooltip style="cursor: pointer;"></i> &nbsp;
@@ -93,7 +96,7 @@
     <div class="action-float-bar" ng-show="allSites.selectedIds.length > 0">
         <div class="container">
             <div class="action-float-bar-inner">
-				<i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp; 
+				<i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp;
                 <a href="#" ng-if="auth.isAtleast('inventory')" ng:cloak site-users-multi-edit-modal
                    on-save="refreshSites()" clients="initData.clients" sites="sites" pre-selected="allSites.selectedIds">
                     Assign Users
@@ -107,4 +110,4 @@
             </div>
         </div>
     </div>
-</div>
+ --></div>

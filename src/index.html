@@ -41,7 +41,7 @@
     <!-- endbuild -->
 
     <!-- build:css({.tmp,src}) -->
- 
+
     <link href="js/calender/css/jquery-ui.css" rel="stylesheet" />
     <!-- endbuild -->
 
@@ -53,7 +53,7 @@
 <body  ng-controller="MainCtrl">
 <noscript>
 	<div style='background:#f33; color:#fff; font-size:16pt; padding:1em; text-align:center;'>
-		Error: You have javascript disabled! &nbsp; 
+		Error: You have javascript disabled! &nbsp;
 		<a style='color:#fff; font-size:.8em; text-decoration:underline;' href='http://www.enable-javascript.com/' target=_new>How to enable Javascript</a>
 	</div>
 </noscript>
@@ -61,17 +61,17 @@
 <!--[if lte IE 7]>
 <div class='browserhappy' style='background:#FF851B; color:#000; font-size:17pt; padding:1em; text-align:center;'>
 	<img src='img/icon.sadface.png' style='width:40px; height:auto;vertical-align:middle;'> &nbsp;
-	You have an old, insecure browser. 
+	You have an old, insecure browser.
 	<a style='color:#000; text-decoration:underline;' href="http://browsehappy.com/">Please upgrade</a> and browse happy!
 </div>
 <![endif]-->
 
-    
+
     <header ng-include="'js/main/header.tpl.html'" ng-if="!isMobile"></header>
     <div class="arbor-plus-app-loading" ng-animate-children id="loadingDiv"> <!--Using this loadingDiv id name in report.js-->
 
 		<!--
-			HACKY CODE WARNING: I'm putting Style block inside directive so that it 
+			HACKY CODE WARNING: I'm putting Style block inside directive so that it
 			will be removed from the DOM when we remove the directive container.
 		-->
 
@@ -116,7 +116,7 @@
     <![endif]-->
 
     <script src="patch/ng-ckeditor/libs/ckeditor/ckeditor.js"></script>
-    
+
 
     <!-- build:js js/vendor.js -->
     <!-- bower:js -->
@@ -153,10 +153,11 @@
 
     <!--<script src="http://jsconsole.com/remote.js?58AB45C5-D7E1-4646-B155-AD880A8702ED"></script>-->
     <!-- build:js({.tmp,src}) js/scripts.js -->
-    <script src="js/config.base.js"></script>    
-    <script src="js/config.local.js"></script>    
+    <script src="js/config.base.js"></script>
+    <script src="js/config.local.js"></script>
     <script src="compiled-tpl/templates.js"></script>
     <script src="js/trees/googleMapInitializer.js"></script>
+    <script src="js/react/sites.js"></script>
     <script src="js/app.js"></script>
     <script src="js/common/services/auth.service.js"></script>
     <script src="js/common/services/api.service.js"></script>
@@ -253,6 +254,6 @@
     <script src="js/users/users.js"></script>
 
     <!-- endbuild -->
-    <script src="/go/config.js"></script>    
+    <script src="/go/config.js"></script>
 </body>
 </html>

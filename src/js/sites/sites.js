@@ -1,7 +1,13 @@
 /*global dbg*/
 var SitesCtrl = app.controller('SitesCtrl',
-    ['$scope', '$route', '$location', 'SiteModelUpdateService', 'Api', '$popover', 'Auth', 'SortHelper', '$q', '$timeout', 'FilterHelper',
-        function ($scope, $route, $location, SiteModelUpdateService, Api, $popover, Auth, SortHelper, $q, $timeout, FilterHelper) {
+    ['$scope', '$route', '$location',
+     'SiteModelUpdateService', 'Api',
+     '$popover', 'Auth', 'SortHelper',
+     '$q', '$timeout', 'FilterHelper',
+        function ($scope, $route, $location,
+                  SiteModelUpdateService, Api,
+                  $popover, Auth, SortHelper,
+                  $q, $timeout, FilterHelper) {
             'use strict';
             var s = window.scs = $scope;
             var myStateID = 'sites',

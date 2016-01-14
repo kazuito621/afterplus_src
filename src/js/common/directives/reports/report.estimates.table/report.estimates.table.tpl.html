@@ -86,7 +86,7 @@
 
                             <td data-title="listing_options" class="td-action">
                                 <a href ng-click="removeTreatmentFromEstimate(item.treeID, treatment.treatmentTypeCode)" class='row-action' ng-if="auth.is('admin')">
-                                    <i class="fa fa-times clr-danger _size5 hoverDisplay"></i>
+                                    <i class="fa fa-times clr-danger _size5 hoverDisplay" onclick='$(this).removeClass("fa-times").addClass("fa-spinner").addClass("fa-spin")'></i>
                                 </a>
                             </td>
                         </tr>

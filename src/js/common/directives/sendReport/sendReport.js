@@ -108,8 +108,6 @@ app.directive('sendReport',
                     scope.emailRpt.disableSendBtn = true;
                     scope.emailRpt.sendBtnText = 'Sending and verifying...';
                     isValidEmails().then(function(valid){
-                        console.log('Email validation promise:' + valid);
-                        console.log(valid.indexOf(false));
                         if(valid.indexOf(false)!=-1) {
                             scope.emailRpt.disableSendBtn = false;
                             scope.emailRpt.sendBtnText = 'Send';
@@ -148,7 +146,6 @@ app.directive('sendReport',
                 };
 
                 var isValidEmails = function(){
-                    console.log(scope.report);
                     var deferred = $q.defer();
 
                     var apis=[];
@@ -167,8 +164,6 @@ app.directive('sendReport',
 
 
                     $q.all(apis).then(function(values) {
-                        console.log('deferred:');
-                        console.log(values);
                         deferred.resolve(values);
                     });
 
@@ -219,7 +214,6 @@ app.directive('sendReport',
 
                     $q.all(apis)
                         .then(function(values) {
-                            console.log(values);
                             deferred.resolve(values);
                         });
 
@@ -255,7 +249,6 @@ app.directive('sendReport',
                         }
                     };
                     sm.ok = function(){
-                        console.log(validateEmail(this.customer.email));
                         if( validateEmail(this.customer.email)) {
 
                             if (this.customer.userID != undefined) {

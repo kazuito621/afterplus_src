@@ -8,7 +8,8 @@
                         <label class="" style="font-weight: bold;width: 35%">
                             <span>Email</span>
                         </label>
-                        <input type="text" style="width: 63%" ng-model="email" placeholder="Enter E-mail">
+                        <input type="text" style="width: 63%" ng-model="customer.email" placeholder="Enter E-mail">
+                        <span ng-if="!validEmail" class="text-danger">Email address is invalid!</span>
                     </div>
                     <div style="width: 100%;margin: 2px">
                         <button type="button" ng-disabled="" class="btn btn-default" ng-click="ok();">

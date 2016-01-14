@@ -58,6 +58,7 @@ app.directive('sendReport',
                     scope.emailRpt.cc_email = '';
 
                     scope.emailRpt.ccEmails = [];
+                    scope.emailRpt.contactUsers = [];
 
                     scope.emailRpt.senderEmail = Auth.data().email;
 
@@ -69,7 +70,7 @@ app.directive('sendReport',
 
                     if(scope.report.customer){
                         scope.report.customer.forEach(function(item){
-                            scope.emailRpt.contactEmails.push(item.email);
+                            scope.emailRpt.contactUsers.push({'email':item.email, 'userID': item.userID, 'fName': item.fName, 'lName': item.lName});
                         });
                         scope.emailRpt.contactEmail = scope.emailRpt.contactEmails.join(', ');
                         contactEmailsBackup = angular.copy(scope.emailRpt.contactEmails);
@@ -81,14 +82,16 @@ app.directive('sendReport',
                                     return;
                                 }
                                 var emList = [];
+                                var userList = [];
                                 _.each(res, function (r) {
                                     if (r && r.email) {
                                         emList.push(r.email);
+                                        userList.push({'email':r.email, 'userID': r.userID, 'fname': r.fName, 'lname': r.lName});
                                     }
                                 });
                                 if (emList) {
+                                    scope.emailRpt.contactUsers = userList;
                                     scope.emailRpt.contactEmail = emList.join(', ');
-                                    scope.emailRpt.contactEmails = emList;
                                     contactEmailsBackup = angular.copy(emList);
                                 }
                             });
@@ -123,7 +126,8 @@ app.directive('sendReport',
                                 item.email = item.text;
                             });
                             // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                            scope.emailRpt.contactEmail =angular.copy(scope.emailRpt.contactEmails);
+
+                            scope.emailRpt.contactEmail = scope.emailRpt.contactUsers;
                             scope.emailRpt.cc_email = _.pluck(scope.emailRpt.ccEmails, 'text').join(', ');
                             scope.emailRpt.reportID = scope.report.reportID;
                             Api.sendReport(scope.emailRpt)
@@ -149,14 +153,12 @@ app.directive('sendReport',
 
                     var apis=[];
 
-                    _.each(scope.emailRpt.contactEmails,function(item, index){
+                    _.each(scope.emailRpt.contactUsers,function(item, index){
                         var deferred = $q.defer();
                         apis.push(deferred.promise);
 
-                        var customer = scope.report.customers[index];
-
-                        if( !customer.email.match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/) ){
-                            enterUserEmail(customer, deferred);
+                        if( !validateEmail(item.email) ){
+                            enterUserEmail(item, deferred);
                             deferred.resolve(false);
                         } else {
                             deferred.resolve(true);
@@ -173,18 +175,25 @@ app.directive('sendReport',
                     return deferred.promise;
                 }
 
+                var validateEmail = function(email) {
+                    if(email.match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/) ){
+                        return true;
+                    }
+
+                    return false;
+                }
+
                 var isNewEmails = function(){
                     var deferred = $q.defer();
                     var newAdded = [];
-                    console.log(contactEmailsBackup)
-                    console.log(scope.emailRpt.contactEmails)
-                    _.each(scope.emailRpt.contactEmails,function(item){
-                        var idx = contactEmailsBackup.indexOf(item.text);
+
+                    _.each(scope.emailRpt.contactUsers,function(item){
+                        var idx = contactEmailsBackup.indexOf(item.email);
                         //var idx = _.findObj(contactEmailsBackup, 'text', item.text,true);
                         if (idx == -1){
-                            var alreadySkippedIdx = alreadySkipped.indexOf(item.text);
+                            var alreadySkippedIdx = alreadySkipped.indexOf(item.email);
                             if(alreadySkippedIdx == -1) {
-                                newAdded.push(item.text);
+                                newAdded.push(item.email);
                             }
                         }
                     });
@@ -219,8 +228,8 @@ app.directive('sendReport',
                 var enterUserEmail = function (customer, deferred) {
                     var sm= scope.$new();
 
+                    sm.validEmail = true;
                     sm.customer = customer;
-                    sm.email = customer.email;
                     sm.deferred = deferred;
 
                     if (sm.popover && typeof sm.popover.hide === 'function') {
@@ -246,16 +255,19 @@ app.directive('sendReport',
                         }
                     };
                     sm.ok = function(){
-                        console.log(this.email);
-                        var idx = _.findObj(scope.report.customers, 'userID', sm.customer.userID, true);
-                        scope.report.customers[idx].email = this.email;
-                        scope.emailRpt.contactEmails[idx].text = this.email;
+                        console.log(validateEmail(this.customer.email));
+                        if( validateEmail(this.customer.email)) {
 
-                        Api.user.update(scope.report.customers[idx], sm.customer.userID);
+                            if (this.customer.userID != undefined) {
+                                Api.user.update(this.customer, this.customer.userID);
+                            }
 
-                        if (sm.popover && typeof sm.popover.hide === 'function') {
-                            modal.off();
-                            sm.popover.hide();
+                            if (sm.popover && typeof sm.popover.hide === 'function') {
+                                modal.off();
+                                sm.popover.hide();
+                            }
+                        } else {
+                            sm.validEmail = false;
                         }
                     };
                 }
@@ -286,10 +298,10 @@ app.directive('sendReport',
                         }
                     };
                     sm.ok = function(){
-                        var idx = _.findObj(scope.emailRpt.contactEmails, 'text', sm.email, true);
-                        scope.emailRpt.contactEmails[idx].fname = this.fname;
-                        scope.emailRpt.contactEmails[idx].lname = this.lname;
-                        scope.emailRpt.contactEmails[idx].phone = this.phone;
+                        var idx = _.findObj(scope.emailRpt.contactUsers, 'email', sm.email, true);
+                        scope.emailRpt.contactUsers[idx].fname = this.fname;
+                        scope.emailRpt.contactUsers[idx].lname = this.lname;
+                        scope.emailRpt.contactUsers[idx].phone = this.phone;
                         alreadySkipped.push(email);
                         if (sm.popover && typeof sm.popover.hide === 'function') {
                             modal.off();

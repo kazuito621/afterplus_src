@@ -146,7 +146,9 @@
         <!--Directive is not performing anything what is the point having simple HTML in directive-->
         <div class="estimate-actions" ng-if="data.mode()=='trees'">
 
-            <button class="btn btn-red clr-white" ng-click="saveReport()">Save</button>
+            <button id='saveReport' class="btn btn-red clr-white" ng-click="saveReport()" 
+					onclick='$(this).prop("disabled",true).text("Saving...");var t=this;setTimeout(function(){$(t).prop("disabled", false).text("Save");},4000)'
+					>Save</button>
 
             <!--<button class="btn btn-red clr-white"
 						ng-if='report.status!="completed" && report.status!="invoiced" && report.status!="paid"'

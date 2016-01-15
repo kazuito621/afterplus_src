@@ -68,8 +68,10 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
           case 'completed': // show COMPL, SEND INV, MARK AS INV, PAID
             o[5].txt = 'MARK AS INVOICED';
+				o[3].id = 'uncomplete';
+				o[3].txt = 'UN-COMPLETE'
             o.splice(5, 0, {id: 'send_invoice', txt: 'SEND INVOICE'});
-            return o.splice(4, 4);
+            return o.splice(3, 5);
 
           case 'invoiced': // show COMPL, INV, RESEND INVOICE, PAID
             o.splice(5, 0, {id: 'send_invoice', txt: 'RE-SEND INVOICE'});
@@ -213,7 +215,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         // currently, both ok and fail, still calls the then()
         Api.setReportStatus(rpt.reportID, rpt.status).then(function (d) {
           var m = (d && d.msg) ? d.msg : '';
-          if ((!m || !m.match(/updated/i)) && rpt.prevStatus) {
+          if ((!m || !m.match(/updated|reverted/i)) && rpt.prevStatus) {
             rpt.status = rpt.prevStatus;
           }
         });
@@ -355,12 +357,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       s.setReportStatus = function (rpt, prev) {
         rpt.prevStatus = prev;
         var st = rpt.status;
-        if (('completed' === st && 'invoiced' !== prev) || ('paid' === st)) {
-          if (!confirm('Change "' + rpt.name + '" to ' + st.toUpperCase() + "?\n(THIS CANNOT BE UNDONE)")) {
-            rpt.status = prev;
-            return;
-          }
-        }
 
         // trigger SEND INVOICE directive if needed
         if (st === 'send_invoice') {

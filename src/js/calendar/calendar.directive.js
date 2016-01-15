@@ -1181,15 +1181,14 @@ function ($timeout, storage, $filter) {
 			// get latest estimate totals from server
 			Rest.one('estimateTotals').get({sales_userID:suid, job_userID:juid}).then(function(r){
 				if(!r) return;
-				console.debug(r  );
-				if(r.scheduled_all) s.total.scheduled_all = r.scheduled_all;
+				if(r.scheduled_all) s.total.scheduled_all = r.scheduled_all.price;
 
 				// new: not doing sched... since that would only be totals for this month
 				// using API call above to get totals for ALL
 				var stats=['in_prog_todo', 'in_prog_done', 'scheduled','completed','invoiced','paid'];
 				_.each(stats, function(s){
 					if(!r[s]) return;
-					var p = '$' + $filter('shortenNumber')(r[s]);
+					var p = '$' + $filter('shortenNumber')(r[s].price);
 					var c = $('.small-tag.' + s);
 					if(c) c.text(c.attr('data-text')+': '+p);
 				});

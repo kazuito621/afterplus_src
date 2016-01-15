@@ -20,23 +20,23 @@
         <div class='pull-right topMargin5'>
             <div class="btn-group" bs-radio-group id="estimatesFilters" ng-model="status_filters_2">
                 <label ng-click="setStatusFilter('all')" class="btn btn-default">
-                    <input type="radio" value="all"> All</label>
+                    <input type="radio" value="all"> <span>All</span></label>
                 <label ng-click="setStatusFilter('draft')" class="btn btn-default">
-                    <input type="radio" value="draft"> Draft</label>
+                    <input type="radio" value="draft"> <span>Draft</span></label>
                 <label ng-click="setStatusFilter('sent')" class="btn btn-default">
-                    <input type="radio" value="sent"> Sent</label>
-                <label ng-click="setStatusFilter('approved')" class="btn btn-default">
-                    <input type="radio" value="approved"> Appr</label>
-                <label ng-if="auth.hasPerm('calendar_view')" ng-click="setStatusFilter('scheduled')" class="btn btn-default">
-                	<input ng-if="auth.hasPerm('calendar_view')" type="radio" value="scheduled"> Sched</label>
-                <label ng-if="auth.hasPerm('calendar_view')" ng-click="setStatusFilter('in_prog')" class="btn btn-default">
-                	<input ng-if="auth.hasPerm('calendar_view')" type="radio" value="in_prog"> In Prog</label>
-                <label ng-click="setStatusFilter('completed')" class="btn btn-default">
-                    <input type="radio" value="completed"> Done</label>
-                <label ng-click="setStatusFilter('invoiced')" class="btn btn-default">
-                    <input type="radio" value="invoiced"> Invoiced</label>
-                <label ng-click="setStatusFilter('paid')" class="btn btn-default">
-                    <input type="radio" value="paid"> Paid</label>
+                    <input type="radio" value="sent"> <span>Sent</span></label>
+                <label ng-click="setStatusFilter('approved')" class="btn btn-default" id='approved'>
+                    <input type="radio" value="approved"> <span>Appr</span></label>
+                <label ng-if="auth.hasPerm('calendar_view')" ng-click="setStatusFilter('scheduled')" class="btn btn-default" id='scheduled'>
+                	<input ng-if="auth.hasPerm('calendar_view')" type="radio" value="scheduled"> <span>Sched</span></label>
+                <label ng-if="auth.hasPerm('calendar_view')" ng-click="setStatusFilter('in_prog')" class="btn btn-default" id='in_prog'>
+                	<input ng-if="auth.hasPerm('calendar_view')" type="radio" value="in_prog"> <span>In Prog</span></label>
+                <label ng-click="setStatusFilter('completed')" class="btn btn-default" id='completed'>
+                    <input type="radio" value="completed"> <span>Done</span></label>
+                <label ng-click="setStatusFilter('invoiced')" class="btn btn-default" id='invoiced'>
+                    <input type="radio" value="invoiced"> <span>Invoiced</span></label>
+                <label ng-click="setStatusFilter('paid')" class="btn btn-default" id='paid'>
+                    <input type="radio" value="paid"> <span>Paid</span></label>
                 <span class="lnk leftSpace10">
                     <a href ng-click='reset()' bs-tooltip title='Reset'>
                         <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>

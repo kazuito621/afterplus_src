@@ -1,6 +1,6 @@
 var EstimatesListCtrl = app.controller('EstimatesListCtrl',
-  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
-    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
+  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper', 'Restangular',
+    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest) {
       'use strict';
       // Local vars initialization
       var s = window.ecs = $scope;
@@ -199,8 +199,46 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           if (!s.data.salesForemanMode) {
             s.data.salesForemanMode = 'sales';
           }
+
+			 getEstimateTotals();
         });
+
+			setInterval(function(){ getEstimateTotals(); }, 60000 );
       };
+
+
+		var getEstimateTotals = function(){
+			Rest.one('estimateTotals').get().then(function(r){
+				if(!r || !r.approved) return;
+
+				var itms='approved,scheduled,in_prog,completed,invoiced'.split(',');
+				_.each(itms, function(itm){
+					var itmVar = (itm=='in_prog') ? 'in_prog_todo' : itm;
+					var clr = (itm=='approved' || itm=='sched' || itm=='completed') ? '#f33' : '#ccc';
+					var el = $('label#'+itm+' span');
+					if(!el || !el.attr) return;
+
+					if(!el.attr('origText')) el.attr('origText', el.text());
+
+					if(r[itmVar].count > 0)
+						el.html( el.attr('origText') + ' <span style="color:'+clr+'">('+r[itmVar].count+')</span>' );
+					else
+						el.text( el.attr('origText') );
+
+				});
+
+				return;
+
+				if(r.approved.count) $('label#approved span').text('Appr ('+r.approved.count+')')
+				if(r.scheduled.count) $('label#scheduled span').text('Sched ('+r.scheduled.count+')')
+				if(r.in_prog_todo.count) $('label#in_prog span').text('In Prog ('+r.in_prog_todo.count+')')
+				if(r.completed.count) $('label#completed span').text('Done ('+r.completed.count+')')
+				if(r.invoiced.count) $('label#invoiced span').text('Invoiced ('+r.invoiced.count+')')
+			});
+
+		}
+
+
 
       var clearFilter = function () {
         self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: '', status: ''});

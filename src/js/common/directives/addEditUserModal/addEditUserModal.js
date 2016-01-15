@@ -139,10 +139,9 @@ app.directive('addEditUserModal',
                 var isValidEmail = function() {
                     console.log('new contact');
                     console.log(scope.newContact);
-                    if (scope.newContact.email==undefined || !scope.newContact.email.match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+                    if (scope.newContact.email==undefined || !scope.newContact.email.match(/^[^@]+@[^\.]+\..+$/)) {
                         return false;
                     }
-
                     return true;
                 }
 

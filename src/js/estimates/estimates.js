@@ -204,11 +204,13 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 			 getEstimateTotals();
         });
 
-			setInterval(function(){ getEstimateTotals(); }, 60000 );
+        if( Auth.isAtleast('inventory') ) 
+				setInterval(function(){ getEstimateTotals(); }, 60000 );
       };
 
 
 		var getEstimateTotals = function(){
+        if (!Auth.isAtleast('inventory')) return;
 			Rest.one('estimateTotals').get().then(function(r){
 				if(!r || !r.approved) return;
 

@@ -112,6 +112,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           self.sh.setData(estFiltered);
           estFiltered = self.sh.sortByColumn(col);
           s.displayedEstimates = estFiltered.slice(0, 49);
+			 filterBySearch();
         },
         columnClass: function (col) {
           return self.sh.columnClass(col);
@@ -398,6 +399,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
 			self.fh.setFilter(filtObj);
 			self.applyFilter();
+			filterBySearch();
       };
 
       s.updateEstimateTime = function (e) {
@@ -541,29 +543,35 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
       // when search box is changed, then update the filters, but
       // add delay so we dont over work the browser.
-      s.$watch('data.filterTextEntry', function (txt, old) {
-        txt = (txt || '');
-        txt = txt.trim();
-        if (filterTextTimeout) {
-          $timeout.cancel(filterTextTimeout);
-        }
-        filterTextTimeout = $timeout(function () {
-          if (txt === '' || !txt) {
-            if (old) {
-              self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: ''});
-              self.applyFilter();
-            }
-          } else if (!isNaN(txt)) {
-            // if search entry is a number, search by siteID and name
-            self.fh.setFilter({reportID: txt, name: txt, siteName: txt});
-            self.applyFilter();
-          } else {
-            // if just letters, then search by name and city, and sales person
-            self.fh.setFilter({siteName: txt, name: txt, sales_email: txt});
-            self.applyFilter();
-          }
-        }, 500);
-      });
+
+	
+		var filterBySearch = function(txt, old) {
+			if(!txt) txt = s.data.filterTextEntry;
+        	txt = (txt || '');
+        	txt = txt.trim();
+		  	if(!txt && !old) return;
+
+        	if (filterTextTimeout) $timeout.cancel(filterTextTimeout);
+
+        	filterTextTimeout = $timeout(function () {
+				 if (txt === '' || !txt) {
+					if (old) {
+					  self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: ''});
+					  self.applyFilter();
+					}
+				 } else if (!isNaN(txt)) {
+					// if search entry is a number, search by siteID and name
+					self.fh.setFilter({reportID: txt, name: txt, siteName: txt});
+					self.applyFilter();
+				 } else {
+					// if just letters, then search by name and city, and sales person
+					self.fh.setFilter({siteName: txt, name: txt, sales_email: txt});
+					self.applyFilter();
+				 }
+        	}, 500);
+      }
+      s.$watch('data.filterTextEntry', filterBySearch);
+
 
       s.$on('nav', function (e, data) {
         if (data.new === myStateID) { init(); }

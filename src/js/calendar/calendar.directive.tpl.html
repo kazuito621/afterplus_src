@@ -111,11 +111,11 @@
 			<button id='sales_filter' type="button" class="btn btn-default" ng-model="pageVars.sales_userIDs" data-html="1" data-multiple="1" 
 					data-max-length="0" data-placeholder="Sales Filter"
 					data-animation="am-flip-x" ng-options="usr.userID as usr.name +' ('+usr.count+')' for usr in salesUsers" bs-select
-					title='Foremen' style='width:100%;' ng-change="onFilterChange()"></button>
+					title='Foremen' style='width:100%;' ng-change="onFilterChange('foreman')"></button>
 			<button id='foreman_filter' type="button" class="btn btn-default" ng-model="pageVars.job_userIDs" data-html="1" data-multiple="1" 
 					data-max-length="0" data-placeholder="Foreman Filter"
 					data-animation="am-flip-x" ng-options="usr.userID as usr.name +' ('+usr.count+')' for usr in jobUsers" bs-select
-					title='Foremen' style='width:100%; margin:.3em 0 .3em 0;' ng-change="onFilterChange()" ></button>
+					title='Foremen' style='width:100%; margin:.3em 0 .3em 0;' ng-change="onFilterChange('sales')" ></button>
 
 			 <input style='width:100%; height:1.5em;' type="text" id="searchJob" ng-model="searchtxt" ng-keyup="search(searchtxt)" placeholder="Search"/>
 

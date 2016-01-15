@@ -169,7 +169,7 @@ function ($timeout, storage, $filter) {
 
 					// fix dropdowns... just in case... cuz sometimes, they werent binding via angular!
 					setTimeout(function(){
-						s.onFilterChange({noRefresh:true});
+						s.onFilterChange('noRefresh');
 					},400);
 
 				});
@@ -1045,11 +1045,11 @@ function ($timeout, storage, $filter) {
 				$('#sales_filter').css('background-color', ( s.pageVars.sales_userIDs.length==0 ) ? '' : onFilterHighlightColor);
 				$('#foreman_filter').css('background-color', ( s.pageVars.job_userIDs.length==0 ) ? '' : onFilterHighlightColor);
 
-				if(!opt || !opt.noRefresh) cal.fullCalendar('refetchEvents');
+				if(opt != 'noRefresh') cal.fullCalendar('refetchEvents');
 
 				updateTotalBoxes();
 				updateApprovedTotal();
-				filterApprovals();
+				if( opt=='sales' || opt=='foreman' ) filterApprovals();
 			}
 
 			s.updateStatus = function(s){
@@ -1125,6 +1125,7 @@ function ($timeout, storage, $filter) {
 
 			if(filtersActive==0){
 				s.unschedJobs = angular.copy(unschedBackup);
+				setTimeout(bindexternalevents, 100);
 				return;
 			}
 
@@ -1155,6 +1156,7 @@ function ($timeout, storage, $filter) {
 			});
 
 			s.unschedJobs = o;
+			setTimeout(bindexternalevents, 100);
 		}
 
 

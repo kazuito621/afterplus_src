@@ -214,7 +214,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 				var itms='approved,scheduled,in_prog,completed,invoiced'.split(',');
 				_.each(itms, function(itm){
 					var itmVar = (itm=='in_prog') ? 'in_prog_todo' : itm;
-					var clr = (itm=='approved' || itm=='completed') ? '#f33' : '#ccc';
+					var clr = (itm=='approved' || itm=='completed') ? '#f33' : '#bbb';
 					var el = $('label#'+itm+' span');
 					if(!el || !el.attr) return;
 

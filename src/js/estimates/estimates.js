@@ -99,7 +99,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           {viewValue: 'Updated', value: 'tstamp_updated'},
           {viewValue: 'Sent', value: 'tstamp_sent'},
           {viewValue: 'Approved', value: 'tstamp_approved'},
-          {viewValue: 'Scheduled', value: 'tstamp_scheduled'},
+          {viewValue: 'Start Date', value: 'job_start'},
           {viewValue: 'Completed', value: 'tstamp_completed'},
           {viewValue: 'Invoiced', value: 'tstamp_invoiced'},
           {viewValue: 'Paid', value: 'tstamp_paid'}
@@ -328,16 +328,38 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       // ie. if Sent is chosen, then date column should be tstamp_sent
 
       s.setStatusFilter = function (status) {
-        if (status === 'all') { status = ''; }
-        if (status === 'sent' || status === 'completed' || status === 'approved') {
-          s.data.currentTstamp = 'tstamp_' + status;
-          s.data.currentTstampHeader = status.substr(0, 1).toUpperCase() + status.substr(1) + ' Date';
-        } else {
-          s.data.currentTstamp = 'tstamp_updated';
-          s.data.currentTstampHeader = 'Last Updated';
-        }
-        self.fh.setFilter({status: status});
-        self.applyFilter();
+			var filtObj={}; 
+			s.data.currentTstamp = 'tstamp_updated';
+			s.data.currentTstampHeader = 'Last Updated';
+
+			if( 'all' === status ){
+				filtObj=false;
+			}
+			else if (status === 'sent' || status === 'completed' || status === 'approved') 
+			{
+				s.data.currentTstamp = 'tstamp_' + status;
+				s.data.currentTstampHeader = status.substr(0, 1).toUpperCase() + status.substr(1) + ' Date';
+				filtObj.status=status;
+			} 
+			else if( 'in_prog' === status )
+			{
+				s.data.currentTstamp = 'job_start';
+				s.data.currentTstampHeader = 'Start Date';
+				filtObj={ completed_perc:{gt:0, lt:100} };
+			} 
+			else if( 'scheduled' === status )
+			{
+				s.data.currentTstamp = 'job_start';
+				s.data.currentTstampHeader = 'Start Date';
+				filtObj={ status:status, completed_perc:'0' };
+			} 
+			else 
+			{
+				filtObj.status=status;
+			}
+
+			self.fh.setFilter(filtObj);
+			self.applyFilter();
       };
 
       s.updateEstimateTime = function (e) {

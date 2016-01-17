@@ -132,6 +132,13 @@
 						<div class="result-container">
 							<section class="nav_listings" ng-if="data.mode()=='trees'">
 
+
+								<!-- /// Event Log /// -->
+								<div class="table-responsive" 
+									ng-if="auth.isAtleast('inventory') && !TFSdata.selectedFilters.length && !selected.siteID">
+									<event-log></event-log>
+								</div>
+
 								<!-- /// Sites List /// -->
 								<div class="table-responsive" 
 									ng-if="filteredSites.length > 0 && filteredSites.length!=initData.sites.length && !trees.length && TFSdata.selectedFilters.length">

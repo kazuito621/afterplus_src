@@ -110,7 +110,7 @@
                 <td ng-bind="e.reportID"></td>
                 <td>
 						<span ng-if="auth.isAtleast('inventory')">
-							<a estimate-details="e" style="cursor: pointer;" title="{{e.name}}" ng-bind="e.name_short" ></a>&nbsp;
+							<a estimate-detail="e" style="cursor: pointer;" title="{{e.name}}" ng-bind="e.name_short" ></a>&nbsp;
 							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' 
 								title='{{e.saveCount}} revisions' target=_new><i class='fa fa-clock-o gray'></i></a>
 						   </span>

@@ -63,7 +63,7 @@ app.directive('estimateDetails',
                         scope.report.foreman_email=newForeman.email;
                         scope.report.foreman_fname=newForeman.fName;
                         scope.report.foreman_lname=newForeman.lName;
-                        scope.report.foreman_email_short=newForeman.email.split('@')[0];
+                        scope.report.job_userID=newForeman.email.split('@')[0];
                     });
                 };
                 scope.savejobtoSalesUser = function () {

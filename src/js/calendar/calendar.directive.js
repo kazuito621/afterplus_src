@@ -48,8 +48,8 @@ function commaDigits(val){
 
 
 angular.module('calendardirective', [])
-.directive('calendar', ['$timeout', 'storage', '$filter',
-function ($timeout, storage, $filter) {
+.directive('calendar', ['$timeout', 'storage', '$filter', 'estimateDetailsService',
+function ($timeout, storage, $filter, estimateDetailsService) {
     return {
         restrict: 'EA',
         replace: false,
@@ -400,6 +400,7 @@ function ($timeout, storage, $filter) {
 						eventClick: function (data, jsEvent, view) {
 							 convertLocalTime(data.start,data.end)
 							 s.openJob(data);
+							//estimateDetailsService.showModal(data);
 						},
 						dayClick: function( date, evt, view ){
 							// check for double click

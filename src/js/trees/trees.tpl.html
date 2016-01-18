@@ -144,7 +144,7 @@
 									ng-if="filteredSites.length > 0 && filteredSites.length!=initData.sites.length && !trees.length && TFSdata.selectedFilters.length">
 
 									<div sites-selector items="filteredSites" selected="bulkEstimates.selectedSites" name="sites"></div>
-									<sites-list filtered-sites="filteredSites" selected-sites="bulkEstimates.selectedSites">/sites-list>
+									<sites-list filtered-sites="filteredSites" selected-sites="bulkEstimates.selectedSites"></sites-list>
 									<div sites-selector items="filteredSites" selected="bulkEstimates.selectedSites" name="sites"></div>
 
 									<table class="tree-list-container" ng-if="auth.isAtleast('inventory')"><tfoot>

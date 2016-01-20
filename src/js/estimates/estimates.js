@@ -1,3 +1,12 @@
+/*
+Todo for bulkd estimates
+
+						// add Bulk SEND .... in rpeort
+						// link to new bulk estimate status ?? in /go ... which is done ?
+						// add status of SENT .. if somone opened it
+
+*/
+
 var EstimatesListCtrl = app.controller('EstimatesListCtrl',
   ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper', 'Restangular',
     function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest) {
@@ -115,7 +124,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 			 filterBySearch();
         },
         columnClass: function (col) {
-          return self.sh.columnClass(col);
+		  	if(self.sh) return self.sh.columnClass(col);
         },
         applySort: function () {
           //@@todo - we git a bug here when radio buttons are used
@@ -206,6 +215,12 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
         if( Auth.isAtleast('inventory') ) 
 				setInterval(function(){ getEstimateTotals(); }, 60000 );
+
+			// check if query string ...
+       	var search = $location.search().s;
+			if(search){
+				s.data.filterTextEntry = search;
+			}
       };
 
 
@@ -545,13 +560,14 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
       // when search box is changed, then update the filters, but
       // add delay so we dont over work the browser.
-
-	
 		var filterBySearch = function(txt, old) {
 			if(!txt) txt = s.data.filterTextEntry;
+			console.debug('filter search'  );
         	txt = (txt || '');
         	txt = txt.trim();
 		  	if(!txt && !old) return;
+
+			if(txt.substr(0,5)=='bulk:') txt=txt.substr(5);
 
         	if (filterTextTimeout) $timeout.cancel(filterTextTimeout);
 
@@ -563,7 +579,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 					}
 				 } else if (!isNaN(txt)) {
 					// if search entry is a number, search by siteID and name
-					self.fh.setFilter({reportID: txt, name: txt, siteName: txt});
+					self.fh.setFilter({reportID:txt, name:txt, siteName:txt, bulkID:txt});
 					self.applyFilter();
 				 } else {
 					// if just letters, then search by name and city, and sales person
@@ -572,8 +588,8 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 				 }
         	}, 500);
       }
-      s.$watch('data.filterTextEntry', filterBySearch);
 
+      s.$watch('data.filterTextEntry', filterBySearch);
 
       s.$on('nav', function (e, data) {
         if (data.new === myStateID) { init(); }

@@ -108,10 +108,10 @@ It load template from cache. I think it saves a lot of time while rendering and 
 'use strict';
 
 var TreesCtrl = app.controller('TreesCtrl',
-    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api',
-		'SiteModelUpdateService', '$rootScope', '$modal', '$location', 'gMapInitializer',
+    ['$scope', '$timeout', 'ReportService', 'TreeFilterService', '$filter', 'storage', '$q', 'Auth', 'Api', 
+		'SiteModelUpdateService', '$rootScope', '$modal', '$location', 'gMapInitializer', 'Restangular',
         function ($scope, $timeout, ReportService, TreeFilterService, $filter,
-            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location, gMapInitializer) {
+            storage, $q, Auth, Api, SiteModelUpdateService, $rootScope, $modal, $location, gMapInitializer, Rest) {
 
             var self = this;
             // local and scoped vars
@@ -1704,11 +1704,12 @@ console.debug(" show mapp trees -------- ");
 
                 res.modalTitle = "Bulk estimate";
                 res.emailRpt = {
-                    subject: 'A Plus Tree Estimate',
+                    subject: '',
                     message: ReportService.email.message,
                     senderEmail: Auth.data().email,
                     siteNames: self.getSelectedSitesNames(),
-                    sendBtnText: 'Send bulk estimate'
+                    sendBtnText: 'Send bulk estimate',
+						  sendTestEmail: true
                 };
                 res.type = 'bulkEstimate';
                 res.siteNames = [];
@@ -1716,7 +1717,24 @@ console.debug(" show mapp trees -------- ");
                 return res;
             };
 
+
             s.createBulkEstimate = function () {
+					var reportName = prompt("Enter a name for these estimates");
+
+                var opts = self.makeFiltersObject();
+                opts.bulkTreatment = s.bulkEstimates.overrideTreatmentCodes.join(',');
+					 opts = $.param(opts);
+
+					 Rest.all('createBulkEstimates?'+opts).post({reportName:reportName, siteIDs:s.bulkEstimates.selectedSites})
+					 	.then(function(r){
+
+							var e=$('div#bulkEstMessage');
+							if(r && r.msg && e){
+								var h="<i class='fa fa-check' style='color:green;'></i> <a href='#/estimates?s=bulk:"+r.bulkID+"'>"+r.msg+"</a>";
+								e.html(h).css({padding:'.4em 0 .7em 0', fontSize:'1.4em'});
+							}
+						});
+					/*
                 console.log('Creating bulk estimates for', s.bulkEstimates);
                 self.bulkModalScope = self.createBulkModalScope();
                 self.bulkModal = $modal({
@@ -1730,6 +1748,7 @@ console.debug(" show mapp trees -------- ");
                     self.bulkModal.show();
                     $(document).keyup(self.hideOnEscape);
                 });
+					 */
             };
 
             self.updateSelectedSites = function () {
@@ -1841,7 +1860,6 @@ console.debug(" show mapp trees -------- ");
 
                 var opts = self.makeFiltersObject();
                 opts.info = 1;
-
                 Api.getSites(opts).then(self.getSitesCB);
             };
 

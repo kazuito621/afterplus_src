@@ -160,6 +160,7 @@
 									<table class="tree-list-container" ng-if="auth.isAtleast('inventory')"><tfoot>
 										<tr>
 											<td colspan="4">
+												<div id='bulkEstMessage'></div>
 												<button class="btn btn-block btn-red clr-white txt-bold" ng-click="createBulkEstimate()" 
 													ng-show="bulkEstimates.selectedSites.length && bulkEstimates.overrideTreatmentCodes.length"
 													>Create Bulk Estimate</button>

@@ -74,17 +74,17 @@
                     </div>
                 </div>
                 <BR>
-                <!--<div style='background-color:#F7F4E1;padding:1em;'>
+                <div style='background-color:#F7F4E1;padding:1em;' ng-if="options.allowCalendar">
                     <div class="row">
-                        Start: <input class="" ng-model="job_start_unix" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                        Start: <input class="" ng-model="report_job_start_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
                                       data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
                                       data-placement='top'> &nbsp;
-                        End: <input class="" ng-model="job_end_unix" data-date-format="EEE M/dd" placeholder="Set Date" ng-change="onJobDateChange()"
+                        End: <input class="" ng-model="report_job_end_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
                                     data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
                                     data-placement='top'> &nbsp;
                         Days: <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
                                      type="number" min="1" style="width: 3.5em;">
-                        <button type="button" class="btn btn-primary" ng-show="valueChanged" ng-click="saveJobDates()">Save</button>
+                        <button type="button" class="btn btn-primary" ng-show="dateValueChanged" ng-click="saveJobDates()">Save</button>
                     </div>
                     <div class="row" ng-show="showWeekendWork">
                         <BR>
@@ -97,8 +97,8 @@
                     <div>
 
                     </div>
-                </div>--> <!-- }} body -->
-                <side-note report-id="{{reportID}}" note-type='report_internal'></side-note>
+                </div>
+                <side-note report-id="{{report.reportID}}" note-type='report_internal'></side-note>
                 <div class="modal-footer">
 
 
@@ -113,9 +113,11 @@
                     &nbsp;
 
 
+                    <input type="button" class="btn btn-danger"
+                           ng-hide="!options.allowUnschedule || status != 'scheduled'  || report.todo_price<report.price"
+                           ng-click="unschedule()" value="Unschedule Job"></input>
                     <a class='btn btn-sm btn-primary' href="#/trees?reportID={{report.reportID}}" ng-click="$hide();"><i class='fa fa-pencil'></i> Edit Estimate</a>
                     <a class='btn btn-sm btn-primary' target="_new" href="{{report.url}}"><i class='fa fa-eye'></i> Cust View</a>
-
                     <!--<input type="button" class="btn btn-danger"
                            ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
                            ng-click="UnscheduledJob()" value="Unschedule Job"></input>-->

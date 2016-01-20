@@ -59,15 +59,22 @@
                                         </label>
                                     </div>
                                 </div>
-                                <!--FILTER SECTION: SPECIES-->
-                                <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
+
+
+
+											<!--FILTER SECTION: SPECIES-->
+
+                                <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" 
+										  		init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
+
                                 <!-- END SPECIES FILTER SECTION -->
 
                             </div>
-                            <div class="col-xs-6 col">
 
+                            <div class="col-xs-6 col">
                                 <!--FILTER SECTION: TREATMENT TYPE-->
-                                <filter-treatment-type tfs-treatments="TFSdata.filterTypeCounts.treatments" filter-search-treatments="filterSearch.treatments" init-data-treatments="initData.filters.treatments" on-filter-change="onFilterChange(filterType, ID, value)"></filter-treatment-type>
+                                <filter-treatment-type tfs-treatments="TFSdata.filterTypeCounts.treatments" filter-search-treatments="filterSearch.treatments" 
+										  		init-data-treatments="initData.filters.treatments" on-filter-change="onFilterChange(filterType, ID, value)"></filter-treatment-type>
                                 <!-- END TREATMENT TYPE FILTER SECTION -->
                             </div>
                         </div>
@@ -85,16 +92,19 @@
                                 <div class="row row-xss">
                                     <div class="col-xs-6 col">
                                         <!--FILTER SECTION: Building, Hardscape and Powerline -->
-                                        <filter-hazards tfs-counts="TFSdata.filterTypeCounts" init-data-hazards="initdata.filters.hazards" on-filter-change="onFilterChange(filterType, ID, value)"></filter-hazards>
+                                        <filter-hazards tfs-counts="TFSdata.filterTypeCounts" init-data-hazards="initdata.filters.hazards" 
+													 		on-filter-change="onFilterChange(filterType, ID, value)"></filter-hazards>
                                         <!-- END Building, Hardscape, POWERLINE FILTER SECTION -->
                                         <!--FILTER SECTION: SIZE-->
-                                        <filter-size tfs-counts-treatments="TFSdata.filterTypeCounts.treatments" init-data-dbh="initData.filters.dbh" on-filter-change="onFilterChange(filterType, ID, value)"></filter-size>
+                                        <filter-size tfs-counts-treatments="TFSdata.filterTypeCounts.treatments" init-data-dbh="initData.filters.dbh" 
+													 		on-filter-change="onFilterChange(filterType, ID, value)"></filter-size>
                                         <!-- END SIZE FILTER SECTION -->
                                     </div>
 
                                     <div class="col-xs-6 col">
                                         <!--FILTER SECTION: HEALTH-->
-                                        <filter-health tfs-counts-rating="TFSdata.filterTypeCounts.rating" init-data-ratings="initData.filters.ratings" on-filter-change="onFilterChange(filterType, ID, value)"></filter-health>
+                                        <filter-health tfs-counts-rating="TFSdata.filterTypeCounts.rating" init-data-ratings="initData.filters.ratings" 
+													 		on-filter-change="onFilterChange(filterType, ID, value)"></filter-health>
                                         <!-- END HEALTH FILTER SECTION -->
                                     </div>
                                 </div>

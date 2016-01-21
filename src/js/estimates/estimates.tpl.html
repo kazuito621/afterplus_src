@@ -19,8 +19,8 @@
 
 	
     <div ng-if="!auth.isAtleast('inventory')">
-        <input type='text' ng-model='data.filterTextEntry' size=15 placeholder='Search'>
-        <a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''"
+        <input type='text' ng-model='pageVars.searchText' size=15 placeholder='Search'>
+        <a ng-if="pageVars.searchText.length" ng-click="pageVars.searchText=''"
            class='fa fa-times _red _size5 hand'></a>
         <span class='gray'
               ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
@@ -55,8 +55,8 @@
             </div>
         </div>
         <br>
-        <input type='text' ng-model='data.filterTextEntry' size=15 placeholder='Search'>
-        <a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''"
+        <input type='text' ng-model='pageVars.searchText' size=15 placeholder='Search'>
+        <a ng-if="pageVars.searchText.length" ng-click="pageVars.searchText=''"
            class='fa fa-times _red _size5 hand'></a>
         <span class='gray'
               ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
@@ -121,7 +121,7 @@
                 <td>
 						<span ng-if="auth.isAtleast('inventory')">
 							<a estimate-details="e" style="cursor: pointer;" title="{{e.name}}" ng-bind="e.name_short" ></a>&nbsp;
-							<a ng-if="e.bulkID>1" style="cursor: pointer;" ng-click="data.filterTextEntry='bulk:'+e.bulkID"
+							<a ng-if="e.bulkID>1" style="cursor: pointer;" ng-click="pageVars.searchText='bulk:'+e.bulkID"
 								title='Bulk Estimate: View all related estimates'><i class='fa fa-stack-overflow gray'></i></a>
 							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' 
 								title='{{e.saveCount}} revisions' target=_new><i class='fa fa-clock-o gray'></i></a>

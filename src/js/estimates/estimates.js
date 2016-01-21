@@ -13,6 +13,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       'use strict';
       // Local vars initialization
       var s = window.ecs = $scope;
+		s.pageVars={filter:{status:''}, searchText:''}				//todo later, store this into browser data for recall after refresh
       var totalPrice = 0;
       var myStateID = 'estimates',
         estimates = [], // array of original estimates
@@ -29,7 +30,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
       // group the filters. so that if a status and a name is specified, both must match
       // but if a name and email is specified, either can match
-      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email'], ['status']];
+      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email', 'siteName', 'sales_fname', 'sales_lname', 'city'], ['status', 'completed_perc']];
 
       // Scope vars initialization
       s.displayedEstimates = [];
@@ -203,8 +204,8 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);
           s.displayedEstimates = estFiltered.slice(0, 49);
           cb();
-          if (s.data.filterTextEntry && s.data.filterTextEntry.length > 1) {
-            s.data.filterTextEntry = ' ' + s.data.filterTextEntry;
+          if (s.pageVars.searchText && s.pageVars.searchText.length > 1) {
+            s.pageVars.searchText = ' ' + s.pageVars.searchText;
           }
           if (!s.data.salesForemanMode) {
             s.data.salesForemanMode = 'sales';
@@ -219,7 +220,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 			// check if query string ...
        	var search = $location.search().s;
 			if(search){
-				s.data.filterTextEntry = search;
+				s.pageVars.searchText = search;
 			}
       };
 
@@ -380,41 +381,44 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         delete s.activePopover.itemID;
       };
 
+
+
       // based on the filter, also change which date is actually shown in the list.
       // ie. if Sent is chosen, then date column should be tstamp_sent
-
       s.setStatusFilter = function (status) {
-			var filtObj={}; 
 			s.data.currentTstamp = 'tstamp_updated';
 			s.data.currentTstampHeader = 'Last Updated';
 
 			if( 'all' === status ){
-				filtObj=false;
+				s.pageVars.filter.status='';
+				s.pageVars.filter.completed_perc='';
 			}
 			else if (status === 'sent' || status === 'completed' || status === 'approved') 
 			{
 				s.data.currentTstamp = 'tstamp_' + status;
 				s.data.currentTstampHeader = status.substr(0, 1).toUpperCase() + status.substr(1) + ' Date';
-				filtObj.status=status;
+				s.pageVars.filter.status=status;
+				s.pageVars.filter.completed_perc='';
 			} 
 			else if( 'in_prog' === status )
 			{
 				s.data.currentTstamp = 'job_start';
 				s.data.currentTstampHeader = 'Start Date';
-				filtObj={ completed_perc:{gt:0, lt:100} };
+				s.pageVars.filter={ completed_perc:{gt:0, lt:100}, status:'scheduled' };
 			} 
 			else if( 'scheduled' === status )
 			{
 				s.data.currentTstamp = 'job_start';
 				s.data.currentTstampHeader = 'Start Date';
-				filtObj={ status:status, completed_perc:'0' };
+				s.pageVars.filter={ status:status, completed_perc:'0' };
 			} 
 			else 
 			{
-				filtObj.status=status;
+				s.pageVars.filter.status=status;
+				s.pageVars.filter.completed_perc='';
 			}
 
-			self.fh.setFilter(filtObj);
+			self.fh.setFilter(s.pageVars.filter);
 			self.applyFilter();
 			filterBySearch();
       };
@@ -480,7 +484,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         clearFilter();
 
         //clear search box
-        s.data.filterTextEntry = '';
+        s.pageVars.searchText = '';
 
         self.applyFilter();
         init();
@@ -561,7 +565,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       // when search box is changed, then update the filters, but
       // add delay so we dont over work the browser.
 		var filterBySearch = function(txt, old) {
-			if(!txt) txt = s.data.filterTextEntry;
+			if(!txt) txt = s.pageVars.searchText;
 			console.debug('filter search'  );
         	txt = (txt || '');
         	txt = txt.trim();
@@ -572,24 +576,50 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         	if (filterTextTimeout) $timeout.cancel(filterTextTimeout);
 
         	filterTextTimeout = $timeout(function () {
+
+
 				 if (txt === '' || !txt) {
 					if (old) {
-					  self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: ''});
-					  self.applyFilter();
+						s.pageVars.filter.reportID='';
+						s.pageVars.filter.name='';
+						s.pageVars.filter.siteName='';
+						s.pageVars.filter.sales_email='';
+						s.pageVars.filter.sales_fname='';
+						s.pageVars.filter.sales_lname='';
+						s.pageVars.filter.siteName='';
+						s.pageVars.filter.city='';
+					  	self.fh.setFilter(s.pageVars.filter);
+					  	self.applyFilter();
 					}
 				 } else if (!isNaN(txt)) {
-					// if search entry is a number, search by siteID and name
-					self.fh.setFilter({reportID:txt, name:txt, siteName:txt, bulkID:txt});
-					self.applyFilter();
+						// if search entry is a number, search by siteID and name, siteName
+						s.pageVars.filter.reportID=txt;
+						s.pageVars.filter.name=txt;
+						s.pageVars.filter.siteName=txt;
+						s.pageVars.filter.sales_email='';
+						s.pageVars.filter.sales_fname='';
+						s.pageVars.filter.sales_lname='';
+						s.pageVars.filter.siteName='';
+						s.pageVars.filter.city='';
+					  	self.fh.setFilter(s.pageVars.filter);
+					  	self.applyFilter();
 				 } else {
-					// if just letters, then search by name and city, and sales person
-					self.fh.setFilter({siteName: txt, name: txt, sales_email: txt});
-					self.applyFilter();
+						// if just letters, then search by name and city, and sales person
+						s.pageVars.filter.reportID='';
+						s.pageVars.filter.name='';
+						s.pageVars.filter.siteName=txt;
+						s.pageVars.filter.sales_email=txt;
+						s.pageVars.filter.sales_fname=txt;
+						s.pageVars.filter.sales_lname=txt;
+						s.pageVars.filter.siteName=txt;
+						s.pageVars.filter.city=txt;
+					  	self.fh.setFilter(s.pageVars.filter);
+					  	self.applyFilter();
 				 }
         	}, 500);
       }
 
-      s.$watch('data.filterTextEntry', filterBySearch);
+      s.$watch('pageVars.searchText', filterBySearch);
 
       s.$on('nav', function (e, data) {
         if (data.new === myStateID) { init(); }

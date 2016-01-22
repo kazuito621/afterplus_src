@@ -116,8 +116,9 @@
                     <input type="button" class="btn btn-danger"
                            ng-hide="!options.allowUnschedule || status != 'scheduled'  || report.todo_price<report.price"
                            ng-click="unschedule()" value="Unschedule Job"></input>
-                    <a class='btn btn-sm btn-primary' href="#/trees?reportID={{report.reportID}}" ng-click="$hide();"><i class='fa fa-pencil'></i> Edit Estimate</a>
-                    <a class='btn btn-sm btn-primary' target="_new" href="{{report.url}}"><i class='fa fa-eye'></i> Cust View</a>
+                    <a class='btn btn-sm btn-primary' href="#/trees?reportID={{report.reportID}}" ng-click="$hide();"
+						  			target="_new"><i class='fa fa-pencil'></i> Edit Estimate</a>
+                    <a class='btn btn-sm btn-primary' target="_new_cust" href="{{report.url}}"><i class='fa fa-eye'></i> Cust View</a>
                     <!--<input type="button" class="btn btn-danger"
                            ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
                            ng-click="UnscheduledJob()" value="Unschedule Job"></input>-->

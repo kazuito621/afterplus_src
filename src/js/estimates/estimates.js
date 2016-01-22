@@ -28,9 +28,11 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           total_price: 'desc'
         };
 
-      // group the filters. so that if a status and a name is specified, both must match
-      // but if a name and email is specified, either can match
-      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email', 'siteName', 'sales_fname', 'sales_lname', 'city'], ['status', 'completed_perc']];
+      // group the filters, so that if 2 filters from different groups are specified, both MUST match
+		// but if 2 filters from same group, then either one can match
+		// ie. if a "status" AND a "name" are specified as filters... both must match.
+      // 	 but if a "name" and "email" is specified, either can match
+      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email', 'siteName', 'sales_fname', 'sales_lname', 'city'], ['status'], ['completed_perc']];
 
       // Scope vars initialization
       s.displayedEstimates = [];

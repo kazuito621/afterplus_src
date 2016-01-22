@@ -157,8 +157,9 @@
            <h4 id='approved-jobs-title' style="margin:0 0 .5em; line-height:1.3em; font-size:.8em;">
 			  		<span style='font-weight:bold;'>Approved </span></h4>
 			 <div class='fc-event drop-accpted' ng-repeat="singleJob in unschedJobs | orderBy:'reportID'" 
-			 	ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
-				ng-click="openJob(singleJob)" 
+			 	ng-class="'clr-'+singleJob.status" style='padding:.25em .5em'
+			  	estimate-detail="singleJob"
+			  	allow-calendar="true"
 				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
 				 	{{singleJob.title}}
 			 </div>
@@ -235,7 +236,7 @@
                     </div>
                 </div>
                 <BR>
-				<div style='background-color:#F7F4E1;padding:1em;'>
+			<div style='background-color:#F7F4E1;padding:1em;'>
                 <div class="row">
                     Start: <input class="" ng-model="job_start_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
                            data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
@@ -246,7 +247,7 @@
                     Days: <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
                            type="number" min="1" style="width: 3.5em;">
                     <button type="button" class="btn btn-primary" ng-show="valueChanged" ng-click="saveJobDates()">Save</button>
-					 </div>
+				 </div>
                 <div class="row" ng-show="showWeekendWork">
                 	<BR>
                 	<label style="font-size:1.1em;">Weekend Work?</label> 

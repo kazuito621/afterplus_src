@@ -120,7 +120,8 @@
                 <td ng-bind="e.reportID"></td>
                 <td>
 						<span ng-if="auth.isAtleast('inventory')">
-							<a estimate-details="e" style="cursor: pointer;" title="{{e.name}}" ng-bind="e.name_short" ></a>&nbsp;
+							<a estimate-detail="e" style="cursor: pointer;" title="{{e.name}}" ng-bind="e.name_short" ></a>&nbsp;
+
 							<a ng-if="e.bulkID>1" style="cursor: pointer;" ng-click="pageVars.searchText='bulk:'+e.bulkID"
 								title='Bulk Estimate: View all related estimates'><i class='fa fa-stack-overflow gray'></i></a>
 							<a ng-if="e.saveCount>1" href='/go/estimate/revisions/{{e.token}}' 
@@ -128,7 +129,7 @@
 						   </span>
 							<a ng-if="!auth.isAtleast('inventory')" href="#/estimate/{{e.hashLink}}" ng-bind="e.name_short" bs-tooltip title="{{e.name}}"></a>
                     <a ng-if="auth.isAtleast('inventory') && e.count_internal_notes>0" href="" class="badge"
-                       estimate-details="e"
+                       estimate-detail="e"
                        bs-tooltip title="{{e.count_internal_notes}} internal notes">{{e.count_internal_notes}}</a>
                     <a ng-if="e.pastDue>=30" href="" class="badge" ng-if="e.status=='invoiced'"
                        style="color: white; background-color:#df0505"

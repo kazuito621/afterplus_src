@@ -73,6 +73,8 @@ app.directive('addEditUserModal',
                             var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
                             scope.newContact.role={};
                             scope.newContact.role = scope.userRoles[idx];
+                            scope.newContact.possibleRoles = ['customer', 'admin', 'sales', 'foreman', 'crew'];
+                            scope.newContact.roles = [];
                             getSiteNames(data.siteIDs);
                             getClientNames(data.clientIDs);
                         });
@@ -175,6 +177,7 @@ app.directive('addEditUserModal',
                     }
                     user.email=  scope.newContact.email;
                     user.role=   scope.newContact.role.roleCode;
+                    user.roles= scope.newContact.roles;
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;
@@ -198,6 +201,7 @@ app.directive('addEditUserModal',
                         Api.user.update(user,scope.user.userID).then(function (data) {
                             scope.user.email=user.email;
                             scope.user.role=user.role;
+                            scope.user.roles=user.roles;
                             scope.user.fName=user.fName;
                             scope.name=user.name+' '+user.lName;
                             scope.user.lName=user.lName;
@@ -211,6 +215,26 @@ app.directive('addEditUserModal',
                         });
                     }
                 };//
+
+                scope.roleCheck = function(role) {
+                    console.log('BEFORE roleCheck: ', scope.newContact.roles, role );
+                    console.log('indexOf: ', scope.newContact.roles.indexOf(role), role );
+
+                    if(scope.newContact.roles.indexOf(role) >= 0) {
+                        scope.newContact.roles.splice(scope.newContact.roles.indexOf(role), 1);
+                    } else {
+                        if(role=='customer') {
+                            scope.newContact.roles = [];
+                            scope.newContact.roles.push(role);
+                            scope.newContact.roles['customer'] = true;
+                        } else {
+                            scope.newContact.roles.push(role);
+                        }
+
+                    }
+                    console.log('AFTER roleCheck: ', scope.newContact.roles, role );
+                    return scope.newContact.roles;
+                };
 
                 scope.addClientsProperty = function (event) {
                     if(this.selectedClient.clientID==undefined) return;

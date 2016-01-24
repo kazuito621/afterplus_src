@@ -44,7 +44,7 @@
                                                         <label>
                                                             <input id="user.{{ role }}" type="checkbox"
                                                                    ng-checked="newContact.roles[role]"
-                                                                   ng-click="roleCheck(role)" ng-model="newContact.roles[role]"/> <span>{{ role[0] | uppercase }}</span><span>{{ role.slice(1, role.length) }}</span>
+                                                                   ng-click="roleCheck(role)" ng-model="newContact.roles[role]" ng-disabled="newContact.roles['customer']==true && role != 'customer' "/> <span>{{ role[0] | uppercase }}</span><span>{{ role.slice(1, role.length) }}</span>
                                                         </label>
 
                                                     </li>

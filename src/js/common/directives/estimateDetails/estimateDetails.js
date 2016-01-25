@@ -139,6 +139,7 @@ app.directive('estimateDetails',
 
 						// load contacts
 						Rest.one('site/'+scope.report.siteID+'/users?role=customer').get().then(function(res){
+                            console.log(res);
 							if(!res){
 								var txt="<div class='estContacts'>"+scope.site.contact+"<br>"
 									+"<a href='mailto:"+scope.site.email+"' target=_new>"+scope.site.email+"</a><BR>"

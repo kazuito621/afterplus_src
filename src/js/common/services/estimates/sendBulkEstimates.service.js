@@ -27,7 +27,16 @@ function sendBulkEstimatesService($rootScope, $modal, Rest, Api, Auth) {
     };
 
     modalScope.bulkSendEstimates = function () {
+        var validUsersPromise = isValidEmails();
+        var existedUsersPromise = isExistedUsers();
 
+        var contactsChecked = $q.all([validUsersPromise.promise, existedUsersPromise.promise]);
+
+        contactsChecked.then(sendEstimates());
+    };
+
+    var sendEstimates = function () {
+        console.log('!');
     };
 
     var initScope = function(estimatesIds) {

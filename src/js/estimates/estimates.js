@@ -548,7 +548,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       s.setSent = function (event) {
         event.preventDefault();
         event.stopPropagation();
-        var estimates = s.checkedEstimates;
+        var estimates = s.checkedEstimates.ids;
         _.each(estimates, function(id) {
           Api.setEstimateActive(id);
         });

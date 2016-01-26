@@ -38,9 +38,11 @@
 								<!-- hide stuff if user is editing themself -->
 								<div ng-if="editMyself != true">
 												<label class="col-sm-3" style="font-weight: bold">Role</label>
-												<select ng-model="newContact.role" ng-options="role.name for role in userRoles"  required>
-													 <option>{{role.name}}</option>
-												</select> &nbsp;
+                                                <label ng-repeat="role in userRoles">
+                                                    <input type="checkbox" checklist-model="newContact.roles" checklist-value="role.roleCode"> {{role.name}}
+                                                </label>
+
+
 												<div class="row" style="margin: 5px 2px 10px 5px;" ng-show="user && newContact.role.roleCode!='customer'">
 													 <label class="col-sm-6" style="font-weight: bold;margin: 2px;">
 														  <input type="checkbox" ng-model="newContact.showStatInDash" ng-change="selectionChanged()"/> Show user in dashboard

@@ -32,10 +32,21 @@ app.directive('addEditUserModal',
                 scope.openModal = function () {
                     initVars();
                     if(scope.userRoles.length==0){
-                        Api.getUserRoles().then(function(userRoles){
-                            scope.userRoles = angular.copy(userRoles);
-                            scope.newContact.role = scope.userRoles[0];
-                        });
+
+                        // replace API call with hardcode
+                        //Api.getUserRoles().then(function(userRoles){
+                        //    scope.userRoles = angular.copy(userRoles);
+                        //    scope.newContact.role = scope.userRoles[0];
+                        //});
+
+                        //Hardcoded
+                        scope.userRoles = [
+                            {"roleCode":"customer","name":"Customer"},
+                            {"roleCode":"admin","name":"Admin"},
+                            {"roleCode":"sales","name":"Sales"},
+                            {"roleCode":"foreman","name":"Foreman"},
+                            {"roleCode":"crew","name":"Crew"}
+                        ]
                     }
                     if (angular.isDefined(attrs.sites)) 
                         scope.sites = scope.$eval(attrs.sites);
@@ -73,6 +84,10 @@ app.directive('addEditUserModal',
                             var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
                             scope.newContact.role={};
                             scope.newContact.role = scope.userRoles[idx];
+
+                            scope.newContact.roles = data.role.split(',');
+                            console.log(scope.newContact.roles);
+
                             getSiteNames(data.siteIDs);
                             getClientNames(data.clientIDs);
                         });
@@ -175,6 +190,7 @@ app.directive('addEditUserModal',
                     }
                     user.email=  scope.newContact.email;
                     user.role=   scope.newContact.role.roleCode;
+                    user.roles= scope.newContact.roles.join(',');
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
                     user.phone = scope.newContact.phone;

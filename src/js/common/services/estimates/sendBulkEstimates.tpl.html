@@ -2,13 +2,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 Send Bulk Estimates
             </div>
             <div class="modal-body">
                 <div ng-switch="getCurrentStep()" class="slide-frame">
                     <div ng-switch-when="contacts">
                         <form class="form-horizontal">
-                            <div class="form-group" ng-repeat="estimate in estimates">
+                            <div class="form-group" ng-class="(estimate.contacts.length == 0) ? 'has-error' : ''" ng-repeat="estimate in estimates">
                                 <label class="col-sm-2 control-label">{{ estimate.name }}</label>
                                 <div class="col-sm-10">
                                     <tags-input
@@ -20,6 +21,7 @@
                                             allowed-tags-pattern="^[^@]+@[^\.]+\..+$"
                                             >
                                     </tags-input>
+                                    <span class="text-danger" ng-class="{{estimate.contacts.length}}" ng-if="estimate.contacts.length == 0">site are missing contacts</span>
                                 </div>
                             </div>
                         </form>
@@ -64,7 +66,7 @@
                     Back
                 </button>
                 <button class="btn"
-                        ng-click="sendBulkEstimates()"
+                        ng-click="bulkSendEstimates()"
                         ng-show="isCurrentStep(1)"
                         >
                     Send

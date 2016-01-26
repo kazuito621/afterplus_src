@@ -1,11 +1,13 @@
 app
     .factory('sendBulkEstimatesService', sendBulkEstimatesService);
 
-sendBulkEstimatesService.$inject = ['$rootScope', '$modal', 'Restangular', 'Api', 'Auth'];
+sendBulkEstimatesService.$inject = ['$q', '$rootScope', '$modal', '$popover', 'Restangular', 'Api', 'Auth', 'enterUserEmailService', 'enterUserInfoService'];
 
-function sendBulkEstimatesService($rootScope, $modal, Rest, Api, Auth) {
+function sendBulkEstimatesService($q, $rootScope, $modal, $popover, Rest, Api, Auth, enterUserEmailService, enterUserInfoService) {
 
     var modalScope = $rootScope.$new();
+
+    var modalInstance;
 
     modalScope.estimates = [];
     modalScope.config = {};
@@ -18,8 +20,19 @@ function sendBulkEstimatesService($rootScope, $modal, Rest, Api, Auth) {
     };
 
     modalScope.setCurrentStep = function (step) {
-        console.log(modalScope.estimates);
-        modalScope.step = step;
+        if (modalScope.step == 0) {
+            var validUsersPromise = isValidEmails(modalScope.estimates);
+            var existedUsersPromise = isExistedUsers(modalScope.estimates);
+
+            var contactsChecked = $q.all([validUsersPromise, existedUsersPromise]);
+
+            contactsChecked.then(function(promises) {
+                if (promises.indexOf(false) == -1) {
+                    modalScope.step = step;
+                }
+            });
+        }
+
     };
 
     modalScope.getCurrentStep = function () {
@@ -27,16 +40,116 @@ function sendBulkEstimatesService($rootScope, $modal, Rest, Api, Auth) {
     };
 
     modalScope.bulkSendEstimates = function () {
-        var validUsersPromise = isValidEmails();
-        var existedUsersPromise = isExistedUsers();
+        sendEstimates();
+    };
 
-        var contactsChecked = $q.all([validUsersPromise.promise, existedUsersPromise.promise]);
+    var isValidEmails = function (estimates) {
+        var deferred = $q.defer();
 
-        contactsChecked.then(sendEstimates());
+        var allPromises=[];
+        console.log('check for valid');
+        _.each(estimates,function(estimate){
+            console.log(estimate.contacts.length);
+            if (estimate.contacts.length == 0) {
+                console.log('null contacts');
+                var contactDeferred = $q.defer();
+                contactDeferred.resolve(false);
+                allPromises.push(contactDeferred.promise);
+            }
+            _.each(estimate.contacts,function(contact) {
+                var contactDeferred = $q.defer();
+
+                if (!validateEmail(contact.email)) {
+                    enterUserEmail(contact);
+                    contactDeferred.resolve(false);
+                } else {
+                    contactDeferred.resolve(true);
+                }
+
+                allPromises.push(contactDeferred.promise);
+            });
+        });
+
+        $q.all(allPromises).then(function(values) {
+            if (values.indexOf(false) == -1) {
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+
+        });
+
+        return deferred.promise;
+    };
+
+    var validateEmail = function(email) {
+        if(email.match(/^[^@]+@[^\.]+\..+$/)){
+            return true;
+        }
+        return false;
+    };
+
+    var isExistedUsers = function (estimates) {
+        var deferred = $q.defer();
+
+        var allPromises=[];
+
+        _.each(estimates,function(estimate){
+            _.each(estimate.contacts,function(contact) {
+                var contactDeferred = $q.defer();
+
+                if (contact.userID == undefined && !contact.skipped) {
+                    enterUserInfo(contact);
+                    contactDeferred.resolve(false);
+                } else {
+                    contactDeferred.resolve(true);
+                }
+
+                allPromises.push(contactDeferred.promise);
+            });
+        });
+
+        $q.all(allPromises).then(function(values) {
+            if (values.indexOf(false) == -1) {
+                deferred.resolve(true);
+            } else {
+                deferred.resolve(false);
+            }
+
+        });
+
+        return deferred.promise;
+    };
+
+    var enterUserEmail = function (customer, deferred) {
+        modal = enterUserEmailService();
+        modal.showModal(customer);
+    };
+
+    var enterUserInfo = function (customer, deferred) {
+        modal = enterUserInfoService();
+        modal.showModal(customer);
     };
 
     var sendEstimates = function () {
-        console.log('!');
+        _.each(modalScope.estimates, function(estimate) {
+            var estimateData = {};
+            estimateData.reportID = estimate.id;
+            estimateData.siteID = estimate.siteID;
+            estimateData.contactEmail = estimate.contacts;
+            estimateData.message = modalScope.config.message;
+            estimateData.subject = modalScope.config.subject;
+
+            Api.sendReport(estimateData)
+                .then(function (res) {
+                    console.log(res);
+                });
+        });
+
+        modalScope.estimates = {};
+        modalScope.step = 0;
+
+        modalInstance.hide();
     };
 
     var initScope = function(estimatesIds) {
@@ -78,6 +191,7 @@ function sendBulkEstimatesService($rootScope, $modal, Rest, Api, Auth) {
             if (res) {
                 _.each(res, function(user) {
                     var contact = {};
+                    contact.userID = user.userID;
                     contact.email = user.email;
                     contact.fName = user.fName;
                     contact.lName = user.lName;
@@ -95,7 +209,7 @@ function sendBulkEstimatesService($rootScope, $modal, Rest, Api, Auth) {
     var showModal = function (estimates) {
         initScope(estimates.ids);
 
-        var modalInstance = $modal({
+        modalInstance = $modal({
             scope: modalScope,
             template: '/js/common/services/estimates/sendBulkEstimates.tpl.html',
             show: false

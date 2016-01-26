@@ -225,6 +225,12 @@
                                 Send
                             </a>
                         </span>
+
+                        <span ng-show="checkedEstimates.ids.length > 0">
+                            <a href="#" ng:cloak ng-click="setSent($event)" style="margin-left: 50px;">
+                                Mark as Sent/Active
+                            </a>
+                        </span>
                     </div>
                     <div class="col-sm-5 pull-right">
                         <span class="pull-left" style="color: white;">

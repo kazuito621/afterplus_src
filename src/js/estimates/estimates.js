@@ -544,6 +544,15 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
         sendBulkEstimatesService.showModal(estimates);
       };
+      
+      s.setSent = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var estimates = s.checkedEstimates;
+        _.each(estimates, function(id) {
+          Api.setEstimateActive(id);
+        });
+      }
 
       s.displayedTotalPrice = function () {
 			var list = estFiltered;

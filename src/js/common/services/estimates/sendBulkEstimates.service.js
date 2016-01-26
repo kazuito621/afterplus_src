@@ -31,6 +31,8 @@ function sendBulkEstimatesService($q, $rootScope, $modal, $popover, Rest, Api, A
                     modalScope.step = step;
                 }
             });
+        } else {
+            modalScope.step = step;
         }
 
     };
@@ -146,7 +148,8 @@ function sendBulkEstimatesService($q, $rootScope, $modal, $popover, Rest, Api, A
                 });
         });
 
-        modalScope.estimates = {};
+        modalScope.estimates = [];
+        modalScope.config = {};
         modalScope.step = 0;
 
         modalInstance.hide();

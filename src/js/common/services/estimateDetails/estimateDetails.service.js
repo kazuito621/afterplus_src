@@ -25,21 +25,30 @@ app
             scope.options = options;
             console.log(scope.options);
 
-            // var prepare report
-            scope.report = report;
-            loadSite(report.siteID);
-            loadGroups();
-            loadContacts();
-            prepareReportData(report);
-            setupModalDatePickers(report);
+            // load report details
+            opts = [];
+            opts.getTreeDetails = 1;
+            opts.getSummary = 1;
+            Api.getReport(report.reportID,opts).then(function(data) {
+                report = data;
+                console.log(report);
+                // var prepare report
+                scope.report = report;
 
-            detailsModal = $modal({
-                scope: scope,
-                template: '/js/common/services/estimateDetails/estimateDetails.tpl.html',
-                show: false
+                loadSite(report.siteID);
+                loadGroups();
+                loadContacts();
+                prepareReportData(report);
+                setupModalDatePickers(report);
+
+                detailsModal = $modal({
+                    scope: scope,
+                    template: '/js/common/services/estimateDetails/estimateDetails.tpl.html',
+                    show: false
+                });
+
+                detailsModal.$promise.then(detailsModal.show);
             });
-
-            detailsModal.$promise.then(detailsModal.show);
         };
 
         var loadSite = function(siteID) {

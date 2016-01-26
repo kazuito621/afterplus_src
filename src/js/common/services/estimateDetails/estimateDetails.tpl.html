@@ -30,6 +30,7 @@
 								</span>
                         <BR><BR>
 
+
                         <b style='font-size:1.2em;'>Contacts</b><BR>
                         <div ng-bind-html="contacts"></div>
 
@@ -74,6 +75,15 @@
                     </div>
                 </div>
                 <BR>
+                <div class="row" ng-if="report.charts">
+                    <div class="col-md-12">
+                        <div id='summary-charts' style='padding:2em 0 2em 0;'>
+                            <img src='{{report.charts.treatmentCategories}}'>
+                            <img src='{{report.charts.treatments}}'>
+                            <img src='{{report.charts.species}}'>
+                        </div>
+                    </div>
+                </div>
                 <div style='background-color:#F7F4E1;padding:1em;' ng-if="options.allowCalendar">
                     <div class="row">
                         Start: <input class="" ng-model="report_job_start_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"

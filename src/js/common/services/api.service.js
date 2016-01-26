@@ -423,10 +423,10 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
         // POST / estimate / 123
         return Rest.one('estimate', id).post(undefined, params);
       },
-      setEstimateActive: function (id, params) {
+      setEstimateSent: function (id, params) {
 
-        // POST /estimate/123/active
-        return Rest.one('estimate', id).post('active');
+        // POST /estimate/123/sent
+        return Rest.one('estimate', id).post('sent');
 
       }
     };

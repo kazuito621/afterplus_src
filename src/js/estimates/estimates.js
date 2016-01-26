@@ -550,7 +550,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         event.stopPropagation();
         var estimates = s.checkedEstimates.ids;
         _.each(estimates, function(id) {
-          Api.setEstimateActive(id);
+          Api.setEstimateSent(id);
         });
       }
 

@@ -168,13 +168,8 @@
 										</tr>
 										<tr>
 											<td colspan="4">
-
 												<span>
-													 <button class="btn btn-default" ng-model="bulkEstimates.overrideTreatmentCodes" multiple max-length=0  
-													 	ng-options="t.treatmentTypeID as t.treatmentType for t in initData.filters.treatments"
-														bs-select placeholder="Override Treatment" onclick="return false;"
-														>Treatments <span class="caret"></span>
-													 </button>
+												 	<override-treatment codes="data.overrideTreatmentCodes" treatments="initData.filters.treatments"></override-treatment>
 													 <a ng-if="bulkEstimates.overrideTreatmentCodes.length" 
 													 	ng-click="bulkEstimates.overrideTreatmentCodes=[]"
 													 	class='fa fa-times _red _size8 hand' style='padding-left:.2em;'></a>

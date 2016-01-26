@@ -68,8 +68,9 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
             {id: 'paid', txt: 'PAID', selectable: true}];
 
           switch (s) {
-          case 'draft': // show DRAFT, APPR, COMPL
-            return [o[0], o[2]];
+          case 'draft': // show DRAFT, ACTIVE/SENT, APPR
+			 	o[1].txt='ACTIVE/SENT';
+            return o.splice(0,3);
 
           case 'sent':
           case 'approved': // show SENT, APPROVED, COMPLETED

@@ -589,7 +589,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       // add delay so we dont over work the browser.
 		var filterBySearch = function(txt, old) {
 			if(!txt) txt = s.pageVars.searchText;
-			console.debug('filter search'  );
         	txt = (txt || '');
         	txt = txt.trim();
 		  	if(!txt && !old) return;

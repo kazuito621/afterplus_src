@@ -72,7 +72,7 @@
                 <th ng-if="auth.isAtleast('inventory')" class="clickable-header" style="min-width: 124px;">
                     <button ng-if="auth.isAtleast('inventory')" class="btn btn-default"
                             ng-model="data.salesForemanMode"
-                            ng-options="s.value as s.viewValue for s in [{value:'sales',viewValue:'Sales'},{value:'foreman',viewValue:'Foreman'}]"
+                            bs-options="s.value as s.viewValue for s in [{value:'sales',viewValue:'Sales'},{value:'foreman',viewValue:'Foreman'}]"
                             bs-select onclick="return false;">
                     </button>
                     <i ng-class="getDateColClass()" class='silver'
@@ -88,7 +88,7 @@
                     <button ng-if="auth.isAtleast('inventory')" class="btn btn-default"
                             ng-class="'clr-'+getTstampHeaderClass()"
                             ng-model="data.currentTstamp"
-                            ng-options="s.value as s.viewValue for s in data.tstampItems"
+                            bs-options="s.value as s.viewValue for s in data.tstampItems"
                             bs-select onclick="return false;">
                     </button>
                     <i ng-class="getDateColClass()" class='silver' ng-click="sortDateCol()"></i>
@@ -149,7 +149,7 @@
                     <button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
                             ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
                             placeholder="{{e.status}}"
-                            ng-options="s.id as s.txt for s in data.statuses(e.status)"
+                            bs-options="s.id as s.txt for s in data.statuses(e.status)"
                             bs-select onclick="return false;">
                     </button>
 

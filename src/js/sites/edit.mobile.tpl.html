@@ -13,7 +13,7 @@
                                <!--editable-select="site.clientID">-->
                                 <!--{{ site.clientID | clientName:this  || "(not specified)"}}-->
                             <!--</a>-->
-                        <button class="btn btn-default" ng-model="site.clientID" ng-options="c.clientID as c.clientName for c in initData.clients"
+                        <button class="btn btn-default" ng-model="site.clientID" bs-options="c.clientID as c.clientName for c in initData.clients"
                                 bs-select placeholder="Which client owns this property?" onclick="return false;" required>
                             Client <span class="caret"></span>
                         </button>

@@ -1,16 +1,16 @@
 ﻿<style type="text/css">
-         
-			
-			
-		.filter_dropdown {
-			width:100%;
-			margin-bottom:.3em;
-			font-size:1.2em;
-		}
 
-  		.fc-time { 
-			display:none;
-		}
+
+    .filter_dropdown {
+        width: 100%;
+        margin-bottom: .3em;
+        font-size: 1.2em;
+    }
+
+    .fc-time {
+        display: none;
+    }
+
     .search {
         background: none repeat scroll 0 0 #eee;
         border: 1px solid #ccc;
@@ -21,7 +21,7 @@
 
     #searchJob {
         width: 100%;
-		  margin: 0 0 .3em 0;
+        margin: 0 0 .3em 0;
     }
 
     .position {
@@ -36,141 +36,154 @@
         display: inline;
     }
 
-	 .fc-title {
-			display: block;
-			height:2em;
-			line-height:1.1em;
-			word-break: break-all;
-			padding-top: .2em;
-			padding-bottom: .2em;
-			overflow:hidden;
-	 }
-	 .fc-content {
-			white-space:normal !important;
-	  }
-	  .fc-today {
-			background-color: #99c2fb;
-	  }
+    .fc-title {
+        display: block;
+        height: 2em;
+        line-height: 1.1em;
+        word-break: break-all;
+        padding-top: .2em;
+        padding-bottom: .2em;
+        overflow: hidden;
+    }
 
+    .fc-content {
+        white-space: normal !important;
+    }
 
+    .fc-today {
+        background-color: #99c2fb;
+    }
 
-        #external-events {
-            padding: 0 10px;
-            border: 1px solid #ccc;
-            background: #eee;
-            text-align: left;
-        }
+    #external-events {
+        padding: 0 10px;
+        border: 1px solid #ccc;
+        background: #eee;
+        text-align: left;
+    }
 
-            #external-events h4 {
-                font-size: 16px;
-                margin-top: 0;
-                padding-top: 1em;
-            }
+    #external-events h4 {
+        font-size: 16px;
+        margin-top: 0;
+        padding-top: 1em;
+    }
 
-            #external-events .fc-event {
-                margin: 10px 0;
-                cursor: pointer;
-            }
+    #external-events .fc-event {
+        margin: 10px 0;
+        cursor: pointer;
+    }
 
-            #external-events p {
-                margin: 1.5em 0;
-                font-size: 11px;
-                color: #666;
-            }
+    #external-events p {
+        margin: 1.5em 0;
+        font-size: 11px;
+        color: #666;
+    }
 
-                #external-events p input {
-                    margin: 0;
-                    vertical-align: middle;
-                }
+    #external-events p input {
+        margin: 0;
+        vertical-align: middle;
+    }
 
-		#calendar-tags div {
-			margin-bottom:.35em;
-			width:100%;
-		}
-		#calendar-tags .small-tags {
-			width:80%;
-		}
-		#calendar-tags select {
-		}
+    #calendar-tags div {
+        margin-bottom: .35em;
+        width: 100%;
+    }
 
+    #calendar-tags .small-tags {
+        width: 80%;
+    }
 
-	 /* Override some calendar options */
-	 .fc-agenda-view .fc-day-grid .fc-row {
-	 		min-height: 35em; /* all-day section will never get shorter than this */
-		}
-	/* hide time in week view for now 
-	 .fc-time-grid-container {
-			height:1px !important;
-	 }*/
+    #calendar-tags select {
+    }
+
+    /* Override some calendar options */
+    .fc-agenda-view .fc-day-grid .fc-row {
+        min-height: 35em; /* all-day section will never get shorter than this */
+    }
+
+    /* hide time in week view for now
+     .fc-time-grid-container {
+            height:1px !important;
+     }*/
 </style>
 
 <div class="row">
-	<div class="col-md-2">
-		<div style='margin:0 0 1em; text-align:left;'>
+    <div class="col-md-2">
+        <div style='margin:0 0 1em; text-align:left;'>
 
-			<button id='sales_filter' type="button" class="btn btn-default" ng-model="pageVars.sales_userIDs" data-html="1" data-multiple="1" 
-					data-max-length="0" data-placeholder="Sales Filter"
-					data-animation="am-flip-x" ng-options="usr.userID as usr.name +' ('+usr.count+')' for usr in salesUsers" bs-select
-					title='Foremen' style='width:100%;' ng-change="onFilterChange()"></button>
-			<button id='foreman_filter' type="button" class="btn btn-default" ng-model="pageVars.job_userIDs" data-html="1" data-multiple="1" 
-					data-max-length="0" data-placeholder="Foreman Filter"
-					data-animation="am-flip-x" ng-options="usr.userID as usr.name +' ('+usr.count+')' for usr in jobUsers" bs-select
-					title='Foremen' style='width:100%; margin:.3em 0 .3em 0;' ng-change="onFilterChange()" ></button>
+            <button id='sales_filter' type="button" class="btn btn-default" ng-model="pageVars.sales_userIDs"
+                    data-html="1" data-multiple="1"
+                    data-max-length="0" data-placeholder="Sales Filter"
+                    data-animation="am-flip-x"
+                    bs-options="usr.userID as usr.name +' ('+usr.count+')' for usr in salesUsers" bs-select
+                    title='Foremen' style='width:100%;' ng-change="onFilterChange()"></button>
+            <button id='foreman_filter' type="button" class="btn btn-default" ng-model="pageVars.job_userIDs"
+                    data-html="1" data-multiple="1"
+                    data-max-length="0" data-placeholder="Foreman Filter"
+                    data-animation="am-flip-x"
+                    bs-options="usr.userID as usr.name +' ('+usr.count+')' for usr in jobUsers" bs-select
+                    title='Foremen' style='width:100%; margin:.3em 0 .3em 0;' ng-change="onFilterChange()"></button>
 
-			 <input style='width:100%; height:1.5em;' type="text" id="searchJob" ng-model="searchtxt" ng-keyup="search(searchtxt)" placeholder="Search"/>
+            <input style='width:100%; height:1.5em;' type="text" id="searchJob" ng-model="searchtxt"
+                   ng-keyup="search(searchtxt)" placeholder="Search"/>
 
 
-			<!-- color key -->
-			<div id='calendar-tags' style='clear:both;padding:.5em 0; width:100%;'>
-				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()"> 
+            <!-- color key -->
+            <div id='calendar-tags' style='clear:both;padding:.5em 0; width:100%;'>
+                <div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()">
 						<span class='small-tag scheduled' data-text='SCHED'
-							title='Amount of work that is scheduled (or in progress) which is left todo (scheduled total MINUS individual items which is already marked done)'
-							>SCHED</span></div>
-				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()" style='visibility:hidden !important;'> 
+                              title='Amount of work that is scheduled (or in progress) which is left todo (scheduled total MINUS individual items which is already marked done)'
+                                >SCHED</span></div>
+                <div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()"
+                            style='visibility:hidden !important;'>
 						<span class='small-tag in_prog in_prog_todo' data-text='&gt;TODO'
-							title='Amount of work left todo only for jobs that have already been started (ie. at least $1 marked complete)'
-							>&gt;TODO</span></div>
-				<div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()" style='visibility:hidden !important;'> 
+                              title='Amount of work left todo only for jobs that have already been started (ie. at least $1 marked complete)'
+                                >&gt;TODO</span></div>
+                <div><input type='checkbox' ng-model='pageVars.showStatus.scheduled' ng-change="onFilterChange()"
+                            style='visibility:hidden !important;'>
 						<span class='small-tag in_prog in_prog_done' data-text='&gt;DONE'
-							title='Amount of work completed only for jobs that have already been started (ie. at least $1 marked complete)'
-							>&gt;DONE</span></div>
-				<div><input type='checkbox' ng-model='pageVars.showStatus.completed' ng-change="onFilterChange()"> 
+                              title='Amount of work completed only for jobs that have already been started (ie. at least $1 marked complete)'
+                                >&gt;DONE</span></div>
+                <div><input type='checkbox' ng-model='pageVars.showStatus.completed' ng-change="onFilterChange()">
 						<span class='small-tag completed' data-text='COMPL'
-							title='Total for jobs fully complete'
-							>COMPLETED</span></div>
-				<div><input type='checkbox' ng-model='pageVars.showStatus.invoiced' ng-change="onFilterChange()"> 
+                              title='Total for jobs fully complete'
+                                >COMPLETED</span></div>
+                <div><input type='checkbox' ng-model='pageVars.showStatus.invoiced' ng-change="onFilterChange()">
 						<span class='small-tag invoiced' data-text='INVOIC'
-							title='Total for jobs that have been invoiced, but not paid yet'
-							>INVOICED</span></div>
-				<div><input type='checkbox' ng-model='pageVars.showStatus.paid' ng-change="onFilterChange()"> 
+                              title='Total for jobs that have been invoiced, but not paid yet'
+                                >INVOICED</span></div>
+                <div><input type='checkbox' ng-model='pageVars.showStatus.paid' ng-change="onFilterChange()">
 						<span class='small-tag paid' data-text='PAID YTD'
-							title='Total paid since Jan 1 of this year'
-							>PAID</span></div>
-			</div>
-		<div style='padding:.5em 0 .5em 0;'>
-			Goal/Day:  $<a href="#" editable-text="pageVars.goalPerDay" onaftersave="onUpdateGoalPerDay()">{{ pageVars.goalPerDay || '0' }}</a>
-		</div>
+                              title='Total paid since Jan 1 of this year'
+                                >PAID</span></div>
+            </div>
+            <div style='padding:.5em 0 .5em 0;'>
+                Goal/Day: $<a href="#" editable-text="pageVars.goalPerDay" onaftersave="onUpdateGoalPerDay()">{{
+                pageVars.goalPerDay || '0' }}</a>
+            </div>
 
 
-		</div>
-		<div id='external-events' style="">
-           <h4 id='approved-jobs-title' style="margin:0 0 .5em; line-height:1.3em; font-size:.8em;">
-			  		<span style='font-weight:bold;'>Approved </span></h4>
-			 <div class='fc-event drop-accpted' ng-repeat="singleJob in unschedJobs | orderBy:'reportID'" 
-			 	ng-class="'clr-'+singleJob.status" style='padding:.25em .5em' 
-				ng-click="openJob(singleJob)" 
-				data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
-				 	{{singleJob.title}}
-			 </div>
-			 <p>
-				  <input type='checkbox' id='drop-remove' checked ng-show="false" />
-				  <!--  <label for='drop-remove'>remove after drop</label>-->
-			 </p>
-		</div>
-	</div><!-- }} col -->
-	<div class='col-md-9'>
-		<div id='calendar'></div>
-	</div><!-- }} col -->
+        </div>
+        <div id='external-events' style="">
+            <h4 id='approved-jobs-title' style="margin:0 0 .5em; line-height:1.3em; font-size:.8em;">
+                <span style='font-weight:bold;'>Approved </span></h4>
+
+            <div class='fc-event drop-accpted' ng-repeat="singleJob in unschedJobs | orderBy:'reportID'"
+                 ng-class="'clr-'+singleJob.status" style='padding:.25em .5em'
+                 ng-click="openJob(singleJob)"
+                 data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
+                {{singleJob.title}}
+            </div>
+            <p>
+                <input type='checkbox' id='drop-remove' checked ng-show="false"/>
+                <!--  <label for='drop-remove'>remove after drop</label>-->
+            </p>
+        </div>
+    </div>
+    <!-- }} col -->
+    <div class='col-md-9'>
+        <div id='calendar'></div>
+    </div>
+    <!-- }} col -->
 </div><!-- }} row -->
 <div style='margin:1em;'> &nbsp; </div>
 
@@ -180,42 +193,44 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span
+                        class="sr-only">close</span></button>
                 <h4 id="modalTitle" class="modal-title"></h4>
                 <h4 id="modalSiteID" class="modal-site" ng-show="true" ng-model="siteID"></h4>
             </div>
             <div id="modalBody" class="modal-body">
-                  <div class="row">
+                <div class="row">
                     <div class="col-md-6" style='text-align:left; line-height:1.4em;'>
-						  		<b style='font-size:1.4em;'>{{ siteName }}</b><BR>
-								{{ street }}<BR>
-								{{ city }}, {{ state }}<BR>
-								{{ zip }} 
+                        <b style='font-size:1.4em;'>{{ siteName }}</b><BR>
+                        {{ street }}<BR>
+                        {{ city }}, {{ state }}<BR>
+                        {{ zip }}
 								<span style='color:#999;'>
-									(<a target=_new href='http://maps.google.com/?q={{street}}, {{city}}, {{state}} {{zip}}'>map</a>)
+									(<a target=_new
+                                        href='http://maps.google.com/?q={{street}}, {{city}}, {{state}} {{zip}}'>map</a>)
 								</span>
-								<BR><BR>
+                        <BR><BR>
 
-								<b style='font-size:1.2em;'>{{ contact }}</b><BR>
-								<a href='{{email}}'>{{email}}</a><BR>
-								{{ phone }}
+                        <b style='font-size:1.2em;'>{{ contact }}</b><BR>
+                        <a href='{{email}}'>{{email}}</a><BR>
+                        {{ phone }}
 
                     </div>
                     <div class="col-md-6" style='text-align:left; line-height:1.3em;'>
 
-					Foreman: <a href="#" editable-select="job_user.userID"
-							e-ng-options="g.userID as g.text for g in groups"
-							onaftersave="savejobtoforeman()">{{ job_user.name || 'Select a Foreman' }}</a>
-							<BR><BR>
+                        Foreman: <a href="#" editable-select="job_user.userID"
+                                    e-ng-options="g.userID as g.text for g in groups"
+                                    onaftersave="savejobtoforeman()">{{ job_user.name || 'Select a Foreman' }}</a>
+                        <BR><BR>
 
-					Sales: <a href="#" editable-select="sales_user.userID"
-							e-ng-options="g.userID as g.text for g in groups"
-							onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
-							<BR><BR>
-							<BR>
+                        Sales: <a href="#" editable-select="sales_user.userID"
+                                  e-ng-options="g.userID as g.text for g in groups"
+                                  onaftersave="savejobtoSalesUser()">{{ sales_user.name || 'Select a Sales Rep' }}</a>
+                        <BR><BR>
+                        <BR>
 
-                     <div class="row">
-                         <div class="col-sm-5">
+                        <div class="row">
+                            <div class="col-sm-5">
                              <span>
                                  <span>DONE:</span>    <BR>
                                  <span style='font-size:1.7em;color: #19c11a'>${{(price-todo_price)|formatPrice}}</span><BR>
@@ -224,82 +239,99 @@
                                  <span>TOTAL:</span>       <BR>
                                  <span style='font-size:1.7em;'>${{price|formatPrice}}</span><BR>
                              </span>
-                         </div>
-                         <div class="col-sm-5" style="margin: 5px">
+                            </div>
+                            <div class="col-sm-5" style="margin: 5px">
                              <span ng-if="todo_price<total_price">
                                  <span style='font-size:1.7em;'>{{(((price-todo_price)/price*100).toFixed(2))|formatPrice}}%</span><BR>
                                  <span style="font-size: 1.2em;">Done</span>    <BR>
                              </span>
-                         </div>
-                     </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <BR>
-				<div style='background-color:#F7F4E1;padding:1em;'>
-                <div class="row">
-                    Start: <input class="" ng-model="job_start_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
-                           data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
-									data-placement='top'> &nbsp; 
-                    End: <input class="" ng-model="job_end_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
-                           data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
-									data-placement='top'> &nbsp;
-                    Days: <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
-                           type="number" min="1" style="width: 3.5em;">
-                    <button type="button" class="btn btn-primary" ng-show="valueChanged" ng-click="saveJobDates()">Save</button>
-					 </div>
-                <div class="row" ng-show="showWeekendWork">
-                	<BR>
-                	<label style="font-size:1.1em;">Weekend Work?</label> 
-							<input type=radio value=0 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> No  &nbsp; 
-							<input type=radio value=1 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sat &nbsp;
-							<input type=radio value=2 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sun &nbsp;
-							<input type=radio value=3 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Both
-				</div>
-                <div>
+
+                <div style='background-color:#F7F4E1;padding:1em;'>
+                    <div class="row">
+                        Start: <input class="" ng-model="job_start_unix" data-date-format="EEE M/dd/yyyy"
+                                      placeholder="Set Date" ng-change="onJobDateChange()"
+                                      data-date-type="unix" data-autoclose="1" name="date2" bs-datepicker type="text"
+                                      style='width:12em;'
+                                      data-placement='top'> &nbsp;
+                        End: <input class="" ng-model="job_end_unix" data-date-format="EEE M/dd/yyyy"
+                                    placeholder="Set Date" ng-change="onJobDateChange()"
+                                    data-date-type="unix" data-autoclose="1" name="date2" bs-datepicker type="text"
+                                    style='width:12em;'
+                                    data-placement='top'> &nbsp;
+                        Days: <input class="" ng-model="duration" placeholder="Total days"
+                                     ng-change="onJobDateChange('days')"
+                                     type="number" min="1" style="width: 3.5em;">
+                        <button type="button" class="btn btn-primary" ng-show="valueChanged" ng-click="saveJobDates()">
+                            Save
+                        </button>
+                    </div>
+                    <div class="row" ng-show="showWeekendWork">
+                        <BR>
+                        <label style="font-size:1.1em;">Weekend Work?</label>
+                        <input type=radio value=0 ng-model='selectedWeekendWork'
+                               ng-change="weekendWorkChanged(selectedWeekendWork)"> No &nbsp;
+                        <input type=radio value=1 ng-model='selectedWeekendWork'
+                               ng-change="weekendWorkChanged(selectedWeekendWork)"> Sat &nbsp;
+                        <input type=radio value=2 ng-model='selectedWeekendWork'
+                               ng-change="weekendWorkChanged(selectedWeekendWork)"> Sun &nbsp;
+                        <input type=radio value=3 ng-model='selectedWeekendWork'
+                               ng-change="weekendWorkChanged(selectedWeekendWork)"> Both
+                    </div>
+                    <div>
+
+                    </div>
+                </div>
+                <!-- }} body -->
+                <side-note report-id="{{reportID}}" note-type='report_internal'></side-note>
+                <div class="modal-footer">
+
+                    <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
+                    <button class="btn btn-default pull-left" ng-model="status" ng-hide="type=='Unscheduled'"
+                            bs-options="s.value as s.txt for s in statuses"
+                            bs-select onclick="return false;" ng-change="updateStatus()">
+                    </button>
+                    <input type="button" class="btn btn-danger"
+                           ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
+                           ng-click="UnscheduledJob()" value="Unschedule Job"></input>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="valueChanged = false">
+                        Close
+                    </button>
 
                 </div>
-            </div> <!-- }} body -->
-            <side-note report-id="{{reportID}}" note-type='report_internal'></side-note>
-            <div class="modal-footer">
-
-               <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
-                <button  class="btn btn-default pull-left"  ng-model="status" ng-hide="type=='Unscheduled'"
-                        ng-options="s.value as s.txt for s in statuses"
-                        bs-select onclick="return false;" ng-change="updateStatus()">
-                </button>
-                <input type="button" class="btn btn-danger"
-					 	ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
-						ng-click="UnscheduledJob()" value="Unschedule Job"></input> 
-                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="valueChanged = false">Close</button>
-
             </div>
         </div>
     </div>
-</div>
-<!--(End) Modal Up To Show Info about Job-->
+    <!--(End) Modal Up To Show Info about Job-->
 
-<!---(Start) Modal Pop Up  To Show List of  Foreman----->
-<div id="jobassignforemanpopup" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
-                <h4 id="assignjobtitle" class="modal-title"></h4>
+    <!---(Start) Modal Pop Up  To Show List of  Foreman----->
+    <div id="jobassignforemanpopup" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span
+                            class="sr-only">close</span></button>
+                    <h4 id="assignjobtitle" class="modal-title"></h4>
 
-            </div>
-            <div id="assignjobbody" class="modal-body">
-               <!-- <a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.userID as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
-                </a>-->
-                <!--<div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>-->
-              
+                </div>
+                <div id="assignjobbody" class="modal-body">
+                    <!-- <a href="#" editable-select="user.group" onshow="loadGroups()" e-ng-options="g.userID as g.text for g in groups">{{ user.groupName || 'Select Foreman' }}
+                     </a>-->
+                    <!--<div ng-repeat="foreman in foremans">{{foreman.foremanname}}</div>-->
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <input type="button" class="btn btn-success" value="SaveJobToForeman" ng-click="savejobtoforeman(user.groupName)"></input>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <input type="button" class="btn btn-success" value="SaveJobToForeman"
+                           ng-click="savejobtoforeman(user.groupName)"></input>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!---(End) Modal Pop Up  To Show List of  Foreman----->
+    <!---(End) Modal Pop Up  To Show List of  Foreman----->
 

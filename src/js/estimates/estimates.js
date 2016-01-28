@@ -156,7 +156,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
 
       var init = function (cb) {
-        s.setAlert("Loading...", {time: 8});
+        s.setAlert("Loading...", {time: 12});
         var search = $location.search();
         cb = cb || angular.noop;
 

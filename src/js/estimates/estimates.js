@@ -8,12 +8,11 @@ Todo for bulkd estimates
 */
 
 var EstimatesListCtrl = app.controller('EstimatesListCtrl',
-  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper', 'Restangular',
-    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest) {
+  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper', 'Restangular', 'storage',
+    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest, storage) {
       'use strict';
       // Local vars initialization
       var s = window.ecs = $scope;
-		s.pageVars={filter:{status:''}, searchText:''}				//todo later, store this into browser data for recall after refresh
       var totalPrice = 0;
       var myStateID = 'estimates',
         estimates = [], // array of original estimates
@@ -32,7 +31,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 		// but if 2 filters from same group, then either one can match
 		// ie. if a "status" AND a "name" are specified as filters... both must match.
       // 	 but if a "name" and "email" is specified, either can match
-      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email', 'siteName', 'sales_fname', 'sales_lname', 'city'], ['status'], ['completed_perc']];
+      var filterGroups = [['xyz', 'search'], ['status'], ['completed_perc'], ['siteID']];
 
       // Scope vars initialization
       s.displayedEstimates = [];
@@ -155,10 +154,26 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         });
       };
 
+
       var init = function (cb) {
         s.setAlert("Loading...", {time: 8});
         var search = $location.search();
         cb = cb || angular.noop;
+
+
+			// get saved pageVars to save search/filter 
+			var defaultPageVars = {filter:{status:'', siteID:'', completed_perc:''}, searchText:''};
+			storage.bind(s, 'pageVars', {
+					defaultValue: defaultPageVars,
+					storeName: 'reports_pageVars'
+			});
+
+			// check if query string ...
+       	var qs = $location.search();
+			if(qs.s) s.pageVars.searchText = qs.s
+			if(qs.status=='all') s.pageVars.filter.status='';
+			else if(qs.status) s.pageVars.filter.status=qs.status;
+
 
         Api.getRecentReports({ timestamp:1 }).then(function (data) {
           var isCust = Auth.is('customer');
@@ -208,24 +223,29 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           s.displayedEstimates = estFiltered.slice(0, 49);
           cb();
           if (s.pageVars.searchText && s.pageVars.searchText.length > 1) {
-            s.pageVars.searchText = ' ' + s.pageVars.searchText;
+           	s.pageVars.searchText = ' ' + s.pageVars.searchText;
           }
           if (!s.data.salesForemanMode) {
             s.data.salesForemanMode = 'sales';
           }
 
-			 getEstimateTotals();
+			var statusLabel = s.pageVars.filter.status;
+			if(!statusLabel) statusLabel = 'all';
+			var e = $('label#'+statusLabel);
+			if(e && e.addClass) e.addClass('active');
+
+          getEstimateTotals();
         });
 
-        if( Auth.isAtleast('inventory') ) 
-				setInterval(function(){ getEstimateTotals(); }, 60000 );
 
-			// check if query string ...
-       	var search = $location.search().s;
-			if(search){
-				s.pageVars.searchText = search;
+        if( Auth.isAtleast('inventory') ) {
+				setInterval(function(){ getEstimateTotals(); }, 60000 );
 			}
-      };
+
+		
+
+
+      }; // init
 
 
 		var getEstimateTotals = function(){
@@ -579,43 +599,24 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         	if (filterTextTimeout) $timeout.cancel(filterTextTimeout);
 
         	filterTextTimeout = $timeout(function () {
-
-
 				 if (txt === '' || !txt) {
 					if (old) {
-						s.pageVars.filter.reportID='';
-						s.pageVars.filter.name='';
-						s.pageVars.filter.siteName='';
-						s.pageVars.filter.sales_email='';
-						s.pageVars.filter.sales_fname='';
-						s.pageVars.filter.sales_lname='';
-						s.pageVars.filter.siteName='';
-						s.pageVars.filter.city='';
+						s.pageVars.filter.search='';
+						s.pageVars.filter.siteID='';
 					  	self.fh.setFilter(s.pageVars.filter);
 					  	self.applyFilter();
 					}
-				 } else if (!isNaN(txt)) {
-						// if search entry is a number, search by siteID and name, siteName
-						s.pageVars.filter.reportID=txt;
-						s.pageVars.filter.name=txt;
-						s.pageVars.filter.siteName=txt;
-						s.pageVars.filter.sales_email='';
-						s.pageVars.filter.sales_fname='';
-						s.pageVars.filter.sales_lname='';
-						s.pageVars.filter.siteName='';
-						s.pageVars.filter.city='';
-					  	self.fh.setFilter(s.pageVars.filter);
-					  	self.applyFilter();
 				 } else {
-						// if just letters, then search by name and city, and sales person
-						s.pageVars.filter.reportID='';
-						s.pageVars.filter.name='';
-						s.pageVars.filter.siteName=txt;
-						s.pageVars.filter.sales_email=txt;
-						s.pageVars.filter.sales_fname=txt;
-						s.pageVars.filter.sales_lname=txt;
-						s.pageVars.filter.siteName=txt;
-						s.pageVars.filter.city=txt;
+						// look for siteID:XXXX
+						var m = txt.match(/siteID:([0-9]+)/);
+						if(m){
+							s.pageVars.filter.siteID=m[1];
+							txt = txt.replace(m[0],'').trim();
+						}else{
+							s.pageVars.filter.siteID='';
+						}
+
+						s.pageVars.filter.search=txt;
 					  	self.fh.setFilter(s.pageVars.filter);
 					  	self.applyFilter();
 				 }

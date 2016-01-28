@@ -62,7 +62,7 @@
                 <td>{{s.city}}, {{s.state}}</td>
                 <td>{{s.tstamp_created_2}}</td>
                 <td>{{s.treeCount}}</td>
-                <td><a href='/#estimates?siteID={{s.siteID}}' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
+                <td><a href='/#estimates?s=siteID:{{s.siteID}}&status=all' bs-tooltip title='View estimates'>{{s.reportCount}}</a></td>
                 <td>
                     <a ng-show="s.userCustCount>0" site-users-edit-modal site="s" sites="sites" clients="initData.clients"
                        class='fa fa-user olive hand' bs-tooltip title='Edit Contacts for {{s.siteName}}'></a>

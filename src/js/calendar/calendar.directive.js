@@ -113,14 +113,12 @@ angular.module('calendardirective', [])
                                 }
                                 , sales_userIDs: []
                                 , job_userIDs: []
+										  , goalPerDay: 1000,
                             }
                             storage.bind(s, 'pageVars',
                                 {
                                     defaultValue: default_settings,
-                                    storeName: 'calendar_pageVars',
-                                    goalPerDay: 1000,
-                                    sales_userIDs: [],
-                                    job_userIDs: []
+                                    storeName: 'calendar_pageVars'
                                 });
                             if (!s.pageVars.sales_userIDs) s.pageVars.sales_userIDs = [];
                             if (!s.pageVars.job_userIDs) s.pageVars.job_userIDs = [];

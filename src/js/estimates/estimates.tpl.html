@@ -29,11 +29,11 @@
     <div ng-if="auth.isAtleast('inventory')">
         <div class='pull-right topMargin5'>
             <div class="btn-group" bs-radio-group id="estimatesFilters" ng-model="status_filters_2">
-                <label ng-click="setStatusFilter('all')" class="btn btn-default">
+                <label ng-click="setStatusFilter('all')" class="btn btn-default" id='all'>
                     <input type="radio" value="all"> <span>All</span></label>
-                <label ng-click="setStatusFilter('draft')" class="btn btn-default">
+                <label ng-click="setStatusFilter('draft')" class="btn btn-default" id='draft'>
                     <input type="radio" value="draft"> <span>Draft</span></label>
-                <label ng-click="setStatusFilter('sent')" class="btn btn-default">
+                <label ng-click="setStatusFilter('sent')" class="btn btn-default" id='sent'>
                     <input type="radio" value="sent"> <span>Sent</span></label>
                 <label ng-click="setStatusFilter('approved')" class="btn btn-default" id='approved'>
                     <input type="radio" value="approved"> <span>Appr</span></label>

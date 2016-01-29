@@ -138,7 +138,12 @@
                        send-report="e" type="invoice"
                        bs-tooltip title="Re/Send Invoice">
                         <i class="fa fa-envelope"></i>
-                    </a><br>
+                    </a>
+
+						<span ng-if="('scheduled'==e.status || 'approved'==e.status || 'completed'==e.status) && !e.job_userID"
+							class='small-tag scheduled' style='background-color:#F00; font-size:.65em;'>NO FOREMAN</span>
+
+						  <br>
                     <span title="{{e.siteName}}" style='color:#888;'>{{e.siteName_short}}</span> &nbsp;
                     <i site-edit-modal clients="initData.clients" site-id="e.siteID"
                        class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip

@@ -234,7 +234,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 			var e = $('label#'+statusLabel);
 			if(e && e.addClass) e.addClass('active');
 
-          getEstimateTotals();
+			 onLoadComplete();
         });
 
 
@@ -242,11 +242,12 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 				setInterval(function(){ getEstimateTotals(); }, 60000 );
 			}
 
-		
-
-
       }; // init
 
+
+		var onLoadComplete = function(){
+          getEstimateTotals();
+		}
 
 		var getEstimateTotals = function(){
         if (!Auth.isAtleast('inventory')) return;

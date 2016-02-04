@@ -81,12 +81,13 @@ app.directive('addEditUserModal',
                             if(data.showStatInDash == '1') scope.newContact.showStatInDash=true;
                             else scope.newContact.showStatInDash=false;
 
-                            var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
-                            scope.newContact.role={};
-                            scope.newContact.role = scope.userRoles[idx];
+                            //var idx= _.findObj(scope.userRoles,'roleCode',data.role, true);
+									 // role is not used anymore... roles[] array is
+                            //scope.newContact.role={};
+                            //scope.newContact.role = scope.userRoles[idx];
 
-                            scope.newContact.roles = data.role.split(',');
-                            console.log(scope.newContact.roles);
+									if(data.roles.substr(-1)==',') data.roles=data.roles.substr(0,data.roles.length-1)
+                            scope.newContact.roles = data.roles.split(',');
 
                             getSiteNames(data.siteIDs);
                             getClientNames(data.clientIDs);
@@ -104,7 +105,23 @@ app.directive('addEditUserModal',
 
                 };
 
-
+					scope.roleChanged = function(roleClicked){
+						var c = $('input.roles.customer')
+						//if(c && c.prop('checked')){				// if customer
+						if('customer' == roleClicked){				// if customer
+							scope.newContact.roles=['customer'];
+							$('input.showstat').prop('disabled',true);
+						}else{		// if not customer
+							var idx=scope.newContact.roles.indexOf('customer')
+							if(idx>=0) scope.newContact.roles.splice(idx,1);
+							$('input.showstat').prop('disabled',false);
+						}
+						
+						if( scope.newContact.roles && scope.newContact.roles.length>0 )
+							$('div#rolesContainer').css({backgroundColor:'#fff'});
+						else
+							$('div#rolesContainer').css({backgroundColor:'#fcc'});
+					}
 			
 					scope.sendPortalLink = function(user){
 					 var s=scope;
@@ -147,13 +164,10 @@ app.directive('addEditUserModal',
 
 
                 scope.closeModal = function () {
-
                     modal.hide();
                 };
 
                 var isValidEmail = function() {
-                    console.log('new contact');
-                    console.log(scope.newContact);
                     if (scope.newContact.email==undefined || !scope.newContact.email.match(/^[^@]+@[^\.]+\..+$/)) {
                         return false;
                     }
@@ -161,12 +175,9 @@ app.directive('addEditUserModal',
                 }
 
                 var passMisMatch = function(){
-                    if(scope.newContact.newPass!=undefined || scope.newContact.newPass!=''){
-                        if(scope.newContact.newPass!=scope.newContact.newPassConfirm){
-                            return true;
-                        }
-                    }
-                    return false;
+               	if(!scope.newContact.newPass || !scope.newContact.newPass.length) return false;
+              		if(scope.newContact.newPass!=scope.newContact.newPassConfirm) return true;
+                	return false;
                 }
 
                 scope.SaveUser = function (event) {
@@ -177,19 +188,20 @@ app.directive('addEditUserModal',
                         scope.emailNotValid = false;
                     }
 
-                    if(passMisMatch()==true){
-                        scope.passMisMatch = true;
-                        return;
-                    } else {
-                        scope.passMisMatch = false;
-                    }
+						  if(passMisMatch()==true){
+								scope.passMisMatch = true;
+								return;
+						  } else {
+								scope.passMisMatch = false;
+						  }
+
                     var user={};
-                    if(scope.newContact.email==undefined || scope.newContact.email.trim()==""||
-                        scope.newContact.role==undefined){
+                    if(scope.newContact.email==undefined || scope.newContact.email.trim()=="" ||
+                        !scope.newContact.roles.length){
                         return;
                     }
+
                     user.email=  scope.newContact.email;
-                    user.role=   scope.newContact.role.roleCode;
                     user.roles= scope.newContact.roles.join(',');
                     user.fName = scope.newContact.fName;
                     user.lName = scope.newContact.lName;
@@ -209,6 +221,9 @@ app.directive('addEditUserModal',
                     else user.disabled='0';
                     if(user.role!='customer' && scope.newContact.showStatInDash) user.showStatInDash='1';
                     else user.showStatInDash='0';
+
+							$(event).prop("disabled",true);
+							setTimeout(function(){$(event).prop("disabled",false);},3000);
 
                     if(scope.user){
                         Api.user.update(user,scope.user.userID).then(function (data) {

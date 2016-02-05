@@ -33,6 +33,7 @@ app.directive('reportEstimatesTable',
                 //}
 
                 $scope.setLimit = function () {
+						try{
                     $scope.$apply(function () {
                         $scope.limit += 100;
                     })
@@ -45,6 +46,7 @@ app.directive('reportEstimatesTable',
                     else {
                             $scope.setLimit();
                     }
+						}catch(e){}
                 }
             }]
         };

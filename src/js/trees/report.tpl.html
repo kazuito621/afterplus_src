@@ -218,6 +218,12 @@
 
                     <report-misc-services-table></report-misc-services-table>
 
+							
+							<div ng-if="report.tax_rate && report.tax_rate>0 || data.mode()=='trees'"
+								class="total-amount" style='color:#555; font-size:13pt;'>
+								Tax: &nbsp; &nbsp; {{ (report.total.tax || 0) | formatPrice }}
+							</div>
+
                     <div class="total-amount">
                         Total: &#36;{{(report.total.grand || 0)|formatPrice}}
                     </div>

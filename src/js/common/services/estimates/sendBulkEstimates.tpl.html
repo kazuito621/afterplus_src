@@ -1,0 +1,77 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                Send Bulk Estimates
+            </div>
+            <div class="modal-body">
+                <div ng-switch="getCurrentStep()" class="slide-frame">
+                    <div ng-switch-when="contacts">
+                        <form class="form-horizontal">
+                            <div class="form-group" ng-class="(estimate.contacts.length == 0) ? 'has-error' : ''" ng-repeat="estimate in estimates">
+                                <label class="col-sm-2 control-label">{{ estimate.name }}</label>
+                                <div class="col-sm-10">
+                                    <tags-input
+                                            id="emailField"
+                                            style="{color: #a9a9a9}"
+                                            ng-model="estimate.contacts"
+                                            display-property="email"
+                                            placeholder="Add email"
+                                            allowed-tags-pattern="^[^@]+@[^\.]+\..+$"
+                                            >
+                                    </tags-input>
+                                    <span class="text-danger" ng-class="{{estimate.contacts.length}}" ng-if="estimate.contacts.length == 0">site are missing contacts</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div ng-switch-when="send">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">From</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" ng-model="config.senderEmail" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">To</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" ng-model="config.subject" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Message</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" rows="20" ng-model="config.message"></textarea>
+                                    <span class="text-danger">The link will automatically be included in the email</span><BR>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn"
+                        ng-click="setCurrentStep(1)"
+                        ng-show="isCurrentStep(0)"
+                >
+                    Next
+                </button>
+
+                <button class="btn"
+                        ng-click="setCurrentStep(0)"
+                        ng-show="isCurrentStep(1)"
+                        >
+                    Back
+                </button>
+                <button class="btn"
+                        ng-click="bulkSendEstimates()"
+                        ng-show="isCurrentStep(1)"
+                        >
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

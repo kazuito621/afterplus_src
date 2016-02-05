@@ -63,7 +63,7 @@ app.directive('estimateDetails',
                         scope.report.foreman_email=newForeman.email;
                         scope.report.foreman_fname=newForeman.fName;
                         scope.report.foreman_lname=newForeman.lName;
-                        scope.report.foreman_email_short=newForeman.email.split('@')[0];
+                        scope.report.job_userID=newForeman.email.split('@')[0];
                     });
                 };
                 scope.savejobtoSalesUser = function () {
@@ -139,6 +139,7 @@ app.directive('estimateDetails',
 
 						// load contacts
 						Rest.one('site/'+scope.report.siteID+'/users?role=customer').get().then(function(res){
+                            console.log(res);
 							if(!res){
 								var txt="<div class='estContacts'>"+scope.site.contact+"<br>"
 									+"<a href='mailto:"+scope.site.email+"' target=_new>"+scope.site.email+"</a><BR>"

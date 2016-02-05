@@ -13,7 +13,18 @@
                         <tr>
                             <td>To:</td>
                             <td>
-                                <br><tags-input id="emailField" is-writing-tag style="{color: #a9a9a9}" ng-model="emailRpt.contactEmails" placeholder="Add email"></tags-input><br>
+                                <br>
+                                <tags-input
+                                        id="emailField"
+                                        is-writing-tag
+                                        style="{color: #a9a9a9}"
+                                        ng-model="emailRpt.contactUsers"
+                                        display-property="email"
+                                        placeholder="Add email"
+                                        allowed-tags-pattern="^[^@]+@[^\.]+\..+$"
+                                        >
+                                </tags-input>
+                                <br>
                             </td>
                         <tr>
                             <td>From:</td>

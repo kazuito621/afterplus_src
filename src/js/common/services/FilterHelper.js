@@ -24,24 +24,27 @@ app.factory('FilterHelper', function () {
     };
 
     // @parma obj - ie. {name:'tim', address:'123'}
-    // which converts into activeFilters[] array ie. [ [{filterName, value},...], [{filterName, value},...] ]
+    // which converts into activeFilters[] array ie. [ [{filterName:STRING, value:MIXED},...], [{filterName:STRING, value:MIXED},...] ]
     this.setFilter = function (obj) {
+		activeFilters=[[]];
+	   if(!obj) return;
+
       var filterItem, filterIdx, filterGroupIdx, thisGroup;
-      _.each(obj, function (val, key) {
+      _.each(obj, function (val, key) {							// loop through the filter object
         filterGroupIdx = self.getFilterGroup(key);
         if (!activeFilters[filterGroupIdx]) {
           activeFilters[filterGroupIdx] = [];
         }
         thisGroup = activeFilters[filterGroupIdx];
 
-        if (val) {
+        if( val !== false && val !== '' && typeof val != 'undefined' ){
           filterItem = _.findObj(thisGroup, 'filterName', key);
           if (filterItem) {
             filterItem.value = val;
           } else {
             thisGroup.push({filterName: key, value: val});
           }
-        } else {
+        } else {			
           filterIdx = _.findObj(thisGroup, 'filterName', key, true);
           if (filterIdx !== false) {
             thisGroup.splice(filterIdx, 1);
@@ -65,17 +68,58 @@ app.factory('FilterHelper', function () {
     this.matchFilter = function (item, filter) {
       var res = false, fg, filterName, value;
       _.each(filter, function (obj) {
-        if (!obj.value) { return; }
+        if (obj.value === false || obj.value === '' || typeof obj.value == 'undefined') { return; }
+		  var itemVal = item[obj.filterName];
         try {
-          // filtering *ID as numbers
-          if (obj.filterName.substr(-2).toLowerCase() === 'id') {
-            if (item[obj.filterName] === obj.value) {
+
+			//console.debug( itemVal  );
+			//console.debug( obj.value  );
+
+			// check if the data item is an array
+			if( itemVal instanceof Array && itemVal.indexOf(obj.value) >= 0 ){
+					res = true;
+					return false;
+			}
+
+			if( obj.value instanceof Array && obj.value.indexOf(itemVal) >= 0){
+					res = true;
+					return false;
+			}
+
+			 // check if filter value is an object (ie. {gt:5} //greater than 5
+			 if( typeof obj.value == 'object' && (typeof obj.value.gt != 'undefined' || typeof obj.value.lt != 'undefined') ){
+				itemVal = parseFloat(itemVal);
+
+				if(typeof obj.value.gt != 'undefined') obj.value.gt = parseFloat(obj.value.gt);
+				else obj.value.gt=false;
+				
+				if(typeof obj.value.lt != 'undefined') obj.value.lt = parseFloat(obj.value.lt);
+				else obj.value.lt=false;
+
+				if( obj.value.gt !== false && itemVal <= obj.value.gt ) return false;
+				
+				if( obj.value.lt !== false && itemVal >= obj.value.lt ) return false;
+				
+				res = true;
+				return false;
+			 }
+
+			 // check for number
+          else if( itemVal == obj.value ){
+				res = true;
+				return false;
+			 }
+
+			 // check id's for numbers
+          else if(obj.filterName.substr(-2).toLowerCase() === 'id' ) {
+            if (itemVal === obj.value) {
               res = true;
               return false;
             }
           }
+
           // filtering  as text
-          else if (item[obj.filterName].toLowerCase().search(obj.value.toLowerCase()) > -1) {
+          else if( itemVal.toLowerCase().search(obj.value.toLowerCase()) > -1 ){
             res = true;
             return false;
           }

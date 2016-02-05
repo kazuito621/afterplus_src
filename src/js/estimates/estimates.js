@@ -1,6 +1,16 @@
+/*
+Todo for bulkd estimates
+
+						// add Bulk SEND .... in rpeort
+						// link to new bulk estimate status ?? in /go ... which is done ?
+						// add status of SENT .. if somone opened it
+
+*/
+
 var EstimatesListCtrl = app.controller('EstimatesListCtrl',
-  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
-    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
+  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 
+  		'FilterHelper', 'Restangular', 'storage', 'sendBulkEstimatesService',
+    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest, storage, sendBulkEstimatesService) {
       'use strict';
       // Local vars initialization
       var s = window.ecs = $scope;
@@ -18,9 +28,11 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           total_price: 'desc'
         };
 
-      // group the filters. so that if a status and a name is specified, both must match
-      // but if a name and email is specified, either can match
-      var filterGroups = [['xuyz', 'reportID', 'name', 'siteName', 'sales_email'], ['status']];
+      // group the filters, so that if 2 filters from different groups are specified, both MUST match
+		// but if 2 filters from same group, then either one can match
+		// ie. if a "status" AND a "name" are specified as filters... both must match.
+      // 	 but if a "name" and "email" is specified, either can match
+      var filterGroups = [['xyz', 'search'], ['status'], ['completed_perc'], ['siteID']];
 
       // Scope vars initialization
       s.displayedEstimates = [];
@@ -56,8 +68,9 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
             {id: 'paid', txt: 'PAID', selectable: true}];
 
           switch (s) {
-          case 'draft': // show DRAFT, APPR, COMPL
-            return [o[0], o[2]];
+          case 'draft': // show DRAFT, ACTIVE/SENT, APPR
+			 	o[1].txt='ACTIVE/SENT';
+            return o.splice(0,3);
 
           case 'sent':
           case 'approved': // show SENT, APPROVED, COMPLETED
@@ -68,8 +81,10 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
           case 'completed': // show COMPL, SEND INV, MARK AS INV, PAID
             o[5].txt = 'MARK AS INVOICED';
+				o[3].id = 'uncomplete';
+				o[3].txt = 'UN-COMPLETE'
             o.splice(5, 0, {id: 'send_invoice', txt: 'SEND INVOICE'});
-            return o.splice(4, 4);
+            return o.splice(3, 5);
 
           case 'invoiced': // show COMPL, INV, RESEND INVOICE, PAID
             o.splice(5, 0, {id: 'send_invoice', txt: 'RE-SEND INVOICE'});
@@ -97,7 +112,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           {viewValue: 'Updated', value: 'tstamp_updated'},
           {viewValue: 'Sent', value: 'tstamp_sent'},
           {viewValue: 'Approved', value: 'tstamp_approved'},
-          {viewValue: 'Scheduled', value: 'tstamp_scheduled'},
+          {viewValue: 'Start Date', value: 'job_start'},
           {viewValue: 'Completed', value: 'tstamp_completed'},
           {viewValue: 'Invoiced', value: 'tstamp_invoiced'},
           {viewValue: 'Paid', value: 'tstamp_paid'}
@@ -110,9 +125,10 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           self.sh.setData(estFiltered);
           estFiltered = self.sh.sortByColumn(col);
           s.displayedEstimates = estFiltered.slice(0, 49);
+			 filterBySearch();
         },
         columnClass: function (col) {
-          return self.sh.columnClass(col);
+		  	if(self.sh) return self.sh.columnClass(col);
         },
         applySort: function () {
           //@@todo - we git a bug here when radio buttons are used
@@ -139,10 +155,26 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         });
       };
 
+
       var init = function (cb) {
-        s.setAlert("Loading...", {time: 8});
+        s.setAlert("Loading...", {time: 12});
         var search = $location.search();
         cb = cb || angular.noop;
+
+
+			// get saved pageVars to save search/filter 
+			var defaultPageVars = {filter:{status:'', siteID:'', completed_perc:''}, searchText:''};
+			storage.bind(s, 'pageVars', {
+					defaultValue: defaultPageVars,
+					storeName: 'reports_pageVars'
+			});
+
+			// check if query string ...
+       	var qs = $location.search();
+			if(qs.s) s.pageVars.searchText = qs.s
+			if(qs.status=='all') s.pageVars.filter.status='';
+			else if(qs.status) s.pageVars.filter.status=qs.status;
+
 
         Api.getRecentReports({ timestamp:1 }).then(function (data) {
           var isCust = Auth.is('customer');
@@ -191,14 +223,66 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           self.sh = SortHelper.sh(estimates, '', columnMap, colSortOrder);
           s.displayedEstimates = estFiltered.slice(0, 49);
           cb();
-          if (s.data.filterTextEntry && s.data.filterTextEntry.length > 1) {
-            s.data.filterTextEntry = ' ' + s.data.filterTextEntry;
+          if (s.pageVars.searchText && s.pageVars.searchText.length > 1) {
+           	s.pageVars.searchText = ' ' + s.pageVars.searchText;
           }
           if (!s.data.salesForemanMode) {
             s.data.salesForemanMode = 'sales';
           }
+
+			var statusLabel = s.pageVars.filter.status;
+			if(!statusLabel) statusLabel = 'all';
+			var e = $('label#'+statusLabel);
+			if(e && e.addClass) e.addClass('active');
+
+			 onLoadComplete();
         });
-      };
+
+
+        if( Auth.isAtleast('inventory') ) {
+				setInterval(function(){ getEstimateTotals(); }, 60000 );
+			}
+
+      }; // init
+
+
+		var onLoadComplete = function(){
+          getEstimateTotals();
+		}
+
+		var getEstimateTotals = function(){
+        if (!Auth.isAtleast('inventory')) return;
+			Rest.one('estimateTotals').get().then(function(r){
+				if(!r || !r.approved) return;
+
+				var itms='approved,scheduled,in_prog,completed,invoiced'.split(',');
+				_.each(itms, function(itm){
+					var itmVar = (itm=='in_prog') ? 'in_prog_todo' : itm;
+					var clr = (itm=='approved' || itm=='completed') ? '#f33' : '#bbb';
+					var el = $('label#'+itm+' span');
+					if(!el || !el.attr) return;
+
+					if(!el.attr('origText')) el.attr('origText', el.text());
+
+					if(r[itmVar].count > 0)
+						el.html( el.attr('origText') + ' <span style="color:'+clr+'">('+r[itmVar].count+')</span>' );
+					else
+						el.text( el.attr('origText') );
+
+				});
+
+				return;
+
+				if(r.approved.count) $('label#approved span').text('Appr ('+r.approved.count+')')
+				if(r.scheduled.count) $('label#scheduled span').text('Sched ('+r.scheduled.count+')')
+				if(r.in_prog_todo.count) $('label#in_prog span').text('In Prog ('+r.in_prog_todo.count+')')
+				if(r.completed.count) $('label#completed span').text('Done ('+r.completed.count+')')
+				if(r.invoiced.count) $('label#invoiced span').text('Invoiced ('+r.invoiced.count+')')
+			});
+
+		}
+
+
 
       var clearFilter = function () {
         self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: '', status: ''});
@@ -213,7 +297,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         // currently, both ok and fail, still calls the then()
         Api.setReportStatus(rpt.reportID, rpt.status).then(function (d) {
           var m = (d && d.msg) ? d.msg : '';
-          if ((!m || !m.match(/updated/i)) && rpt.prevStatus) {
+          if ((!m || !m.match(/updated|reverted/i)) && rpt.prevStatus) {
             rpt.status = rpt.prevStatus;
           }
         });
@@ -322,20 +406,46 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         delete s.activePopover.itemID;
       };
 
+
+
       // based on the filter, also change which date is actually shown in the list.
       // ie. if Sent is chosen, then date column should be tstamp_sent
-
       s.setStatusFilter = function (status) {
-        if (status === 'all') { status = ''; }
-        if (status === 'sent' || status === 'completed' || status === 'approved') {
-          s.data.currentTstamp = 'tstamp_' + status;
-          s.data.currentTstampHeader = status.substr(0, 1).toUpperCase() + status.substr(1) + ' Date';
-        } else {
-          s.data.currentTstamp = 'tstamp_updated';
-          s.data.currentTstampHeader = 'Last Updated';
-        }
-        self.fh.setFilter({status: status});
-        self.applyFilter();
+			s.data.currentTstamp = 'tstamp_updated';
+			s.data.currentTstampHeader = 'Last Updated';
+
+			if( 'all' === status ){
+				s.pageVars.filter.status='';
+				s.pageVars.filter.completed_perc='';
+			}
+			else if (status === 'sent' || status === 'completed' || status === 'approved') 
+			{
+				s.data.currentTstamp = 'tstamp_' + status;
+				s.data.currentTstampHeader = status.substr(0, 1).toUpperCase() + status.substr(1) + ' Date';
+				s.pageVars.filter.status=status;
+				s.pageVars.filter.completed_perc='';
+			} 
+			else if( 'in_prog' === status )
+			{
+				s.data.currentTstamp = 'job_start';
+				s.data.currentTstampHeader = 'Start Date';
+				s.pageVars.filter={ completed_perc:{gt:0, lt:100}, status:'scheduled' };
+			} 
+			else if( 'scheduled' === status )
+			{
+				s.data.currentTstamp = 'job_start';
+				s.data.currentTstampHeader = 'Start Date';
+				s.pageVars.filter={ status:status, completed_perc:'0' };
+			} 
+			else 
+			{
+				s.pageVars.filter.status=status;
+				s.pageVars.filter.completed_perc='';
+			}
+
+			self.fh.setFilter(s.pageVars.filter);
+			self.applyFilter();
+			filterBySearch();
       };
 
       s.updateEstimateTime = function (e) {
@@ -355,12 +465,6 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       s.setReportStatus = function (rpt, prev) {
         rpt.prevStatus = prev;
         var st = rpt.status;
-        if (('completed' === st && 'invoiced' !== prev) || ('paid' === st)) {
-          if (!confirm('Change "' + rpt.name + '" to ' + st.toUpperCase() + "?\n(THIS CANNOT BE UNDONE)")) {
-            rpt.status = prev;
-            return;
-          }
-        }
 
         // trigger SEND INVOICE directive if needed
         if (st === 'send_invoice') {
@@ -405,7 +509,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         clearFilter();
 
         //clear search box
-        s.data.filterTextEntry = '';
+        s.pageVars.searchText = '';
 
         self.applyFilter();
         init();
@@ -460,6 +564,25 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         });
       };
 
+      s.sendBulk = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var estimates = s.checkedEstimates;
+        console.log(estimates.getSelected);
+
+        sendBulkEstimatesService.showModal(estimates);
+      };
+      
+      s.setSent = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var estimates = s.checkedEstimates.ids;
+        _.each(estimates, function(id) {
+          Api.setEstimateSent(id);
+        });
+      }
+
       s.displayedTotalPrice = function () {
 			var list = estFiltered;
 			var count = list.length;
@@ -485,29 +608,42 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
       // when search box is changed, then update the filters, but
       // add delay so we dont over work the browser.
-      s.$watch('data.filterTextEntry', function (txt, old) {
-        txt = (txt || '');
-        txt = txt.trim();
-        if (filterTextTimeout) {
-          $timeout.cancel(filterTextTimeout);
-        }
-        filterTextTimeout = $timeout(function () {
-          if (txt === '' || !txt) {
-            if (old) {
-              self.fh.setFilter({reportID: '', name: '', siteName: '', sales_email: ''});
-              self.applyFilter();
-            }
-          } else if (!isNaN(txt)) {
-            // if search entry is a number, search by siteID and name
-            self.fh.setFilter({reportID: txt, name: txt, siteName: txt});
-            self.applyFilter();
-          } else {
-            // if just letters, then search by name and city, and sales person
-            self.fh.setFilter({siteName: txt, name: txt, sales_email: txt});
-            self.applyFilter();
-          }
-        }, 500);
-      });
+		var filterBySearch = function(txt, old) {
+			if(!txt) txt = s.pageVars.searchText;
+        	txt = (txt || '');
+        	txt = txt.trim();
+		  	if(!txt && !old) return;
+
+			if(txt.substr(0,5)=='bulk:') txt=txt.substr(5);
+
+        	if (filterTextTimeout) $timeout.cancel(filterTextTimeout);
+
+        	filterTextTimeout = $timeout(function () {
+				 if (txt === '' || !txt) {
+					if (old) {
+						s.pageVars.filter.search='';
+						s.pageVars.filter.siteID='';
+					  	self.fh.setFilter(s.pageVars.filter);
+					  	self.applyFilter();
+					}
+				 } else {
+						// look for siteID:XXXX
+						var m = txt.match(/siteID:([0-9]+)/);
+						if(m){
+							s.pageVars.filter.siteID=m[1];
+							txt = txt.replace(m[0],'').trim();
+						}else{
+							s.pageVars.filter.siteID='';
+						}
+
+						s.pageVars.filter.search=txt;
+					  	self.fh.setFilter(s.pageVars.filter);
+					  	self.applyFilter();
+				 }
+        	}, 500);
+      }
+
+      s.$watch('pageVars.searchText', filterBySearch);
 
       s.$on('nav', function (e, data) {
         if (data.new === myStateID) { init(); }

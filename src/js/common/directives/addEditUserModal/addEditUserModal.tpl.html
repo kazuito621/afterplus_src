@@ -13,11 +13,14 @@
                                 <div class="row" style="margin: 5px 2px 0px 5px;">
                                     <!--<form ng-submit="addNewSiteContact($event)">-->
                                     <label class="col-sm-3" style="font-weight: bold">Email</label>
-                                    <input type="email" required placeholder="Email" style="width: 250px" 
-													ng-model="newContact.email" id='newContactEmail'> 
+                                    <input type="email" required placeholder="Email" style="width: 250px"
+													ng-model="newContact.email" id='newContactEmail'
+                                                    ng-style="(emailNotValid==true)?{'border-color':'red', 'width': '125px'}:{'width': '125px;'}"
+                                            >
 													<span ng-if="newContact.userID" style='color:#ccc; font-size:.7em;'>
 														(userID: {{newContact.userID}})
 													</span>
+                                                    <span ng-if="emailNotValid" class="text-danger">Please enter a valid email</span>
 													<br>
                                     <label class="col-sm-3" style="font-weight: bold">Name</label>
                                     <input type="text" placeholder="First name" required style="width:125px" ng-model="newContact.fName">
@@ -34,39 +37,43 @@
 
 								<!-- hide stuff if user is editing themself -->
 								<div ng-if="editMyself != true">
-												<label class="col-sm-3" style="font-weight: bold">Role</label>
-												<select ng-model="newContact.role" ng-options="role.name for role in userRoles"  required>
-													 <option>{{role.name}}</option>
-												</select> &nbsp;
-												<div class="row" style="margin: 5px 2px 10px 5px;" ng-show="user && newContact.role.roleCode!='customer'">
-													 <label class="col-sm-6" style="font-weight: bold;margin: 2px;">
-														  <input type="checkbox" ng-model="newContact.showStatInDash" ng-change="selectionChanged()"/> Show user in dashboard
-													 </label>
-												</div>
-												
-												<div style='padding:2em 0 0 2em;'>
-												  <button ng-if="newContact.role.roleCode=='customer' || newContact.role=='customer'" data-backdrop='static'
-													  bs-modal data-template="js/trees/emailReport.tpl.html" data-keyboard=true
-													  ng-click="sendPortalLink(newContact)"
-															 ><i class="fa fa-envelope"></i> Send Login Info to Customer</button>
 
-												  <button ng-if="newContact.role.roleCode!='customer' && newContact.role!='customer'" confirm-popup="'Email this user their login information?'" 
-														user-id="e.userID" callback="sendLoginInfo">
-														<i class="fa fa-envelope"></i> Send Login Info to User</button>
-												</div>
+								  <div id='rolesContainer' style='padding:.3em 0 0 0'>
+									<label class="col-sm-3" style="font-weight: bold">Roles</label>
+										<label ng-repeat="role in userRoles" >
+											 <input class='roles {{role.roleCode}} {{(role.roleCode=="customer") ? "" : "staff"}}' 
+											 type="checkbox" checklist-model="newContact.roles" 
+											 ng-click='roleChanged(role.roleCode);' checklist-value="role.roleCode"> {{role.name}} &nbsp;
+										</label>
+
+									<div class="row" style="padding:1em 0 1em 9em; " ng-show="user && newContact.role.roleCode!='customer'">
+										 <label class="col-sm-8" style="margin: 2px;">
+											  <input class='showstat' type="checkbox" ng-model="newContact.showStatInDash" ng-change="selectionChanged()"/> Show user in dashboard
+										 </label>
+									</div>
+									</div>
+						
+									<div style='padding:2em 0 0 2em;'>
+									  <button ng-if="newContact.roles.indexOf('customer')>=0" data-backdrop='static'
+										  bs-modal data-template="js/trees/emailReport.tpl.html" data-keyboard=true
+										  ng-click="sendPortalLink(newContact)"
+												 ><i class="fa fa-envelope"></i> Send Login Info to Customer</button>
+
+									  <button ng-if="newContact.roles.indexOf('customer')<0"
+									  		confirm-popup="'Email this user their login information?'" 
+											user-id="e.userID" callback="sendLoginInfo">
+											<i class="fa fa-envelope"></i> Send Login Info to User</button>
+									</div>
 
 
 
-
-
-
-												<ul clas="row" style="margin: 2em 0; background-color: #aaa; padding:1.5em; color:#fff; font-wieght:bold; font-size:1.3em;">
-													 <li ng-repeat="roleDesc in newContact.role.permDesc">
-														  {{roleDesc}}
-													 </li>
-												</ul>
-								</div><!-- }}} editMyself -->
-										  </div>
+									<ul clas="row" style="margin: 2em 0; background-color: #aaa; padding:1.5em; color:#fff; font-wieght:bold; font-size:1.3em;">
+										 <li ng-repeat="roleDesc in newContact.role.permDesc">
+											  {{roleDesc}}
+										 </li>
+									</ul>
+					</div><!-- }}} editMyself -->
+							  </div>
 
                         <div ng-show="newContact.role.roleCode!='admin' && editMyself != true">
                                     <label class="col-sm-5" style="font-weight: bold">Assigned properties</label>
@@ -148,7 +155,7 @@
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
-                        <button type="button" class="btn btn-default" ng-click="$parent.SaveUser();">SAVE</button>
+                        <button type="button" class="btn btn-default" ng-click="$parent.SaveUser(this);">SAVE</button>
                         <button type="button" class="btn btn-default" ng-click="$parent.closeModal();">CLOSE</button>
                     </div>
                 </div>

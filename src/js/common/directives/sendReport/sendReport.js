@@ -58,6 +58,7 @@ app.directive('sendReport',
                     scope.emailRpt.cc_email = '';
 
                     scope.emailRpt.ccEmails = [];
+                    scope.emailRpt.contactUsers = [];
 
                     scope.emailRpt.senderEmail = Auth.data().email;
 
@@ -69,7 +70,7 @@ app.directive('sendReport',
 
                     if(scope.report.customer){
                         scope.report.customer.forEach(function(item){
-                            scope.emailRpt.contactEmails.push(item.email);
+                            scope.emailRpt.contactUsers.push({'email':item.email, 'userID': item.userID, 'fName': item.fName, 'lName': item.lName});
                         });
                         scope.emailRpt.contactEmail = scope.emailRpt.contactEmails.join(', ');
                         contactEmailsBackup = angular.copy(scope.emailRpt.contactEmails);
@@ -81,14 +82,16 @@ app.directive('sendReport',
                                     return;
                                 }
                                 var emList = [];
+                                var userList = [];
                                 _.each(res, function (r) {
                                     if (r && r.email) {
                                         emList.push(r.email);
+                                        userList.push({'email':r.email, 'userID': r.userID, 'fname': r.fName, 'lname': r.lName});
                                     }
                                 });
                                 if (emList) {
+                                    scope.emailRpt.contactUsers = userList;
                                     scope.emailRpt.contactEmail = emList.join(', ');
-                                    scope.emailRpt.contactEmails = emList;
                                     contactEmailsBackup = angular.copy(emList);
                                 }
                             });
@@ -104,48 +107,87 @@ app.directive('sendReport',
                 scope.sendReport = function (hideFn, showFn) {
                     scope.emailRpt.disableSendBtn = true;
                     scope.emailRpt.sendBtnText = 'Sending and verifying...';
-
-                    isNewEmails().then(function(data){
-                        if(data.indexOf(true)!=-1) {
+                    isValidEmails().then(function(valid){
+                        if(valid.indexOf(false)!=-1) {
                             scope.emailRpt.disableSendBtn = false;
                             scope.emailRpt.sendBtnText = 'Send';
                             return;
-                        };
-                        _.each(scope.emailRpt.contactEmails,function(item){
-                            item.email = item.text;
-                        });
-                        // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
-                        scope.emailRpt.contactEmail =angular.copy(scope.emailRpt.contactEmails);
-                        scope.emailRpt.cc_email = _.pluck(scope.emailRpt.ccEmails, 'text').join(', ');
-                        scope.emailRpt.reportID = scope.report.reportID;
-                        Api.sendReport(scope.emailRpt)
-                            .then(function (res) {
+                        }
+
+                        isNewEmails().then(function(data){
+                            if(data.indexOf(true)!=-1) {
                                 scope.emailRpt.disableSendBtn = false;
                                 scope.emailRpt.sendBtnText = 'Send';
-                                if (res.msg.trim().toLowerCase().match(/success/)){
-                                    hideFn();
-                                }
-                                if(scope.postCallBack)scope.$eval(scope.postCallBack)();
-
-
-                        			if(scope.type == 'sendInvoice')
-												scope.report.status='invoiced';
+                                return;
+                            };
+                            _.each(scope.emailRpt.contactEmails,function(item){
+                                item.email = item.text;
                             });
+                            // s.emailRpt.contactEmail = _.pluck(s.emailRpt.contactEmails, 'text').join(', ');
+
+                            scope.emailRpt.contactEmail = scope.emailRpt.contactUsers;
+                            scope.emailRpt.cc_email = _.pluck(scope.emailRpt.ccEmails, 'text').join(', ');
+                            scope.emailRpt.reportID = scope.report.reportID;
+                            Api.sendReport(scope.emailRpt)
+                                .then(function (res) {
+                                    scope.emailRpt.disableSendBtn = false;
+                                    scope.emailRpt.sendBtnText = 'Send';
+                                    if (res.msg.trim().toLowerCase().match(/success/)){
+                                        hideFn();
+                                    }
+                                    if(scope.postCallBack)scope.$eval(scope.postCallBack)();
+
+
+                                    if(scope.type == 'sendInvoice')
+                                        scope.report.status='invoiced';
+                                });
+                        });
                     });
                 };
+
+                var isValidEmails = function(){
+                    var deferred = $q.defer();
+
+                    var apis=[];
+
+                    _.each(scope.emailRpt.contactUsers,function(item, index){
+                        var deferred = $q.defer();
+                        apis.push(deferred.promise);
+
+                        if( !validateEmail(item.email) ){
+                            enterUserEmail(item, deferred);
+                            deferred.resolve(false);
+                        } else {
+                            deferred.resolve(true);
+                        }
+                    });
+
+
+                    $q.all(apis).then(function(values) {
+                        deferred.resolve(values);
+                    });
+
+                    return deferred.promise;
+                }
+
+                var validateEmail = function(email) {
+                    if(email.match(/^[^@]+@[^\.]+\..+$/)){
+                        return true;
+                    }
+                    return false;
+                }
 
                 var isNewEmails = function(){
                     var deferred = $q.defer();
                     var newAdded = [];
-                    console.log(contactEmailsBackup)
-                    console.log(scope.emailRpt.contactEmails)
-                    _.each(scope.emailRpt.contactEmails,function(item){
-                        var idx = contactEmailsBackup.indexOf(item.text);
+
+                    _.each(scope.emailRpt.contactUsers,function(item){
+                        var idx = contactEmailsBackup.indexOf(item.email);
                         //var idx = _.findObj(contactEmailsBackup, 'text', item.text,true);
                         if (idx == -1){
-                            var alreadySkippedIdx = alreadySkipped.indexOf(item.text);
+                            var alreadySkippedIdx = alreadySkipped.indexOf(item.email);
                             if(alreadySkippedIdx == -1) {
-                                newAdded.push(item.text);
+                                newAdded.push(item.email);
                             }
                         }
                     });
@@ -171,11 +213,55 @@ app.directive('sendReport',
 
                     $q.all(apis)
                         .then(function(values) {
-                            console.log(values);
                             deferred.resolve(values);
                         });
 
                     return deferred.promise;
+                }
+                var enterUserEmail = function (customer, deferred) {
+                    var sm= scope.$new();
+
+                    sm.validEmail = true;
+                    sm.customer = customer;
+                    sm.deferred = deferred;
+
+                    if (sm.popover && typeof sm.popover.hide === 'function') {
+                        sm.popover.hide();
+                    }
+                    // create new one
+                    var modal = $('#emailField');
+                    if(!sm.popover)
+                        sm.popover = $popover(modal, {
+                            scope: sm,
+                            template: '/js/common/directives/enterUserInfo/enterUserEmail.tpl.html',
+                            animation: 'am-flip-x',
+                            placement: 'bottom'
+                        });
+                    //show popover
+                    sm.popover.$promise.then(function () {
+                        sm.popover.show();
+                    });
+                    sm.cancel = function(){
+                        if (sm.popover && typeof sm.popover.hide === 'function') {
+                            modal.off();
+                            sm.popover.hide();
+                        }
+                    };
+                    sm.ok = function(){
+                        if( validateEmail(this.customer.email)) {
+
+                            if (this.customer.userID != undefined) {
+                                Api.user.update(this.customer, this.customer.userID);
+                            }
+
+                            if (sm.popover && typeof sm.popover.hide === 'function') {
+                                modal.off();
+                                sm.popover.hide();
+                            }
+                        } else {
+                            sm.validEmail = false;
+                        }
+                    };
                 }
                 var enterUserInfo = function(email){
                     var sm= scope.$new();
@@ -204,10 +290,10 @@ app.directive('sendReport',
                         }
                     };
                     sm.ok = function(){
-                        var idx = _.findObj(scope.emailRpt.contactEmails, 'text', sm.email, true);
-                        scope.emailRpt.contactEmails[idx].fname = this.fname;
-                        scope.emailRpt.contactEmails[idx].lname = this.lname;
-                        scope.emailRpt.contactEmails[idx].phone = this.phone;
+                        var idx = _.findObj(scope.emailRpt.contactUsers, 'email', sm.email, true);
+                        scope.emailRpt.contactUsers[idx].fname = this.fname;
+                        scope.emailRpt.contactUsers[idx].lname = this.lname;
+                        scope.emailRpt.contactUsers[idx].phone = this.phone;
                         alreadySkipped.push(email);
                         if (sm.popover && typeof sm.popover.hide === 'function') {
                             modal.off();

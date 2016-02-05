@@ -13,19 +13,23 @@
     <br>
     <br>
     <br>
+
+
     <div>
         <div class='pull-right topMargin5'>
             <div class="btn-group" bs-radio-group id="userFilters" ng-model="status_filters_2">
-                <label ng-click="setStatusFilter('All')"class="btn btn-default">
-                    <input type="radio" value="All"> All</label>
-                <label ng-click="setStatusFilter('admin')" class="btn btn-default">
+                <label ng-click="setStatusFilter('userRole', ['admin','staff'])"class="btn btn-default">
+                    <input type="radio" value="All Staff"> All Staff</label>
+                <label ng-click="setStatusFilter('userRoles', 'admin')" class="btn btn-default">
                     <input type="radio" value="Admin"> Admin</label>
-                <label ng-click="setStatusFilter('staff')" class="btn btn-default">
-                    <input type="radio" value="Staff"> Staff</label>
-                <label ng-click="setStatusFilter('customer')" class="btn btn-default">
-                    <input type="radio" value="Customer"> Customer</label>
-                <label ng-click="setAssignmentFilter('unassigned')" class="btn btn-default">
-                    <input type="radio" value="Unassigned"> Unassigned</label>
+                <label ng-click="setStatusFilter('userRoles', 'sales')" class="btn btn-default">
+                    <input type="radio" value="Sales"> Sales</label> &nbsp;
+                <label ng-click="setStatusFilter('userRoles', 'foreman')" class="btn btn-default">
+                    <input type="radio" value="Foremen"> Foremen</label> &nbsp;
+                <label ng-click="setStatusFilter('userRoles', 'crew')" class="btn btn-default">
+                    <input type="radio" value="Crew"> Crew</label> &nbsp; &nbsp;
+                <label ng-click="setStatusFilter('userRole', 'customer')" class="btn btn-default">
+                    <input type="radio" value="Customer"> Customers</label>
                 <span class="lnk leftSpace10">
                     <a href ng-click='reset()' bs-tooltip title='Reset'>
                         <b><i class="fa fa-rotate-left _red _size5 topMargin5 hoverHighlight"></i></b>
@@ -65,7 +69,8 @@
             <tbody infinite-scroll="showMoreUsers()" infinite-scroll-distance="3">
             <tr ng-repeat="e in displayedUsers track by e.userID" class='hoverHotspot' id='item_{{e.reportID}}'>
                 <td>
-                    <span style='text-decoration:underline;cursor: pointer' ng-bind="e.email"  add-edit-user-modal="e" sites="sites" clients="initData.clients" on-save="refreshSites"></span>
+                    <span style='text-decoration:underline;cursor: pointer' ng-bind="e.email"  
+						  	add-edit-user-modal="e" sites="sites" clients="initData.clients" on-save="refreshSites"></span>
 
 						<!-- email the user -->
                     <button ng-if="e.role=='customer' && e.email!='No Results'" send-portal-link user="e"
@@ -86,7 +91,7 @@
                 <td  ng-bind="e.name"></td>
                 <td class='usertab-role {{e.role}}' style='text-transform: uppercase; font-size:.8em; font-weight:bold;'>
 					 	<span ng-if="e.disabled==1" style='color:#f33 !important;'>DISABLED</span>
-						<span ng-if="e.disabled!=1" class='userrole-{{e.role}}'>{{e.role}}</span>
+						<span ng-if="e.disabled!=1" class='userrole-{{e.role}}'>{{e.userRoles_text}}</span>
 					</td>
                 <td ng-bind="e.sessionCount"></td>
                 <td>

@@ -49,9 +49,10 @@ var UserCtrl = app.controller('UserCtrl',
                 };
             s.displayedUsers = [];
             s.data={}; //overwritten later
+				var filterData = {};
 
             this.fh = FilterHelper.fh();
-            var filterGroups=[['userRole','userRoles','assignment'],['email','name', 'role', 'sessionCount']];
+            var filterGroups=[['userRole','userRoles','assignment'],['email','name','role','roles','userID']];
             this.fh.setFilterGroups(filterGroups);
 
             var init = function (cb) {
@@ -99,10 +100,16 @@ var UserCtrl = app.controller('UserCtrl',
 
             s.setStatusFilter=function(col, role){
 
-					 if(col=='userRoles')	
-                	self.fh.setFilter({userRoles:role, userRole:'', assignment:''});
-					else
-                	self.fh.setFilter({userRole:role, userRoles:'', assignment:''});
+					filterData.assignment='';
+					if(col=='userRoles'){
+					 	filterData.userRoles=role;
+						filterData.userRole='';
+					}else{
+					 	filterData.userRole=role;
+						filterData.userRoles='';
+					}
+                
+					 self.fh.setFilter(filterData);
                 applyFilter();
             };
 
@@ -196,19 +203,18 @@ var UserCtrl = app.controller('UserCtrl',
                 if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
                 filterTextTimeout = $timeout(function () {
                     if (txt === '' || !txt) {
-                        if(old){
-                            self.fh.setFilter({email:'', name:'', role:'',sessionCount:''});
-                            applyFilter();
-                        }
-                    } else if (!isNaN(txt)) {
-                        // if search entry is a number, search by siteID and name
-                        self.fh.setFilter({email: txt, name: txt,role:txt,sessionCount:txt});
-                        applyFilter();
+								filterData.email='';
+								filterData.name='';
+								filterData.userID='';
                     } else {
-                        // if just letters, then search by name and city, and sales person
-                        self.fh.setFilter({email: txt, name:txt,role:txt,sessionCount:txt});
-                        applyFilter();
-                    }
+								filterData.email=txt;
+								filterData.name=txt;
+								filterData.userID=txt;
+                    } 
+                
+					 console.debug(filterData  );
+						 self.fh.setFilter(filterData);
+					  	 applyFilter();
                 }, 500);
             });
 

@@ -72,6 +72,9 @@ app.factory('FilterHelper', function () {
 		  var itemVal = item[obj.filterName];
         try {
 
+			//console.debug( itemVal  );
+			//console.debug( obj.value  );
+
 			// check if the data item is an array
 			if( itemVal instanceof Array && itemVal.indexOf(obj.value) >= 0 ){
 					res = true;

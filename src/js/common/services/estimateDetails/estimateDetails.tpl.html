@@ -9,9 +9,12 @@
         .estStatusItem {
             margin-top:.5em;
         }
+		  div#summary-charts img{
+				max-width:49%;
+		  }
 
     </style>
-    <div class="modal-dialog">
+    <div class="modal-dialog" style='width:80%;'>
         <div class="modal-content">
             <div class="modal-header">
                 <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
@@ -80,7 +83,6 @@
                         <div id='summary-charts' style='padding:2em 0 2em 0;'>
                             <img src='{{report.charts.treatmentCategories}}'>
                             <img src='{{report.charts.treatments}}'>
-                            <img src='{{report.charts.species}}'>
                         </div>
                     </div>
                 </div>

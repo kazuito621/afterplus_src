@@ -8,8 +8,9 @@ Todo for bulkd estimates
 */
 
 var EstimatesListCtrl = app.controller('EstimatesListCtrl',
-  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper', 'Restangular', 'storage',
-    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest, storage) {
+  ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 
+  		'FilterHelper', 'Restangular', 'storage', 'sendBulkEstimatesService',
+    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest, storage, sendBulkEstimatesService) {
       'use strict';
       // Local vars initialization
       var s = window.ecs = $scope;
@@ -562,6 +563,25 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           });
         });
       };
+
+      s.sendBulk = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var estimates = s.checkedEstimates;
+        console.log(estimates.getSelected);
+
+        sendBulkEstimatesService.showModal(estimates);
+      };
+      
+      s.setSent = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var estimates = s.checkedEstimates.ids;
+        _.each(estimates, function(id) {
+          Api.setEstimateSent(id);
+        });
+      }
 
       s.displayedTotalPrice = function () {
 			var list = estFiltered;

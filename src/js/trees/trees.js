@@ -1734,7 +1734,35 @@ console.debug(" show mapp trees -------- ");
 								e.html(h).css({padding:'.4em 0 .7em 0', fontSize:'1.4em'});
 							}
 						});
-					/*
+				//	/*
+                //
+				//	.... NOTE .. Andrei ...
+                //
+				//		The other developer copied the sendReport directive (common/directives/sendReport/)
+				//		into this file: trees/emailReport.tpl ...
+                //
+				//		to be used as hte BULK SEND ...
+                //
+				//		The difference between sendReport directive and BulkEstimate / (emailReport):
+                //
+                //
+				//		sendReport								bulkSend
+				//		----------								---------
+				//		sending single							allows user to see which contacts
+				//		estimates								are set for each estimate/site
+				//
+				//													user can edit/add contacts
+				//
+				//													then send multiple estimates to
+				//													multiple people
+                //
+                //
+				//
+                //
+                //
+                //
+				//... below is some old code for initiating that bulk Send
+                //
                 console.log('Creating bulk estimates for', s.bulkEstimates);
                 self.bulkModalScope = self.createBulkModalScope();
                 self.bulkModal = $modal({
@@ -1748,7 +1776,7 @@ console.debug(" show mapp trees -------- ");
                     self.bulkModal.show();
                     $(document).keyup(self.hideOnEscape);
                 });
-					 */
+
             };
 
             self.updateSelectedSites = function () {

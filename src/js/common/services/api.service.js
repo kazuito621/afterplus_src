@@ -422,8 +422,13 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       changeEstimateProperty: function (id, params) {
         // POST / estimate / 123
         return Rest.one('estimate', id).post(undefined, params);
-      }
+      },
+      setEstimateSent: function (id, params) {
 
+        // POST /estimate/123/sent
+        return Rest.one('estimate', id).post('sent');
+
+      }
     };
   }]);
 

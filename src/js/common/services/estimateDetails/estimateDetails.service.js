@@ -106,6 +106,12 @@ app
             }
             scope.todo_price = parseFloat(report.todo_price.replace(",", ""));
             scope.status = (report.status);
+            if (!report.start) {
+                report.start = moment(moment(report.job_start).format('YYYY-MM-DD 00:00:00'));
+            }
+            if (!report.end) {
+                report.end = moment(moment(report.job_end).format('YYYY-MM-DD 00:00:00'));
+            }
         };
 
         var setupModalDatePickers = function (report) {

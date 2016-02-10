@@ -1,0 +1,81 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <h4 class="modal-title" id="modalTitle">{{ users.length }} users ({{ usersFirstNames }})</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form class="form-inline">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="event in events">
+                                    <div ng-switch on="event.type">
+                                        <div ng-switch-when="start">
+                                            <div class="form-group" >
+                                                <label class="control-label">
+                                                    <span class="glyphicon glyphicon-play text-success" aria-hidden="true"></span>
+                                                    <span class="text-success">Start</span>
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                            </div>
+                                        </div>
+
+                                        <div ng-switch-when="work">
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                                <label class="control-label">
+                                                    Hours of work
+                                                </label>
+                                            </div>
+                                            <div>
+                                                #8061 - Property
+                                            </div>
+                                        </div>
+
+                                        <div ng-switch-when="pause">
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    <span class="glyphicon glyphicon-pause text-warning" aria-hidden="true"></span>
+                                                    <span class="text-warning">Break</span>
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                            </div>
+                                        </div>
+
+                                        <div ng-switch-when="switch">
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    <span class="glyphicon glyphicon-random text-success" aria-hidden="true"></span>
+                                                    <span class="text-success">Switch</span>
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                            </div>
+                                        </div>
+
+                                        <div ng-switch-when="stop">
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    <span class="glyphicon glyphicon-stop text-danger" aria-hidden="true"></span>
+                                                    <span class="text-danger">Stop</span>
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"  ng-click="$hide()"><i class='fa fa-close'></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>

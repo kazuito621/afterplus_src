@@ -1,0 +1,56 @@
+<div class='container' ng-controller="TimeclockController as timeclock">
+    <div class="table-header">
+        <h1 class="pull-left">Timeclock</h1>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="actions">
+        <a class="btn btn-default" ng-show="timeclock.haveSelectedUsers" ng-click="timeclock.editTimeclockForUsers()">
+            Edit
+        </a>
+    </div>
+
+    <div class='table-responsive'>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                    </th>
+                    <th class="clickable-header">
+                        Name
+                    </th>
+                    <th class="clickable-header">
+                        Status
+                    </th>
+                    <th class="clickable-header">
+                        Report
+                    </th>
+                    <th class="clickable-header">
+                        Hours
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in timeclock.users">
+                    <td>
+                        <input ng-change="timeclock.selectUser(user)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
+                    </td>
+                    <td>
+                        {{user.fName}} {{user.lName}}
+                    </td>
+                    <td ng-switch on="user.status">
+                        <span class="label label-success" ng-switch-when="clockedin">Clocekd In</span>
+                        <span class="label label-default" ng-switch-when="clockedout">Clocekd Out</span>
+                        <span class="label label-warning" ng-switch-when="onbreak">On Break</span>
+                    </td>
+                    <td>
+                        {{user.report.name}}
+                    </td>
+                    <td>
+                        {{user.duration_today}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

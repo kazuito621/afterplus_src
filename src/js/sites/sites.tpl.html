@@ -15,7 +15,7 @@
 					New Property</button>
         <div class="clearfix"></div>
     </div>
-	<input type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
+	<input id='searchbox' type='text' ng-model='data.filterTextEntry' size=20 placeholder='Search'> 
 	<a ng-if="data.filterTextEntry.length" ng-click="data.filterTextEntry=''" class='fa fa-times _red _size5 hand'></a>
 	<span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} properties being displayed.</span>
 

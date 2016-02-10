@@ -19,7 +19,7 @@
 
 	
     <div ng-if="!auth.isAtleast('inventory')">
-        <input type='text' ng-model='pageVars.searchText' size=15 placeholder='Search'>
+        <input id='searchbox' type='text' ng-model='pageVars.searchText' size=15 placeholder='Search'>
         <a ng-if="pageVars.searchText.length" ng-click="pageVars.searchText=''"
            class='fa fa-times _red _size5 hand'></a>
         <span class='gray'

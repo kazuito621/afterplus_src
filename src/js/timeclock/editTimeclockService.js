@@ -5,6 +5,36 @@ app
         scope.usersFirstNames = '';
         scope.allowAddBreak = false;
         scope.addNewJobAllow = false;
+        scope.jobTypes = [
+            {
+                "type": 'work',
+                "name": 'Work'
+            },
+            {
+                "type": 'office',
+                "name": 'Office'
+            },
+            {
+                "type": 'mechanic',
+                "name": 'Mechanic'
+            },
+            {
+                "type": 'show',
+                "name": 'Shop Time'
+            },
+            {
+                "type": 'breakdown',
+                "name": 'Breakdown/Screw-up'
+            },
+            {
+                "type": 'training',
+                "name": 'Training'
+            },
+            {
+                "type": 'milf',
+                "name": 'Milf'
+            }
+        ];
 
 
         var show = function (users) {

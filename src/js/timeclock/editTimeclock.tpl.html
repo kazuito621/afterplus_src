@@ -113,8 +113,11 @@
                                         Job ID
                                     </label>
                                     <input type="text" class="form-control" size="8" ng-model="newJobReport">
+                                    <select ng-model="newJobType">
+                                        <option ng-repeat="type in jobTypes" value="{{type.id}}">{{type.name}}</option>
+                                    </select>
                                 </div>
-                                <a class="btn btn-succes" ng-click="saveJob()">Save</a>
+                                <a class="btn btn-success" ng-click="saveJob()">Save</a>
                                 <a class="btn btn-default" ng-click="closeAddJob()">Cancel</a>
                             </div>
                         </form>

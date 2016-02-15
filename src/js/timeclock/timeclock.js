@@ -61,8 +61,8 @@ function TimeclockService($q, Api) {
             "users": [
                 {
                     "userID": 3,
-                    "fName": "Fname",
-                    "lName": "Lname",
+                    "fName": "Tim",
+                    "lName": "Hon",
                     "clockinby_userID": 3,
                     "reportID": 2470,
                     "duration_today": "2:00",
@@ -72,12 +72,16 @@ function TimeclockService($q, Api) {
                     "userID": 17,
                     "clockinby_userID": 3,
                     "reportID": 2470,
+                    "fName": "Fname_17",
+                    "lName": "Lname_17",
                     "duration_today": "3:00",
                     "status": "clockedout"
                 },
                 {
                     "userID": 86,
                     "clockinby_userID": 86,
+                    "fName": "Fname_86",
+                    "lName": "Lname_86",
                     "reportID": 2468,
                     "duration_today": "3:00",
                     "status": "clockedout"
@@ -174,33 +178,35 @@ function TimeclockService($q, Api) {
 
 
             if (schedule[i+1] == undefined) {
-                events.push(createEvent('stop', scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName));
+                events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
             }
         });
-        console.log(events);
+
         return events;
     };
 
     function createEvent(type, timeStart, timeEnd, reportID, report) {
-        timeStartMoment = moment(new Date(Date.parse(timeStart)));
+        var timeStartArr = timeStart.split(/[- :]/),
+            timeStartDate = new Date(timeStartArr[0], timeStartArr[1]-1, timeStartArr[2], timeStartArr[3], timeStartArr[4], timeStartArr[5]);
+
+        timeStartMoment = moment(timeStartDate);
 
         if (timeEnd != null) {
-            timeEndMoment = moment(new Date(Date.parse(timeEnd)));
-            duration = moment(timeEndMoment.diff(timeStartMoment));
+            console.log(timeEnd);
+            var timeEndArr = timeEnd.split(/[- :]/),
+                timeEndDate = new Date(timeEndArr[0], timeEndArr[1]-1, timeEndArr[2], timeEndArr[3], timeEndArr[4], timeEndArr[5]);
 
-            console.log('DURATION');
-            console.log(timeStartMoment);
-            console.log(timeEndMoment);
-            console.log(duration);
+            timeEndMoment = moment(timeEndDate);
+            duration = moment(timeEndMoment.diff(timeStartMoment));
         }
 
         var event = {};
         event.type = type;
-        event.time = timeStartMoment.format('YYYY-MM-DD HH:mm:ss');
+        event.time = timeStartMoment.toDate();
 
         if (timeEnd != null) {
-            event.time_end = timeEnd;
-            event.duration = moment(msToHM(duration), 'H:m').format('YYYY-MM-DD HH:mm:ss');
+            event.time_end = timeEndMoment.toDate();
+            event.duration = moment(msToHM(duration), 'H:m').toDate();
         }
 
         event.reportID = reportID;

@@ -16,7 +16,7 @@
 
     <div>
         <br>
-        <input type='text' ng-model='data.filterTextEntry' ng-change="OnSearchType()" size=20 placeholder='Search'>
+        <input id='searchbox' type='text' ng-model='data.filterTextEntry' ng-change="OnSearchType()" size=20 placeholder='Search'>
         <a ng-if="data.filterTextEntry.length" ng-click="clearSearch()" class='fa fa-times _red _size5 hand'></a>
         <span class='gray' ng-if='data.getSiteCount()'> &nbsp; {{data.getSiteCount()}} users being displayed.</span>
     </div>

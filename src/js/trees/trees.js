@@ -1690,34 +1690,12 @@ console.debug(" show mapp trees -------- ");
                 return _.pluck(selectedSites, 'siteName');
             };
 
-            self.createBulkModalScope = function () {
-                var res = s.$new();
-
-                res.closeModal = function () {
-                    self.bulkModal.hide();
-                };
-
-                res.hide = function () {
-                    $(document).unbind('keyup', self.hideOnEscape);
-                    self.bulkModal.hide();
-                };
-
-                res.modalTitle = "Bulk estimate";
-                res.emailRpt = {
-                    subject: '',
-                    message: ReportService.email.message,
-                    senderEmail: Auth.data().email,
-                    siteNames: self.getSelectedSitesNames(),
-                    sendBtnText: 'Send bulk estimate',
-						  sendTestEmail: true
-                };
-                res.type = 'bulkEstimate';
-                res.siteNames = [];
-
-                return res;
-            };
 
 
+				/**
+				 * Ask user to name the bulk estimates, then create them and show the user
+				 * a link to click to view those estimates
+				 */
             s.createBulkEstimate = function () {
 					var reportName = prompt("Enter a name for these estimates");
 
@@ -1734,50 +1712,9 @@ console.debug(" show mapp trees -------- ");
 								e.html(h).css({padding:'.4em 0 .7em 0', fontSize:'1.4em'});
 							}
 						});
-				//	/*
-                //
-				//	.... NOTE .. Andrei ...
-                //
-				//		The other developer copied the sendReport directive (common/directives/sendReport/)
-				//		into this file: trees/emailReport.tpl ...
-                //
-				//		to be used as hte BULK SEND ...
-                //
-				//		The difference between sendReport directive and BulkEstimate / (emailReport):
-                //
-                //
-				//		sendReport								bulkSend
-				//		----------								---------
-				//		sending single							allows user to see which contacts
-				//		estimates								are set for each estimate/site
-				//
-				//													user can edit/add contacts
-				//
-				//													then send multiple estimates to
-				//													multiple people
-                //
-                //
-				//
-                //
-                //
-                //
-				//... below is some old code for initiating that bulk Send
-                //
-                console.log('Creating bulk estimates for', s.bulkEstimates);
-                self.bulkModalScope = self.createBulkModalScope();
-                self.bulkModal = $modal({
-                    scope: self.bulkModalScope,
-                    //template: '/js/trees/emailReport.tpl.html', // production
-                    template: 'js/trees/emailReport.tpl.html', // dev
-                    show: false
-                });
+				};
 
-                self.bulkModal.$promise.then(function () {
-                    self.bulkModal.show();
-                    $(document).keyup(self.hideOnEscape);
-                });
 
-            };
 
             self.updateSelectedSites = function () {
                 var updated = [];

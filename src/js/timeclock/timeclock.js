@@ -110,18 +110,21 @@ function TimeclockService($q, Api) {
                 {
                     "userID":3,
                     "reportID":2470,
+                    "reportName": "Jaro3",
                     "time_in":"2015-02-10 06:00:00",
                     "time_out":"2015-02-10 07:30:00"
                 },
                 {
                     "userID":3,
                     "reportID":2470,
+                    "reportName": "Jaro3",
                     "time_in":"2015-02-10 08:00:00",
                     "time_out":"2015-02-10 10:00:00"
                 },
                 {
                     "userID":3,
                     "reportID":2469,
+                    "reportName": "Jaro2",
                     "time_in":"2015-02-10 16:00:00",
                     "time_out":"2015-02-10 20:00:00"
                 }
@@ -159,32 +162,36 @@ function TimeclockService($q, Api) {
 
             if (schedule[i-1] != undefined) {
                 if (schedule[i-1].reportID != schedule[i].reportID) {
-                    events.push(createEvent('switch', scheduleEntry.time_in, scheduleEntry.time_out))
+                    events.push(createEvent('switch', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
                 } else {
-                    events.push(createEvent('pause', schedule[i-1].time_out, scheduleEntry.time_out))
+                    events.push(createEvent('pause', schedule[i-1].time_out, scheduleEntry.time_in, scheduleEntry.reportID, scheduleEntry.reportName))
                 }
             } else {
-                events.push(createEvent('start', scheduleEntry.time_in, scheduleEntry.time_out))
+                events.push(createEvent('start', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
             }
 
-            events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out))
+            events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
 
 
             if (schedule[i+1] == undefined) {
-                events.push(createEvent('stop', scheduleEntry.time_out));
+                events.push(createEvent('stop', scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName));
             }
         });
         console.log(events);
         return events;
     };
 
-    function createEvent(type, timeStart, timeEnd) {
-        timeStartMoment = moment(timeStart, 'YYYY-MM-DD HH:mm:ss');
+    function createEvent(type, timeStart, timeEnd, reportID, report) {
+        timeStartMoment = moment(new Date(Date.parse(timeStart)));
 
         if (timeEnd != null) {
-
-            timeEndMoment = moment(timeEnd, 'YYYY-MM-DD HH:mm:ss');
+            timeEndMoment = moment(new Date(Date.parse(timeEnd)));
             duration = moment(timeEndMoment.diff(timeStartMoment));
+
+            console.log('DURATION');
+            console.log(timeStartMoment);
+            console.log(timeEndMoment);
+            console.log(duration);
         }
 
         var event = {};
@@ -196,7 +203,8 @@ function TimeclockService($q, Api) {
             event.duration = moment(msToHM(duration), 'H:m').format('YYYY-MM-DD HH:mm:ss');
         }
 
-
+        event.reportID = reportID;
+        event.report = report;
         event.time_original = event.time;
         event.duration_original = event.duration;
         event.time_end_original = event.time_end;

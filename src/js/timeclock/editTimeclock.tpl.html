@@ -18,7 +18,7 @@
                                                     <span class="glyphicon glyphicon-play text-success" aria-hidden="true"></span>
                                                     <span class="text-success">Start</span>
                                                 </label>
-                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                                <input type="text" class="form-control" size="8" ng-change="editTime(event)" ng-model="event.time" name="time" data-minute-step="1" data-time-type="DAte" bs-timepicker>
                                             </div>
                                         </div>
 
@@ -27,13 +27,16 @@
                                                 <label class="control-label">
                                                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                                                 </label>
-                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                                <input type="text" class="form-control" size="8" ng-change="editDuration(event)" ng-model="event.duration" name="time" data-minute-step="1" data-time-format="HH:mm" bs-timepicker>
                                                 <label class="control-label">
                                                     Hours of work
                                                 </label>
                                             </div>
                                             <div>
                                                 #8061 - Property
+                                            </div>
+                                            <div>
+                                                <a class="btn btn-primary" title="Add break" data-template-url="popover/docs/popover.demo.tpl.html" bs-popover>Add break</a>
                                             </div>
                                         </div>
 
@@ -43,7 +46,10 @@
                                                     <span class="glyphicon glyphicon-pause text-warning" aria-hidden="true"></span>
                                                     <span class="text-warning">Break</span>
                                                 </label>
-                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                                <input type="text" class="form-control" size="8" ng-change="editTime(event)" ng-model="event.time" name="time" data-minute-step="1" bs-timepicker>
+                                            </div>
+                                            <div>
+                                                <a class="btn btn-warning" ng-click="removeBreak(event)">Remove break</a>
                                             </div>
                                         </div>
 
@@ -53,7 +59,7 @@
                                                     <span class="glyphicon glyphicon-random text-success" aria-hidden="true"></span>
                                                     <span class="text-success">Switch</span>
                                                 </label>
-                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                                <input type="text" class="form-control" size="8" ng-change="editTime(event)" ng-model="event.time" name="time" data-minute-step="1" bs-timepicker>
                                             </div>
                                         </div>
 
@@ -63,7 +69,7 @@
                                                     <span class="glyphicon glyphicon-stop text-danger" aria-hidden="true"></span>
                                                     <span class="text-danger">Stop</span>
                                                 </label>
-                                                <input type="text" class="form-control" size="8" ng-model="time" name="time" bs-timepicker>
+                                                <input type="text" class="form-control" size="8" ng-change="editTime(event)" ng-model="event.time" name="time" data-minute-step="1" bs-timepicker>
                                             </div>
                                         </div>
                                     </div>

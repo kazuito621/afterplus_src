@@ -430,6 +430,10 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       },
       getTimeclockUsersInfo: function (params) {
         return Rest.one('timeclock/info').get(params);
+      },
+      saveTimeclockSchedules: function (params) {
+        console.log(params)
+        return Rest.one('timeclock/edit').post(undefined, params);
       }
     };
   }]);

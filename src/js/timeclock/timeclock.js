@@ -50,6 +50,7 @@ function TimeclockService($q, Api) {
         haveSimilarSchedule: haveSimilarSchedule,
         transformSchedule: transformSchedule,
         createEvent: createEvent,
+        reverseTransform: reverseTransform,
         msToHM: msToHM
     };
 
@@ -132,7 +133,7 @@ function TimeclockService($q, Api) {
 
     function transformSchedule(schedule) {
         var events = [];
-
+        console.log(schedule);
         _.each(schedule, function (scheduleEntry, i) {
 
             if (schedule[i-1] != undefined) {
@@ -145,10 +146,17 @@ function TimeclockService($q, Api) {
                 events.push(createEvent('start', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
             }
 
-            events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
+            if (scheduleEntry.time_out == null) {
+                events.push(createEvent('work', scheduleEntry.time_in, moment().format('YYYY-MM-DD HH:MM:ss'), scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status, true))
+            } else {
+                events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status))
+            }
 
 
-            if (schedule[i+1] == undefined) {
+
+            if (schedule[i+1] == undefined && scheduleEntry.time_out != null) {
+                console.log('STOP');
+                console.log(scheduleEntry.time_out);
                 events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
             }
         });
@@ -156,7 +164,7 @@ function TimeclockService($q, Api) {
         return events;
     };
 
-    function createEvent(type, timeStart, timeEnd, reportID, report) {
+    function createEvent(type, timeStart, timeEnd, reportID, report, status, inProgress) {
         var timeStartArr = timeStart.split(/[- :]/),
             timeStartDate = new Date(timeStartArr[0], timeStartArr[1]-1, timeStartArr[2], timeStartArr[3], timeStartArr[4], timeStartArr[5]);
 
@@ -185,8 +193,35 @@ function TimeclockService($q, Api) {
         event.time_original = event.time;
         event.duration_original = event.duration;
         event.time_end_original = event.time_end;
+        event.status = status;
+        event.inProgress = inProgress;
 
         return event;
+    }
+
+    function reverseTransform(events)
+    {
+        console.log(events);
+        var schedules = [];
+        for (var i = 0; i < events.length; i ++) {
+            var schedule = {};
+
+            if (events[i].type == 'work') {
+                schedule.reportID = events[i].reportID;
+                schedule.time_in = moment(events[i].time).format('HH:mm:ss');
+                schedule.status = events[i].status;
+                if (events[i].inProgress) {
+                    schedule.time_out = null;
+                } else {
+                    schedule.time_out = moment(events[i].time_end).format('HH:mm:ss');
+                }
+
+
+                schedules.push(schedule);
+            }
+        }
+
+        return schedules;
     }
 
     function msToHM( ms ) {
@@ -197,4 +232,5 @@ function TimeclockService($q, Api) {
         seconds = seconds % 60;
         return hours+':'+minutes;
     }
+
 };

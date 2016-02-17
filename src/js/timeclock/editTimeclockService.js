@@ -1,5 +1,5 @@
 app
-    .service('editTimeclockService', [ '$rootScope', '$modal', 'TimeclockService', function ($rootScope, $modal, TimeclockService) {
+    .service('editTimeclockService', [ '$rootScope', '$modal', 'TimeclockService', 'Api', function ($rootScope, $modal, TimeclockService, Api) {
         scope = $rootScope.$new();
         scope.users = [];
         scope.usersFirstNames = '';
@@ -70,12 +70,20 @@ app
 
             for (var i = changedIndex - 1; i > 0; i--) {
                 var newDate = new Date(Date.parse(scope.events[i].duration));
+                var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
 
                 newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
                 newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
 
+                newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
+                newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
+
                 scope.events[i].duration = newDate;
                 scope.events[i].original_duration = newDate;
+
+                scope.events[i].time = newDate;
+                scope.events[i].time_end = newDateEnd;
+                scope.events[i].original_time = newDate;
             }
 
             for (var i = changedIndex + 1; i < scope.events.length; i ++) {
@@ -222,6 +230,19 @@ app
 
         scope.closeAddJob = function() {
             scope.addNewJobAllow = false;
+        };
+
+        scope.saveSchedule = function () {
+            var schedules = TimeclockService.reverseTransform(scope.events);
+            var usersID = _.pluck(scope.users, 'userID');
+
+            var params = {};
+
+            params.date = moment().format('YYYY-MM-DD');
+            params.users = usersID;
+            params.worktime  = schedules;
+
+            Api.saveTimeclockSchedules(params);
         };
 
         var showModal = function (users) {

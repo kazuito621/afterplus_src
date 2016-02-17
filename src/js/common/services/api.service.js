@@ -422,8 +422,15 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       changeEstimateProperty: function (id, params) {
         // POST / estimate / 123
         return Rest.one('estimate', id).post(undefined, params);
-      }
+      },
 
+      // Timeclock
+      getTimeclockUsers: function () {
+        return Rest.one('timeclock/users').get();
+      },
+      getTimeclockUsersInfo: function (params) {
+        return Rest.one('timeclock/info').get(params);
+      }
     };
   }]);
 

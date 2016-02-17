@@ -36,11 +36,11 @@
                         <input ng-change="timeclock.selectUser(user)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
                     </td>
                     <td>
-                        {{user.fName}} {{user.lName}}
+                        {{ user.fullName }}
                     </td>
                     <td ng-switch on="user.status">
-                        <span class="label label-success" ng-switch-when="clockedin">Clocekd In</span>
-                        <span class="label label-default" ng-switch-when="clockedout">Clocekd Out</span>
+                        <span class="label label-success" ng-switch-when="clockin">Clocekd In</span>
+                        <span class="label label-default" ng-switch-when="clockout">Clocekd Out</span>
                         <span class="label label-warning" ng-switch-when="onbreak">On Break</span>
                     </td>
                     <td>

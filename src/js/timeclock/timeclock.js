@@ -6,12 +6,13 @@ app
 TimeclockController.$inject = ['TimeclockService', 'editTimeclockService']
 function TimeclockController (TimeclockService, editTimeclockService) {
     var vm = this;
-
-    vm.users = getUsers();
+    getUsers();
     vm.haveSelectedUsers = false;
 
     function getUsers() {
-        return TimeclockService.getUsers();
+        TimeclockService.getUsers().then(function(users) {
+            vm.users = users;
+        });
     };
 
     vm.selectUser = function(selectedUser) {
@@ -55,87 +56,57 @@ function TimeclockService($q, Api) {
     return service;
 
     function getUsers() {
-        var schedules = getSchedules();
+        var deferred = $q.defer();
 
-        var mockData = {
-            "users": [
-                {
-                    "userID": 3,
-                    "fName": "Tim",
-                    "lName": "Hon",
-                    "clockinby_userID": 3,
-                    "reportID": 2470,
-                    "duration_today": "2:00",
-                    "status": "clockedin"
-                },
-                {
-                    "userID": 17,
-                    "clockinby_userID": 3,
-                    "reportID": 2470,
-                    "fName": "Fname_17",
-                    "lName": "Lname_17",
-                    "duration_today": "3:00",
-                    "status": "clockedout"
-                },
-                {
-                    "userID": 86,
-                    "clockinby_userID": 86,
-                    "fName": "Fname_86",
-                    "lName": "Lname_86",
-                    "reportID": 2468,
-                    "duration_today": "3:00",
-                    "status": "clockedout"
-                }
-            ]
-        };
+        var users = [];
+        var schedules = [];
 
-        var users = mockData.users;
+        Api.getTimeclockUsers().then(function(data) {
+            users = data.users;
 
-        _.each(users, function (user, i) {
-            Api.user.getUserById({ id: user.userID }).then(function (data) {
-                users[i]['fName'] = data['fName'];
-                users[i]['lName'] = data['lName'];
+            var usersID = _.pluck(users, 'userID');
+
+            getSchedules(usersID).then(function (schedulesData) {
+                schedules = schedulesData;
+
+                _.each(users, function (user, i) {
+                    users[i]['schedule'] = _.where(schedules, { 'userID': user.userID });
+                    users[i]['schedule'] = transformSchedule(users[i]['schedule']);
+                });
+
+                deferred.resolve(users);
             });
-
-            Api.getReport(user.reportID).then(function(report) {
-               users[i]['report'] = report;
-            });
-
-            users[i]['schedule'] = _.where(schedules, { 'userID': user.userID });
-            users[i]['schedule'] = transformSchedule(users[i]['schedule']);
         });
 
-        return users;
+
+        return deferred.promise
     };
 
-    function getSchedules() {
-        var mockData = {
-            "data": [
-                {
-                    "userID":3,
-                    "reportID":2470,
-                    "reportName": "Jaro3",
-                    "time_in":"2015-02-10 06:00:00",
-                    "time_out":"2015-02-10 07:30:00"
-                },
-                {
-                    "userID":3,
-                    "reportID":2470,
-                    "reportName": "Jaro3",
-                    "time_in":"2015-02-10 08:00:00",
-                    "time_out":"2015-02-10 10:00:00"
-                },
-                {
-                    "userID":3,
-                    "reportID":2469,
-                    "reportName": "Jaro2",
-                    "time_in":"2015-02-10 16:00:00",
-                    "time_out":"2015-02-10 20:00:00"
-                }
-            ]
+    function getSchedules(usersID) {
+        var deferred = $q.defer();
+
+        var params = {
+            "users[]" : usersID,
+            "date" : moment().format('YYYY-MM-DD')
         };
 
-        return mockData.data;
+        var schedules = [];
+
+        Api.getTimeclockUsersInfo(params).then(function(data) {
+            _.each(data, function(user) {
+                console.log(user);
+                _.each(user.work, function(work){
+                    work['userID'] = user.userID;
+                    schedules.push(work);
+                });
+            });
+
+            deferred.resolve(schedules);
+            console.log(deferred);
+        });
+
+
+        return deferred.promise;
     };
 
     function haveSimilarSchedule(user, selectedUser) {

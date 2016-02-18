@@ -42,7 +42,6 @@ app
             scope.usersFirstNames = _.pluck(users, 'fName').join(', ');
 
             scope.events = _.first(users).schedule;
-            console.log(scope.events);
 
             if (_.where(scope.events, { "type": "pause" }).length == 0) {
                 scope.allowAddBreak = true;
@@ -68,29 +67,44 @@ app
 
             event.time_original = moment(event.time).toDate();
 
-            for (var i = changedIndex - 1; i > 0; i--) {
-                console.log(i);
-                console.log(adjustments);
+            if (event.type = 'stop') {
+                var i = changedIndex - 1;
                 var newDate = new Date(Date.parse(scope.events[i].duration));
                 var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
-
-                newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
-                newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
 
                 newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
                 newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
 
-                scope.events[i].duration = newDate;
-                scope.events[i].original_duration = newDate;
-
-                scope.events[i].time = newDate;
                 scope.events[i].time_end = newDateEnd;
-                scope.events[i].original_time = newDate;
+                scope.events[i].time_end_original = newDateEnd;
+
+                duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+
+                scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
+                scope.events[i].original_duration = scope.events[i].duration;
+
+            } else{
+                for (var i = changedIndex - 1; i > 0; i--) {
+                    var newDate = new Date(Date.parse(scope.events[i].duration));
+                    var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
+
+                    newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
+                    newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
+
+                    newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
+                    newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
+
+                    scope.events[i].duration = newDate;
+                    scope.events[i].original_duration = newDate;
+
+                    scope.events[i].time = newDate;
+                    scope.events[i].time_end = newDateEnd;
+                    scope.events[i].original_time = newDate;
+                }
             }
 
+
             for (var i = changedIndex + 1; i < scope.events.length; i ++) {
-                console.log(i);
-                console.log(adjustments);
                 var newDate = new Date(Date.parse(scope.events[i].time));
                 var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
 
@@ -103,9 +117,6 @@ app
                 scope.events[i].time_end = newDateEnd;
                 scope.events[i].original_time = newDate;
             }
-
-            console.log("AFTER");
-            console.log(scope.events);
         };
 
         scope.editDuration = function (event) {
@@ -142,8 +153,6 @@ app
             var prevWork = scope.events[changedIndex - 1];
             var nextWork = scope.events[changedIndex + 1];
 
-            console.log(prevWork.time);
-            console.log(nextWork.time);
 
             var newIndex = changedIndex-1;
             var newWorkEvent = TimeclockService.createEvent('work', prevWork.time, nextWork.time_end, event.reportID, event.report)
@@ -193,10 +202,6 @@ app
             var eventPause = TimeclockService.createEvent('pause', newBreakStart, moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
             var eventWorkAfterPause = TimeclockService.createEvent('work', moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), prevWork.time_end, scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
 
-            console.log(eventStart);
-            console.log(eventWorkBeforePause);
-            console.log(eventPause);
-            console.log(eventWorkAfterPause);
 
             scope.events.splice(addBreakIndex+1, 1);
             scope.events.splice(addBreakIndex, 1);

@@ -1,6 +1,9 @@
 <div class='container' ng-controller="TimeclockController as timeclock">
     <div class="table-header">
-        <h1 class="pull-left">Timeclock</h1>
+        <h1>Timeclock</h1>
+        <h1>
+            {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
+        </h1>
         <div class="clearfix"></div>
     </div>
 
@@ -10,47 +13,52 @@
         </a>
     </div>
 
-    <div class='table-responsive'>
-        <table class="table table-striped">
+    <div class='table-responsive' ng-repeat="entry in timeclock.users track by $index">
+
+
+        <table class="table table-bordered">
+            <caption><h2>{{entry.date}}</h2></caption>
             <thead>
-                <tr>
-                    <th>
-                    </th>
-                    <th class="clickable-header">
-                        Name
-                    </th>
-                    <th class="clickable-header">
-                        Status
-                    </th>
-                    <th class="clickable-header">
-                        Report
-                    </th>
-                    <th class="clickable-header">
-                        Hours
-                    </th>
-                </tr>
+            <tr>
+                <th>
+                </th>
+                <th class="clickable-header">
+                    Name
+                </th>
+                <th class="clickable-header">
+                    Status
+                </th>
+                <th class="clickable-header">
+                    Report
+                </th>
+                <th class="clickable-header">
+                    Hours
+                </th>
+            </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="user in timeclock.users">
-                    <td>
-                        <input ng-change="timeclock.selectUser(user)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
-                    </td>
-                    <td>
-                        {{ user.fullName }}
-                    </td>
-                    <td ng-switch on="user.status">
-                        <span class="label label-success" ng-switch-when="clockin">Clocekd In</span>
-                        <span class="label label-default" ng-switch-when="clockout">Clocekd Out</span>
-                        <span class="label label-warning" ng-switch-when="onbreak">On Break</span>
-                    </td>
-                    <td>
-                        {{user.report.name}}
-                    </td>
-                    <td>
-                        {{user.duration_today}}
-                    </td>
-                </tr>
+            <tr ng-repeat="user in entry.users">
+                <td>
+                    <input ng-change="timeclock.selectUser(user, entry)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
+                </td>
+                <td>
+                    {{ user.fullName }}
+                </td>
+                <td ng-switch on="user.status">
+                    <span class="label label-success" ng-switch-when="clockin">Clocekd In</span>
+                    <span class="label label-default" ng-switch-when="clockout">Clocekd Out</span>
+                    <span class="label label-warning" ng-switch-when="onbreak">On Break</span>
+                </td>
+                <td>
+                    {{user.report.name}}
+                </td>
+                <td>
+                    {{user.duration_today}}
+                </td>
+            </tr>
             </tbody>
         </table>
+    </div>
+
     </div>
 </div>

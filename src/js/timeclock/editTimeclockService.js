@@ -60,15 +60,17 @@ app
         scope.editTime = function (event) {
             var changedIndex = _.indexOf(scope.events, event);
 
-            var timeStartMoment = moment(new Date(Date.parse(event.time)));
-            var timeStartOriginalMoment = moment(new Date(Date.parse(event.time_original)));
+            var timeStartMoment = moment(new Date(Date.parse(scope.events[changedIndex].time)));
+            var timeStartOriginalMoment = moment(new Date(Date.parse(scope.events[changedIndex].time_original)));
 
             var adjustment = TimeclockService.msToHM(moment(timeStartMoment.diff(timeStartOriginalMoment)));
             var adjustments = adjustment.split(':');
 
-            event.time_original = event.time;
+            event.time_original = moment(event.time).toDate();
 
             for (var i = changedIndex - 1; i > 0; i--) {
+                console.log(i);
+                console.log(adjustments);
                 var newDate = new Date(Date.parse(scope.events[i].duration));
                 var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
 
@@ -87,6 +89,8 @@ app
             }
 
             for (var i = changedIndex + 1; i < scope.events.length; i ++) {
+                console.log(i);
+                console.log(adjustments);
                 var newDate = new Date(Date.parse(scope.events[i].time));
                 var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
 
@@ -100,6 +104,8 @@ app
                 scope.events[i].original_time = newDate;
             }
 
+            console.log("AFTER");
+            console.log(scope.events);
         };
 
         scope.editDuration = function (event) {

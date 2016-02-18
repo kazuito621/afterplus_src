@@ -1,9 +1,11 @@
 <div class='container' ng-controller="TimeclockController as timeclock">
     <div class="table-header">
         <h1>Timeclock</h1>
-        <h1>
+        <h2>
+            <i class="glyphicon glyphicon-chevron-left" ng-click="timeclock.decrementWeekNumber()"></i>
             {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
-        </h1>
+            <i class="glyphicon glyphicon-chevron-right" ng-click="timeclock.incrementWeekNumber()" ng-show="timeclock.currentWeek > timeclock.week"></i>
+        </h2>
         <div class="clearfix"></div>
     </div>
 

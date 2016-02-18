@@ -10,9 +10,16 @@ function TimeclockController (TimeclockService, editTimeclockService) {
 
     vm.haveSelectedUsers = false;
 
-    getWeekData(moment());
+    var currentWeek = moment().week();
 
-    function getWeekData(day) {
+    vm.currentWeek = moment().week();
+    vm.week = vm.currentWeek;
+
+    getWeekData(currentWeek);
+
+
+    function getWeekData(currentWeek) {
+        var day = moment().day("Monday").week(currentWeek);
         var today = day.clone();
         var startOfWeek = today.clone().startOf('isoWeek');
         var endOfWeek = today.clone().endOf('isoWeek');
@@ -49,6 +56,18 @@ function TimeclockController (TimeclockService, editTimeclockService) {
         });
 
     };
+
+    vm.decrementWeekNumber = function() {
+        vm.week--;
+        vm.users = [];
+        getWeekData(vm.week);
+    }
+
+    vm.incrementWeekNumber = function() {
+        vm.week++;
+        vm.users = [];
+        getWeekData(vm.week);
+    }
 
     vm.selectUser = function(selectedUser, selectedDate) {
         if (selectedUser.selected) {

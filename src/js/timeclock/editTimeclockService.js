@@ -87,25 +87,41 @@ app
                     scope.events[i].original_duration = scope.events[i].duration;
                     break;
                 case 'switch':
-                    for (var i = changedIndex + 1; i < scope.events.length; i ++) {
-                        var newDate = new Date(Date.parse(scope.events[i].time));
-                        var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
+                    var i = changedIndex + 1;
 
-                        newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
-                        newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
-                        newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
-                        newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
+                    var newDate = new Date(Date.parse(scope.events[i].time));
+                    var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
 
-                        scope.events[i].time = newDate;
-                        scope.events[i].time_original = newDate;
-                        scope.events[i].time_end = newDateEnd;
-                        scope.events[i].time_end_original = newDateEnd;
+                    newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
+                    newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
 
-                        duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+                    scope.events[i].time = newDate;
+                    scope.events[i].time_original = newDate;
+                    scope.events[i].time_end = newDateEnd;
+                    scope.events[i].time_end_original = newDateEnd;
 
-                        scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
-                        scope.events[i].original_duration = scope.events[i].duration;
-                    }
+                    duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+
+                    scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
+                    scope.events[i].original_duration = scope.events[i].duration;
+
+                    var i = changedIndex -1;
+
+                    var newDate = new Date(Date.parse(scope.events[i].time));
+                    var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
+
+                    newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
+                    newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
+
+                    scope.events[i].time = newDate;
+                    scope.events[i].time_original = newDate;
+                    scope.events[i].time_end = newDateEnd;
+                    scope.events[i].time_end_original = newDateEnd;
+
+                    duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+
+                    scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
+                    scope.events[i].original_duration = scope.events[i].duration;
                     break;
                 case 'stop':
                     var i = changedIndex - 1;

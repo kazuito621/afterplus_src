@@ -36,6 +36,7 @@ app
             }
         ];
 
+        var editTimeclockModal = {};
 
         var show = function (users) {
             scope.users = users;
@@ -326,6 +327,8 @@ app
             scope.events.splice(newIndex, 0, eventSwitch);
 
             scope.addNewJobAllow = false;
+
+
         };
 
         scope.closeAddJob = function() {
@@ -342,7 +345,9 @@ app
             params.users = usersID;
             params.worktime  = schedules;
 
-            Api.saveTimeclockSchedules(params);
+            Api.saveTimeclockSchedules(params).then(function(data) {
+                editTimeclockModal.$promise.then(editTimeclockModal.hide);
+            });
         };
 
         var showModal = function (users) {

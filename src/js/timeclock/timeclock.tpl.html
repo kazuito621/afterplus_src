@@ -9,17 +9,11 @@
         <div class="clearfix"></div>
     </div>
 
-    <div class="actions">
-        <a class="btn btn-default" ng-show="timeclock.haveSelectedUsers" ng-click="timeclock.editTimeclockForUsers()">
-            Edit
-        </a>
-    </div>
-
     <div class='table-responsive' ng-repeat="entry in timeclock.users track by $index">
 
 
         <table class="table table-bordered">
-            <caption><h2>{{entry.date}}</h2></caption>
+            <caption><h2 style="font-size: 30px; font-weight: bold;">{{entry.date_string}}</h2></caption>
             <thead>
             <tr>
                 <th>
@@ -48,7 +42,7 @@
                 </td>
                 <td ng-switch on="user.status">
                     <span class="label label-success" ng-switch-when="clockin">Clocekd In</span>
-                    <span class="label label-default" ng-switch-when="clockout">Clocekd Out</span>
+                    <span class="label label-default" ng-switch-when="clockout">Clocked Out</span>
                     <span class="label label-warning" ng-switch-when="onbreak">On Break</span>
                 </td>
                 <td>
@@ -60,6 +54,18 @@
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="action-float-bar" ng-show="timeclock.haveSelectedUsers">
+        <div class="container">
+            <div class="action-float-bar-inner">
+                <i class="fa fa-mail-forward fa-rotate-270 white"></i> &nbsp;
+                <a class="btn btn-default" ng-click="timeclock.editTimeclockForUsers()">
+                    Edit
+                </a>
+            </a>
+            </div>
+        </div>
     </div>
 
     </div>

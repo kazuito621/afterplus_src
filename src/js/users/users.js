@@ -1,3 +1,36 @@
+/*
+	Explanation of User Roles
+	=========================
+
+	History
+	-------
+	At first we thought users would just be a single role. ie. customer, admin or sales
+	Later the system evolved to need users to be multiple roles, ie. foreman and sales
+	** So we only had one column: "role" **
+
+	Migration
+	---------
+	After needing multiple rows, we decided to create a new "roles" column, 
+	as a comma-delimited field, ie. "foreman,sales"
+	Until we fully migrate all areas of the system,
+	we will keep the old "role" column during the transition.
+
+	They will serve these purposes:
+
+	  - "roles" = the real comma delimited list of roles
+	      - admin: access to everything
+			- sales: can "own" an estimate in the sales postion, and listed in the sales list
+			- foreman: can "own" a job, as a crew leader
+			- crew: only for listing in the timeclock
+
+	  - "role" 
+	     - if roles contains admin, role = "admin"
+		  - if roles contains sales,foreman,crew, but no admin, role = "staff"
+		  - if roles contains customer, role = "customer"
+
+
+*/
+
 var UserCtrl = app.controller('UserCtrl',
     ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 'FilterHelper',
         function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper) {
@@ -16,9 +49,10 @@ var UserCtrl = app.controller('UserCtrl',
                 };
             s.displayedUsers = [];
             s.data={}; //overwritten later
+				var filterData = {};
 
             this.fh = FilterHelper.fh();
-            var filterGroups=[['userRole','assignment'],['email','name', 'role', 'sessionCount']];
+            var filterGroups=[['userRole','userRoles','assignment'],['email','name','role','roles','userID']];
             this.fh.setFilterGroups(filterGroups);
 
             var init = function (cb) {
@@ -33,6 +67,8 @@ var UserCtrl = app.controller('UserCtrl',
                             d.name=d.name+' '+d.lName;
                         }
                         d.userRole= d.role;
+								d.userRoles=d.roles.split(',');
+								d.userRoles_text=d.userRoles.join(', ');
                         //d.siteCount=Math.floor((Math.random() * 2) + 0);
                         //d.clientCount=Math.floor((Math.random() * 2) + 0);
 
@@ -62,9 +98,18 @@ var UserCtrl = app.controller('UserCtrl',
 
             s.activePopover = {elem:{}, itemID: undefined};
 
-            s.setStatusFilter=function(role){
-                if(role=='All')role='';
-                self.fh.setFilter({userRole:role,assignment:''});
+            s.setStatusFilter=function(col, role){
+
+					filterData.assignment='';
+					if(col=='userRoles'){
+					 	filterData.userRoles=role;
+						filterData.userRole='';
+					}else{
+					 	filterData.userRole=role;
+						filterData.userRoles='';
+					}
+                
+					 self.fh.setFilter(filterData);
                 applyFilter();
             };
 
@@ -158,19 +203,18 @@ var UserCtrl = app.controller('UserCtrl',
                 if (filterTextTimeout) { $timeout.cancel(filterTextTimeout); }
                 filterTextTimeout = $timeout(function () {
                     if (txt === '' || !txt) {
-                        if(old){
-                            self.fh.setFilter({email:'', name:'', role:'',sessionCount:''});
-                            applyFilter();
-                        }
-                    } else if (!isNaN(txt)) {
-                        // if search entry is a number, search by siteID and name
-                        self.fh.setFilter({email: txt, name: txt,role:txt,sessionCount:txt});
-                        applyFilter();
+								filterData.email='';
+								filterData.name='';
+								filterData.userID='';
                     } else {
-                        // if just letters, then search by name and city, and sales person
-                        self.fh.setFilter({email: txt, name:txt,role:txt,sessionCount:txt});
-                        applyFilter();
-                    }
+								filterData.email=txt;
+								filterData.name=txt;
+								filterData.userID=txt;
+                    } 
+                
+					 console.debug(filterData  );
+						 self.fh.setFilter(filterData);
+					  	 applyFilter();
                 }, 500);
             });
 

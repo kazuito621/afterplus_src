@@ -791,4 +791,6 @@ td.estimate_multirow_col{
 }
 
 
-
+.action-float-bar a {
+	color: white;
+}

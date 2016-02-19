@@ -72,6 +72,20 @@ app.factory('FilterHelper', function () {
 		  var itemVal = item[obj.filterName];
         try {
 
+			//console.debug( itemVal  );
+			//console.debug( obj.value  );
+
+			// check if the data item is an array
+			if( itemVal instanceof Array && itemVal.indexOf(obj.value) >= 0 ){
+					res = true;
+					return false;
+			}
+
+			if( obj.value instanceof Array && obj.value.indexOf(itemVal) >= 0){
+					res = true;
+					return false;
+			}
+
 			 // check if filter value is an object (ie. {gt:5} //greater than 5
 			 if( typeof obj.value == 'object' && (typeof obj.value.gt != 'undefined' || typeof obj.value.lt != 'undefined') ){
 				itemVal = parseFloat(itemVal);

@@ -144,14 +144,15 @@
 
 
 								<!-- /// Event Log /// -->
-								<div class="table-responsive" 
+								<div class="table-responsive"
 									ng-if="auth.isAtleast('inventory') && !TFSdata.selectedFilters.length && !selected.siteID">
 									<event-log></event-log>
 								</div>
 
 								<!-- /// Sites List /// -->
-								<div class="table-responsive" 
-									ng-if="filteredSites.length > 0 && filteredSites.length!=initData.sites.length && !trees.length && TFSdata.selectedFilters.length">
+								<div class="table-responsive"
+									ng-if="filteredSites.length > 0 && filteredSites.length!=initData.sites.length && !trees.length && TFSdata.selectedFilters.length"
+								>
 
 									<div sites-selector items="filteredSites" selected="bulkEstimates.selectedSites" name="sites"></div>
 									<sites-list filtered-sites="filteredSites" selected-sites="bulkEstimates.selectedSites"></sites-list>
@@ -161,20 +162,15 @@
 										<tr>
 											<td colspan="4">
 												<div id='bulkEstMessage'></div>
-												<button class="btn btn-block btn-red clr-white txt-bold" ng-click="createBulkEstimate()" 
+												<button class="btn btn-block btn-red clr-white txt-bold" ng-click="createBulkEstimate()"
 													ng-show="bulkEstimates.selectedSites.length && bulkEstimates.overrideTreatmentCodes.length"
 													>Create Bulk Estimate</button>
 											</td>
 										</tr>
 										<tr>
 											<td colspan="4">
-												<span>
-												 	<override-treatment codes="data.overrideTreatmentCodes" treatments="initData.filters.treatments"></override-treatment>
-													 <a ng-if="bulkEstimates.overrideTreatmentCodes.length" 
-													 	ng-click="bulkEstimates.overrideTreatmentCodes=[]"
-													 	class='fa fa-times _red _size8 hand' style='padding-left:.2em;'></a>
-												</span>
-
+												 	<override-treatment codes="bulkEstimates.overrideTreatmentCodes" 
+														treatments="initData.filters.treatments"></override-treatment>
 											</td>
 										</tr>
 									</tfoot></table>
@@ -217,7 +213,7 @@
 									</table>
 								</div>
 							</section>
-						</div>	
+						</div>
 					</div>
 
 				</div>

@@ -50,6 +50,7 @@ function TimeclockController (TimeclockService, editTimeclockService) {
             TimeclockService.getUsers(singleDay).then(function(users) {
                 var entry = {};
                 entry.date = singleDay;
+                entry.date_string = moment(singleDay).format('dddd, D/MM');
                 entry.users = users;
                 vm.users.push(entry);
             });

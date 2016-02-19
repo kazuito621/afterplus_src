@@ -13,6 +13,7 @@
                                 <li class="list-group-item" ng-repeat="event in events">
                                     <div ng-switch on="event.type">
                                         <div ng-switch-when="start">
+                                            <button type="button" class=" pull-right close" style="font-size: 30px;" data-dismiss="modal" aria-label="Close" ng-click="removeEvent(event)"><span class="text-danger" aria-hidden="true">&times;</span></button>
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label class="control-label">
@@ -79,11 +80,11 @@
                                         </div>
 
                                         <div ng-switch-when="switch">
-
+                                            <button type="button" class=" pull-right close" style="font-size: 30px;" data-dismiss="modal" aria-label="Close" ng-click="removeEvent(event)"><span class="text-danger" aria-hidden="true">&times;</span></button>
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label class="control-label">
-                                                        <span class="glyphicon glyphicon-play text-success" aria-hidden="true"></span>
+                                                        <span class="glyphicon glyphicon-random text-success" aria-hidden="true"></span>
                                                         <span class="text-success">Start Job: #{{ event.reportID }} - {{ event.report }}</span>
                                                     </label>
                                                 </div>

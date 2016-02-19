@@ -57,6 +57,12 @@ function TimeclockController (TimeclockService, editTimeclockService) {
 
     };
 
+    vm.openUser = function (selectedUser) {
+        var selectedUsers = [];
+        selectedUsers.push(selectedUser);
+        editTimeclockService.showModal(selectedUsers);
+    };
+    
     vm.decrementWeekNumber = function() {
         vm.week--;
         vm.users = [];
@@ -234,7 +240,8 @@ function TimeclockService($q, Api) {
         var timeStartArr = timeStart.split(/[- :]/),
             timeStartDate = new Date(timeStartArr[0], timeStartArr[1]-1, timeStartArr[2], timeStartArr[3], timeStartArr[4], timeStartArr[5]);
 
-        timeStartMoment = moment(timeStartDate);
+
+        timeStartMoment = moment(timeStartDate).clone();
 
         if (timeEnd != null) {
             console.log(timeEnd);
@@ -252,16 +259,17 @@ function TimeclockService($q, Api) {
         if (timeEnd != null) {
             event.time_end = timeEndMoment.toDate();
             event.duration = moment(msToHM(duration), 'H:m').toDate();
+            event.duration_original = moment(msToHM(duration), 'H:m').toDate();
         }
 
         event.reportID = reportID;
         event.report = report;
         event.time_original = moment(timeStartDate).toDate();
-        event.duration_original = event.duration;
         event.time_end_original = event.time_end;
         event.status = status;
         event.inProgress = inProgress;
-
+        console.log(timeEndMoment);
+        console.log('@@@@');
         return event;
     }
 

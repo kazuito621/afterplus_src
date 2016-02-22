@@ -210,6 +210,7 @@ function sendBulkEstimatesService($q, $rootScope, $modal, $popover, Rest, Api, A
     };
 
     var showModal = function (estimates) {
+        modalScope.estimates = [];
         initScope(estimates.ids);
 
         modalInstance = $modal({

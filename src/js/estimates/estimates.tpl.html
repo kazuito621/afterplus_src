@@ -19,7 +19,7 @@
 
 	
     <div ng-if="!auth.isAtleast('inventory')">
-        <input type='text' ng-model='pageVars.searchText' size=15 placeholder='Search'>
+        <input id='searchbox' type='text' ng-model='pageVars.searchText' size=15 placeholder='Search'>
         <a ng-if="pageVars.searchText.length" ng-click="pageVars.searchText=''"
            class='fa fa-times _red _size5 hand'></a>
         <span class='gray'
@@ -138,7 +138,12 @@
                        send-report="e" type="invoice"
                        bs-tooltip title="Re/Send Invoice">
                         <i class="fa fa-envelope"></i>
-                    </a><br>
+                    </a>
+
+						<span ng-if="('scheduled'==e.status || 'approved'==e.status || 'completed'==e.status) && !e.job_userID"
+							class='small-tag scheduled' style='background-color:#F00; font-size:.65em;'>NO FOREMAN</span>
+
+						  <br>
                     <span title="{{e.siteName}}" style='color:#888;'>{{e.siteName_short}}</span> &nbsp;
                     <i site-edit-modal clients="initData.clients" site-id="e.siteID"
                        class="fa fa-pencil _grey _size4 hoverDisplay" title="Edit" bs-tooltip
@@ -219,6 +224,17 @@
                             <i class='fa fa-mail-forward fa-rotate-270 white'></i> &nbsp;
                             <a href="#" ng:cloak ng-click="duplicate($event)" style="margin-left: 50px;">
                                 Duplicate
+                            </a>
+                        </span>
+                        <span ng-show="checkedEstimates.ids.length > 0">
+                            <a href="#" ng:cloak ng-click="sendBulk($event)" style="margin-left: 50px;">
+                                Send
+                            </a>
+                        </span>
+
+                        <span ng-show="checkedEstimates.ids.length > 0">
+                            <a href="#" ng:cloak ng-click="setSent($event)" style="margin-left: 50px;">
+                                Mark as Sent/Active
                             </a>
                         </span>
                     </div>

@@ -9,9 +9,12 @@
         .estStatusItem {
             margin-top:.5em;
         }
+		  div#summary-charts img{
+				max-width:49%;
+		  }
 
     </style>
-    <div class="modal-dialog">
+    <div class="modal-dialog" style='width:80%;'>
         <div class="modal-content">
             <div class="modal-header">
                 <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
@@ -29,6 +32,7 @@
 									(<a target=_new href='http://maps.google.com/?q={{site.street}}, {{site.city}}, {{site.state}} {{site.zip}}'>map</a>)
 								</span>
                         <BR><BR>
+
 
                         <b style='font-size:1.2em;'>Contacts</b><BR>
                         <div ng-bind-html="contacts"></div>
@@ -74,6 +78,14 @@
                     </div>
                 </div>
                 <BR>
+                <div class="row" ng-if="report.charts">
+                    <div class="col-md-12">
+                        <div id='summary-charts' style='padding:2em 0 2em 0;'>
+                            <img src='{{report.charts.treatmentCategories}}'>
+                            <img src='{{report.charts.treatments}}'>
+                        </div>
+                    </div>
+                </div>
                 <div style='background-color:#F7F4E1;padding:1em;' ng-if="options.allowCalendar">
                     <div class="row">
                         Start: <input class="" ng-model="report_job_start_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
@@ -118,7 +130,7 @@
                            ng-click="unschedule()" value="Unschedule Job"></input>
                     <a class='btn btn-sm btn-primary' href="#/trees?reportID={{report.reportID}}" ng-click="$hide();"
 						  			target="_new"><i class='fa fa-pencil'></i> Edit Estimate</a>
-                    <a class='btn btn-sm btn-primary' target="_new_cust" href="{{report.url}}"><i class='fa fa-eye'></i> Cust View</a>
+                    <a class='btn btn-sm btn-primary' target="_new_cust" href="/go/estimate/{{report.token}}"><i class='fa fa-eye'></i> Cust View</a>
                     <!--<input type="button" class="btn btn-danger"
                            ng-hide="clickedEvent.type == 'Unscheduled' || status != 'scheduled'  || todo_price<price"
                            ng-click="UnscheduledJob()" value="Unschedule Job"></input>-->

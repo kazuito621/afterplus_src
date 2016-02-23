@@ -25,21 +25,30 @@ app
             scope.options = options;
             console.log(scope.options);
 
-            // var prepare report
-            scope.report = report;
-            loadSite(report.siteID);
-            loadGroups();
-            loadContacts();
-            prepareReportData(report);
-            setupModalDatePickers(report);
+            // load report details
+            opts = [];
+            opts.getTreeDetails = 1;
+            opts.getSummary = 1;
+            Api.getReport(report.reportID,opts).then(function(data) {
+                report = data;
+                console.log(report);
+                // var prepare report
+                scope.report = report;
 
-            detailsModal = $modal({
-                scope: scope,
-                template: '/js/common/services/estimateDetails/estimateDetails.tpl.html',
-                show: false
+                loadSite(report.siteID);
+                loadGroups();
+                loadContacts();
+                prepareReportData(report);
+                setupModalDatePickers(report);
+
+                detailsModal = $modal({
+                    scope: scope,
+                    template: '/js/common/services/estimateDetails/estimateDetails.tpl.html',
+                    show: false
+                });
+
+                detailsModal.$promise.then(detailsModal.show);
             });
-
-            detailsModal.$promise.then(detailsModal.show);
         };
 
         var loadSite = function(siteID) {
@@ -97,6 +106,12 @@ app
             }
             scope.todo_price = parseFloat(report.todo_price.replace(",", ""));
             scope.status = (report.status);
+            if (!report.start) {
+                report.start = moment(moment(report.job_start).format('YYYY-MM-DD 00:00:00'));
+            }
+            if (!report.end) {
+                report.end = moment(moment(report.job_end).format('YYYY-MM-DD 00:00:00'));
+            }
         };
 
         var setupModalDatePickers = function (report) {
@@ -107,9 +122,7 @@ app
                 }
                 scope.showWeekendWork = isDateSpanWeekend(report.start, report.end);
                 scope.report_job_start_unix = report.start.format('X');
-                scope.report_job_end_unix = report.end.format('X') - 1; // Because fullCallendar always gives the next day which is 12.00.00 AM,
-
-                // so have subtract  1s to get 11:59:59 of prev date.
+                scope.report_job_end_unix = report.end.format('X');
             }
         };
 
@@ -198,8 +211,8 @@ app
             if (type == 'days') {
                 var temp = moment(scope.job_start);
                 scope.job_end = temp.add(scope.duration, 'days');
-                scope.report_job_end_unix = scope.job_end.format('X') - 1;
-                this.report_job_end_unix = scope.job_end.format('X') - 1;
+                scope.report_job_end_unix = scope.job_end.format('X');
+                this.report_job_end_unix = scope.job_end.format('X');
             } else if (scope.job_start) {
                 scope.job_end = moment.unix(scope.report_job_end_unix).format('YYYY-MM-DD HH:mm:ss');
                 var d = Math.ceil(moment.duration(moment(scope.job_end).diff(moment(scope.job_start))).asDays());

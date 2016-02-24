@@ -131,8 +131,8 @@ app
                     var newDate = new Date(Date.parse(scope.events[i].time));
                     var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
 
-                    newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
-                    newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
+                    newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
+                    newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
 
                     scope.events[i].time = newDate;
                     scope.events[i].time_original = newDate;
@@ -350,7 +350,6 @@ app
 
             var params = {};
 
-            alert(scope.selectedDate);
             params.date = scope.selectedDate;
             params.users = usersID;
             params.worktime  = schedules;

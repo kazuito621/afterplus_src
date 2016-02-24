@@ -230,7 +230,12 @@ function TimeclockService($q, Api) {
     };
 
     function haveSimilarSchedule(user, selectedUser) {
-        return isEqualSchedule(user.schedule, selectedUser.schedule);
+        console.log('PRE=======');
+        console.log(user);
+        console.log(selectedUser);
+        var isEqual = isEqualSchedule(user.schedule, selectedUser.schedule);
+        console.log('result:' + isEqual);
+        return isEqual;
     };
 
     function isEqualSchedule(schedule, other) {
@@ -238,16 +243,23 @@ function TimeclockService($q, Api) {
             return false;
         }
 
+        var isEqualSchedule = true;
         _.each(schedule, function (event, i) {
+
+            console.log('EQUAL:');
+            console.log(schedule[i].time);
+            console.log(other[i].time);
+            console.log(schedule[i].time != other[i].time);
             if (
                 schedule[i].type != other[i].type ||
-                schedule[i].time != other[i].time
+                schedule[i].time != other[i].time ||
+                schedule[i].time_end != other[i].time_end
             ) {
-                return false;
+                isEqualSchedule = false;
             }
         });
 
-        return true;
+        return isEqualSchedule;
     };
 
     function transformSchedule(schedule) {

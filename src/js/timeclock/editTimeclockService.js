@@ -3,6 +3,7 @@ app
         scope = $rootScope.$new();
         scope.users = [];
         scope.usersFirstNames = '';
+        scope.selectedDate = '';
         scope.allowAddBreak = false;
         scope.addNewJobAllow = false;
         scope.jobTypes = [
@@ -38,10 +39,11 @@ app
 
         var editTimeclockModal = {};
 
-        var show = function (users) {
+        var show = function (users, selectedDate) {
             scope.users = users;
-            scope.usersFirstNames = _.pluck(users, 'fName').join(', ');
+            scope.usersFirstNames = _.pluck(users, 'full_name').join(', ');
 
+            scope.selectedDate = selectedDate;
             scope.events = _.first(users).schedule;
 
             if (_.where(scope.events, { "type": "pause" }).length == 0) {
@@ -262,7 +264,7 @@ app
             scope.newBreakDuration = new Date(Date.parse(event.time));
             scope.newBreakStart = new Date(Date.parse(event.time))
 
-            scope.newBreakDuration.setMinutes(0);
+            scope.newBreakDuration.setMinutes(30);
             scope.newBreakDuration.setHours(0);
 
             scope.newBreakStart.setMinutes(eventTime.getMinutes());
@@ -287,10 +289,17 @@ app
             var prevStart = scope.events[addBreakIndex];
             var prevWork = scope.events[addBreakIndex+1];
 
-            var eventStart = TimeclockService.createEvent('start', prevStart.time, moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
-            var eventWorkBeforePause = TimeclockService.createEvent('work', prevStart.time, moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
-            var eventPause = TimeclockService.createEvent('pause', newBreakStart, moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
-            var eventWorkAfterPause = TimeclockService.createEvent('work', moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), prevWork.time_end, scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
+            var prevStartTime = new Date(Date.parse(prevStart.time));
+            var prevStopTime = new Date(Date.parse(prevWork.time_end));
+
+            console.log('%%%%%%');
+            console.log(moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'));
+            console.log(moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'));
+
+            var eventStart = TimeclockService.createEvent('start', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
+            var eventWorkBeforePause = TimeclockService.createEvent('work', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
+            var eventPause = TimeclockService.createEvent('pause', moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
+            var eventWorkAfterPause = TimeclockService.createEvent('work', moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), moment(prevStopTime).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
 
 
             scope.events.splice(addBreakIndex+1, 1);
@@ -341,7 +350,8 @@ app
 
             var params = {};
 
-            params.date = moment().format('YYYY-MM-DD');
+            alert(scope.selectedDate);
+            params.date = scope.selectedDate;
             params.users = usersID;
             params.worktime  = schedules;
 
@@ -350,8 +360,8 @@ app
             });
         };
 
-        var showModal = function (users) {
-            return show(users);
+        var showModal = function (users, selectedDate) {
+            return show(users, selectedDate);
         };
 
         return {

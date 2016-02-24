@@ -5,7 +5,7 @@
             <button class="btn btn-default" ng-model="filtersYear" placeholder="All Years"
                     ng-disabled="!filtersYears.length"
                     ng-change="onSelectYear({ id: filtersYear })"
-                    ng-options="y.id as (y.desc + ' (' + y.count + ')') for y in filtersYears | filterYearFilters "
+                    bs-options="y.id as (y.desc + ' (' + y.count + ')') for y in filtersYears | filterYearFilters "
                     bs-select onclick="return false;">
                 Action <span class="caret"></span>
             </button>

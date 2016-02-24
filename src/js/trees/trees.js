@@ -1587,7 +1587,10 @@ console.debug(" show mapp trees -------- ");
                     ReportService.getBlankReport();
                 }
 
+                console.log('ADDED!!');
                 added = ReportService.addItems(trees, s.data.overrideTreatmentCodes, s.TFSdata.selectedFilters);
+                console.log(s.data.overrideTreatmentCodes);
+                console.log(added);
                 $rootScope.$broadcast('itemsAddedToReport');
 
                 if (added == -1)

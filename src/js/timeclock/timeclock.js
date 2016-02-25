@@ -3,8 +3,8 @@ app
     .service('TimeclockService', TimeclockService);
 
 
-TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api']
-function TimeclockController (TimeclockService, editTimeclockService, Api) {
+TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', '$filter']
+function TimeclockController (TimeclockService, editTimeclockService, Api, $filter) {
     var vm = this;
     vm.users = [];
 
@@ -69,10 +69,30 @@ function TimeclockController (TimeclockService, editTimeclockService, Api) {
     };
 
     vm.openUser = function (selectedUser, selectedDate) {
+        _.each(vm.users, function (date) {
+            _.each(date.users, function (user) {
+                user.disabled = false;
+                user.selected = false;
+            });
+        });
+
         vm.selectedDate = selectedDate.date;
         var selectedUsers = [];
         selectedUsers.push(selectedUser);
-        editTimeclockService.showModal(selectedUsers, vm.selectedDate);
+        editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
+            var dateIndex = _.indexOf(vm.users, _.findWhere(vm.users, {'date': vm.selectedDate}));
+
+            _.each(selectedUsers, function(user, i) {
+                var userIndex = _.indexOf(vm.users[dateIndex].users, user);
+
+                console.log(vm.users[dateIndex]);
+                console.log(user);
+                vm.users[dateIndex].users[userIndex].schedule = data;
+                console.log(data);
+                vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
+
+            });
+        });
     };
     
     vm.decrementWeekNumber = function() {
@@ -149,8 +169,12 @@ function TimeclockController (TimeclockService, editTimeclockService, Api) {
                 selectedUsers = selectedInDate;
             }
         });
-        editTimeclockService.showModal(selectedUsers, vm.selectedDate);
 
+        editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
+            _.each(selectedUsers, function(user, i) {
+                selectedUsers[i].schedule = data;
+            })
+        });
 
     };
 

@@ -1,11 +1,15 @@
 app
-    .service('editTimeclockService', [ '$rootScope', '$modal', 'TimeclockService', 'Api', function ($rootScope, $modal, TimeclockService, Api) {
+    .service('editTimeclockService', [ '$rootScope', '$modal', 'TimeclockService', 'Api', '$q', function ($rootScope, $modal, TimeclockService, Api, $q) {
+        var modalDeferred;
+        modalDeferred = $q.defer();
         scope = $rootScope.$new();
         scope.users = [];
+        scope.events = [];
         scope.usersFirstNames = '';
         scope.selectedDate = '';
         scope.allowAddBreak = false;
         scope.addNewJobAllow = false;
+        scope.newJobReport = 0;
         scope.jobTypes = [
             {
                 "type": 'work',
@@ -42,9 +46,9 @@ app
         var show = function (users, selectedDate) {
             scope.users = users;
             scope.usersFirstNames = _.pluck(users, 'full_name').join(', ');
-
+            scope.events = angular.copy(_.first(users).schedule);
             scope.selectedDate = selectedDate;
-            scope.events = _.first(users).schedule;
+
 
             if (_.where(scope.events, { "type": "pause" }).length == 0) {
                 scope.allowAddBreak = true;
@@ -57,6 +61,8 @@ app
             });
 
             editTimeclockModal.$promise.then(editTimeclockModal.show);
+
+            return modalDeferred.promise;
         };
 
         scope.editTime = function (event) {
@@ -318,6 +324,7 @@ app
         };
 
         scope.saveJob = function() {
+
             var newIndex = scope.events.length -1;
 
             var prevTimeStart = new Date(Date.parse(scope.events[newIndex - 1].time_end));
@@ -325,9 +332,13 @@ app
             var prevTimeEnd = new Date(Date.parse(scope.events[newIndex - 1].time_end));
             prevTimeEnd.setHours(prevTimeEnd.getHours()+1);
 
-            var eventSwitch = TimeclockService.createEvent('switch', moment(prevTimeStart).format('YYYY-MM-DD HH:mm:ss'), moment(prevTimeEnd).format('YYYY-MM-DD HH:mm:ss'), scope.newJobReport, '');
-            var eventWork = TimeclockService.createEvent('work', moment(prevTimeStart).format('YYYY-MM-DD HH:mm:ss'), moment(prevTimeEnd).format('YYYY-MM-DD HH:mm:ss'), scope.newJobReport, '');
-            var eventStop = TimeclockService.createEvent('stop', moment(prevTimeEnd).format('YYYY-MM-DD HH:mm:ss'), null, scope.newJobReport, '');
+            var eventSwitch = TimeclockService.createEvent('switch', moment(prevTimeStart).format('YYYY-MM-DD HH:mm:ss'), moment(prevTimeEnd).format('YYYY-MM-DD HH:mm:ss'), this.newJobReport, '');
+            var eventWork = TimeclockService.createEvent('work', moment(prevTimeStart).format('YYYY-MM-DD HH:mm:ss'), moment(prevTimeEnd).format('YYYY-MM-DD HH:mm:ss'), this.newJobReport, '');
+            var eventStop = TimeclockService.createEvent('stop', moment(prevTimeEnd).format('YYYY-MM-DD HH:mm:ss'), null, this.newJobReport, '');
+
+            eventSwitch.report = this.newJobReport;
+            eventWork.report = this.newJobReport;
+            eventStop.report = this.newJobReport;
 
             scope.events.splice(newIndex, 1);
 
@@ -337,7 +348,6 @@ app
 
             scope.addNewJobAllow = false;
 
-
         };
 
         scope.closeAddJob = function() {
@@ -346,6 +356,8 @@ app
 
         scope.saveSchedule = function () {
             var schedules = TimeclockService.reverseTransform(scope.events);
+            console.log(schedules);
+            console.log('save')
             var usersID = _.pluck(scope.users, 'userID');
 
             var params = {};
@@ -356,6 +368,7 @@ app
 
             Api.saveTimeclockSchedules(params).then(function(data) {
                 editTimeclockModal.$promise.then(editTimeclockModal.hide);
+                modalDeferred.resolve(scope.events);
             });
         };
 

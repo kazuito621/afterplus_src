@@ -203,7 +203,10 @@
                         </div>
                     </div>
                     <div class="modal-footer topMargin0">
-                        <button type="button" class="btn btn-primary" ng-click="ok();">Apply Changes</button>
+                        <button type="button" class="btn btn-primary" ng-click="ok();" ng-disabled="applyButtonEnabled=='false'">
+									<i class='fa fa-spinner' ng-show='applyButtonText=="Working"'></i> 
+										{{applyButtonText}}
+								</button>
                         <button type="button" class="btn btn-default" ng-click="hide();">Close</button>
                     </div>
                 </form>

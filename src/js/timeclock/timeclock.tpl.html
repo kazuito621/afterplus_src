@@ -1,10 +1,16 @@
+<style>
+    .table > tbody > tr.disabled {
+        background-color: #E6E6E6;
+    }
+</style>
+
 <div class='container' ng-controller="TimeclockController as timeclock">
     <div class="table-header">
-        <h1>Timeclock</h1>
-        <h2>
-            <i class="glyphicon glyphicon-chevron-left" ng-click="timeclock.decrementWeekNumber()"></i>
-            {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
-            <i class="glyphicon glyphicon-chevron-right" ng-click="timeclock.incrementWeekNumber()" ng-show="timeclock.currentWeek > timeclock.week"></i>
+        <h1 style="display: inline-block;">Timeclock</h1>
+        <h2 style="display: inline-block;margin-left:50px">
+            <i class="glyphicon glyphicon-chevron-left" ng-click="timeclock.decrementWeekNumber()" style="cursor: pointer"></i>
+            Week of {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
+            <i class="glyphicon glyphicon-chevron-right" ng-click="timeclock.incrementWeekNumber()" ng-show="timeclock.currentWeek > timeclock.week" style="cursor: pointer"></i>
         </h2>
         <div class="clearfix"></div>
     </div>
@@ -12,41 +18,54 @@
     <div class='table-responsive' ng-repeat="entry in timeclock.users track by $index" >
 
 
-        <h2 style="font-size: 30px; font-weight: bold;">{{entry.date_string}}</h2>
-        <table class="table table-bordered" ng-if="entry.users.length > 0">
+        <table class="table table-bordered">
             <thead>
-            <tr>
-                <th>
+            <tr style="background: #000; color: #fff;border: 1px solid #000;">
+                <th style="border: 1px solid #000; font-weight: bold; width: 50px;">
+                    <input ng-click="timeclock.selectAllSimilar()" ng-model="timeclock.selectAllSimilarValue" type="checkbox" ng-if="timeclock.haveSimilarSchedule>1 && timeclock.selectedDate == entry.date">
                 </th>
-                <th class="clickable-header">
-                    Name
+                <th class="clickable-header" style="border: 1px solid #000; font-weight: bold; font-size: 20px;">
+                    {{entry.date_string}}
                 </th>
-                <th class="clickable-header">
-                    Report
-                </th>
-                <th class="clickable-header">
+                <th class="clickable-header" style="border: 1px solid #000" ng-if="entry.users.length > 0">
                     Hours
                 </th>
             </tr>
             </thead>
-            <tbody>
-            <tr ng-repeat="user in entry.users">
-                <td>
+            <tbody ng-if="entry.users.length > 0">
+            <tr ng-repeat="user in entry.users" ng-class="user.disabled ? 'disabled' : ''">
+                <td style="width: 50px;">
                     <input ng-change="timeclock.selectUser(user, entry)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
                 </td>
                 <td>
-                    <a ng-click="timeclock.openUser(user, entry)">{{ user.full_name }}</a>
+                    <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
+                        <span style="font-weight: bold">{{ user.full_name }}</span>
+                        <span ng-repeat="schedule in user.workSchedule">
+                            <span style="color: #000;" ng-if="!$last">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}-{{ timeclock.formatScheduleTime(schedule.time_end) }}
+                                <span style="color: #ADADAD;;">
+                                    (#{{ schedule.reportID }})
+                                </span>
+                                ,
+                            </span>
+                            <span style="color: #000;"  ng-if="$last && !schedule.inProgress">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}-{{ timeclock.formatScheduleTime(schedule.time_end) }}
+                                <span style="color: #ADADAD;;">
+                                    (#{{ schedule.reportID }})
+                                </span>
+                            </span>
+                            <span style="color: #000;"  ng-if="$last && schedule.inProgress">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}-...
+                                <span style="color: #ADADAD;;">
+                                    (#{{ schedule.reportID }})
+                                </span>
+                            </span>
+                        </span>
+                    </a>
                 </td>
-                <!--<td ng-switch on="user.status">-->
-                    <!--<span class="label label-success" ng-switch-when="clockin">Clocked In</span>-->
-                    <!--<span class="label label-default" ng-switch-when="clockout">Clocked Out</span>-->
-                    <!--<span class="label label-warning" ng-switch-when="onbreak">On Break</span>-->
-                <!--</td>-->
-                <td>
-                    {{user.report.name}}
-                </td>
-                <td>
-                    {{user.duration_today}}
+                <td style="width: 80px;">
+                    <span class="label label-success" ng-if="user.status=='clockin' && entry.date == timeclock.currentDay">Clocked In</span>
+                    <span ng-if="user.status!='clockin' || entry.date != timeclock.currentDay">{{user.duration}}</span>
                 </td>
             </tr>
             </tbody>
@@ -63,7 +82,9 @@
                 <a class="btn btn-default" ng-click="timeclock.editTimeclockForUsers()">
                     Edit
                 </a>
-            </a>
+                <a class="btn btn-default" ng-if="timeclock.isSelectedUsersClockin()" ng-click="timeclock.clockoutUsers()">
+                    Clock Out
+                </a>
             </div>
         </div>
     </div>

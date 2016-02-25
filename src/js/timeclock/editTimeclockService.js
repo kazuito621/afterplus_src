@@ -131,8 +131,8 @@ app
                     var newDate = new Date(Date.parse(scope.events[i].time));
                     var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
 
-                    newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
-                    newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
+                    newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
+                    newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
 
                     scope.events[i].time = newDate;
                     scope.events[i].time_original = newDate;
@@ -350,7 +350,6 @@ app
 
             var params = {};
 
-            alert(scope.selectedDate);
             params.date = scope.selectedDate;
             params.users = usersID;
             params.worktime  = schedules;
@@ -358,6 +357,16 @@ app
             Api.saveTimeclockSchedules(params).then(function(data) {
                 editTimeclockModal.$promise.then(editTimeclockModal.hide);
             });
+        };
+
+        scope.closeSchedule = function () {
+
+            for (var i = 0; i < scope.users.length; i++) {
+                scope.users[i].schedule = scope.users[i].original_schedule;
+                scope.events = scope.users[i].original_schedule;
+            }
+
+            editTimeclockModal.$promise.then(editTimeclockModal.hide);
         };
 
         var showModal = function (users, selectedDate) {

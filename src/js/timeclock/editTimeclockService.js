@@ -1,7 +1,7 @@
 app
     .service('editTimeclockService', [ '$rootScope', '$modal', 'TimeclockService', 'Api', '$q', function ($rootScope, $modal, TimeclockService, Api, $q) {
         var modalDeferred;
-        modalDeferred = $q.defer();
+
         scope = $rootScope.$new();
         scope.users = [];
         scope.events = [];
@@ -44,6 +44,7 @@ app
         var editTimeclockModal = {};
 
         var show = function (users, selectedDate) {
+            modalDeferred = $q.defer();
             scope.users = users;
             scope.usersFirstNames = _.pluck(users, 'full_name').join(', ');
             scope.events = angular.copy(_.first(users).schedule);
@@ -228,15 +229,11 @@ app
             var prevWork = scope.events[changedIndex - 1];
             var nextWork = scope.events[changedIndex + 1];
 
-            console.log('!!!');
-            console.log(moment(prevWork.time).format('YYYY-MM-DD HH:mm'));
-            console.log(moment(nextWork.time_end).format('YYYY-MM-DD HH:mm'));
-            console.log('!!!');
 
             var newIndex = changedIndex-1;
             var newWorkEvent = TimeclockService.createEvent('work', moment(prevWork.time).format('YYYY-MM-DD HH:mm:ss'), moment(nextWork.time_end).format('YYYY-MM-DD HH:mm:ss'), event.reportID, event.report)
 
-            console.log(newWorkEvent);
+
 
             scope.events.splice(changedIndex+1,1);
             scope.events.splice(changedIndex,1);
@@ -248,7 +245,7 @@ app
         };
 
         scope.removeEvent = function (event) {
-            console.log('removeEvent');
+
             var changedIndex = _.indexOf(scope.events, event);
             var i = changedIndex;
 
@@ -298,9 +295,6 @@ app
             var prevStartTime = new Date(Date.parse(prevStart.time));
             var prevStopTime = new Date(Date.parse(prevWork.time_end));
 
-            console.log('%%%%%%');
-            console.log(moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'));
-            console.log(moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'));
 
             var eventStart = TimeclockService.createEvent('start', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
             var eventWorkBeforePause = TimeclockService.createEvent('work', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
@@ -356,8 +350,7 @@ app
 
         scope.saveSchedule = function () {
             var schedules = TimeclockService.reverseTransform(scope.events);
-            console.log(schedules);
-            console.log('save')
+
             var usersID = _.pluck(scope.users, 'userID');
 
             var params = {};

@@ -200,7 +200,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api) {
         params.worktime  = logs;
 
         _.each(selectedUsers, function (user, i) {
-            selectedUsers[i].schedule = TimeclockService.transformSchedule(logs);
+            selectedUsers[i].schedule = schedules;
         });
 
         Api.saveTimeclockSchedules(params).then(function (data){

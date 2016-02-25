@@ -3,8 +3,8 @@ app
     .service('TimeclockService', TimeclockService);
 
 
-TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api']
-function TimeclockController (TimeclockService, editTimeclockService, Api) {
+TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', '$filter']
+function TimeclockController (TimeclockService, editTimeclockService, Api, $filter) {
     var vm = this;
     vm.users = [];
 
@@ -54,7 +54,6 @@ function TimeclockController (TimeclockService, editTimeclockService, Api) {
     function getUsers(days) {
         TimeclockService.getUsers(days).then(function (dates) {
             vm.users = dates;
-            console.log(dates);
         });
         //_.each(days, function (singleDay) {
         //    TimeclockService.getUsers(singleDay).then(function(users) {
@@ -69,10 +68,36 @@ function TimeclockController (TimeclockService, editTimeclockService, Api) {
     };
 
     vm.openUser = function (selectedUser, selectedDate) {
+        _.each(vm.users, function (date) {
+            _.each(date.users, function (user) {
+                user.disabled = false;
+                user.selected = false;
+            });
+        });
+
         vm.selectedDate = selectedDate.date;
         var selectedUsers = [];
         selectedUsers.push(selectedUser);
-        editTimeclockService.showModal(selectedUsers, vm.selectedDate);
+        editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
+            var duration = 0;
+            _.each(_.where(data, {'type': 'work'}), function(log) {
+                var logDuration = moment.duration(moment(log.time_end).diff(moment(log.time)));
+                var minutes = logDuration.asMinutes();
+                duration += minutes;
+            });
+
+            var dateIndex = _.indexOf(vm.users, _.findWhere(vm.users, {'date': vm.selectedDate}));
+
+            _.each(selectedUsers, function(user, i) {
+                var userIndex = _.indexOf(vm.users[dateIndex].users, user);
+
+                vm.users[dateIndex].users[userIndex].schedule = data;
+                vm.users[dateIndex].users[userIndex].duration = moment.utc(duration*60000).format("HH:mm");
+
+                vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
+                console.log(data);
+            });
+        });
     };
     
     vm.decrementWeekNumber = function() {
@@ -149,8 +174,12 @@ function TimeclockController (TimeclockService, editTimeclockService, Api) {
                 selectedUsers = selectedInDate;
             }
         });
-        editTimeclockService.showModal(selectedUsers, vm.selectedDate);
 
+        editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
+            _.each(selectedUsers, function(user, i) {
+                selectedUsers[i].schedule = data;
+            })
+        });
 
     };
 
@@ -313,7 +342,6 @@ function TimeclockService($q, Api) {
 
         Api.getTimeclockUsersInfo(params).then(function(data) {
             _.each(data, function(user) {
-                console.log(user);
                 _.each(user.work, function(work){
                     work['userID'] = user.userID;
                     schedules.push(work);
@@ -321,7 +349,7 @@ function TimeclockService($q, Api) {
             });
 
             deferred.resolve(schedules);
-            console.log(deferred);
+
         });
 
 
@@ -329,11 +357,8 @@ function TimeclockService($q, Api) {
     };
 
     function haveSimilarSchedule(user, selectedUser) {
-        console.log('PRE=======');
-        console.log(user);
-        console.log(selectedUser);
         var isEqual = isEqualSchedule(user.schedule, selectedUser.schedule);
-        console.log('result:' + isEqual);
+
         return isEqual;
     };
 
@@ -345,10 +370,6 @@ function TimeclockService($q, Api) {
         var isEqualSchedule = true;
         _.each(schedule, function (event, i) {
 
-            console.log('EQUAL:');
-            console.log(schedule[i].time);
-            console.log(other[i].time);
-            console.log(schedule[i].time != other[i].time);
             if (
                 schedule[i].type != other[i].type ||
                 schedule[i].time.getTime() != other[i].time.getTime() ||
@@ -363,7 +384,7 @@ function TimeclockService($q, Api) {
 
     function transformSchedule(schedule) {
         var events = [];
-        console.log(schedule);
+
         _.each(schedule, function (scheduleEntry, i) {
 
             if (schedule[i-1] != undefined) {
@@ -385,8 +406,6 @@ function TimeclockService($q, Api) {
 
 
             if (schedule[i+1] == undefined && scheduleEntry.time_out != null) {
-                console.log('STOP');
-                console.log(scheduleEntry.time_out);
                 events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
             }
         });
@@ -395,8 +414,6 @@ function TimeclockService($q, Api) {
     };
 
     function createEvent(type, timeStart, timeEnd, reportID, report, status, inProgress) {
-        console.log('&&&&&&');
-        console.log(timeStart);
         var timeStartArr = timeStart.split(/[- :]/),
             timeStartDate = new Date(timeStartArr[0], timeStartArr[1]-1, timeStartArr[2], timeStartArr[3], timeStartArr[4], timeStartArr[5]);
 
@@ -404,7 +421,7 @@ function TimeclockService($q, Api) {
         timeStartMoment = moment(timeStartDate).clone();
 
         if (timeEnd != null && timeEnd != undefined) {
-            console.log(timeEnd);
+
             var timeEndArr = timeEnd.split(/[- :]/),
                 timeEndDate = new Date(timeEndArr[0], timeEndArr[1]-1, timeEndArr[2], timeEndArr[3], timeEndArr[4], timeEndArr[5]);
 
@@ -428,14 +445,12 @@ function TimeclockService($q, Api) {
         event.time_end_original = event.time_end;
         event.status = status;
         event.inProgress = inProgress;
-        console.log(timeEndMoment);
-        console.log('@@@@');
+
         return event;
     }
 
     function reverseTransform(events)
     {
-        console.log(events);
         var schedules = [];
         for (var i = 0; i < events.length; i ++) {
             var schedule = {};

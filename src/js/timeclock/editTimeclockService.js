@@ -359,6 +359,16 @@ app
             });
         };
 
+        scope.closeSchedule = function () {
+
+            for (var i = 0; i < scope.users.length; i++) {
+                scope.users[i].schedule = scope.users[i].original_schedule;
+                scope.events = scope.users[i].original_schedule;
+            }
+
+            editTimeclockModal.$promise.then(editTimeclockModal.hide);
+        };
+
         var showModal = function (users, selectedDate) {
             return show(users, selectedDate);
         };

@@ -3,8 +3,8 @@ app
     .service('TimeclockService', TimeclockService);
 
 
-TimeclockController.$inject = ['TimeclockService', 'editTimeclockService']
-function TimeclockController (TimeclockService, editTimeclockService) {
+TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api']
+function TimeclockController (TimeclockService, editTimeclockService, Api) {
     var vm = this;
     vm.users = [];
 
@@ -15,6 +15,12 @@ function TimeclockController (TimeclockService, editTimeclockService) {
     vm.currentWeek = moment().week();
     vm.week = vm.currentWeek;
     vm.selectedDate = null;
+    vm.currentDay = moment().format('YYYY-MM-DD');
+
+    vm.haveSimilarSchedule = 0;
+    vm.similarSchedule = [];
+
+    vm.selectAllSimilarValue = false;
 
     getWeekData(currentWeek);
 
@@ -25,8 +31,8 @@ function TimeclockController (TimeclockService, editTimeclockService) {
         var startOfWeek = today.clone().startOf('isoWeek');
         var endOfWeek = today.clone().endOf('isoWeek');
 
-        vm.startOfWeekFormated = startOfWeek.format('YYYY-MM-DD');
-        vm.endOfWeekFormated = endOfWeek.format('YYYY-MM-DD');
+        vm.startOfWeekFormated = startOfWeek.format('MMM DD, YYYY');
+        vm.endOfWeekFormated = endOfWeek.format('MMM DD, YYYY');
 
         var days = [];
         for (var current = startOfWeek.clone(); current.isBefore(today, 'day'); current.add(1, 'days')) {
@@ -94,6 +100,13 @@ function TimeclockController (TimeclockService, editTimeclockService) {
                 return !TimeclockService.haveSimilarSchedule(user, selectedUser);
             });
 
+            var similarSchedule = _.filter(users, function(user) {
+                return TimeclockService.haveSimilarSchedule(user, selectedUser);
+            });
+
+            vm.similarSchedule = similarSchedule;
+            vm.haveSimilarSchedule = similarSchedule.length;
+
             _.each(otherSchedule, function (user) {
                 user.disabled = true;
             });
@@ -109,6 +122,9 @@ function TimeclockController (TimeclockService, editTimeclockService) {
             var users = selectedDate.users;
             if (_.where(users, { 'selected' : true }).length == 0) {
                 vm.haveSelectedUsers = false;
+
+                vm.haveSimilarSchedule = 0;
+                vm.similarSchedule = [];
 
                 _.each(users, function (user) {
                     user.disabled = false;
@@ -137,6 +153,87 @@ function TimeclockController (TimeclockService, editTimeclockService) {
 
 
     };
+
+    vm.isSelectedUsersClockin = function () {
+        var selectedUsers = [];
+        var isClockin = true;
+        _.each(vm.users, function (date) {
+            var selectedInDate = _.where(date.users, { 'selected' : true });
+            _.each(selectedInDate, function (user) {
+                if( user.status != 'clockin') {
+                    isClockin = false;
+                }
+            })
+        });
+        return isClockin;
+    };
+
+    vm.clockoutUsers = function () {
+        var selectedUsers = [];
+        _.each(vm.users, function (date) {
+            var selectedInDate = _.where(date.users, { 'selected' : true });
+            if (selectedInDate.length > 0) {
+                selectedUsers = selectedInDate;
+            }
+        });
+
+        var schedules = [];
+        _.each(selectedUsers, function (user, i) {
+            selectedUsers[i].status = 'clockout';
+            schedules = selectedUsers[i].schedule;
+            schedules[schedules.length-1].time_end = new Date();
+            schedules[schedules.length-1].inProgress = false;
+
+            schedules[schedules.length-2].time_end = new Date();
+            schedules[schedules.length-2].inProgress = false;
+        });
+
+
+
+        var logs = TimeclockService.reverseTransform(schedules);
+        var usersID = _.pluck(selectedUsers, 'userID');
+
+        var params = {};
+
+        params.date = vm.selectedDate;
+        params.users = usersID;
+        params.worktime  = logs;
+
+        _.each(selectedUsers, function (user, i) {
+            selectedUsers[i].schedule = TimeclockService.transformSchedule(logs);
+        });
+
+        Api.saveTimeclockSchedules(params).then(function (data){
+
+        });
+    };
+    
+    vm.formatScheduleTime = function (time) {
+        var momentTime = moment(time).clone();
+
+        return momentTime.format('h:mma');
+    };
+
+    vm.selectAllSimilar = function () {
+        if (vm.selectAllSimilarValue) {
+            _.each(vm.similarSchedule, function (user, i) {
+                vm.similarSchedule[i].selected = true;
+            });
+        } else {
+            _.each(vm.similarSchedule, function (user, i) {
+                vm.similarSchedule[i].selected = false;
+            });
+            vm.haveSimilarSchedule = 0;
+            vm.similarSchedule = [];
+            _.each(vm.users, function (date) {
+                _.each(date.users, function (user) {
+                    user.disabled = false;
+                });
+            });
+        }
+
+    };
+
 };
 
 TimeclockService.$inject = ['$q', 'Api']
@@ -171,9 +268,11 @@ function TimeclockService($q, Api) {
                 var userWithSchedules = date.users;
                 _.each(userWithSchedules, function(user, i){
                     userWithSchedules[i].schedule = transformSchedule(userWithSchedules[i]['logs']);
+                    userWithSchedules[i].original_schedule = transformSchedule(userWithSchedules[i]['logs']);
+                    userWithSchedules[i].workSchedule = _.where(userWithSchedules[i].schedule, {'type': 'work'});
                 });
                 newUser.date = date.date;
-                newUser.date_string = date.date;
+                newUser.date_string = moment(date.date).format('ddd, MMM DD, YYYY');
                 newUser.users = userWithSchedules;
 
                 users.push(newUser);
@@ -252,8 +351,8 @@ function TimeclockService($q, Api) {
             console.log(schedule[i].time != other[i].time);
             if (
                 schedule[i].type != other[i].type ||
-                schedule[i].time != other[i].time ||
-                schedule[i].time_end != other[i].time_end
+                schedule[i].time.getTime() != other[i].time.getTime() ||
+                (schedule[i].time_end != undefined && other[i].time_end && (schedule[i].time_end.getTime() != other[i].time_end.getTime()))
             ) {
                 isEqualSchedule = false;
             }
@@ -304,7 +403,7 @@ function TimeclockService($q, Api) {
 
         timeStartMoment = moment(timeStartDate).clone();
 
-        if (timeEnd != null) {
+        if (timeEnd != null && timeEnd != undefined) {
             console.log(timeEnd);
             var timeEndArr = timeEnd.split(/[- :]/),
                 timeEndDate = new Date(timeEndArr[0], timeEndArr[1]-1, timeEndArr[2], timeEndArr[3], timeEndArr[4], timeEndArr[5]);
@@ -317,7 +416,7 @@ function TimeclockService($q, Api) {
         event.type = type;
         event.time = timeStartMoment.toDate();
 
-        if (timeEnd != null) {
+        if (timeEnd != null && timeEnd != undefined) {
             event.time_end = timeEndMoment.toDate();
             event.duration = moment(msToHM(duration), 'H:m').toDate();
             event.duration_original = moment(msToHM(duration), 'H:m').toDate();

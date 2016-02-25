@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button ng-click="$hide()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <button ng-click="closeSchedule()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 <h4 class="modal-title" id="modalTitle">
                     <ng-pluralize count="users.length"
                                   when="{
@@ -139,7 +139,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success"  ng-click="saveSchedule()"><i class='glyphicon glyphicon-ok'></i> Save</button>
-                <button type="button" class="btn btn-primary"  ng-click="$hide()"><i class='fa fa-close'></i> Close</button>
+                <button type="button" class="btn btn-primary"  ng-click="closeSchedule()"><i class='fa fa-close'></i> Close</button>
             </div>
         </div>
     </div>

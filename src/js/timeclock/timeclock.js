@@ -80,6 +80,13 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
         var selectedUsers = [];
         selectedUsers.push(selectedUser);
         editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
+            var duration = 0;
+            _.each(_.where(data, {'type': 'work'}), function(log) {
+                var logDuration = moment.duration(moment(log.time_end).diff(moment(log.time)));
+                var minutes = logDuration.asMinutes();
+                duration += minutes;
+            });
+
             var dateIndex = _.indexOf(vm.users, _.findWhere(vm.users, {'date': vm.selectedDate}));
 
             _.each(selectedUsers, function(user, i) {
@@ -88,9 +95,9 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
                 console.log(vm.users[dateIndex]);
                 console.log(user);
                 vm.users[dateIndex].users[userIndex].schedule = data;
-                console.log(data);
+                vm.users[dateIndex].users[userIndex].duration = moment.utc(duration*60000).format("HH:mm");
+                
                 vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
-
             });
         });
     };

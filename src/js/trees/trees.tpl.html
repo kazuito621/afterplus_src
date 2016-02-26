@@ -1,129 +1,14 @@
 <main ng-controller="TreesCtrl as TreesCtrl">
 
-<div ng-include="'js/trees/action.tpl.html'" ng-if="data.mode()=='trees' && auth.is('customer')"></div>
-
 <div class="trees-container" ng-show="data.mode()=='trees'">
 	<div class="trees-container-inner">
 		<div class="row row-nopad">
-			<div class="col-sm-3 col">
-				<div class="filters-container">
-					<!--<left-column-filters-section></left-column-filters-section>-->
-
-                    <section ng-if="data.mode()=='trees'">
-
-							<div style='height:40px; padding:0; margin:0;'>
-    							<div class="filter-container-title" ng:cloak  ng-show="TFSdata.selectedFilters.length>0" >
-                            <span ng-if="!TFSdata.containsContradictingFilters">{{TFSdata.selectedFilters.length}}&nbsp;</span>Filters Active &nbsp; <span class="lnk-clear">
-                                <a href ng-click='clearFilters();'>
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </span>
-                        </div>
-							</div>
-
-                        <div class="row row-xss">
-                            <div class="col-xs-6 col">
-
-                                <div class='filter-container' ng-if="auth.is('customer') && initData.sites.length>1">
-                                    <div class="row row-xs row-nopad">
-                                        <div class="col-xs-5 col">
-                                            <div class="filter-header">
-                                                <h3>Property</h3>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-7 col">
-                                            <div class="filter-input">
-                                                <select id="select_site" class='inpt inpt-select' ng-disabled="filteredSites.length === 0"
-                                                        ng-model="selected.siteID"
-                                                        ng-change="onSelectSiteID(selected.siteID)">
-                                                    <option class="option" ng-repeat="site in filteredSites" value="{{site.siteID}}">{{ ::site.siteName }}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="filter-container" ng-show="report.siteID!=undefined && report.siteID!=''">
-                                    <div class="filterHeader filter-header">
-                                        <!--<label for="">
-                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
-                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
-                                            Only Trees on Estimate
-                                        </label>-->
-                                        <label class="" >
-                                            <input type="checkbox" ng-model="initData.filters.onlyInEstimate"
-                                                   ng-change="onFilterChange('onlyInEstimate',  -1, initData.filters.onlyInEstimate)">
-																&nbsp; 
-															<span style="font-size:.8em !important;">
-                                            		Show Only Trees on Estimate
-															</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-
-
-											<!--FILTER SECTION: SPECIES-->
-
-                                <filter-species tfs-species="TFSdata.filterTypeCounts.species" filter-search-species="filterSearch.species" 
-										  		init-data-species="initData.filters.species" on-filter-change="onFilterChange(filterType, ID, value)"></filter-species>
-
-                                <!-- END SPECIES FILTER SECTION -->
-
-                            </div>
-
-                            <div class="col-xs-6 col">
-                                <!--FILTER SECTION: TREATMENT TYPE-->
-                                <filter-treatment-type tfs-treatments="TFSdata.filterTypeCounts.treatments" filter-search-treatments="filterSearch.treatments" 
-										  		init-data-treatments="initData.filters.treatments" on-filter-change="onFilterChange(filterType, ID, value)"></filter-treatment-type>
-                                <!-- END TREATMENT TYPE FILTER SECTION -->
-                            </div>
-                        </div>
-                        <div class="collapse-container">
-                            <div class="collapse-head">
-                                <a href="#" onclick='return false;'>Filters <i class="fa fa-angle-double-down"></i></a>
-                            </div>
-                            <div class="collapse-preview">
-                                <!-- START YEAR FILTER SECTION -->
-                                <filter-years filters-year="filters.year" filters-years="filters.years" on-select-year="onSelectYear(id)"></filter-years>
-                                <!-- END YEAR FILTER SECTION -->
-                            </div>
-
-                            <div class="collapse-body">
-                                <div class="row row-xss">
-                                    <div class="col-xs-6 col">
-                                        <!--FILTER SECTION: Building, Hardscape and Powerline -->
-                                        <filter-hazards tfs-counts="TFSdata.filterTypeCounts" init-data-hazards="initdata.filters.hazards" 
-													 		on-filter-change="onFilterChange(filterType, ID, value)"></filter-hazards>
-                                        <!-- END Building, Hardscape, POWERLINE FILTER SECTION -->
-                                        <!--FILTER SECTION: SIZE-->
-                                        <filter-size tfs-counts-treatments="TFSdata.filterTypeCounts.treatments" init-data-dbh="initData.filters.dbh" 
-													 		on-filter-change="onFilterChange(filterType, ID, value)"></filter-size>
-                                        <!-- END SIZE FILTER SECTION -->
-                                    </div>
-
-                                    <div class="col-xs-6 col">
-                                        <!--FILTER SECTION: HEALTH-->
-                                        <filter-health tfs-counts-rating="TFSdata.filterTypeCounts.rating" init-data-ratings="initData.filters.ratings" 
-													 		on-filter-change="onFilterChange(filterType, ID, value)"></filter-health>
-                                        <!-- END HEALTH FILTER SECTION -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </section>
-
-				</div>
-			</div>
 			<div class="col-sm-9 col">
 				<div class="row row-nopad">
 
 					<div class="col-sm-8 col">
 						<div class="content-container">
 
-                            <div class="admin-filter-container" ng-if="data.mode()=='trees' && auth.isAtleast('inventory')">
-                                <center-top-block></center-top-block>
-                            </div>
 
 							<!-- begin center content area -->
 							<section class="map-container mainContent top-margin-none {{'mode_'+data.mode()}}" ng-class="'mode_' + data.mode()">

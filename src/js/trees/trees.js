@@ -832,6 +832,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 _.each(s.hdt, function (r) {
 					 		if(!r || !r.Longitude) return;
+							if(r.Longitude > -140) return;
 
 							r.lat = r.Latitude;
 							r.lng = r.Longitude;
@@ -858,6 +859,28 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (!infowindow) infowindow = new google.maps.InfoWindow();
 
                 replaceMarkers(s.siteLocs, 'allSites');
+
+
+
+
+					_.each(s.siteLocs, function(site,i){
+							if(i==0) return;
+							var ls = s.siteLocs[i-1];
+							var coords=[{lat:parseFloat(site.lat), lng:parseFloat(site.lng)}, 
+											{lat:parseFloat(ls.lat), lng:parseFloat(ls.lng)}];
+
+							var path = new google.maps.Polyline({
+								 path: coords,
+								 geodesic: true,
+								 strokeColor: '#070FF0', //'#FF0000',
+								 strokeOpacity: .4,
+								 strokeWeight: 8
+							  });
+							path.setMap(gMap);
+					});
+
+
+
             }, 1500);
 
 

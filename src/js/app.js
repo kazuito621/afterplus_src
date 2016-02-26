@@ -8,43 +8,6 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
     'use strict';
     $routeProvider
 
-        // routes for mobile app
-        .when("/client_edit/:clientID?", {
-            templateUrl: "js/clients/edit.mobile.tpl.html",
-            auth: false, reloadOnSearch: false, isMobile: true, resolve: {
-                signin: ['Auth', '$location', function (Auth, $location) {
-                    return Auth.signInUserToken($location.search().token);
-                }],
-                deps: ['Api', function (Api) {
-                    return Api.getPromise();
-                }]
-            }
-        })
-        .when("/site_edit/:siteID?", {
-            templateUrl: "js/sites/edit.mobile.tpl.html",
-            auth: false, reloadOnSearch: false, isMobile: true, resolve: {
-                signin: ['Auth', '$location', function (Auth, $location) {
-                    return Auth.signInUserToken($location.search().token);
-                }],
-                deps: ['Api', function (Api) {
-                    return Api.getPromise();
-                }]
-            }
-        })
-        .when("/site_users_edit/:siteID?", {
-            templateUrl: "js/sites/siteUsers.mobile.tpl.html",
-            auth: false, reloadOnSearch: false, isMobile: true, resolve: {
-                signin: ['Auth', '$location', function (Auth, $location) {
-                    return Auth.signInUserToken($location.search().token);
-                }],
-                deps: ['Api', function (Api) {
-                    return Api.getPromise();
-                }]
-            }
-        })
-
-        // web app routes
-
         .when("/signin/:token?", {
             templateUrl: "js/signin/signin.tpl.html",
             auth: false, reloadOnSearch: false
@@ -148,7 +111,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
                 }]
             }
         })
-        .otherwise({redirectTo: "/signin"});
+        .otherwise({redirectTo: "/trees"});
 }])
     .run(['Restangular', '$rootScope', 'storedData',
         function (RestProvider, rs, storedData) {

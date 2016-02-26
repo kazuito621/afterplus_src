@@ -1,17 +1,7 @@
 <main ng-controller="TreesCtrl as TreesCtrl">
 
-<div class="trees-container" ng-show="data.mode()=='trees'">
-	<div class="trees-container-inner">
-		<div class="row row-nopad">
-			<div class="col-sm-9 col">
-				<div class="row row-nopad">
-
-					<div class="col-sm-8 col">
-						<div class="content-container">
 
 
-							<!-- begin center content area -->
-							<section class="map-container mainContent top-margin-none {{'mode_'+data.mode()}}" ng-class="'mode_' + data.mode()">
 								<div id='treeDetails' ng-cloak ng-show="data.showTreeDetails && data.mode()=='trees'">
                                     <tree-edit></tree-edit>
 								</div>
@@ -19,96 +9,5 @@
                                 <div ng-include="'js/common/directives/maps/map.search.panel/map.search.panel.tpl.html'"/>
 
                                 <div ng-cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="data.mode()" class="map"></div>
-							</section>	<!-- }}} mainContent -->
-						</div>
-					</div>
-
-					<div class="col-sm-4 col">
-						<div class="result-container">
-							<section class="nav_listings" ng-if="data.mode()=='trees'">
-
-
-								<!-- /// Event Log /// -->
-								<div class="table-responsive"
-									ng-if="auth.isAtleast('inventory') && !TFSdata.selectedFilters.length && !selected.siteID">
-									<event-log></event-log>
-								</div>
-
-								<!-- /// Sites List /// -->
-								<div class="table-responsive"
-									ng-if="filteredSites.length > 0 && filteredSites.length!=initData.sites.length && !trees.length && TFSdata.selectedFilters.length"
-								>
-
-									<div sites-selector items="filteredSites" selected="bulkEstimates.selectedSites" name="sites"></div>
-									<sites-list filtered-sites="filteredSites" selected-sites="bulkEstimates.selectedSites"></sites-list>
-									<div sites-selector items="filteredSites" selected="bulkEstimates.selectedSites" name="sites"></div>
-
-									<table class="tree-list-container" ng-if="auth.isAtleast('inventory')"><tfoot>
-										<tr>
-											<td colspan="4">
-												<div id='bulkEstMessage'></div>
-												<button class="btn btn-block btn-red clr-white txt-bold" ng-click="createBulkEstimate()"
-													ng-show="bulkEstimates.selectedSites.length && bulkEstimates.overrideTreatmentCodes.length"
-													>Create Bulk Estimate</button>
-											</td>
-										</tr>
-										<tr>
-											<td colspan="4">
-												 	<override-treatment codes="bulkEstimates.overrideTreatmentCodes" 
-														treatments="initData.filters.treatments"></override-treatment>
-											</td>
-										</tr>
-									</tfoot></table>
-								</div>
-
-
-								<!-- /// Trees List /// -->
-								<div class="table-responsive" ng-if="selected.siteID">
-										<div trees-selector ng-if="auth.isAtleast('inventory')"
-											  toggle-checked-trees="toggleCheckedTrees(opt)"
-											  selected-trees="selectedTrees"
-											  site-id="{{selected.siteID}}"
-											  treatments="initData.filters.treatments"
-											  species="initData.filters.species"
-											  count="TFSdata.treeResultsCount" edit-mode-css="{{editModeCss}}" set-status="setStatus(true)"></div>
-
-										<trees-list></trees-list>
-
-										<div trees-selector
-											  ng-if="auth.isAtleast('inventory')"
-											  toggle-checked-trees="toggleCheckedTrees(opt)"
-											  selected-trees="selectedTrees"
-											  site-id="{{selected.siteID}}"
-											  treatments="initData.filters.treatments"
-											  set-status="setStatus(true)"
-											  edit-mode-css="{{editModeCss}}"
-											  count="TFSdata.treeResultsCount"></div>
-
-										<table class="tree-list-container" ng-if="auth.isAtleast('inventory') && trees.length">
-										<tfoot>
-											<tr>
-												<td colspan="4">
-													<button class="btn btn-block btn-red clr-white txt-bold" ng-click="addToEstimate()">Add to Estimate</button>
-												</td>
-											</tr>
-											<tr><td colspan="4">
-												 <override-treatment codes="data.overrideTreatmentCodes" treatments="initData.filters.treatments"></override-treatment>
-											</td></tr>
-										</tfoot>
-									</table>
-								</div>
-							</section>
-						</div>
-					</div>
-
-				</div>
-
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="clearfix"></div>
-<div ng-include="'js/trees/report.tpl.html'"></div>
 
 </main>

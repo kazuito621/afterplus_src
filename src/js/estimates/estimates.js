@@ -358,9 +358,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
 
         var dispObj = _.findObj(s.displayedEstimates, 'reportID', rpt.reportID);
 
-        if (!dispObj) {
-          dispObj = {};
-        }
+        if (!dispObj) dispObj = {}
 
         var newSalesUser = _.findObj(s.salesUsers, 'id', rpt.sales_userID);
         if (newSalesUser) {
@@ -375,13 +373,10 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
           dispObj.foreman_email_short = rpt.foreman_email_short = newForeman.shortEmail;
           dispObj.foreman_email = rpt.foreman_email = newForeman.email;
           dispObj.foreman_userID = rpt.job_userID;
+			 dispObj.job_userID = rpt.job_userID;
         }
 
-        Api.saveReport(rpt).then(function (res) {
-          if (res && res.msg) {
-            s.setStatus(res.msg, {time: 3});
-          }
-        });
+        Api.saveReport(rpt);
       };
 
       //delete item method

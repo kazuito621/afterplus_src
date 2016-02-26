@@ -2,7 +2,7 @@
 .factory('gMapInitializer', function ($window, $q) {
 
     //Google's url for async maps initialization accepting callback function
-    var asyncUrl = 'http://www.google.com/jsapi?key=AIzaSyAOrd_TjjjRm8mryWBHKboSG89YpUgRqlQ&callback='//'https://maps.googleapis.com/maps/api/js?callback=',
+    var asyncUrl = '//www.google.com/jsapi?key=AIzaSyAOrd_TjjjRm8mryWBHKboSG89YpUgRqlQ&callback='//'https://maps.googleapis.com/maps/api/js?callback=',
     mapsDefer = $q.defer();
 
     //Callback function - resolving promise after maps successfully loaded

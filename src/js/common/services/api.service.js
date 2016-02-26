@@ -138,7 +138,7 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
         return Rest.all('site/' + siteID + '/users').getList(params);
       },
       getSalesUsers: function () {
-        return Rest.all('user').getList({role: 'sales,inventory'});
+        return Rest.all('user').getList({roles: 'sales'});
       },
       getReport: function (reportID, opts) {
         var r = $rootScope.requestedReportID;
@@ -415,9 +415,12 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
         return Rest.one('estimate', id).post('unscheduled');
 
       },
-      GetForemans: function () {
+
+
+		//problem here its returning all!!
+      getForemen: function () {
         // GET  /users?role=XXX
-        return Rest.all('user').getList({role: 'staff,admin'});
+        return Rest.all('user').getList({roles: 'foreman'});
       },
       changeEstimateProperty: function (id, params) {
         // POST / estimate / 123

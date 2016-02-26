@@ -335,7 +335,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         if (!Auth.isAtleast('inventory')) { return; }
         function setForemanUsers() {
           s.foremanUsers = [];
-          Api.GetForemans().then(function (foremanUsers) {
+          Api.getForemen().then(function (foremanUsers) {
             _.each(foremanUsers, function (foremanUser) {
               var shortEmail = foremanUser.email.substr(0, foremanUser.email.indexOf('@'));
               s.foremanUsers.push({id: foremanUser.userID, email: foremanUser.email, shortEmail: shortEmail});

@@ -37,11 +37,11 @@
                     <div class="col-md-6" style='text-align:left; line-height:1.3em;'>
 
                         Foreman: <a href="#" editable-select="report.job_userID"
-                                    e-ng-options="g.userID as g.text for g in groups"
+                                    e-ng-options="g.userID as g.text for g in foremenList"
                                     onaftersave="savejobtoforeman()">{{ report.foreman_email_short || 'Select a Foreman' }}</a>
                         <BR>
                         Sales: <a href="#" editable-select="report.sales_userID"
-                                  e-ng-options="g.userID as g.text for g in groups"
+                                  e-ng-options="g.userID as g.text for g in salesList"
                                   onaftersave="savejobtoSalesUser()">{{ report.sales_email_short || 'Select a Sales Rep' }}</a>
                         <BR><BR>
 

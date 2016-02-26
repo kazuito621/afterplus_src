@@ -113,8 +113,8 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         })
         .otherwise({redirectTo: "/trees"});
 }])
-    .run(['Restangular', '$rootScope', 'storedData',
-        function (RestProvider, rs, storedData) {
+    .run(['Restangular', '$rootScope', 'storedData', '$q',
+        function (RestProvider, rs, storedData, $q) {
             'use strict';
             RestProvider
                 .setBaseUrl(cfg.apiBaseUrl())
@@ -150,6 +150,12 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
                     return res.data;
                 })
                 .addFullRequestInterceptor(function (element, operation, route, url, headers, params, httpConfig) {
+
+					 		// cancel all requests
+					  	var defer = $q.defer();
+					     defer.resolve('cancel');
+
+
                     headers = headers || {};
                     var t = Auth.data().token;
                     if (t) {

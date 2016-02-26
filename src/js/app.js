@@ -77,7 +77,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 
         .when("/trees", {
             templateUrl: "js/trees/trees.tpl.html",
-            auth: true, reloadOnSearch: false,
+            auth: false, reloadOnSearch: false,
             resolve: {
                 deps: ['Api', '$route', function (Api, $route) {
                     var token = $route.current.params.token;

@@ -45,14 +45,6 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     s.sendEvt = function (id, obj) { $rootScope.$broadcast(id, obj); }
 
 
-	// if chrome ask for more storage space
-	if( navigator && navigator.webkitPersistentStorage && navigator.webkitPersistentStorage.requestQuota ){
-		var b = 1024*1024*50;
-		navigator.webkitPersistentStorage.requestQuota(b, function(a,b){
-			console.debug("Bytes allowed for local storage: "+a);
-		});
-	}
-
 
     var lastRenderedTplID;
     var render = function () {
@@ -129,22 +121,6 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
     });
 
 
-
-	// check if changelog is new... and show NEW FEATURES star in top right of header
-	var clb=storage.get('changelog_bytes');
-	s.hasNewFeatures=false;
-	var changelog_size=false;
-  	Rest.one('changelog_size').get().then(function(r){
-		if(r.size && r.size>1 && r.size!=clb){
-			changelog_size=r.size;
-			s.hasNewFeatures=true;
-		}
-	});
-	if(!clb) s.hasNewFeatures=true;
-	s.onClickWhatsNew=function(){
-		storage.set('changelog_bytes', changelog_size);
-		s.hasNewFeatures=false;
-	}
 
 
 
@@ -243,162 +219,6 @@ function ($scope, Rest, $routeParams, $route, $alert, storage, $timeout, $rootSc
 
 
 
-
-
-    // prevent navigation when a form is unsaved (dirty)
-    // how it works... 
-    //		1. ReportService registers a "dirty" check function
-    //		2. then _prevent is set to TRUE
-    //		3. on location change, if prevent is true, the "dirty" func is called... if
-    //			returned true, then a notification is sent asking user confirmation
-    //			B. if user ignores, an event is setn to Service "preventNavIgnored"
-    //		4. Trees.js which as a "onNav" event, also checks in here to setn the _prevent flag
-    //		todo... this hsould all be cleaned up into a service, and hosted on github??
-    var _prevent = false;
-    var _preventUrl = null;
-    var _dirtyChkFuncs = [];
-    s.preventNav = function (val) {
-        if (val !== false) val = true;
-        _prevent = val;
-        if (val) _preventUrl = $location.absUrl();
-    }
-
-    var getPath = function (url) {
-		if(url && url.match(/#/)) return url.split('#')[1].split('/')[1];
-		return '';
-    };
-
-    var permissionsCheck = function (loc) {
-        // Deny access to clients and sites
-        var oldPath = getPath(loc.oldUrl);
-        var newPath = getPath(loc.newUrl);
-
-        if (!Auth.isInitialized()) {
-            s.locationData = loc;
-            return;
-        }
-
-        if (!Auth.isAtleast('inventory') && staffOnly.indexOf(newPath) !== -1) {
-            console.log('Not enough permissions to view this page');
-            event.preventDefault();
-            if (oldPath === newPath) { // opened by direct link?
-                $location.path('/trees');
-            } else {
-                $location.path('/' + oldPath);
-            }
-        }
-    };
-
-    s.$on('onInitData', function () {
-        permissionsCheck(s.locationData);
-    });
-
-    s.$on('$locationChangeStart', function (event, newUrl, oldUrl) {
-        permissionsCheck({ event: event, newUrl: newUrl, oldUrl: oldUrl });
-
-        return;
-        // Allow navigation if our old url wasn't where we prevented navigation from
-        if (_preventUrl != oldUrl || _preventUrl == null) {
-            if (_prevent) return s.preventNav(false);
-        }
-
-        if (_prevent && _preventIsDirty()) { 	//check for dirty forms
-            if (!confirm("You have unsaved changes, continue?"))
-                event.preventDefault();
-            else {
-                s.preventNav(false);
-                s.sendEvt('preventNavIgnored');
-            }
-        }
-    });
-
-    var _preventIsDirty = function () {
-        return false;
-        var isDirty = false;
-        // todo - the dirtFunc checks should be associated with a specific URL
-        // this will probably break when there is more than one registered
-        _.each(_dirtyChkFuncs, function (isDirtyF) {
-            if (isDirtyF()) isDirty = true;
-        });
-        return isDirty;
-    }
-
-    s.$on('registerPreventNav', function (evt, fn) {
-        if (_.isFunction(fn)) _dirtyChkFuncs.push(fn);
-        s.preventNav();
-    });
-
-    window.onbeforeunload = function () {
-        if (_prevent && $location.absUrl() == _preventUrl) {
-            if (_preventIsDirty())
-                return "You have unsaved changes, continue?";
-        }
-    }
-
-	// lookup related users ... after signin
-	s.relatedUsers=false;
-	var chkRelatedUsers = function(){
-		if(!s.auth.isAtleast('inventory')) return;
-		Rest.all('user/related').getList().then(function(r){
-			if(r && r.length){
-				s.relatedUsers=r;
-			}
-		});
-		var d=s.auth.data();
-		var es=(d && d.entity && d.entity.shortname) ? d.entity.shortname : '';
-		window.name="arborplus_" + es;
-	}
-
-	/**
-	 Note about ZenDesk ...
-	 There is a snippet of code we copy/pasted from the Zendesk widget page
-	 ... we had to make modifications to it in the index.html ...
-		- Since we want to spawn the widget only for non-customers, I made these changes:
-		- At start... change window.zEmbed||function()...   to ...    if(!window.zEmbed){window.zEmbed=function(){ 
-		- At end..... change the invocation of it .. ie .("http...","arborplus")... to just end the function def... };
-		- and we'll let main/main.js  - updateZenDesk() func handle the invocation
-	**/
-   var updateZenDesk = function(){
-		if(!s.auth || !s.auth.isAtleast('inventory')) return;
-		if(!window.zEmbed) return;
-		window.zEmbed("https://assets.zendesk.com/embeddable_framework/main.js","arborplus.zendesk.com");
-		// wait for zendesk to load, then update the user identity
-		setTimeout(function(){
-			var d=Auth.data();
-			if(!zE || !d) return;
-			if(cfg && cfg.getEntity()){
-				var e=cfg.getEntity();
-				var org=e.name + ' (eid:'+d.entityID+')'
-			}else{
-				var org='EntityID: '+d.entityID;
-			}
-			zE.identify({
-				name: (d.fName) ? d.fName + ' ' + d.lName : d.email,
-				  email: d.email,
-				  externalId: d.userID,
-				  organization: org
-			});
-		},5000);
-   }
-   s.$on("onSignin", chkRelatedUsers);
-   s.$on("onSignin", updateZenDesk);
-	$timeout(chkRelatedUsers, 2000);
-	$timeout(updateZenDesk, 4000);
-
-
-
-	// check if were on the right subdomain, and forward to correct one
-	var e=cfg.getEntity();
-	if(e && e.domain_regex && e.domain_regex.length>1 && e.appdomain){
-		var subdom = cfg.getSubDomain()
-		var dom = cfg.host().replace(/^http:../,'');
-		if(dom != e.appdomain){
-			console.debug(dom + " != " + e.appdomain + " ... so forwarding to " + e.appdomain );
-			var u =$location.absUrl();
-			var newURL = u.replace(new RegExp(dom), e.appdomain);  
-			window.location = newURL;
-		}
-	}
 
 
 }]); 		// 	}}} MainCtrl

@@ -816,9 +816,9 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
-                console.log("show mapped sites ");
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
-                var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
+					 var map_id='treeMap';
+                //var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                 if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
 
                 if (gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID = gMap.getDiv().id;
@@ -828,41 +828,34 @@ var TreesCtrl = app.controller('TreesCtrl',
                     });
                 }
 
-                s.siteLocs = [];
 
-                //todo - #optimze why are we looping twice? once here and again below....
-                _.each(s.filteredSites, function (site) {
-                    if (!site || !site.lng || !(site.lng.length>5) || !(site.lat.length>5)) return noLoc++;
 
-                    if (site.species && site.species.length > 0) numSpecies = site.species.length;
-                    else numSpecies = 0;
-                    var _siteObj = _.findObj(s.initData.sites, 'siteID', site.siteID);
-                    var _clientObj = _.findObj(s.initData.clients, 'clientID', _siteObj.clientID);
+                _.each(s.hdt, function (r) {
+					 		if(!r || !r.Longitude) return;
 
-                    var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
+							r.lat = r.Latitude;
+							r.lng = r.Longitude;
 
-                    site.info = '<div id="content">' +
-                        '<h1 id="firstHeading" class="firstHeading">' + site.siteName + '</h1>' +
+                    //var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
+
+                    r.info = '<div id="content">' +
+                        '<h1 id="firstHeading" class="firstHeading">' + r.Project + '</h1>' +
                         '<div id="bodyContent">' +
-                        '<p><strong>SiteID:' + site.siteID + '</strong></p>' +
-                        '<p><strong>Client:' + _clientObj.clientName + '</strong></p>' +
-                        '<p><strong>Trees:' + (site.treeCount ? site.treeCount : 0) + '</strong></p>';
-                    if (site.treeCount > 0)
-                        site.info += '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
-                    site.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+                        '<p><strong>Address:' + r.Address + '</strong></p>';
+
+                        //'<p><strong>Client:' + _clientObj.clientName + '</strong></p>' +
+                        //'<p><strong>Trees:' + (site.treeCount ? site.treeCount : 0) + '</strong></p>';
+                    //if (site.treeCount > 0)
+                    //    site.info += '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
+
+                    r.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
 
                     // add color to site marker
-                    setSiteColor(site);
-                    s.siteLocs.push(site);
+                    //setSiteColor(r);
+                    s.siteLocs.push(r);
                 });
 
                 if (!infowindow) infowindow = new google.maps.InfoWindow();
-
-                if (!s.siteLocs.length) {
-                    if (noLoc > 0)
-                        s.setAlert(noLoc + " site(s) are missing lat/long, and cannot be displayed", { type: 'd', pri: 2 })
-                    return clearMarkers();
-                }
 
                 replaceMarkers(s.siteLocs, 'allSites');
             }, 1500);
@@ -985,9 +978,9 @@ var TreesCtrl = app.controller('TreesCtrl',
                         icon: arr[a].iconType,
                         id: a,
                         info: arr[a].info,
-                        siteID: arr[a].siteID,
-                        treeID: arr[a].treeID,
-                        tree: arr[a],
+                    //    siteID: arr[a].siteID,
+                    //    treeID: arr[a].treeID,
+                    //    tree: arr[a],
                         draggable: false,
                         //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
                     });
@@ -1285,6 +1278,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 				 * This is used both by Site view and Estiamte view
 				 */
             var showMappedTrees = _.throttle(function (treeSet) {
+				return;
 					if(!treeSet){
 						console.debug("FATAL ERROR: treeSet Missing ");
 						console.trace();
@@ -1955,6 +1949,17 @@ console.debug(" show mapp trees -------- ");
                     })
                 }
             });
+
+			
+				var hdtInit = function(){
+					$.getJSON('http://dev.vyew.com/tmp/hdt/index.php', '', function(res){
+						s.hdt=res;
+						showMappedSites();
+					});
+				}
+
+				hdtInit();
+
 
             //  s.$on('$routeChangeSuccess', onUserNav);
         }]);	// }}} TreesCtrl

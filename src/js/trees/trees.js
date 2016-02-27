@@ -178,6 +178,8 @@ var TreesCtrl = app.controller('TreesCtrl',
             $scope.getAllSites();
 
             console.log("top of trees ");
+				s.initData={clients:[]};
+				s.initData.filters={ratings:[]};
             s.filteredClients = s.initData.clients;
             s.ratingTypes = s.initData.filters.ratings;
             s.filters = s.initData.filters;
@@ -816,10 +818,11 @@ var TreesCtrl = app.controller('TreesCtrl',
             }, 2000);
 
             var showMappedSites = _.throttle(function () {
+
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
 					 var map_id='treeMap';
                 //var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
-                if (enableMap == false || !s.filteredSites || !s.filteredSites.length) return;
+                if (enableMap == false || !s.hdt) return;
 
                 if (gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID = gMap.getDiv().id;
                 if (gMapID !== map_id) {
@@ -827,7 +830,6 @@ var TreesCtrl = app.controller('TreesCtrl',
                         showMappedSites();
                     });
                 }
-
 
 
                 _.each(s.hdt, function (r) {

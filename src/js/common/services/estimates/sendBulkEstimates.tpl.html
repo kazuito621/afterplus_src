@@ -10,8 +10,9 @@
                     <div ng-switch-when="contacts">
                         <form class="form-horizontal">
                             <div class="form-group" ng-class="(estimate.contacts.length == 0) ? 'has-error' : ''" ng-repeat="estimate in estimates">
-                                <label class="col-sm-2 control-label">{{ estimate.name }}</label>
-                                <div class="col-sm-10">
+                                <label class="col-sm-12 control-label" style="text-align: left">{{ estimate.name }}</label>
+
+                                <div class="col-sm-12">
                                     <tags-input
                                             id="emailField"
                                             style="{color: #a9a9a9}"
@@ -24,6 +25,7 @@
                                     <span class="text-danger" ng-class="{{estimate.contacts.length}}" ng-if="estimate.contacts.length == 0">site are missing contacts</span>
                                 </div>
                             </div>
+
                         </form>
                     </div>
                     <div ng-switch-when="send">

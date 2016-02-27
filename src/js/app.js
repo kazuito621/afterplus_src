@@ -81,9 +81,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             resolve: {
                 deps: ['Api', '$route', function (Api, $route) {
                     var token = $route.current.params.token;
-                    if (token) {
-                        return Auth.signInCustToken(token, true);
-                    }
+                    if (token) return Auth.signInCustToken(token, true);
                     return Api.getPromise();
                 }]
             }
@@ -143,7 +141,8 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             templateUrl: "js/timeclock/timeclock.tpl.html",
             auth: true, reloadOnSearch: false,
             resolve: {
-                deps: ['Api', function (Api) {
+                deps: ['Api', '$rout', function (Api, $route) {
+                    if (token)  return Auth.signInCustToken(token, true);
                     return Api.getPromise();
                 }]
             }

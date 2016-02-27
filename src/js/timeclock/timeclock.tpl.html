@@ -79,12 +79,12 @@
         <div class="container">
             <div class="action-float-bar-inner">
                 <i class="fa fa-mail-forward fa-rotate-270 white"></i> &nbsp;
-                <a class="btn btn-default" ng-click="timeclock.editTimeclockForUsers()">
+                <button type='button' class="btn btn-default" ng-click="timeclock.editTimeclockForUsers()">
                     Edit
-                </a>
-                <a class="btn btn-default" ng-if="timeclock.isSelectedUsersClockin()" ng-click="timeclock.clockoutUsers()">
+                </button>
+                <button type='button' class="btn btn-default" ng-if="timeclock.isSelectedUsersClockin()" ng-click="timeclock.clockoutUsers()">
                     Clock Out
-                </a>
+                </button>
             </div>
         </div>
     </div>

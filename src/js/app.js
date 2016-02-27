@@ -1,8 +1,9 @@
 var app = angular.module('arborPlusApp',
-    ['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
-        'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
-        'ngCkeditor', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer', 'angular-carousel', 'calendardirective', 'react'
-    ]);
+  ['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
+    'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
+    'ngCkeditor', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer', 'angular-carousel', 'calendardirective', 'react',
+    'checklist-model', 'ui.select'
+  ]);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     'use strict';

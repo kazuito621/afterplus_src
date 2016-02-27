@@ -42,15 +42,10 @@ app.directive('siteEditModal',
         //when user creates new property and selects Client:
         //system should copy address fields from Client to new property
         scope.copyAddressFromClientToNewSite = function(id){
+
             if (scope.mode && scope.mode=='new'){ //if mode!='new'('edit') => we don't need to copy address
                 //find client info
-                var clientInfo = [];
-                for (var i = 0; i < scope.clients.length; i++){
-                    if (scope.clients[i].clientID==id){
-                        clientInfo = scope.clients[i];
-                        break;
-                    }
-                }
+                var clientInfo = scope.selectedClient.selected;
 
                 //copy address fields
                 scope.site.street = clientInfo.street;
@@ -63,9 +58,11 @@ app.directive('siteEditModal',
         scope.openModal = function (id) {
             modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
             scope.site = angular.copy(newSite);
+            scope.selectedClient = {};
             if (id) {
                 Api.updateSite(id).then(function (data) {
                     scope.site = data;
+                    scope.selectedClient.selected = _.findWhere(scope.clients, { 'clientID': data.clientID })
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key

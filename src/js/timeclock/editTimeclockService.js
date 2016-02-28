@@ -29,15 +29,15 @@ app
             },
             {
                 "type": 'breakdown',
-                "name": 'Breakdown/Screw-up'
+                "name": 'Breakdown'
             },
             {
                 "type": 'training',
                 "name": 'Training'
             },
             {
-                "type": 'milf',
-                "name": 'Milf'
+                "type": 'mill',
+                "name": 'Mill'
             }
         ];
 

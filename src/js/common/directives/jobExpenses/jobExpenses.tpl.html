@@ -1,0 +1,57 @@
+<div class="col-md-12" style="margin-bottom: 20px; margin-top: 10px;">
+    <h1 style="font-weight: bold; font-size:1.2em;">Job Expenses</h1>
+
+    <div style="margin-top: 10px">
+        <table class="table table-striped">
+            <thead>
+                <th style="width: 60%">
+                    Description
+                </th>
+                <th>
+                    Amount
+                </th>
+                <th>
+                </th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="deduction in deductions">
+                    <td>
+                        <a href editable-text='deduction.description' onaftersave="updateDeduction(deduction)">{{deduction.description}}</a>
+                    </td>
+                    <td>
+                        <a href editable-text='deduction.price' onaftersave="updateDeduction(deduction)">$ {{deduction.price}}</a>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" ng-click="removeDeduction(deduction, $index)"><i class='fa fa-times'></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" placeholder="Description" ng-model="newDeduction.description">
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <div class="input-group-addon">$</div>
+                            <input type="text" class="form-control" id="exampleInputAmount" placeholder="0.00" ng-model="newDeduction.price">
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" ng-click="addDeduction()">Add</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="danger" style="font-weight: bolder">
+                        Total Expenses:
+                    </td>
+                    <td class="danger" style="font-weight: bolder" colspan="2">
+                        $ {{totalExpenses| number:2}}
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

@@ -440,8 +440,18 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
         return Rest.one('timeclock/info').get(params);
       },
       saveTimeclockSchedules: function (params) {
-        console.log(params)
         return Rest.one('timeclock/edit').post(undefined, params);
+      },
+
+      // Deductions
+      addDeduction: function (reportID, params) {
+        return Rest.one('estimate', reportID).one('deduction').post(undefined, params);
+      },
+      updateDeduction: function (reportID, deductionID, params) {
+        return Rest.one('estimate', reportID).one('deduction', deductionID).post(undefined, params);
+      },
+      removeDeduction: function (reportID, deductionID) {
+        return Rest.one('estimate', reportID).one('deduction', deductionID).remove();
       }
     };
   }]);

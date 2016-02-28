@@ -28,7 +28,7 @@
 
 <div class='container' ng-controller="TimeclockController as timeclock">
     <div class="table-header">
-        <h1 style="display: inline-block;">Timeclock</h1>
+        <h1 style="display: inline-block;">Time Logs</h1>
         <h2 class="week-nav" style="display: inline-block;margin-left:50px">
             <i class="glyphicon glyphicon-chevron-left" ng-click="timeclock.decrementWeekNumber()" style="cursor: pointer"></i>
             <span class="week-nav-label">Week of</span> {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
@@ -133,12 +133,12 @@
         <div class="container">
             <div class="action-float-bar-inner">
                 <i class="fa fa-mail-forward fa-rotate-270 white"></i> &nbsp;
-                <a class="btn btn-default" ng-click="timeclock.editTimeclockForUsers()">
+                <button type='button' class="btn btn-default" ng-click="timeclock.editTimeclockForUsers()">
                     Edit
-                </a>
-                <a class="btn btn-default" ng-if="timeclock.isSelectedUsersClockin()" ng-click="timeclock.clockoutUsers()">
+                </button>
+                <button type='button' class="btn btn-default" ng-if="timeclock.isSelectedUsersClockin()" ng-click="timeclock.clockoutUsers()">
                     Clock Out
-                </a>
+                </button>
             </div>
         </div>
     </div>

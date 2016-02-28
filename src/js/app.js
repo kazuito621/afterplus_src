@@ -1,8 +1,9 @@
 var app = angular.module('arborPlusApp',
-    ['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
-        'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
-        'ngCkeditor', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer', 'angular-carousel', 'calendardirective', 'react'
-    ]);
+  ['ngRoute', 'restangular', 'arborPlusFilters', 'ngTable', 'angular-md5',
+    'xeditable', 'ngSanitize', 'ngAnimate', 'mgcrea.ngStrap', 'angularLocalStorage', 'checklist-model',
+    'ngCkeditor', 'infinite-scroll', 'ngTagsInput', 'templates-main', 'GoogleMapsInitializer', 'angular-carousel', 'calendardirective', 'react',
+    'checklist-model', 'ui.select'
+  ]);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     'use strict';
@@ -81,9 +82,7 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             resolve: {
                 deps: ['Api', '$route', function (Api, $route) {
                     var token = $route.current.params.token;
-                    if (token) {
-                        return Auth.signInCustToken(token, true);
-                    }
+                    if (token) { return Auth.signInCustToken(token, true); }
                     return Api.getPromise();
                 }]
             }
@@ -143,7 +142,9 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             templateUrl: "js/timeclock/timeclock.tpl.html",
             auth: true, reloadOnSearch: false,
             resolve: {
-                deps: ['Api', function (Api) {
+                deps: ['Api', '$route', function (Api, $route) {
+                    var token = $route.current.params.token;
+                    if (token) {  return Auth.signInCustToken(token, true); }
                     return Api.getPromise();
                 }]
             }

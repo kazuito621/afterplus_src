@@ -1,3 +1,12 @@
+<style>
+    .ui-select-container {
+        width: 300px;
+        display: inline-block;
+    }
+    .ui-select-toggle, .ui-select-search {
+        width: 300px !important;
+    }
+</style>
 <div class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -13,11 +22,16 @@
                         </div>
                         <div class='panel-body' style='line-height:1.5em;'>
 							<div ng-if="auth.isAtleast('inventory')">
-                            	<button class="btn btn-default" ng-model="site.clientID" bs-options="c.clientID as c.clientName for c in clients"
-									bs-select placeholder="Which client owns this property?" onclick="return false;" required>
-									Client <span class="caret"></span>
-								</button>
-								<button class="btn btn-default" ng-show="site.clientID" ng-click="copyAddressFromClientToNewSite(site.clientID)" 
+                                <ui-select ng-model="selectedClient.selected">
+                                    <ui-select-match placeholder="Which client owns this property?">
+                                        <span ng-bind="$select.selected.clientName"></span>
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="item in (clients | filter: $select.search) track by item.clientID">
+                                        <span ng-bind="item.clientName"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+
+                                <button class="btn btn-default" ng-show="selectedClient.selected" ng-click="copyAddressFromClientToNewSite(site.clientID)"
 									onclick="return false;"><i class='fa fa-copy'></i> Copy Address</button>
                             </div>
                             <div class='silver'>Name:</div>

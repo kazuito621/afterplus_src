@@ -356,9 +356,7 @@ app
 
         scope.saveSchedule = function () {
             var schedules = TimeclockService.reverseTransform(scope.events);
-            console.log('TRANSFORM');
-            console.log(schedules);
-            return false;
+            
             var usersID = _.pluck(scope.users, 'userID');
 
             var params = {};

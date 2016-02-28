@@ -31,7 +31,7 @@
         <h1 style="display: inline-block;">Time Logs</h1>
         <h2 class="week-nav" style="display: inline-block;margin-left:50px">
             <i class="glyphicon glyphicon-chevron-left" ng-click="timeclock.decrementWeekNumber()" style="cursor: pointer"></i>
-            <span class="week-nav-label">Week of</span> {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
+            {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
             <i class="glyphicon glyphicon-chevron-right" ng-click="timeclock.incrementWeekNumber()" ng-show="timeclock.currentWeek > timeclock.week" style="cursor: pointer"></i>
         </h2>
         <div class="clearfix"></div>

@@ -19,8 +19,10 @@ app.directive('jobExpenses',
                 scope.newDeduction = {};
                 scope.newDeduction.description = '';
                 scope.newDeduction.price = '';
-
                 scope.deductions = scope.$eval(attrs.reportDeductions);
+                if (scope.deductions == undefined) {
+                    scope.deductions = [];
+                }
                 scope.totalExpenses = 0;
 
                 _.each(scope.deductions, function(deduction){

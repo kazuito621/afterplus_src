@@ -33,7 +33,15 @@
             </tr>
             </thead>
             <tbody ng-if="entry.users.length > 0">
-            <tr ng-repeat="user in entry.users" ng-class="user.disabled ? 'disabled' : ''">
+            <tr ng-repeat-start="user in entry.users" ng-class="user.disabled ? 'disabled' : ''">
+                <td colspan="3" ng-if="$index == 0" class="danger">
+                    Clocked in by {{user.clockinby_userName}}
+                </td>
+                <td colspan="3" ng-if="entry.users[$index-1] != undefined && entry.users[$index-1].clockinby_userID != user.clockinby_userID" class="danger">
+                    Clocked in by {{user.clockinby_userName}}
+                </td>
+            </tr>
+            <tr ng-repeat-end>
                 <td style="width: 50px;">
                     <input ng-change="timeclock.selectUser(user, entry)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
                 </td>

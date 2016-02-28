@@ -51,7 +51,7 @@ app
             scope.selectedDate = selectedDate;
 
 
-            if (_.where(scope.events, { "type": "pause" }).length == 0) {
+            if (_.where(scope.events, { "type": "break" }).length == 0) {
                 scope.allowAddBreak = true;
             }
 
@@ -91,7 +91,8 @@ app
                     scope.events[i].time_end = newDateEnd;
                     scope.events[i].time_end_original = newDateEnd;
 
-                    duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+
+                    duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
 
                     scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
                     scope.events[i].original_duration = scope.events[i].duration;
@@ -110,8 +111,7 @@ app
                     scope.events[i].time_end = newDateEnd;
                     scope.events[i].time_end_original = newDateEnd;
 
-                    duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
-
+                    duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
                     scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
                     scope.events[i].original_duration = scope.events[i].duration;
 
@@ -146,7 +146,7 @@ app
                     scope.events[i].time_end = newDateEnd;
                     scope.events[i].time_end_original = newDateEnd;
 
-                    duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+                    duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
 
                     scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
                     scope.events[i].original_duration = scope.events[i].duration;
@@ -191,13 +191,19 @@ app
                         scope.events[i].time_end = newDateEnd;
                         scope.events[i].time_end_original = newDateEnd;
 
-                        duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+                        duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
 
                         scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
                         scope.events[i].original_duration = scope.events[i].duration;
                     }
                     break;
-                case 'pause' :
+                case 'break' :
+                    var chahedNewDateEnd = new Date(Date.parse(scope.events[changedIndex].time_end));
+                    chahedNewDateEnd.setHours(chahedNewDateEnd.getHours() + parseInt(adjustments[0]));
+                    chahedNewDateEnd.setMinutes(chahedNewDateEnd.getMinutes() + parseInt(adjustments[1]));
+
+                    scope.events[changedIndex].time_end = chahedNewDateEnd;
+
                     for (var i = changedIndex + 1; i < scope.events.length; i ++) {
                         var newDate = new Date(Date.parse(scope.events[i].time));
                         var newDateEnd = new Date(Date.parse(scope.events[i].time_end));
@@ -213,7 +219,7 @@ app
                         scope.events[i].time_end = newDateEnd;
                         scope.events[i].time_end_original = newDateEnd;
 
-                        duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
+                        duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
 
                         scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
                         scope.events[i].original_duration = scope.events[i].duration;
@@ -298,7 +304,7 @@ app
 
             var eventStart = TimeclockService.createEvent('start', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
             var eventWorkBeforePause = TimeclockService.createEvent('work', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
-            var eventPause = TimeclockService.createEvent('pause', moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
+            var eventPause = TimeclockService.createEvent('break', moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
             var eventWorkAfterPause = TimeclockService.createEvent('work', moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), moment(prevStopTime).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
 
 
@@ -350,7 +356,9 @@ app
 
         scope.saveSchedule = function () {
             var schedules = TimeclockService.reverseTransform(scope.events);
-
+            console.log('TRANSFORM');
+            console.log(schedules);
+            return false;
             var usersID = _.pluck(scope.users, 'userID');
 
             var params = {};

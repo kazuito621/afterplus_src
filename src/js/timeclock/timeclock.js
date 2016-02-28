@@ -81,7 +81,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
         editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
             var duration = 0;
             _.each(_.where(data, {'type': 'work'}), function(log) {
-                var logDuration = moment.duration(moment(log.time_end).diff(moment(log.time)));
+                var logDuration = TimeclockService.calculateDuration(log.time, log.time_end, true);
                 var minutes = logDuration.asMinutes();
                 duration += minutes;
             });
@@ -273,7 +273,8 @@ function TimeclockService($q, Api) {
         transformSchedule: transformSchedule,
         createEvent: createEvent,
         reverseTransform: reverseTransform,
-        msToHM: msToHM
+        msToHM: msToHM,
+        calculateDuration: calculateDuration
     };
 
     return service;
@@ -295,7 +296,16 @@ function TimeclockService($q, Api) {
                 var newUser = {};
 
                 var userWithSchedules = date.users;
-                _.each(userWithSchedules, function(user, i){
+                _.each(userWithSchedules, function(user, i) {
+
+                    userWithSchedules[i].clockinby_userID = userWithSchedules[i]['logs'][0].clockinby_userID;
+                    var param={
+                        id:userWithSchedules[i].clockinby_userID
+                    };
+                    Api.user.getUserById(param).then(function(data){
+                        userWithSchedules[i].clockinby_userName = data.fName + ' ' + data.lName;
+                    });
+
                     userWithSchedules[i].schedule = transformSchedule(userWithSchedules[i]['logs']);
                     userWithSchedules[i].original_schedule = transformSchedule(userWithSchedules[i]['logs']);
                     userWithSchedules[i].workSchedule = _.where(userWithSchedules[i].schedule, {'type': 'work'});
@@ -303,7 +313,7 @@ function TimeclockService($q, Api) {
                 newUser.date = date.date;
                 newUser.date_string = moment(date.date).format('ddd, MMM DD, YYYY');
                 newUser.users = userWithSchedules;
-
+                console.log(users);
                 users.push(newUser);
             });
             //users = data.users;
@@ -387,26 +397,26 @@ function TimeclockService($q, Api) {
 
         _.each(schedule, function (scheduleEntry, i) {
 
-            if (schedule[i-1] != undefined) {
-                if (schedule[i-1].reportID != schedule[i].reportID) {
-                    events.push(createEvent('switch', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
+            if (scheduleEntry.status != 'break') {
+                if (i == 0) {
+                    events.push(createEvent('start', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
                 } else {
-                    events.push(createEvent('pause', schedule[i-1].time_out, scheduleEntry.time_in, scheduleEntry.reportID, scheduleEntry.reportName))
+                    if (schedule[i-1].reportID != scheduleEntry.reportID) {
+                        events.push(createEvent('switch', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
+                    }
+                }
+
+                if (scheduleEntry.time_out == null) {
+                    events.push(createEvent('work', scheduleEntry.time_in, moment().format('YYYY-MM-DD HH:MM:ss'), scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status, true))
+                } else {
+                    events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status))
+                }
+
+                if (i == (schedule.length - 1)) {
+                    events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
                 }
             } else {
-                events.push(createEvent('start', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName))
-            }
-
-            if (scheduleEntry.time_out == null) {
-                events.push(createEvent('work', scheduleEntry.time_in, moment().format('YYYY-MM-DD HH:MM:ss'), scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status, true))
-            } else {
-                events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status))
-            }
-
-
-
-            if (schedule[i+1] == undefined && scheduleEntry.time_out != null) {
-                events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
+                events.push(createEvent('break', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status))
             }
         });
 
@@ -426,7 +436,7 @@ function TimeclockService($q, Api) {
                 timeEndDate = new Date(timeEndArr[0], timeEndArr[1]-1, timeEndArr[2], timeEndArr[3], timeEndArr[4], timeEndArr[5]);
 
             timeEndMoment = moment(timeEndDate);
-            duration = moment(timeEndMoment.diff(timeStartMoment));
+            duration = calculateDuration(timeStartDate, timeEndDate);
         }
 
         var event = {};
@@ -454,8 +464,8 @@ function TimeclockService($q, Api) {
         var schedules = [];
         for (var i = 0; i < events.length; i ++) {
             var schedule = {};
-
-            if (events[i].type == 'work') {
+            console.log(events[i].type);
+            if (events[i].type == 'work' || events[i].type == 'break') {
                 schedule.reportID = events[i].reportID;
                 schedule.time_in = moment(events[i].time).format('HH:mm:ss');
                 schedule.status = events[i].status;
@@ -472,6 +482,21 @@ function TimeclockService($q, Api) {
 
         return schedules;
     }
+
+    function calculateDuration(timeStartDate, timeEndDate, returnDuration) {
+        if (returnDuration == 'undefined') {
+                returnDuration = false;
+            }
+        var durationTimeStartDate = angular.copy(timeStartDate);
+        var durationtimeEndDate = angular.copy(timeEndDate);
+        durationTimeStartDate.setSeconds(0);
+        durationtimeEndDate.setSeconds(0);
+        if (returnDuration) {
+            return moment.duration(moment(durationtimeEndDate).diff(moment(durationTimeStartDate)));
+        } else {
+            return moment(moment(durationtimeEndDate).diff(moment(durationTimeStartDate)));
+        }
+    };
 
     function msToHM( ms ) {
         var seconds = ms / 1000;

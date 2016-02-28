@@ -727,7 +727,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                                 var myOptions = { 
 										zoom: 1, tilt: 0, 
 										center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
-										scrollwheel: false, panControl: false 
+										scrollwheel: false, panControl: false ,
+										styles:[{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}]
 									};
                                 var map_id = (s.data.mode() == 'estimate') ? 'treeMap2' : 'treeMap';
                                 gMap = new google.maps.Map($('#' + map_id)[0], myOptions);
@@ -832,9 +833,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
 
 
-                _.each(s.hdt, function (r) {
+                _.each(s.hdt.sites, function (r) {
 					 		if(!r || !r.Longitude) return;
-							if(r.Longitude > -140) return;
 
 							r.lat = r.Latitude;
 							r.lng = r.Longitude;
@@ -842,16 +842,17 @@ var TreesCtrl = app.controller('TreesCtrl',
                     //var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
 
                     r.info = '<div id="content">' +
-                        '<h1 id="firstHeading" class="firstHeading">' + r.Project + '</h1>' +
-                        '<div id="bodyContent">' +
-                        '<p><strong>Address:' + r.Address + '</strong></p>';
+                        '<h1 id="firstHeading" class="firstHeading">' + r.info_title + '</h1>' +
+                        '<div id="bodyContent">' + r.info_text + '</div>';
+                        //'<p><strong>Address:' + r.Address + '</strong></p>';
 
                         //'<p><strong>Client:' + _clientObj.clientName + '</strong></p>' +
                         //'<p><strong>Trees:' + (site.treeCount ? site.treeCount : 0) + '</strong></p>';
                     //if (site.treeCount > 0)
                     //    site.info += '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
 
-                    r.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+                    //r.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+						  r.iconType = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|' + r.pinColor;
 
                     // add color to site marker
                     //setSiteColor(r);
@@ -859,31 +860,40 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
 
                 if (!infowindow) infowindow = new google.maps.InfoWindow();
-
                 replaceMarkers(s.siteLocs, 'allSites');
 
 
 
-
-					_.each(s.siteLocs, function(site,i){
-							if(i==0) return;
-							var ls = s.siteLocs[i-1];
-							var coords=[{lat:parseFloat(site.lat), lng:parseFloat(site.lng)}, 
-											{lat:parseFloat(ls.lat), lng:parseFloat(ls.lng)}];
+				
+					_.each(s.hdt.links, function(site,i){
+							//var ls = s.siteLocs[i-1];
+							//var coords=[{lat:parseFloat(site.lat), lng:parseFloat(site.lng)}, 
+							//				{lat:parseFloat(ls.lat), lng:parseFloat(ls.lng)}];
 
 							var path = new google.maps.Polyline({
-								 path: coords,
+								 path: site.coords,
 								 geodesic: true,
-								 strokeColor: '#070FF0', //'#FF0000',
-								 strokeOpacity: .4,
-								 strokeWeight: 8
+								 strokeColor: '#'+site.color, //070FF0', //'#FF0000',
+								 strokeOpacity: .8,
+								 strokeWeight: site.weight
 							  });
 							path.setMap(gMap);
 					});
 
 
+					showHdtKey();
 
             }, 1500);
+
+				var showHdtKey = function(){
+					var h='';
+					var pinUrl = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|';
+					_.each(s.hdt.key.pinColor, function(color,name){
+						h+='<img src="' +pinUrl+color+ '" style="height:15px; width:auto;"> ' + name + ' &nbsp; ';
+					});
+					
+					$('div#hdt_key').html(h);
+				}
 
 
             var showSingleSite = _.throttle(function (site) {
@@ -1977,7 +1987,8 @@ console.debug(" show mapp trees -------- ");
 
 			
 				var hdtInit = function(){
-					$.getJSON('http://dev.vyew.com/tmp/hdt/index.php', '', function(res){
+					var url='https://csp.hawaiidt.com/sitemap/json/index.php';
+					$.getJSON(url, '', function(res){
 						s.hdt=res;
 						showMappedSites();
 					});

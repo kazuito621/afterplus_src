@@ -2,8 +2,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+
                 <button ng-click="closeSchedule()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 <h4 class="modal-title" id="modalTitle">
+                    <a ng-click="closeSchedule()"><i class="glyphicon glyphicon-arrow-left text-primary"></i> </a>
+
                     <ng-pluralize count="users.length"
                                   when="{
                      '1': '{{users.length}} user',
@@ -26,7 +29,6 @@
                                                     <label class="control-label">
                                                         <span class="glyphicon glyphicon-play text-success" aria-hidden="true"></span>
                                                         <span class="text-success">Start Job: #{{ event.reportID }} - {{ event.report }}</span>
-
                                                     </label>
                                                 </div>
                                                 <div class="col-md-12">

@@ -2,14 +2,36 @@
     .table > tbody > tr.disabled {
         background-color: #E6E6E6;
     }
+
+    @media (max-width: 767px) {
+        .table-responsive > .table > thead > tr > th, .table-responsive > .table > tbody > tr > th, .table-responsive > .table > tfoot > tr > th, .table-responsive > .table > thead > tr > td, .table-responsive > .table > tbody > tr > td, .table-responsive > .table > tfoot > tr > td {
+            white-space: normal;
+        }
+    }
+
+    @media (max-width: 767px) {
+        input[type="checkbox"] {
+            transform: scale(2);
+            -webkit-transform: scale(2);
+        }
+
+        .week-nav {
+            margin-left:0px !important;
+        }
+
+        .week-nav-label {
+            display: none;
+        }
+    }
+
 </style>
 
 <div class='container' ng-controller="TimeclockController as timeclock">
     <div class="table-header">
         <h1 style="display: inline-block;">Timeclock</h1>
-        <h2 style="display: inline-block;margin-left:50px">
+        <h2 class="week-nav" style="display: inline-block;margin-left:50px">
             <i class="glyphicon glyphicon-chevron-left" ng-click="timeclock.decrementWeekNumber()" style="cursor: pointer"></i>
-            Week of {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
+            <span class="week-nav-label">Week of</span> {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
             <i class="glyphicon glyphicon-chevron-right" ng-click="timeclock.incrementWeekNumber()" ng-show="timeclock.currentWeek > timeclock.week" style="cursor: pointer"></i>
         </h2>
         <div class="clearfix"></div>
@@ -18,11 +40,11 @@
     <div class='table-responsive' ng-repeat="entry in timeclock.users track by $index" >
 
 
-        <table class="table table-bordered">
+        <table class="table table-bordered rwd-table">
             <thead>
             <tr style="background: #000; color: #fff;border: 1px solid #000;">
                 <th style="border: 1px solid #000; font-weight: bold; width: 50px;">
-                    <input ng-click="timeclock.selectAllSimilar()" ng-model="timeclock.selectAllSimilarValue" type="checkbox" ng-if="timeclock.haveSimilarSchedule>1 && timeclock.selectedDate == entry.date">
+                    <input style="" ng-click="timeclock.selectAllSimilar()" ng-model="timeclock.selectAllSimilarValue" type="checkbox" ng-if="timeclock.haveSimilarSchedule>1 && timeclock.selectedDate == entry.date">
                 </th>
                 <th class="clickable-header" style="border: 1px solid #000; font-weight: bold; font-size: 20px;">
                     {{entry.date_string}}
@@ -48,7 +70,8 @@
                 <td>
                     <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
                         <span style="font-weight: bold">{{ user.full_name }}</span>
-                        <span ng-repeat="schedule in user.workSchedule">
+
+                        <span class="hidden-xs" ng-repeat="schedule in user.workSchedule">
                             <span style="color: #000;" ng-if="!$last">
                                 {{ timeclock.formatScheduleTime(schedule.time) }}-{{ timeclock.formatScheduleTime(schedule.time_end) }}
                                 <span style="color: #ADADAD;;">
@@ -64,6 +87,29 @@
                             </span>
                             <span style="color: #000;"  ng-if="$last && schedule.inProgress">
                                 {{ timeclock.formatScheduleTime(schedule.time) }}-...
+                                <span style="color: #ADADAD;;">
+                                    (#{{ schedule.reportID }})
+                                </span>
+                            </span>
+                        </span>
+
+                        <span class="visible-xs" ng-repeat="schedule in user.workSchedule">
+                            <span style="color: #000;" ng-if="$first">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}
+                                <span style="color: #ADADAD;;">
+                                    (#{{ schedule.reportID }})
+                                </span>
+                                -
+                            </span>
+
+                            <span style="color: #000;"  ng-if="$last && !schedule.inProgress">
+                                {{ timeclock.formatScheduleTime(schedule.time_end) }}
+                                <span style="color: #ADADAD;;">
+                                    (#{{ schedule.reportID }})
+                                </span>
+                            </span>
+                            <span style="color: #000;"  ng-if="$last && schedule.inProgress">
+                                ...
                                 <span style="color: #ADADAD;;">
                                     (#{{ schedule.reportID }})
                                 </span>

@@ -95,7 +95,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
                 vm.users[dateIndex].users[userIndex].duration = moment.utc(duration*60000).format("HH:mm");
 
                 vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
-                console.log(data);
+
             });
         });
     };
@@ -313,7 +313,7 @@ function TimeclockService($q, Api) {
                 newUser.date = date.date;
                 newUser.date_string = moment(date.date).format('ddd, MMM DD, YYYY');
                 newUser.users = userWithSchedules;
-                console.log(users);
+
                 users.push(newUser);
             });
             //users = data.users;
@@ -413,6 +413,9 @@ function TimeclockService($q, Api) {
                 }
 
                 if (i == (schedule.length - 1)) {
+                    if (scheduleEntry.time_out == null) {
+                        scheduleEntry.time_out = moment().format('YYYY-MM-DD HH:MM:ss');
+                    }
                     events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
                 }
             } else {
@@ -464,7 +467,7 @@ function TimeclockService($q, Api) {
         var schedules = [];
         for (var i = 0; i < events.length; i ++) {
             var schedule = {};
-            console.log(events[i].type);
+
             if (events[i].type == 'work' || events[i].type == 'break') {
                 schedule.reportID = events[i].reportID;
                 schedule.time_in = moment(events[i].time).format('HH:mm:ss');

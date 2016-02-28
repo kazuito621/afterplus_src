@@ -81,7 +81,7 @@
                 <th ng-if="auth.isAtleast('inventory')" class="clickable-header" style="min-width: 124px;">
                     <button ng-if="auth.isAtleast('inventory')" class="btn btn-default"
                             ng-model="data.salesForemanMode"
-                            ng-options="s.value as s.viewValue for s in [{value:'sales',viewValue:'Sales'},{value:'foreman',viewValue:'Foreman'}]"
+                            bs-options="s.value as s.viewValue for s in [{value:'sales',viewValue:'Sales'},{value:'foreman',viewValue:'Foreman'}]"
                             bs-select onclick="return false;">
                     </button>
                     <i ng-class="getDateColClass()" class='silver'
@@ -97,7 +97,7 @@
                     <button ng-if="auth.isAtleast('inventory')" class="btn btn-default"
                             ng-class="'clr-'+getTstampHeaderClass()"
                             ng-model="data.currentTstamp"
-                            ng-options="s.value as s.viewValue for s in data.tstampItems"
+                            bs-options="s.value as s.viewValue for s in data.tstampItems"
                             bs-select onclick="return false;">
                     </button>
                     <i ng-class="getDateColClass()" class='silver' ng-click="sortDateCol()"></i>
@@ -150,7 +150,7 @@
                        style="cursor: pointer;"></i>
                 </td>
                 <td ng-if="auth.isAtleast('inventory')">
-                    <a href e-ng-options="obj.id as obj.email for obj in salesUsers"
+                    <a href e-ng-options="obj.id as obj.email for obj in ((data.salesForemanMode=='sales')?salesUsers:foremanUsers)"
                        onshow="getSalesUsers()" editable-select="e[data.salesForemanMode+'_userID']"
                        onaftersave="updateEstimate(e)">
                         {{ e[data.salesForemanMode+'_fname']+' '+e[data.salesForemanMode+'_lname'].substr(0,1) || '(none)' }}
@@ -177,7 +177,7 @@
                     <button ng-if="auth.isAtleast('inventory')" class="btn btn-default" ng-class="'clr-'+e.status"
                             ng-model="e.status" ng-change="setReportStatus(e, '{{e.status}}')"
                             placeholder="{{e.status}}"
-                            ng-options="s.id as s.txt for s in data.statuses(e.status)"
+                            bs-options="s.id as s.txt for s in data.statuses(e.status)"
                             bs-select onclick="return false;">
                     </button>
 

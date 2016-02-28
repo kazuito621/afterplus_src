@@ -208,7 +208,7 @@ app.directive('addEditUserModal',
                     user.phone = scope.newContact.phone;
                     user.pass = scope.newContact.newPass;
 
-					if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
+						 if(scope.newContact.sendWelcomeEmail) user.sendWelcomeEmail=1;
                     
                     user.siteIDs= _.pluck(scope.addedSites, 'siteID');
                     user.clientIDs=[];
@@ -222,8 +222,8 @@ app.directive('addEditUserModal',
                     if(user.role!='customer' && scope.newContact.showStatInDash) user.showStatInDash='1';
                     else user.showStatInDash='0';
 
-							$(event).prop("disabled",true);
-							setTimeout(function(){$(event).prop("disabled",false);},3000);
+							$('button#user-save-button').attr("disabled","disabled");
+							setTimeout(function(){ $('button#user-save-button').removeAttr("disabled"); },3000);
 
                     if(scope.user){
                         Api.user.update(user,scope.user.userID).then(function (data) {

@@ -93,7 +93,7 @@ app.directive('addressAutoComplete', function (Api,$interval) {
         scope: true,
         compile: function (el, attrs) {
             var options = "address.formatted_address as address.formatted_address for address in addressLookup($viewValue)";
-            attrs.$set('ngOptions', options);
+            attrs.$set('bsOptions', options);
             return linker;
         }
     };

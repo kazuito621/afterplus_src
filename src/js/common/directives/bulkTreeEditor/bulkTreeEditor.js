@@ -2,12 +2,14 @@
  * Created by Imdadul Huq on 11-Jan-15.
  */
 app.directive('bulkTreeEditor',
-    ['$modal','Api','$filter',
-        function ($modal , Api,filter) {
+    ['$modal','Api','$filter', '$timeout',
+        function ($modal , Api, filter, $timeout) {
             'use strict';
             var linker = function (scope, el, attrs) {
                 var modal;
                 window.sues = scope;
+					 scope.applyButtonText = 'Apply Changes';
+					 scope.applyButtonEnabled = true;
                 scope.allTreatments=[]; // Should show all the treatmens
                 scope.allSpecies=[];
                 scope.selected={};
@@ -107,6 +109,8 @@ app.directive('bulkTreeEditor',
                 };
 
                 scope.ok=function(){
+					 	scope.applyButtonEnabled=false;
+						scope.applyButtonText='Working';
                     var param=createParam();
                     var post={};
 
@@ -145,6 +149,11 @@ app.directive('bulkTreeEditor',
 
                     		scope.selectionChanged();
                     });
+
+						  $timeout(function(){
+								scope.applyButtonEnabled=true;
+								scope.applyButtonText='Apply Changes';
+						  },2000);
                 }
 
                 var createParam=function(){

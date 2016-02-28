@@ -1,6 +1,7 @@
 app
     .service('estimateDetailsService', [ '$rootScope', '$modal', 'Api', 'Restangular', function ($rootScope, $modal, Api, Rest) {
         scope = $rootScope.$new();
+		  window.edss=scope;
 
         var detailsModal = {};
 
@@ -17,7 +18,8 @@ app
 
         scope.selectedDate = new Date();
 
-        scope.groups = [];
+        scope.foremenList = [];
+		  scope.salesList = [];
 
         var show = function (report, config) {
             // var options
@@ -31,12 +33,10 @@ app
             opts.getSummary = 1;
             Api.getReport(report.reportID,opts).then(function(data) {
                 report = data;
-                console.log(report);
-                // var prepare report
                 scope.report = report;
 
                 loadSite(report.siteID);
-                loadGroups();
+                loadUsers();
                 loadContacts();
                 prepareReportData(report);
                 setupModalDatePickers(report);
@@ -57,25 +57,46 @@ app
             });
         };
 
-        var loadGroups = function (deferred) {
+        var loadUsers = function (deferred) {
             // create email short for report foreman and sales
             scope.report.foreman_email_short = (scope.report.foreman_email != undefined) ? scope.report.foreman_email.split('@')[0] : null;
             scope.report.sales_email_short = (scope.report.sales_email != undefined) ? scope.report.sales_email.split('@')[0] : null;
 
-            // load groups
-            if(scope.groups.length>0) return;
-            Api.GetForemans()
-                .then(function (response) {
+            if(!scope.foremenList.length){
+					Api.getForemen().then(function (response) {
+						scope.foremenList = processUsers(response);
+					});
+				}
 
-                    angular.forEach(response, function (item) {
-                        scope.groups.push({ "userID": item.userID, "text": item.email.split('@')[0],"fName":item.fName,lName:item.lName,email: item.email});
-                    });
-                    if(deferred) {
-                        deferred.resolve(scope.groups);
-                    }
-                    console.log(scope.groups);
-                });
+            if(!scope.salesList.length){
+					Api.getSalesUsers().then(function (response) {
+						scope.salesList = processUsers(response);
+						//if(deferred) deferred.resolve(scope.salesList);
+					});
+				}
+
         };
+
+
+		 // process incoming user list, and setup text for firstname / last initial
+		  var processUsers = function(users){
+		  		out=[];
+				if(!users) return ou;
+
+          	angular.forEach(users, function (item) {
+					var ini=''+item.lName;
+					if(ini) ini=' ' + ini.substr(0,1);
+
+					out.push({ 
+						userID:item.userID, 
+						text: item.fName+ini,
+						fName:item.fName,
+						lName:item.lName,
+						email: item.email
+					});
+          	});
+				return out;
+		  }
 
         var loadContacts = function() {
             Rest.one('site/'+scope.report.siteID+'/users?role=customer').get().then(function(res){
@@ -168,7 +189,7 @@ app
             Api.changeEstimateProperty(scope.report.reportID, {
                 job_userID: scope.report.job_userID
             }).then(function (response) {
-                var newForeman = _.findObj(scope.groups, 'userID', scope.report.job_userID);
+                var newForeman = _.findObj(scope.foremenList, 'userID', scope.report.job_userID);
                 scope.report.foreman_email=newForeman.email;
                 scope.report.foreman_fname=newForeman.fName;
                 scope.report.foreman_lname=newForeman.lName;
@@ -181,7 +202,7 @@ app
             Api.changeEstimateProperty(scope.report.reportID, {
                 sales_userID: scope.report.sales_userID
             }).then(function (response) {
-                var newSalesman = _.findObj(scope.groups, 'userID', scope.report.sales_userID);
+                var newSalesman = _.findObj(scope.salesList, 'userID', scope.report.sales_userID);
                 scope.report.sales_email=newSalesman.email;
                 scope.report.sales_fname=newSalesman.fName;
                 scope.report.sales_lname=newSalesman.lName;

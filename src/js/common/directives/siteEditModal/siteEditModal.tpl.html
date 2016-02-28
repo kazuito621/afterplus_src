@@ -13,7 +13,7 @@
                         </div>
                         <div class='panel-body' style='line-height:1.5em;'>
 							<div ng-if="auth.isAtleast('inventory')">
-                            	<button class="btn btn-default" ng-model="site.clientID" ng-options="c.clientID as c.clientName for c in clients" 
+                            	<button class="btn btn-default" ng-model="site.clientID" bs-options="c.clientID as c.clientName for c in clients"
 									bs-select placeholder="Which client owns this property?" onclick="return false;" required>
 									Client <span class="caret"></span>
 								</button>

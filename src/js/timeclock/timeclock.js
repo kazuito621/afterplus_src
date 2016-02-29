@@ -3,8 +3,8 @@ app
     .service('TimeclockService', TimeclockService);
 
 
-TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', '$filter']
-function TimeclockController (TimeclockService, editTimeclockService, Api, $filter) {
+TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', 'Auth', '$filter']
+function TimeclockController (TimeclockService, editTimeclockService, Api, Auth, $filter) {
     var vm = this;
     vm.users = [];
 
@@ -12,6 +12,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
 
     var currentWeek = moment().week();
 
+    vm.currentUserID = Auth.data().userID;
     vm.currentWeek = moment().week();
     vm.week = vm.currentWeek;
     vm.selectedDate = null;
@@ -24,6 +25,10 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
 
     getWeekData(currentWeek);
 
+    // for ios application
+    window.ios_app_web_view_check = function() {
+        return true;
+    }
 
     function getWeekData(currentWeek) {
         var day = moment().day("Monday").week(currentWeek);
@@ -92,6 +97,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
                 var userIndex = _.indexOf(vm.users[dateIndex].users, user);
 
                 vm.users[dateIndex].users[userIndex].schedule = data;
+                vm.users[dateIndex].users[userIndex].duration_hours = duration/60;
                 vm.users[dateIndex].users[userIndex].duration = moment.utc(duration*60000).format("HH:mm");
 
                 vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
@@ -176,9 +182,25 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
         });
 
         editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
+            var duration = 0;
+            _.each(_.where(data, {'type': 'work'}), function(log) {
+                var logDuration = TimeclockService.calculateDuration(log.time, log.time_end, true);
+                var minutes = logDuration.asMinutes();
+                duration += minutes;
+            });
+
+            var dateIndex = _.indexOf(vm.users, _.findWhere(vm.users, {'date': vm.selectedDate}));
+
             _.each(selectedUsers, function(user, i) {
-                selectedUsers[i].schedule = data;
-            })
+                var userIndex = _.indexOf(vm.users[dateIndex].users, user);
+
+                vm.users[dateIndex].users[userIndex].schedule = data;
+                vm.users[dateIndex].users[userIndex].duration_hours = duration/60;
+                vm.users[dateIndex].users[userIndex].duration = moment.utc(duration*60000).format("HH:mm");
+
+                vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
+
+            });
         });
 
     };

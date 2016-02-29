@@ -314,6 +314,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }
             }
 
+
             TFS.init(s.initData);
 
             var showSite = function (id) {
@@ -928,6 +929,16 @@ var TreesCtrl = app.controller('TreesCtrl',
 					$('span#hdt_key').html(h);
 				}
 
+				var doResizeMap = function(){
+					var wh=$(window).height();
+					$('#treeMap').height(wh-50);
+				}
+				doResizeMap();
+
+				$(window).on('resize', function(){
+					doResizeMap();
+				});
+
 
             var showSingleSite = _.throttle(function (site) {
                 console.log("show mapped sites ");
@@ -1099,13 +1110,20 @@ var TreesCtrl = app.controller('TreesCtrl',
                     mapBounds.extend(extendPoint2);
                 }
 
+					if(
+						(selectedSiteArray.length ) ||
+						(!selectedSiteArray.length && !selectedLinkArray.length) 
+					){
+                	gMap.fitBounds(mapBounds);
+					}
+                    gMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 
-                gMap.fitBounds(mapBounds);
+					 /*
                 if (addType == 'allSites') {
                     gMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
                 } else {
                     gMap.setMapTypeId(google.maps.MapTypeId.HYBRID);
-                }
+                }*/
 
                 //                console.log('End of add markers function');
             };

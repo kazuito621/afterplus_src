@@ -9,7 +9,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
     vm.users = [];
 
     vm.haveSelectedUsers = false;
-
+    vm.isEditorOpen = false;
     var currentWeek = moment().week();
 
     vm.currentUserID = Auth.data().userID;
@@ -26,8 +26,8 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
     getWeekData(currentWeek);
 
     // for ios application
-    window.ios_app_web_view_check = function() {
-        return true;
+    window.ios_app_is_editor_open = function() {
+        return vm.isEditorOpen
     }
 
     function getWeekData(currentWeek) {
@@ -83,6 +83,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
         vm.selectedDate = selectedDate.date;
         var selectedUsers = [];
         selectedUsers.push(selectedUser);
+        vm.isEditorOpen = true;
         editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
             var duration = 0;
             _.each(_.where(data, {'type': 'work'}), function(log) {
@@ -103,6 +104,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
                 vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
 
             });
+            vm.isEditorOpen = false;
         });
     };
     
@@ -181,6 +183,8 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
             }
         });
 
+        vm.isEditorOpen = true;
+
         editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
             var duration = 0;
             _.each(_.where(data, {'type': 'work'}), function(log) {
@@ -201,6 +205,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
                 vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
 
             });
+            vm.isEditorOpen = false;
         });
 
     };

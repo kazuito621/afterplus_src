@@ -1,15 +1,21 @@
 <main ng-controller="TreesCtrl as TreesCtrl">
+<div style='padding:.3em; font-size:10px;'>
+    <button class="btn btn-default" ng-model="hdt.selectedStatuses" data-multiple="1" multiple max-length=0 ng-change="onFilterChange()"
+	 		bs-options="t.text for t in hdt.statusTypes" bs-select placeholder="Filters" onclick="return false;">
+         Filters <span class="caret"></span>
+    </button>
+	 <span id='hdt_key'></span>
+    <a ng-if="codes.length" class='fa fa-times _red _size8 hand' style='padding-left:.2em;' ng-click='clearCodes()'></a>
 
+</div>
+<div id='treeDetails' ng-cloak ng-show="data.showTreeDetails && data.mode()=='trees'">
+			<tree-edit></tree-edit>
+</div>
 
-
-								<div id='hdt_key' style='padding:.3em; font-size:10px;'></div>
-								<div id='treeDetails' ng-cloak ng-show="data.showTreeDetails && data.mode()=='trees'">
-                                    <tree-edit></tree-edit>
-								</div>
-
-                                <div ng-include="'js/common/directives/maps/map.search.panel/map.search.panel.tpl.html'"/>
-
-                                <div ng-cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="data.mode()" class="map"></div>
+<!--
+  <div ng-include="'js/common/directives/maps/map.search.panel/map.search.panel.tpl.html'"/>
+-->
+  <div ng-cloak ng-show="data.showMap && data.mode()=='trees'" id="treeMap" ng-class="data.mode()" class="map"></div>
 
 
 </main>

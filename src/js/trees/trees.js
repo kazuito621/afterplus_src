@@ -671,6 +671,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //google map bar: event handler for button 'X'
             s.cleanSearchMarkers = function () {
+					return;
                 s.googleMapSearchBoxValue = '';
 
                 for (var i = 0, marker; marker = s.searchMarkers[i]; i++) {
@@ -692,6 +693,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 
             //google map bar: event handler for button 'marker', zoom to search marker
             s.zoomToSearchMarker = function () {
+					return;
                 showSearchMarker();
             }
 
@@ -742,7 +744,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                                     s.$broadcast('onMapClicked');
                                 });
                                 //initClicktoMap();
-                                initSearchBox();
+                                //initSearchBox();
 
 								// do we really need this? ... this was here before
                                 $timeout(function () {
@@ -818,6 +820,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                 });
             }, 2000);
 
+
+
+
+				s.lines=[];
             var showMappedSites = _.throttle(function () {
 
                 var a, l, siteLoc, noLoc = 0, numSpecies, gMapID = ''
@@ -832,12 +838,18 @@ var TreesCtrl = app.controller('TreesCtrl',
                     });
                 }
 
-
+					s.siteLocs=[];
                 _.each(s.hdt.sites, function (r) {
 					 		if(!r || !r.Longitude) return;
 
+							// filter
+							if( selectedSiteArray.length || selectedLinkArray.length ){
+									if( selectedSiteArray.indexOf(r.Status) < 0 ) return; 
+							}
+
 							r.lat = r.Latitude;
 							r.lng = r.Longitude;
+
 
                     //var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
 
@@ -861,14 +873,16 @@ var TreesCtrl = app.controller('TreesCtrl',
 
                 if (!infowindow) infowindow = new google.maps.InfoWindow();
                 replaceMarkers(s.siteLocs, 'allSites');
+			
 
-
-
-				
+					// draw lines
+					clearLines(s.lines);
 					_.each(s.hdt.links, function(site,i){
-							//var ls = s.siteLocs[i-1];
-							//var coords=[{lat:parseFloat(site.lat), lng:parseFloat(site.lng)}, 
-							//				{lat:parseFloat(ls.lat), lng:parseFloat(ls.lng)}];
+
+							//filter
+							if( selectedSiteArray.length || selectedLinkArray.length ){
+									if( selectedLinkArray.indexOf(site['Backhaul Type']) < 0 ) return; 
+							}
 
 							var path = new google.maps.Polyline({
 								 path: site.coords,
@@ -878,12 +892,31 @@ var TreesCtrl = app.controller('TreesCtrl',
 								 strokeWeight: site.weight
 							  });
 							path.setMap(gMap);
+							s.lines.push(path);
 					});
-
 
 					showHdtKey();
 
             }, 1500);
+
+
+				var selectedSiteArray=[];
+				var selectedLinkArray=[];
+
+				//s.hdt.siteTypes = [];
+				s.onFilterChange = function(){
+					if(!s.hdt || !s.hdt.sites) return;
+					selectedSiteArray=[];
+					selectedLinkArray=[];
+					_.each(s.hdt.selectedStatuses, function(s){
+						if(s.type=='site')
+							selectedSiteArray.push(s.value);
+						else
+							selectedLinkArray.push(s.value);
+					});
+					showMappedSites();
+				}
+
 
 				var showHdtKey = function(){
 					var h='';
@@ -892,7 +925,7 @@ var TreesCtrl = app.controller('TreesCtrl',
 						h+='<img src="' +pinUrl+color+ '" style="height:15px; width:auto;"> ' + name + ' &nbsp; ';
 					});
 					
-					$('div#hdt_key').html(h);
+					$('span#hdt_key').html(h);
 				}
 
 
@@ -1083,12 +1116,20 @@ var TreesCtrl = app.controller('TreesCtrl',
                 infowindow.open(gMap, e.target);
             }
 
+
+				var clearLines = function(lines){
+					_.each(lines, function(l){
+						l.setMap(null);
+					});
+				}
             var clearMarkers = function () {
+					if(!markers_allSites || !markers_allSites.length) return;
                 //remove all markers from view
                 for (var b = 0; b < markers_allSites.length; b++) {
                     //console.log("removing markers from allSite array. current:"+markers_allSites[b]);
                     markers_allSites[b].setMap(null);
                 }
+					 return;
                 for (var i = 0; i < markers_singleSite.length; i++) {
                     //console.log("removing markers from singleSite array. current: "+markers_singleSite[i]);
                     markers_singleSite[i].setMap(null);

@@ -30,6 +30,20 @@
     .overclock_red {
         background: #d9534f;
     }
+    
+    .popover {
+        color: #000;
+
+    }
+
+    .popover ul {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+    }
+    .popover ul li {
+        display: inline-block; /*necessary*/
+    }
 </style>
 
 <div class='container' ng-controller="TimeclockController as timeclock">
@@ -51,6 +65,8 @@
             <tr style="background: #000; color: #fff;border: 1px solid #000;">
                 <th class="clickable-header" style="border: 1px solid #000; font-weight: bold; font-size: 20px;" colspan="2">
                     {{entry.date_string}}
+                    <i hasnt-clockin-pop-over items="entry.users_not_clockin" title="Mode of transport" class="glyphicon glyphicon-user">
+                    </i>
                 </th>
                 <th class="clickable-header" style="border: 1px solid #000" ng-if="entry.users.length > 0">
                     Hours

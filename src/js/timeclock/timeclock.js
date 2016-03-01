@@ -322,7 +322,6 @@ function TimeclockService($q, Api) {
         Api.getTimeclockUsersInfo(params).then(function(data) {
             var dates = data.dates;
 
-            
             _.each(dates, function (date) {
                 var newUser = {};
 
@@ -344,6 +343,7 @@ function TimeclockService($q, Api) {
                 newUser.date = date.date;
                 newUser.date_string = moment(date.date).format('ddd, MMM DD, YYYY');
                 newUser.users = _.sortBy(userWithSchedules, 'clockinby_userID');
+                newUser.users_not_clockin = date.not_worked_users;
 
                 users.push(newUser);
             });
@@ -545,3 +545,39 @@ function TimeclockService($q, Api) {
     }
 
 };
+
+app.directive('hasntClockinPopOver', function ($compile) {
+    var itemsTemplate = "<ul><li ng-repeat='item in items'>{{item.full_name}}</li></ul>";
+    var getTemplate = function (contentType) {
+        var template = '';
+        switch (contentType) {
+            case 'items':
+                template = itemsTemplate;
+                break;
+        }
+        return template;
+    }
+    return {
+        restrict: "A",
+        transclude: true,
+        template: "<span ng-transclude></span>",
+        link: function (scope, element, attrs) {
+            var popOverContent;
+            if (scope.items) {
+                var html = getTemplate("items");
+                popOverContent = $compile(html)(scope);
+            }
+            var options = {
+                content: popOverContent,
+                placement: "bottom",
+                html: true,
+                title: scope.title
+            };
+            $(element).popover(options);
+        },
+        scope: {
+            items: '=',
+            title: '@'
+        }
+    };
+});

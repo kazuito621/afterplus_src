@@ -318,7 +318,7 @@ function TimeclockService($q, Api) {
 
         Api.getTimeclockUsersInfo(params).then(function(data) {
             var dates = data.dates
-            var clockinbyUsers = [];
+
             
             _.each(dates, function (date) {
                 var newUser = {};
@@ -327,16 +327,7 @@ function TimeclockService($q, Api) {
                 _.each(userWithSchedules, function(user, i) {
 
                     userWithSchedules[i].clockinby_userID = userWithSchedules[i]['logs'][0].clockinby_userID;
-                    if (clockinbyUsers[userWithSchedules[i].clockinby_userID] != undefined) {
-
-                    } else {
-                        var param={
-                            id:userWithSchedules[i].clockinby_userID
-                        };
-                        Api.user.getUserById(param).then(function(data){
-                            userWithSchedules[i].clockinby_userName = data.fName + ' ' + data.lName;
-                        });
-                    }
+                    userWithSchedules[i].clockinby_userName = userWithSchedules[i]['logs'][0].clockinby_full_name;
 
 
                     userWithSchedules[i].schedule = transformSchedule(userWithSchedules[i]['logs']);

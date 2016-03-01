@@ -318,6 +318,7 @@ function TimeclockService($q, Api) {
 
         Api.getTimeclockUsersInfo(params).then(function(data) {
             var dates = data.dates
+            var clockinbyUsers = [];
             
             _.each(dates, function (date) {
                 var newUser = {};
@@ -326,12 +327,17 @@ function TimeclockService($q, Api) {
                 _.each(userWithSchedules, function(user, i) {
 
                     userWithSchedules[i].clockinby_userID = userWithSchedules[i]['logs'][0].clockinby_userID;
-                    var param={
-                        id:userWithSchedules[i].clockinby_userID
-                    };
-                    Api.user.getUserById(param).then(function(data){
-                        userWithSchedules[i].clockinby_userName = data.fName + ' ' + data.lName;
-                    });
+                    if (clockinbyUsers[userWithSchedules[i].clockinby_userID] != undefined) {
+
+                    } else {
+                        var param={
+                            id:userWithSchedules[i].clockinby_userID
+                        };
+                        Api.user.getUserById(param).then(function(data){
+                            userWithSchedules[i].clockinby_userName = data.fName + ' ' + data.lName;
+                        });
+                    }
+
 
                     userWithSchedules[i].schedule = transformSchedule(userWithSchedules[i]['logs']);
                     userWithSchedules[i].original_schedule = transformSchedule(userWithSchedules[i]['logs']);
@@ -339,7 +345,7 @@ function TimeclockService($q, Api) {
                 });
                 newUser.date = date.date;
                 newUser.date_string = moment(date.date).format('ddd, MMM DD, YYYY');
-                newUser.users = userWithSchedules;
+                newUser.users = _.sortBy(userWithSchedules, 'clockinby_userID');
 
                 users.push(newUser);
             });

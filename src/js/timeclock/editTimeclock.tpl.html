@@ -1,9 +1,15 @@
+<style>
+    .btn-close {
+        margin-top: -2px;
+        float: right;
+    }
+</style>
 <div class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
 
-                <button ng-click="closeSchedule()" class="close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <button ng-click="closeSchedule()" class="btn btn-danger btn-close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 <h4 class="modal-title" id="modalTitle">
                     <a ng-click="closeSchedule()"><i class="glyphicon glyphicon-arrow-left text-primary"></i> </a>
 

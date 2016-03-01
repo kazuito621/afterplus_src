@@ -93,6 +93,7 @@
                         <span class="visible-xs" ng-repeat="schedule in user.workSchedule">
                             <span style="color: #000;" ng-if="$first">
                                 {{ timeclock.formatScheduleTime(schedule.time) }}
+
                                 <span style="color: #ADADAD;;">
                                     (#{{ schedule.reportID }})
                                 </span>
@@ -101,9 +102,6 @@
 
                             <span style="color: #000;"  ng-if="$last && !schedule.inProgress">
                                 {{ timeclock.formatScheduleTime(schedule.time_end) }}
-                                <span style="color: #ADADAD;;">
-                                    (#{{ schedule.reportID }})
-                                </span>
                             </span>
                             <span style="color: #000;"  ng-if="$last && schedule.inProgress">
                                 ...

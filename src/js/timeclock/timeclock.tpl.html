@@ -43,10 +43,7 @@
         <table class="table table-bordered rwd-table">
             <thead>
             <tr style="background: #000; color: #fff;border: 1px solid #000;">
-                <th style="border: 1px solid #000; font-weight: bold; width: 50px;">
-                    <input style="" ng-click="timeclock.selectAllSimilar()" ng-model="timeclock.selectAllSimilarValue" type="checkbox" ng-if="timeclock.haveSimilarSchedule>1 && timeclock.selectedDate == entry.date">
-                </th>
-                <th class="clickable-header" style="border: 1px solid #000; font-weight: bold; font-size: 20px;">
+                <th class="clickable-header" style="border: 1px solid #000; font-weight: bold; font-size: 20px;" colspan="2">
                     {{entry.date_string}}
                 </th>
                 <th class="clickable-header" style="border: 1px solid #000" ng-if="entry.users.length > 0">
@@ -63,7 +60,7 @@
                     Clocked in by {{user.clockinby_userName}}
                 </td>
             </tr>
-            <tr ng-repeat-end>
+            <tr ng-repeat-end ng-class="user.disabled ? 'disabled' : ''">
                 <td style="width: 50px;">
                     <input ng-change="timeclock.selectUser(user, entry)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
                 </td>
@@ -132,6 +129,7 @@
     <div class="action-float-bar" ng-show="timeclock.haveSelectedUsers">
         <div class="container">
             <div class="action-float-bar-inner">
+                <input style="" ng-click="timeclock.selectAllSimilar()" ng-model="timeclock.selectAllSimilarValue" type="checkbox" ng-if="timeclock.haveSimilarSchedule>1">
                 <i class="fa fa-mail-forward fa-rotate-270 white"></i> &nbsp;
                 <button type='button' class="btn btn-default" ng-click="timeclock.editTimeclockForUsers()">
                     Edit

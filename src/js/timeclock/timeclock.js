@@ -2,11 +2,11 @@ app
     .controller('TimeclockController', TimeclockController)
     .service('TimeclockService', TimeclockService);
 
-
 TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', 'Auth', '$filter']
 function TimeclockController (TimeclockService, editTimeclockService, Api, Auth, $filter) {
     var vm = this;
     vm.users = [];
+    vm.totals = [];
 
     vm.haveSelectedUsers = false;
     vm.isEditorOpen = false;
@@ -57,8 +57,9 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
     }
 
     function getUsers(days) {
-        TimeclockService.getUsers(days).then(function (dates) {
-            vm.users = dates;
+        TimeclockService.getUsers(days).then(function (data) {
+            vm.users = data.users;
+            vm.totals = data.totals;
         });
         //_.each(days, function (singleDay) {
         //    TimeclockService.getUsers(singleDay).then(function(users) {
@@ -309,6 +310,8 @@ function TimeclockService($q, Api) {
     function getUsers(days) {
         var deferred = $q.defer();
 
+        var response = {};
+
         var users = [];
         var schedules = [];
 
@@ -317,7 +320,7 @@ function TimeclockService($q, Api) {
         params.date_from = days[days.length - 1];
 
         Api.getTimeclockUsersInfo(params).then(function(data) {
-            var dates = data.dates
+            var dates = data.dates;
 
             
             _.each(dates, function (date) {
@@ -325,6 +328,10 @@ function TimeclockService($q, Api) {
 
                 var userWithSchedules = date.users;
                 _.each(userWithSchedules, function(user, i) {
+
+                    var durationArray = userWithSchedules[i].duration.split(':');
+
+                    userWithSchedules[i].duration_hours = parseInt(durationArray[0]) + parseInt(durationArray[1])/60;
 
                     userWithSchedules[i].clockinby_userID = userWithSchedules[i]['logs'][0].clockinby_userID;
                     userWithSchedules[i].clockinby_userName = userWithSchedules[i]['logs'][0].clockinby_full_name;
@@ -355,9 +362,12 @@ function TimeclockService($q, Api) {
             //    deferred.resolve(users);
             //});
 
-            users = users.reverse();
+            response.users = users.reverse();
+            response.totals= data.totals;
 
-            deferred.resolve(users);
+
+
+            deferred.resolve(response);
         });
 
 

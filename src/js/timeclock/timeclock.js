@@ -3,15 +3,16 @@ app
     .service('TimeclockService', TimeclockService);
 
 
-TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', '$filter']
-function TimeclockController (TimeclockService, editTimeclockService, Api, $filter) {
+TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', 'Auth', '$filter']
+function TimeclockController (TimeclockService, editTimeclockService, Api, Auth, $filter) {
     var vm = this;
     vm.users = [];
 
     vm.haveSelectedUsers = false;
-
+    vm.isEditorOpen = false;
     var currentWeek = moment().week();
 
+    vm.currentUserID = Auth.data().userID;
     vm.currentWeek = moment().week();
     vm.week = vm.currentWeek;
     vm.selectedDate = null;
@@ -24,6 +25,10 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
 
     getWeekData(currentWeek);
 
+    // for ios application
+    window.ios_app_is_editor_open = function() {
+        return vm.isEditorOpen
+    }
 
     function getWeekData(currentWeek) {
         var day = moment().day("Monday").week(currentWeek);
@@ -78,6 +83,7 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
         vm.selectedDate = selectedDate.date;
         var selectedUsers = [];
         selectedUsers.push(selectedUser);
+        vm.isEditorOpen = true;
         editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
             var duration = 0;
             _.each(_.where(data, {'type': 'work'}), function(log) {
@@ -92,11 +98,13 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
                 var userIndex = _.indexOf(vm.users[dateIndex].users, user);
 
                 vm.users[dateIndex].users[userIndex].schedule = data;
+                vm.users[dateIndex].users[userIndex].duration_hours = duration/60;
                 vm.users[dateIndex].users[userIndex].duration = moment.utc(duration*60000).format("HH:mm");
 
                 vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
 
             });
+            vm.isEditorOpen = false;
         });
     };
     
@@ -175,10 +183,29 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, $filt
             }
         });
 
+        vm.isEditorOpen = true;
+
         editTimeclockService.showModal(selectedUsers, vm.selectedDate).then(function (data) {
+            var duration = 0;
+            _.each(_.where(data, {'type': 'work'}), function(log) {
+                var logDuration = TimeclockService.calculateDuration(log.time, log.time_end, true);
+                var minutes = logDuration.asMinutes();
+                duration += minutes;
+            });
+
+            var dateIndex = _.indexOf(vm.users, _.findWhere(vm.users, {'date': vm.selectedDate}));
+
             _.each(selectedUsers, function(user, i) {
-                selectedUsers[i].schedule = data;
-            })
+                var userIndex = _.indexOf(vm.users[dateIndex].users, user);
+
+                vm.users[dateIndex].users[userIndex].schedule = data;
+                vm.users[dateIndex].users[userIndex].duration_hours = duration/60;
+                vm.users[dateIndex].users[userIndex].duration = moment.utc(duration*60000).format("HH:mm");
+
+                vm.users[dateIndex].users[userIndex].workSchedule = _.where(data, {'type': 'work'});
+
+            });
+            vm.isEditorOpen = false;
         });
 
     };
@@ -291,6 +318,7 @@ function TimeclockService($q, Api) {
 
         Api.getTimeclockUsersInfo(params).then(function(data) {
             var dates = data.dates
+            var clockinbyUsers = [];
             
             _.each(dates, function (date) {
                 var newUser = {};
@@ -299,12 +327,17 @@ function TimeclockService($q, Api) {
                 _.each(userWithSchedules, function(user, i) {
 
                     userWithSchedules[i].clockinby_userID = userWithSchedules[i]['logs'][0].clockinby_userID;
-                    var param={
-                        id:userWithSchedules[i].clockinby_userID
-                    };
-                    Api.user.getUserById(param).then(function(data){
-                        userWithSchedules[i].clockinby_userName = data.fName + ' ' + data.lName;
-                    });
+                    if (clockinbyUsers[userWithSchedules[i].clockinby_userID] != undefined) {
+
+                    } else {
+                        var param={
+                            id:userWithSchedules[i].clockinby_userID
+                        };
+                        Api.user.getUserById(param).then(function(data){
+                            userWithSchedules[i].clockinby_userName = data.fName + ' ' + data.lName;
+                        });
+                    }
+
 
                     userWithSchedules[i].schedule = transformSchedule(userWithSchedules[i]['logs']);
                     userWithSchedules[i].original_schedule = transformSchedule(userWithSchedules[i]['logs']);
@@ -312,7 +345,7 @@ function TimeclockService($q, Api) {
                 });
                 newUser.date = date.date;
                 newUser.date_string = moment(date.date).format('ddd, MMM DD, YYYY');
-                newUser.users = userWithSchedules;
+                newUser.users = _.sortBy(userWithSchedules, 'clockinby_userID');
 
                 users.push(newUser);
             });

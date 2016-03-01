@@ -304,7 +304,7 @@ app
 
             var eventStart = TimeclockService.createEvent('start', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
             var eventWorkBeforePause = TimeclockService.createEvent('work', moment(prevStartTime).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
-            var eventPause = TimeclockService.createEvent('break', moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
+            var eventPause = TimeclockService.createEvent('break', moment(newBreakStart).format('YYYY-MM-DD HH:mm:ss'), moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report, 'break')
             var eventWorkAfterPause = TimeclockService.createEvent('work', moment(newBreakStop).format('YYYY-MM-DD HH:mm:ss'), moment(prevStopTime).format('YYYY-MM-DD HH:mm:ss'), scope.events[addBreakIndex].reportID, scope.events[addBreakIndex].report)
 
 

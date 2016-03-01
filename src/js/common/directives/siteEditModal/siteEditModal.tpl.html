@@ -22,7 +22,7 @@
                         </div>
                         <div class='panel-body' style='line-height:1.5em;'>
 							<div ng-if="auth.isAtleast('inventory')">
-                                <ui-select ng-model="selectedClient.selected">
+                                <ui-select ng-model="selectedClient.selected" on-select="onSelectSite($item, $model)">
                                     <ui-select-match placeholder="Which client owns this property?">
                                         <span ng-bind="$select.selected.clientName"></span>
                                     </ui-select-match>

@@ -79,6 +79,10 @@ app.directive('siteEditModal',
             }
         };
 
+        scope.onSelectSite = function (item, model) {
+            scope.site.clientID = model.clientID;
+        }
+
         scope.saveSite = function (cb, nohide) {
             if (!scope.site.clientID) {
                 return scope.$parent.setAlert('Choose a client for the new property', {type: 'd'});

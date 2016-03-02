@@ -687,7 +687,7 @@ angular.module('calendardirective', [])
                                     if (s.groups[i].email)
                                         return s.groups[i].replace(/@.*/, '');
                                     else
-                                        return s.groups[i].fName;
+                                        return s.groups[i].text;
                                 }
                             }
                             return 'User ' + job_userID;

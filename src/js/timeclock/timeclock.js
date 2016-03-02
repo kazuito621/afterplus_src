@@ -2,11 +2,12 @@ app
     .controller('TimeclockController', TimeclockController)
     .service('TimeclockService', TimeclockService);
 
-
-TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', 'Auth', '$filter']
-function TimeclockController (TimeclockService, editTimeclockService, Api, Auth, $filter) {
+TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'createTimeclockService', 'Api', 'Auth', '$filter']
+function TimeclockController (TimeclockService, editTimeclockService, createTimeclockService, Api, Auth, $filter) {
     var vm = this;
+    vm.foremans = [];
     vm.users = [];
+    vm.totals = [];
 
     vm.haveSelectedUsers = false;
     vm.isEditorOpen = false;
@@ -53,12 +54,23 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
             }
         }
         days = days.reverse();
+        Api.getTimeclockUsers().then(function(data){
+            _.each(data.users, function (foremanUser) {
+                var foreman = {};
+                foreman.userID = foremanUser.userID;
+                foreman.fullName = foremanUser.fullName;
+
+                vm.foremans.push(foreman);
+            });
+
+        });
         getUsers(days);
     }
 
     function getUsers(days) {
-        TimeclockService.getUsers(days).then(function (dates) {
-            vm.users = dates;
+        TimeclockService.getUsers(days).then(function (data) {
+            vm.users = data.users;
+            vm.totals = data.totals;
         });
         //_.each(days, function (singleDay) {
         //    TimeclockService.getUsers(singleDay).then(function(users) {
@@ -107,6 +119,12 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
             vm.isEditorOpen = false;
         });
     };
+    
+    vm.newClockIn = function () {
+        createTimeclockService.showModal(vm.foremans).then(function (data) {
+
+        });
+    }
     
     vm.decrementWeekNumber = function() {
         vm.week--;
@@ -309,6 +327,8 @@ function TimeclockService($q, Api) {
     function getUsers(days) {
         var deferred = $q.defer();
 
+        var response = {};
+
         var users = [];
         var schedules = [];
 
@@ -317,26 +337,20 @@ function TimeclockService($q, Api) {
         params.date_from = days[days.length - 1];
 
         Api.getTimeclockUsersInfo(params).then(function(data) {
-            var dates = data.dates
-            var clockinbyUsers = [];
-            
+            var dates = data.dates;
+
             _.each(dates, function (date) {
                 var newUser = {};
 
                 var userWithSchedules = date.users;
                 _.each(userWithSchedules, function(user, i) {
 
-                    userWithSchedules[i].clockinby_userID = userWithSchedules[i]['logs'][0].clockinby_userID;
-                    if (clockinbyUsers[userWithSchedules[i].clockinby_userID] != undefined) {
+                    var durationArray = userWithSchedules[i].duration.split(':');
 
-                    } else {
-                        var param={
-                            id:userWithSchedules[i].clockinby_userID
-                        };
-                        Api.user.getUserById(param).then(function(data){
-                            userWithSchedules[i].clockinby_userName = data.fName + ' ' + data.lName;
-                        });
-                    }
+                    userWithSchedules[i].duration_hours = parseInt(durationArray[0]) + parseInt(durationArray[1])/60;
+
+                    userWithSchedules[i].clockinby_userID = userWithSchedules[i]['logs'][0].clockinby_userID;
+                    userWithSchedules[i].clockinby_userName = userWithSchedules[i]['logs'][0].clockinby_full_name;
 
 
                     userWithSchedules[i].schedule = transformSchedule(userWithSchedules[i]['logs']);
@@ -346,6 +360,7 @@ function TimeclockService($q, Api) {
                 newUser.date = date.date;
                 newUser.date_string = moment(date.date).format('ddd, MMM DD, YYYY');
                 newUser.users = _.sortBy(userWithSchedules, 'clockinby_userID');
+                newUser.users_not_clockin = date.not_worked_users;
 
                 users.push(newUser);
             });
@@ -364,9 +379,12 @@ function TimeclockService($q, Api) {
             //    deferred.resolve(users);
             //});
 
-            users = users.reverse();
+            response.users = users.reverse();
+            response.totals= data.totals;
 
-            deferred.resolve(users);
+
+
+            deferred.resolve(response);
         });
 
 
@@ -544,3 +562,39 @@ function TimeclockService($q, Api) {
     }
 
 };
+
+app.directive('hasntClockinPopOver', function ($compile) {
+    var itemsTemplate = "<ul><li ng-repeat='item in items'>{{item.full_name}}</li></ul>";
+    var getTemplate = function (contentType) {
+        var template = '';
+        switch (contentType) {
+            case 'items':
+                template = itemsTemplate;
+                break;
+        }
+        return template;
+    }
+    return {
+        restrict: "A",
+        transclude: true,
+        template: "<span ng-transclude></span>",
+        link: function (scope, element, attrs) {
+            var popOverContent;
+            if (scope.items) {
+                var html = getTemplate("items");
+                popOverContent = $compile(html)(scope);
+            }
+            var options = {
+                content: popOverContent,
+                placement: "bottom",
+                html: true,
+                title: scope.title
+            };
+            $(element).popover(options);
+        },
+        scope: {
+            items: '=',
+            title: '@'
+        }
+    };
+});

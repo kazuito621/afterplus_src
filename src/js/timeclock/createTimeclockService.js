@@ -7,6 +7,7 @@ app
         scope.foremans = [];
         scope.selectedForeman = [];
         scope.showClockedOut = false;
+        scope.maxDate = new Date();
         scope.jobTypes = [
             {
                 "type": 'work',
@@ -63,6 +64,8 @@ app
             params.worktime.push(worktime);
 
             Api.saveTimeclockSchedules(params).then(function(data) {
+                modalDeferred.resolve(data);
+
                 editTimeclockModal.$promise.then(editTimeclockModal.hide);
             });
         };

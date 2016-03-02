@@ -156,7 +156,7 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
     
     vm.newClockIn = function () {
         createTimeclockService.showModal(vm.foremans).then(function (data) {
-
+            getWeekData(vm.currentDay);
         });
     }
     

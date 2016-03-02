@@ -28,9 +28,22 @@ app.directive('reportAutoComplete', function (Api,$interval) {
 
             var opts = {};
             opts.search = str;
+            opts.filters=  [
+                {
+                    field: 'status',
+                    value: ['approved', 'scheduled']
+                }
+            ];
 
             return Api.findReport(opts).then(function (data) {
-                var res=data.reports;
+                var res=[]
+                _.each(data.reports, function(item){
+                    var report = {};
+                    report.reportID = item.reportID;
+                    report.label =  '#' + item.reportID + ' - ' + item.name;
+
+                    res.push(report);
+                });
                 autocompleteData = res;
                 return res;
             })
@@ -44,7 +57,7 @@ app.directive('reportAutoComplete', function (Api,$interval) {
         priority: 500,
         scope: true,
         compile: function (el, attrs) {
-            var options = "address.reportID as address.name for address in addressLookup($viewValue)";
+            var options = "address.reportID as address.label for address in addressLookup($viewValue)";
             attrs.$set('bsOptions', options);
             return linker;
         }

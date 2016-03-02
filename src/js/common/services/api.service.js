@@ -442,7 +442,10 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       saveTimeclockSchedules: function (params) {
         return Rest.one('timeclock/edit').post(undefined, params);
       },
-
+      findReport: function (params) {
+        return Rest.one('report').customGET('paged', {json: JSON.stringify(params)});
+      },
+      
       // Deductions
       addDeduction: function (reportID, params) {
         return Rest.one('estimate', reportID).one('deduction').post(undefined, params);

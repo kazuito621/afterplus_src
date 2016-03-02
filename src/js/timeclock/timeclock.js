@@ -2,9 +2,10 @@ app
     .controller('TimeclockController', TimeclockController)
     .service('TimeclockService', TimeclockService);
 
-TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'Api', 'Auth', '$filter']
-function TimeclockController (TimeclockService, editTimeclockService, Api, Auth, $filter) {
+TimeclockController.$inject = ['TimeclockService', 'editTimeclockService', 'createTimeclockService', 'Api', 'Auth', '$filter']
+function TimeclockController (TimeclockService, editTimeclockService, createTimeclockService, Api, Auth, $filter) {
     var vm = this;
+    vm.foremans = [];
     vm.users = [];
     vm.totals = [];
 
@@ -53,6 +54,16 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
             }
         }
         days = days.reverse();
+        Api.getTimeclockUsers().then(function(data){
+            _.each(data.users, function (foremanUser) {
+                var foreman = {};
+                foreman.userID = foremanUser.userID;
+                foreman.fullName = foremanUser.fullName;
+
+                vm.foremans.push(foreman);
+            });
+
+        });
         getUsers(days);
     }
 
@@ -108,6 +119,12 @@ function TimeclockController (TimeclockService, editTimeclockService, Api, Auth,
             vm.isEditorOpen = false;
         });
     };
+    
+    vm.newClockIn = function () {
+        createTimeclockService.showModal(vm.foremans).then(function (data) {
+
+        });
+    }
     
     vm.decrementWeekNumber = function() {
         vm.week--;

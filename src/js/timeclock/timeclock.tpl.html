@@ -54,6 +54,7 @@
             {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
             <i class="glyphicon glyphicon-chevron-right" ng-click="timeclock.incrementWeekNumber()" ng-show="timeclock.currentWeek > timeclock.week" style="cursor: pointer"></i>
         </h2>
+        <button class="btn btn-success pull-right" ng-click="timeclock.newClockIn()">New Clock-in</button>
         <div class="clearfix"></div>
     </div>
 

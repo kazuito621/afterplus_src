@@ -2046,7 +2046,7 @@ console.debug(" show mapp trees -------- ");
 
 			
 				var hdtInit = function(){
-					var url='https://csp.hawaiidt.com/sitemap/json/index.php';
+					var url='/sitemap/json/index.php';
 					$.getJSON(url, '', function(res){
 						s.hdt=res;
 						showMappedSites();

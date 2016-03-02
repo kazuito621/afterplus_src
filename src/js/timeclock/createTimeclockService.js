@@ -71,7 +71,21 @@ app
         };
 
         var show = function (foremans) {
+            createModalDeferred = $q.defer();
 
+            createModalScope.foremans = foremans;
+            createModalScope.schedule = {};
+            createModalScope.schedule.time_in = new Date();
+
+            createTimeclockModal = $modal({
+                scope: createModalScope,
+                template: '/js/timeclock/createTimeclock.tpl.html',
+                show: false
+            });
+
+            createTimeclockModal.$promise.then(createTimeclockModal.show);
+
+            return createModalDeferred.promise;
         };
 
         var showModal = function (foremans) {

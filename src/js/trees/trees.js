@@ -2046,7 +2046,11 @@ console.debug(" show mapp trees -------- ");
 
 			
 				var hdtInit = function(){
-					var url='/sitemap/json/index.php';
+                    var entity = $location.search().e;
+					if(entity)
+						var url='/sitemap/json/index.php?e='+entity;
+					else 
+						var url='/sitemap/json/index.php';
 					$.getJSON(url, '', function(res){
 						s.hdt=res;
 						showMappedSites();

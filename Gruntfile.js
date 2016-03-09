@@ -88,8 +88,9 @@ module.exports = function (grunt) {
                 port: 9000,
                 // Change this to '0.0.0.0' to access the server from outside.
                 hostname: '0.0.0.0',
-                livereload: 35729
+                //livereload: 12345
             },
+/*
             livereload: {
                 options: {
                     open: true,
@@ -99,6 +100,7 @@ module.exports = function (grunt) {
                     ]
                 }
             },
+*/
             test: {
                 options: {
                     port: 9001,
@@ -498,7 +500,7 @@ module.exports = function (grunt) {
           'concurrent:server',
           'autoprefixer',
           'html2js',
-          'connect:livereload',
+          //'connect:livereload',
           'watch'
         ]);
     });
@@ -528,7 +530,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'autoprefixer',
       'html2js',
-      'connect:livereload',
+      //'connect:livereload',
       'protractor_webdriver:start'
     ]);
 

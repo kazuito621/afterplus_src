@@ -25,6 +25,11 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
 
     var loadSites = function () {
       var deferred = $q.defer();
+
+		initData.sites=[];
+		deferred.resolve([]);
+		return deferred.promise;
+
       if (!isSignedIn()) {
         deferred.resolve();
       } else if (!_.isEmpty(initData.sites)) {
@@ -48,6 +53,12 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
      */
     var init = function (forceRefresh, useAuthData) {
       var deferred = $q.defer();
+
+		$rootScope.initData = {}		
+		deferred.resolve([]);
+		return deferred.promise;
+
+
       if (!isSignedIn()) {
         deferred.resolve();
       } else if (!_.isEmpty(initData) && forceRefresh !== true) {

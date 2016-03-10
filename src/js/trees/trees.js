@@ -925,6 +925,11 @@ var TreesCtrl = app.controller('TreesCtrl',
 					_.each(s.hdt.key.pinColor, function(color,name){
 						h+='<img src="' +pinUrl+color+ '" style="height:15px; width:auto;"> ' + name + ' &nbsp; ';
 					});
+
+					_.each(s.hdt.key.lineColor, function(color, name){
+						h+='<div class="color-box" style="background-color: #'+color+';width:10px;height:10px;display:inline-block;'
+							+'"></div> '+name+' &nbsp; ';
+					});
 					
 					$('span#hdt_key').html(h);
 				}
@@ -2046,11 +2051,14 @@ console.debug(" show mapp trees -------- ");
 
 			
 				var hdtInit = function(){
-                    var entity = $location.search().e;
-					if(entity)
-						var url='/sitemap/json/index.php?e='+entity;
-					else 
+
+					if( window.location.host.match(/hawaiidt/) )
 						var url='/sitemap/json/index.php';
+					else
+						var url='https://csp.hawaiidt.com/sitemap/json/index.php';
+
+            	var entity = $location.search().e;
+					if(entity) url+='?e='+entity;
 					$.getJSON(url, '', function(res){
 						s.hdt=res;
 						showMappedSites();

@@ -67,10 +67,44 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
         getUsers(days);
     }
 
+    function toSeconds( time ) {
+        var parts = time.split(':');
+        return (+parts[0]) * 60 * 60 + (+parts[1]) * 60;
+    }
+
+    function toHHMMSS(sec) {
+        var sec_num = parseInt(sec, 10); // don't forget the second parm
+        var hours   = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+
+        if (hours   < 10) {hours   = "0"+hours;}
+        if (minutes < 10) {minutes = "0"+minutes;}
+        var time    = hours+':'+minutes;
+        return time;
+    }
+
     function getUsers(days) {
         TimeclockService.getUsers(days).then(function (data) {
             vm.users = data.users;
             vm.totals = data.totals;
+            vm.totalSummary = {};
+            vm.totalSummary.hours = 0;
+            vm.totalSummary.overtime = 0;
+            vm.totalSummary.total = 0;
+            _.each (vm.totals, function(total) {
+                var summaryHours = toSeconds(total.hours);
+                vm.totalSummary.hours += summaryHours;
+
+                var summaryOvertime = toSeconds(total.overtime);
+                vm.totalSummary.overtime += summaryOvertime;
+
+                var summaryTotal = toSeconds(total.total);
+                vm.totalSummary.total += summaryTotal;
+            });
+            console.log(vm.totalSummary);
+            vm.totalSummary.hours = toHHMMSS(vm.totalSummary.hours);
+            vm.totalSummary.overtime = toHHMMSS(vm.totalSummary.overtime);
+            vm.totalSummary.total = toHHMMSS(vm.totalSummary.total);
         });
         //_.each(days, function (singleDay) {
         //    TimeclockService.getUsers(singleDay).then(function(users) {
@@ -122,7 +156,7 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
     
     vm.newClockIn = function () {
         createTimeclockService.showModal(vm.foremans).then(function (data) {
-
+            getWeekData(vm.currentDay);
         });
     }
     

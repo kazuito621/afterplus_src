@@ -18,16 +18,23 @@
 			if(this.apiBaseUrl_set) return this.apiBaseUrl_set;
 
 			if( this.hostAndPort().match(/app.aplustree.com:9000/) ){
-				var server='http://app.arborplus.com';
+				this.server='http://app.arborplus.com';
 			}else if( this.hostAndPort().match(/:9000/) || this.host().match(/(localh|127.0.0|0.0.0)/)) {
-				var server='http://dev.arborplus.com';
+				this.server='http://dev.arborplus.com';
+				//this.server='http://dev2.arborplus.com';
 			}else{
-				var server=this.hostAndPort();
+				this.server=this.hostAndPort();
 			}
 
-			this.apiBaseUrl_set = server+'/api/v2.0';
+			this.apiBaseUrl_set = this.server+'/api/v2.0';
 			return this.apiBaseUrl_set;
 	  }
+
+	  /*
+			These variables, this.entityID, this.entity get placed 
+			by /go/config.js which is loaded in via index.html
+			(which is actually a php script injecting that data)
+	  */
       ,getEntityID: function () {
         return this.entityID;
       }, // dev.aplustree
@@ -124,7 +131,7 @@
     // if dev js... load the config
     var hnp = cfg.hostAndPort();
     if (hnp.match(/9000/)) {
-      $.getScript('http://dev.arborplus.com/go/config.js');
+      $.getScript(this.server + '/go/config.js');
     }
   }
 })();

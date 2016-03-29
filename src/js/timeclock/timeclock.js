@@ -499,7 +499,7 @@ function TimeclockService($q, Api) {
 
                 if (i == (schedule.length - 1)) {
                     if (scheduleEntry.time_out == null) {
-                        scheduleEntry.time_out = moment().format('YYYY-MM-DD HH:MM:ss');
+                        scheduleEntry.time_out = moment().format('YYYY-MM-DD HH:mm:ss');
                     }
                     events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
                 }

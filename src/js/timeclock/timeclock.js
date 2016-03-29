@@ -24,6 +24,8 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
 
     vm.selectAllSimilarValue = false;
 
+    vm.filterByReport = false;
+
     getWeekData(currentWeek);
 
     // for ios application
@@ -31,7 +33,7 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
         return vm.isEditorOpen
     }
 
-    function getWeekData(currentWeek) {
+    function getWeekData(currentWeek, reportID) {
         var day = moment().day("Monday").week(currentWeek);
         var today = day.clone();
         var startOfWeek = today.clone().startOf('isoWeek');
@@ -64,7 +66,7 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
             });
 
         });
-        getUsers(days);
+        getUsers(days,reportID);
     }
 
     function toSeconds( time ) {
@@ -83,8 +85,8 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
         return time;
     }
 
-    function getUsers(days) {
-        TimeclockService.getUsers(days).then(function (data) {
+    function getUsers(days, reportID) {
+        TimeclockService.getUsers(days, reportID).then(function (data) {
             vm.users = data.users;
             vm.totals = data.totals;
             vm.totalSummary = {};
@@ -342,6 +344,15 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
 
     };
 
+    vm.filterReportID = function (reportID, reportName) {
+        vm.filterByReport = reportID;
+        vm.filterByReportName = reportName;
+        getWeekData(vm.week, reportID);
+    }
+    vm.disableReportFilter = function () {
+        vm.filterByReport = false;
+        getWeekData(vm.week);
+    }
 };
 
 TimeclockService.$inject = ['$q', 'Api']
@@ -358,7 +369,7 @@ function TimeclockService($q, Api) {
 
     return service;
 
-    function getUsers(days) {
+    function getUsers(days, reportID) {
         var deferred = $q.defer();
 
         var response = {};
@@ -369,6 +380,7 @@ function TimeclockService($q, Api) {
         var params = {};
         params.date_to = days[0];
         params.date_from = days[days.length - 1];
+        params.report_id = reportID;
 
         Api.getTimeclockUsersInfo(params).then(function(data) {
             var dates = data.dates;

@@ -48,7 +48,7 @@ app.directive('userAutoComplete', function (Api) {
         scope: true,
         compile: function (el, attrs) {
             var options = "user.email as user.email for user in emailLookup($viewValue)";
-            attrs.$set('ngOptions', options);
+            attrs.$set('bsOptions', options);
             return linker;
         }
     };

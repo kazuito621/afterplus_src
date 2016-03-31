@@ -74,7 +74,7 @@
                                     <div ng-form ng-submit="addNewRepContact($event)" name="siteUsersFormContract">
                                         <input type="text" required placeholder="Email" style="width: 135px;" ng-model="newRep.email" id='newRepEmail'
 													onkeypress='if($(this).val().length>3 && !$(this).val().match(/^[a-z][^@]+@[^\.]+\.[a-z]/i)){ $(this).css({backgroundColor:"#fdd"}) }else{ $(this).css({backgroundColor:""})} '
-                                               user-auto-complete="repSelect" user-roles="sales,inventory,admin" user-ignore="reps" bs-typeahead>
+                                               user-auto-complete="repSelect" user-roles="sales" user-ignore="reps" bs-typeahead>
                                         <input type="text" placeholder="First name" required style="width:80px" ng-model="newRep.fName">
                                         <input type="text" placeholder="Last name"  style="width:80px;" ng-model="newRep.lName">
                                         <input type="text"  placeholder="Phone" style="width:105px;" ng-model="newRep.phone">

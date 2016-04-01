@@ -54,15 +54,13 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
             }
         }
         days = days.reverse();
-        Api.getTimeclockUsers().then(function(data){
-            _.each(data.users, function (foremanUser) {
+        Api.getForemanUsers().then(function(data){
+            _.each(data, function (foremanUser) {
                 var foreman = {};
                 foreman.userID = foremanUser.userID;
-                foreman.fullName = foremanUser.fullName;
-
+                foreman.fullName = foremanUser.fName;
                 vm.foremans.push(foreman);
             });
-
         });
         getUsers(days);
     }

@@ -140,6 +140,9 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       getSalesUsers: function () {
         return Rest.all('user').getList({roles: 'sales'});
       },
+      getForemanUsers: function () {
+      return Rest.all('user').getList({roles: 'foreman,staff,sales,admin'});
+    },
       getReport: function (reportID, opts) {
         var r = $rootScope.requestedReportID;
         if (r && r > 1) {

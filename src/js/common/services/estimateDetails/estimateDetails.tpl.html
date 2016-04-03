@@ -78,6 +78,11 @@
                     </div>
                 </div>
                 <BR>
+                <div class="row">
+                    <div class="col-md-12" ng-repeat="category in summary.categories track by $index">
+                        {{ category.text }} {{ category.treatmentCategory }}
+                    </div>
+                </div>
                 <div class="row" ng-if="report.charts">
                     <div class="col-md-12">
                         <div id='summary-charts' style='padding:2em 0 2em 0;'>

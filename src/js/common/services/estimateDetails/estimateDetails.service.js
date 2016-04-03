@@ -119,6 +119,8 @@ app
         };
 
         var prepareReportData = function(report) {
+            scope.summary = report.summary;
+            console.log(scope.summary);
             scope.status = report.status;
             scope.jobdescription = report.price;
             scope.price = report.total_price.replace(",", "");

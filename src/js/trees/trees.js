@@ -1956,6 +1956,26 @@ console.debug(" show mapp trees -------- ");
                 }
             });
 
+            s.markComplete = function (item) {
+                s.markCompleteInProgress = true;
+                console.log('item.tstamp_completed');
+                console.log(item.tstamp_completed);
+                if (item.tstamp_completed != null) {
+                    Api.markReportItemAsComplete(s.report.reportID, item.reportItemID).then(function(data) {
+                        if (data.reportItem != undefined) {
+                            item.tstamp_completed = data.reportItem.tstamp_completed;
+                        }
+
+                        s.markCompleteInProgress = false;
+                    });
+                } else {
+                    Api.markReportItemAsIncomplete(s.report.reportID, item.reportItemID).then(function(data) {
+                        item.tstamp_completed = null;
+                        s.markCompleteInProgress = false;
+                    });
+                }
+            }
+
             //  s.$on('$routeChangeSuccess', onUserNav);
         }]);	// }}} TreesCtrl
 

@@ -60,8 +60,10 @@
                     <table class="">
                         <tr ng-repeat="treatment in item.treatments" ng-init="treatmentIndex = $index">
                             <td ng-if="auth.isAtleast('inventory') && !auth.is('customer')" data-title="listing_treatment" class="td-treatment">
-                                <span ng-init="treatment.completed = (treatment.tstamp_completed == null) ? false : true;" ng-class=" treatment.completed ? 'report-item-completed' : ''">
-                                    <input type="checkbox" ng-disabled="markCompleteInProgress" ng-model="treatment.completed" ng-change="markComplete(item, treatment)">
+                                <span ng-init="treatment.completed = (treatment.tstamp_completed == null) ? false : true;" 
+										  		ng-class=" treatment.completed ? 'report-item-completed' : ''">
+                                    <input type="checkbox" ng-disabled="markCompleteInProgress" ng-model="treatment.completed" ng-change="markComplete(item, treatment)"
+										  		ng-show="report.status=='approved' || report.status=='scheduled'" >
                                     <a href e-ng-options="obj.code as obj.treatmentType for obj in initData.filters.treatments"
                                         onshow="onShowEditItem(item.$$hashKey)"
                                         editable-select="treatment.treatmentTypeCode"

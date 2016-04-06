@@ -656,7 +656,7 @@ angular.module('calendardirective', [])
 
                         s.loadGroups = function (deferred) {
 
-                            Api.getForemen()
+                            Api.getForemanUsers()  //(this acutally gets ALL sales,admin,users)
                                 .then(function (response) {
                                     s.groups = [];
                                     angular.forEach(response, function (item) {

@@ -77,18 +77,13 @@
                                 <div class="row" style="margin: 15px 2px 10px 5px;">
                                     <form class="form-vertical">
                                         <div class="form-group">
-                                            <ui-select multiple ng-model="newSaleRep.sales" theme="bootstrap">
+                                            <ui-select multiple ng-model="newSaleRep.sales" theme="bootstrap" on-select="addNewSiteRepOnSelect($item, $model)">
                                                 <ui-select-match placeholder="">{{$item.fullName}}</ui-select-match>
                                                 <ui-select-choices repeat="saleUser in (salesList | filter: $select.search) track by saleUser.userID">
                                                     <div ng-bind-html="saleUser.fullName | highlight: $select.search"></div>
                                                 </ui-select-choices>
                                             </ui-select>
                                         </div>
-
-
-                                        <button ng-click="addNewSiteRep($event)"
-                                                type='button' class='btn btn-primary'>Add
-                                        </button>
                                     </form>
                                 </div>
                             </div>

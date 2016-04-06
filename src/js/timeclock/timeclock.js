@@ -60,7 +60,7 @@ function TimeclockController (TimeclockService, editTimeclockService, createTime
             _.each(data, function (foremanUser) {
                 var foreman = {};
                 foreman.userID = foremanUser.userID;
-                foreman.fullName = foremanUser.fName;
+                foreman.fullName = foremanUser.fName + ' ' + foremanUser.lName;
                 vm.foremans.push(foreman);
             });
         });

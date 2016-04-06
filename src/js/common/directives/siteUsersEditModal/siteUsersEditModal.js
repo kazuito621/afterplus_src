@@ -4,6 +4,7 @@ app.directive('siteUsersEditModal',
 	    'use strict';
 
 	    var linker = function (scope, el, attrs) {
+
 	        var modal;
 	        var newContact = { role: 'customer', email: undefined, fName: undefined, lName: undefined, phone: undefined };
 	        var newRep = { role: 'sales', email: undefined, fName: undefined, lName: undefined, phone: undefined };
@@ -40,6 +41,7 @@ app.directive('siteUsersEditModal',
 			scope.newSaleRep = {};
 
 	        scope.openModal = function (id) {
+				console.log('openModal');
 	            if (!id) {
 	                console.log('Trying to open site users modal without site id provided');
 	                return;
@@ -54,7 +56,7 @@ app.directive('siteUsersEditModal',
 	                scope.contacts = separatedUsers.contacts;
 	                scope.reps = separatedUsers.reps;
 	            });
-
+				console.log('openModal 2');
 				if(!scope.salesList.length){
 					Api.getSalesUsers().then(function (response) {
 						console.log(response);
@@ -67,6 +69,12 @@ app.directive('siteUsersEditModal',
 							$(document).keyup(hideOnEscape);
 						});
 					});
+				} else {
+					modal.$promise.then(function () {
+						modal.show();
+						// setup ESCAPE key
+						$(document).keyup(hideOnEscape);
+					});
 				}
 
 
@@ -75,7 +83,9 @@ app.directive('siteUsersEditModal',
 	        scope.closeModal = function () {
 	            scope.showAddNewSiteContact = false;
 	            scope.showAddNewSiteRep = false;
-	            modal.hide();
+				modal.$promise.then(function () {
+					modal.hide();
+				});
 	        };
 
 	        scope.showAddForm = function (type) {
@@ -167,6 +177,37 @@ app.directive('siteUsersEditModal',
 	            if (filter.test(sEmail)) return true;
 	         	return false;
 	        }
+
+			scope.addNewSiteRepOnSelect = function ($item, $model) {
+				scope.showAddNewSiteRep = false;
+
+				var tmp = angular.copy($model);
+				var isvalid = validateEmail(tmp.email);
+				if (isvalid === true) {
+
+				}
+				else {
+					$("#newRepEmail").val(' ');
+					return;
+				}
+				var user = { role: tmp.role, email: tmp.email };
+
+				user.fName = tmp.fName;
+				user.lName = tmp.lName;
+				user.phone = tmp.phone;
+				if (tmp.userID) user.userID = tmp.userID;
+
+				console.log('Add new site rep', user);
+				Api.userSite.assign(scope.site.siteID, user).then(function (data) {
+					if (data[0]) {
+						scope.reps.push(data[0]);
+						scope.site.userStaffCount++;
+					}
+					scope.newRep = angular.copy(newRep);
+				});
+
+				scope.newSaleRep = {};
+			};
 
 	        scope.addNewSiteRep = function (event) {
 				event.preventDefault();

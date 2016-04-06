@@ -8,7 +8,7 @@
         <textarea class="col-md-12" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type here......." ng-model="noteInput">
             </textarea>
             <div class='col-md-12 pull-right' style='padding:1em;'>
-                <button type="button" class="btn btn-success btn-xs" ng-click="ok()">OK</button>
+                <button type="button" class="btn btn-success btn-xs" ng-click="ok()" ng-disabled="addingNote">OK</button>
                 <button type="button" class="btn btn-danger  btn-xs" ng-click="addNote=false">CANCEL</button>
             </div>
         </form>
@@ -23,7 +23,7 @@
             <textarea class="col-md-12" rows="4" cols="50" style="margin-top: 10px" ng-disabled="addingNote" placeholder="Type note here..." ng-model="updatedText">
             </textarea>
                 <div class='col-md-12 pull-right' style='padding:1em;'>
-                    <button type="button" class="btn btn-success btn-xs" ng-click="update(n)">OK</button>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="update(n)" ng-disabled="addingNote">OK</button>
                     <button type="button" class="btn btn-danger  btn-xs" ng-click="cancelEdit()">
                         CANCEL
                     </button>

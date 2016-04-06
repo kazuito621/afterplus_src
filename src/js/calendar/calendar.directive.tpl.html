@@ -140,12 +140,12 @@
         <div id='external-events' style="">
             <h4 id='approved-jobs-title' style="margin:0 0 .5em; line-height:1.3em; font-size:.8em;">
                 <span style='font-weight:bold;'>Approved </span></h4>
-            <div class='fc-event drop-accpted' ng-repeat="singleJob in unschedJobs | orderBy:'reportID'"
+            <div class='fc-event drop-accpted' ng-repeat="singleJob in unschedJobs | orderBy:'-tstamp_approved'"
                  ng-class="'clr-'+singleJob.status" style='padding:.25em .5em'
                  estimate-detail="singleJob"
                  allow-calendar="true"
                  data-price="{{singleJob.price}}" data-reportID="{{singleJob.reportID}}">
-                {{singleJob.title}}
+                {{singleJob.title}} - {{singleJob.tstamp_approved}}
             </div>
             <p>
                 <input type='checkbox' id='drop-remove' checked ng-show="false" />

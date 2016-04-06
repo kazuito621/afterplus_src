@@ -405,6 +405,7 @@ app.service('ReportService',
 
             var getTreatment = function (item) {
                 return {
+					tstamp_completed: item.tstamp_completed,
                     treatmentTypeCode: item.treatmentTypeCode,
                     price: item.price
                 };
@@ -419,6 +420,7 @@ app.service('ReportService',
                     keys.push(i.treeID);
                     i.treatments = [];
                     i.treatments.push(getTreatment(item));
+
                     res.push(i);
                 }
             });

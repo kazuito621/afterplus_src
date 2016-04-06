@@ -59,8 +59,8 @@ app
 
         var loadUsers = function (deferred) {
             // create email short for report foreman and sales
-            scope.report.foreman_email_short = (scope.report.foreman_email != undefined) ? scope.report.foreman_email.split('@')[0] : null;
-            scope.report.sales_email_short = (scope.report.sales_email != undefined) ? scope.report.sales_email.split('@')[0] : null;
+            scope.report.foreman_fullname = (scope.report.foreman_fullname != undefined) ? scope.report.foreman_fname + ' ' + scope.report.foreman_lname : null;
+            scope.report.sales_fullname = (scope.report.sales_fullname != undefined) ? scope.report.sales_fname + ' ' + scope.report.sales_lname : null;
 
             if(!scope.foremenList.length){
 					Api.getForemen().then(function (response) {
@@ -89,7 +89,7 @@ app
 
 					out.push({ 
 						userID:item.userID, 
-						text: item.fName+ini,
+						text: item.fName+' '+item.lName,
 						fName:item.fName,
 						lName:item.lName,
 						email: item.email
@@ -119,6 +119,8 @@ app
         };
 
         var prepareReportData = function(report) {
+            scope.summary = report.summary;
+            console.log(scope.summary);
             scope.status = report.status;
             scope.jobdescription = report.price;
             scope.price = report.total_price.replace(",", "");
@@ -193,6 +195,7 @@ app
                 scope.report.foreman_email=newForeman.email;
                 scope.report.foreman_fname=newForeman.fName;
                 scope.report.foreman_lname=newForeman.lName;
+                scope.report.foreman_fullname=newForeman.fName + ' ' + newForeman.lName;
                 scope.report.foreman_email_short=newForeman.email.split('@')[0];
             });
         };
@@ -206,6 +209,7 @@ app
                 scope.report.sales_email=newSalesman.email;
                 scope.report.sales_fname=newSalesman.fName;
                 scope.report.sales_lname=newSalesman.lName;
+                scope.report.sales_fullname=newSalesman.fName + ' ' + newSalesman.lName;
                 scope.report.sales_email_short=newSalesman.email.split('@')[0];
             });
         };

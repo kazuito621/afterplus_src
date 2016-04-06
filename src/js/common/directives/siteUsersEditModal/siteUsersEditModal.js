@@ -36,6 +36,9 @@ app.directive('siteUsersEditModal',
 	        scope.newContact = angular.copy(newContact);
 	        scope.newRep = angular.copy(newRep);
 
+			scope.salesList = [];
+			scope.newSaleRep = {};
+
 	        scope.openModal = function (id) {
 	            if (!id) {
 	                console.log('Trying to open site users modal without site id provided');
@@ -52,11 +55,21 @@ app.directive('siteUsersEditModal',
 	                scope.reps = separatedUsers.reps;
 	            });
 
-	            modal.$promise.then(function () {
-	                modal.show();
-	                // setup ESCAPE key
-	                $(document).keyup(hideOnEscape);
-	            });
+				if(!scope.salesList.length){
+					Api.getSalesUsers().then(function (response) {
+						console.log(response);
+						scope.salesList = processUsers(response);
+						//if(deferred) deferred.resolve(scope.salesList);
+
+						modal.$promise.then(function () {
+							modal.show();
+							// setup ESCAPE key
+							$(document).keyup(hideOnEscape);
+						});
+					});
+				}
+
+
 	        };
 
 	        scope.closeModal = function () {
@@ -156,36 +169,39 @@ app.directive('siteUsersEditModal',
 	        }
 
 	        scope.addNewSiteRep = function (event) {
-
-	            event.preventDefault();
+				event.preventDefault();
 	            event.stopPropagation();
 
 	            scope.showAddNewSiteRep = false;
 
-	            var tmp = angular.copy(scope.newRep);
-	            var isvalid = validateEmail(tmp.email);
-	            if (isvalid === true) {
-	               
-	            }
-	            else {
-	                $("#newRepEmail").val(' ');
-	                return;
-	            }
-	            var user = { role: tmp.role, email: tmp.email };
+	            var tmpUsers = angular.copy(scope.newSaleRep.sales);
+				angular.forEach(tmpUsers, function (tmp) {
+					var isvalid = validateEmail(tmp.email);
+					if (isvalid === true) {
 
-	            user.fName = tmp.fName;
-	            user.lName = tmp.lName;
-	            user.phone = tmp.phone;
-	            if (tmp.userID) user.userID = tmp.userID;
+					}
+					else {
+						$("#newRepEmail").val(' ');
+						return;
+					}
+					var user = { role: tmp.role, email: tmp.email };
 
-	            console.log('Add new site rep', user);
-	            Api.userSite.assign(scope.site.siteID, user).then(function (data) {
-	                if (data[0]) {
-	                    scope.reps.push(data[0]);
-	                    scope.site.userStaffCount++;
-	                }
-	                scope.newRep = angular.copy(newRep);
-	            });
+					user.fName = tmp.fName;
+					user.lName = tmp.lName;
+					user.phone = tmp.phone;
+					if (tmp.userID) user.userID = tmp.userID;
+
+					console.log('Add new site rep', user);
+					Api.userSite.assign(scope.site.siteID, user).then(function (data) {
+						if (data[0]) {
+							scope.reps.push(data[0]);
+							scope.site.userStaffCount++;
+						}
+						scope.newRep = angular.copy(newRep);
+					});
+				});
+
+				scope.newSaleRep = {};
 	        };
 
 	        scope.unassign = function (userID, email, type) {
@@ -250,6 +266,24 @@ app.directive('siteUsersEditModal',
 	                }
 	            });
 	        };
+
+			var processUsers = function(users){
+				var usersList = [];
+				if(!users) {
+					return usersList;
+				}
+
+				angular.forEach(users, function (item) {
+					usersList.push({
+						userID:item.userID,
+						fullName: item.fName + ' ' + item.lName,
+						fName:item.fName,
+						lName:item.lName,
+						email: item.email
+					});
+				});
+				return usersList;
+			}
 
 	        init();
 	    };

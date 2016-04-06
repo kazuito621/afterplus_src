@@ -753,7 +753,6 @@ td.estimate_multirow_col{
 }
 /*mobile view*/
 
-}
 
 /*search bar buttons*/
 .search-panel-button:hover{
@@ -793,4 +792,16 @@ td.estimate_multirow_col{
 
 .action-float-bar a {
 	color: white;
+}
+
+.popover-container {
+	z-index: 1000;
+}
+
+.report-item-completed {
+	background-color: #5cb85c;
+	padding: 5px;
+}
+.report-item-completed a {
+	color: #fff;
 }

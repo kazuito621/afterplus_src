@@ -140,6 +140,9 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       getSalesUsers: function () {
         return Rest.all('user').getList({roles: 'sales'});
       },
+      getForemanUsers: function () {
+      return Rest.all('user').getList({roles: 'foreman,staff,sales,admin'});
+    },
       getReport: function (reportID, opts) {
         var r = $rootScope.requestedReportID;
         if (r && r > 1) {
@@ -455,6 +458,18 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       },
       removeDeduction: function (reportID, deductionID) {
         return Rest.one('estimate', reportID).one('deduction', deductionID).remove();
+      },
+
+      // Tree reports
+      markReportItemAsComplete: function (rptID, itemID) {
+        var params = {'completed' : 1};
+
+        return Rest.one('estimate', rptID).one('item', itemID).post(undefined, params);
+      },
+      markReportItemAsIncomplete: function (rptID, itemID) {
+        var params = {'completed' : 0};
+
+        return Rest.one('estimate', rptID).one('item', itemID).post(undefined, params);
       }
     };
   }]);

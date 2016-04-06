@@ -103,11 +103,14 @@
 
 
                     <!-- <input type="button" class="btn btn-success" ng-click="open(siteID)" value="JobAssignToForeman"></input>-->
+					<!--
+					ADD THIS BACK BUT TEST IT:
                     <button  ng-if="status=='completed' || status=='invoiced'"
 						  				class="btn btn-default pull-left"  ng-model="status"
                              bs-options="s.value as s.txt for s in statuses"
                              bs-select onclick="return false;" ng-change="updateStatus()">
                     </button>
+					-->
 
 						  <a href='{{pdfUrl}}' target=_new style='font-size:.85em;'>PDF</a> 
 						  &nbsp;

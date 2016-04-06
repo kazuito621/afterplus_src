@@ -5,7 +5,14 @@
                 <td class="td-image">Tree</td>
                 <td class="td-id">ID</td>
                 <td class="td-name">Name</td>
-                <td class="td-treatment">Treatments</td>
+                <td class="td-treatment">Treatments
+					 <div
+					 	style='color:#f33; font-weight:bold;'
+						ng-show="report.status=='approved' || report.status=='scheduled'" >
+						<i class='fa fa-mail-reply fa-rotate-270'></i>
+					 	NEW! Mark item as complete
+					 </div>
+					 </td>
                 <td class="td-bid">
                     <!--Bid
 					<a ng-if="auth.isAtleast('inventory')" action-menu href="">

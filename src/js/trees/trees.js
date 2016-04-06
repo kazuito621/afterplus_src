@@ -1956,21 +1956,21 @@ console.debug(" show mapp trees -------- ");
                 }
             });
 
-            s.markComplete = function (item) {
+            s.markComplete = function (item, treatment) {
                 s.markCompleteInProgress = true;
-                console.log('item.tstamp_completed');
-                console.log(item.tstamp_completed);
-                if (item.tstamp_completed != null) {
-                    Api.markReportItemAsComplete(s.report.reportID, item.reportItemID).then(function(data) {
-                        if (data.reportItem != undefined) {
-                            item.tstamp_completed = data.reportItem.tstamp_completed;
-                        }
-
+                console.log('treatment.tstamp_completed');
+                console.log(treatment.tstamp_completed);
+                if (treatment.tstamp_completed != null) {
+                    Api.markReportItemAsIncomplete(s.report.reportID, treatment.reportItemID).then(function(data) {
+                        treatment.tstamp_completed = null;
                         s.markCompleteInProgress = false;
                     });
                 } else {
-                    Api.markReportItemAsIncomplete(s.report.reportID, item.reportItemID).then(function(data) {
-                        item.tstamp_completed = null;
+                    Api.markReportItemAsComplete(s.report.reportID, treatment.reportItemID).then(function(data) {
+                        if (data.reportItem != undefined) {
+                            treatment.tstamp_completed = data.reportItem.tstamp_completed;
+                        }
+
                         s.markCompleteInProgress = false;
                     });
                 }

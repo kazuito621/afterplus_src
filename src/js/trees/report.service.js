@@ -405,6 +405,7 @@ app.service('ReportService',
 
             var getTreatment = function (item) {
                 return {
+					reportItemID: item.reportItemID,
 					tstamp_completed: item.tstamp_completed,
                     treatmentTypeCode: item.treatmentTypeCode,
                     price: item.price

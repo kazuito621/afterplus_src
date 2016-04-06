@@ -8,6 +8,7 @@ app
         scope.usersFirstNames = '';
         scope.selectedDate = '';
         scope.allowAddBreak = false;
+        scope.allowClockOut = false;
         scope.addNewJobAllow = false;
         scope.newJobReport = 0;
         scope.jobTypes = [
@@ -53,6 +54,10 @@ app
 
             if (_.where(scope.events, { "type": "break" }).length == 0) {
                 scope.allowAddBreak = true;
+            }
+
+            if (scope.users[0].status == 'clockin') {
+                scope.allowClockOut = true;
             }
 
             editTimeclockModal = $modal({
@@ -352,6 +357,16 @@ app
 
         scope.closeAddJob = function() {
             scope.addNewJobAllow = false;
+        };
+
+        scope.clockOut = function() {
+            _.each(scope.users, function (user) {
+                user.status = 'clockout';
+            });
+
+            scope.events[scope.events.length-1].inProgress = false;
+
+            scope.events[scope.events.length-2].inProgress = false;
         };
 
         scope.saveSchedule = function () {

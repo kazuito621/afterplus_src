@@ -54,9 +54,15 @@
             {{ timeclock.startOfWeekFormated }} - {{ timeclock.endOfWeekFormated }}
             <i class="glyphicon glyphicon-chevron-right" ng-click="timeclock.incrementWeekNumber()" ng-show="timeclock.currentWeek > timeclock.week" style="cursor: pointer"></i>
         </h2>
+        <div style="display: inline-block;margin-left:50px" ng-if="timeclock.filterByReport">
+            <a class="btn btn-primary" ng-click="timeclock.disableReportFilter()">
+                #{{ timeclock.filterByReport }} - {{ timeclock.filterByReportName }} <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
+            </a>
+        </div>
         <button class="btn btn-success pull-right" ng-click="timeclock.newClockIn()">New Clock-in</button>
         <div class="clearfix"></div>
     </div>
+
 
     <div class='table-responsive' ng-repeat="entry in timeclock.users track by $index" >
 
@@ -88,52 +94,72 @@
                     <input ng-change="timeclock.selectUser(user, entry)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
                 </td>
                 <td ng-class="(timeclock.currentUserID == user.userID || timeclock.currentUserID == user.clockinby_userID) ? 'warning' : ''">
+
                     <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
                         <span style="font-weight: bold">{{ user.full_name }}</span>
-
-                        <span class="hidden-xs" ng-repeat="schedule in user.workSchedule">
-                            <span style="color: #000;" ng-if="!$last">
-                                {{ timeclock.formatScheduleTime(schedule.time) }}-{{ timeclock.formatScheduleTime(schedule.time_end) }}
-                                <span style="color: #ADADAD;;">
-                                    (#{{ schedule.reportID }})
-                                </span>
-                                ,
-                            </span>
-                            <span style="color: #000;"  ng-if="$last && !schedule.inProgress">
-                                {{ timeclock.formatScheduleTime(schedule.time) }}-{{ timeclock.formatScheduleTime(schedule.time_end) }}
-                                <span style="color: #ADADAD;;">
-                                    (#{{ schedule.reportID }})
-                                </span>
-                            </span>
-                            <span style="color: #000;"  ng-if="$last && schedule.inProgress">
-                                {{ timeclock.formatScheduleTime(schedule.time) }}-...
-                                <span style="color: #ADADAD;;">
-                                    (#{{ schedule.reportID }})
-                                </span>
-                            </span>
-                        </span>
-
-                        <span class="visible-xs" ng-repeat="schedule in user.workSchedule">
-                            <span style="color: #000;" ng-if="$first">
-                                {{ timeclock.formatScheduleTime(schedule.time) }}
-
-                                <span style="color: #ADADAD;;">
-                                    (#{{ schedule.reportID }})
-                                </span>
-                                -
-                            </span>
-
-                            <span style="color: #000;"  ng-if="$last && !schedule.inProgress">
-                                {{ timeclock.formatScheduleTime(schedule.time_end) }}
-                            </span>
-                            <span style="color: #000;"  ng-if="$last && schedule.inProgress">
-                                ...
-                                <span style="color: #ADADAD;;">
-                                    (#{{ schedule.reportID }})
-                                </span>
-                            </span>
-                        </span>
                     </a>
+
+                    <span class="hidden-xs" ng-repeat="schedule in user.workSchedule">
+                        <span style="color: #000;" ng-if="!$last">
+                            <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}-{{ timeclock.formatScheduleTime(schedule.time_end) }}
+                            </a>
+                            <span style="color: #ADADAD;;">
+                                <a ng-click="timeclock.filterReportID(schedule.reportID, schedule.report)" style="cursor: pointer;">
+                                    (#{{ schedule.reportID }})
+                                </a>
+                            </span>
+                            ,
+                        </span>
+                        <span style="color: #000;"  ng-if="$last && !schedule.inProgress">
+                            <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}-{{ timeclock.formatScheduleTime(schedule.time_end) }}
+                            </a>
+                            <span style="color: #ADADAD;;">
+                                <a ng-click="timeclock.filterReportID(schedule.reportID, schedule.report)" style="cursor: pointer;">
+                                    (#{{ schedule.reportID }})
+                                </a>
+                            </span>
+                        </span>
+                        <span style="color: #000;"  ng-if="$last && schedule.inProgress">
+                            <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}-...
+                            </a>
+                            <span style="color: #ADADAD;;">
+                                <a ng-click="timeclock.filterReportID(schedule.reportID, schedule.report)" style="cursor: pointer;">
+                                    (#{{ schedule.reportID }})
+                                </a>
+                            </span>
+                        </span>
+                    </span>
+                    <span class="visible-xs" ng-repeat="schedule in user.workSchedule">
+                        <span style="color: #000;" ng-if="$first">
+                            <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
+                                {{ timeclock.formatScheduleTime(schedule.time) }}
+                            </a>
+
+                            <span style="color: #ADADAD;;">
+                                <a ng-click="timeclock.filterReportID(schedule.reportID, schedule.report)" style="cursor: pointer;">
+                                    (#{{ schedule.reportID }})
+                                </a>
+                            </span>
+                            -
+                        </span>
+
+                        <span style="color: #000;"  ng-if="$last && !schedule.inProgress">
+                            <a ng-click="timeclock.openUser(user, entry)" style="cursor: pointer;">
+                                {{ timeclock.formatScheduleTime(schedule.time_end) }}
+                            </a>
+                        </span>
+                        <span style="color: #000;"  ng-if="$last && schedule.inProgress">
+                            ...
+                            <span style="color: #ADADAD;;">
+                                <a ng-click="timeclock.filterReportID(schedule.reportID, schedule.report)" style="cursor: pointer;">
+                                (#{{ schedule.reportID }})
+                                </a>
+                            </span>
+                        </span>
+                    </span>
                 </td>
                 <td style="width: 80px;" ng-class="{overclock_yellow: user.duration_hours>8, overclock_red: user.duration_hours>14}">
                     <span class="label label-success" ng-if="user.status=='clockin' && entry.date == timeclock.currentDay">Clocked In</span>

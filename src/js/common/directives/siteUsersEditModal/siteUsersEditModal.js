@@ -179,6 +179,7 @@ app.directive('siteUsersEditModal',
 	        }
 
 			scope.addNewSiteRepOnSelect = function ($item, $model) {
+				$('div#isWorking').show();
 				scope.showAddNewSiteRep = false;
 
 				var tmp = angular.copy($model);
@@ -199,6 +200,7 @@ app.directive('siteUsersEditModal',
 
 				console.log('Add new site rep', user);
 				Api.userSite.assign(scope.site.siteID, user).then(function (data) {
+					$('div#isWorking').hide();
 					if (data[0]) {
 						scope.reps.push(data[0]);
 						scope.site.userStaffCount++;

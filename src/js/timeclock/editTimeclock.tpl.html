@@ -15,10 +15,10 @@
 
                     <ng-pluralize count="users.length"
                                   when="{
-                     '1': '{{users.length}} user',
-                     'other': '{{users.length}} users'}">
+                     '1': '{{users.length}} user:',
+                     'other': '{{users.length}} users:'}">
                     </ng-pluralize>
-                     ({{ usersFirstNames }})
+                     {{ usersNamesAndUID }}
                 </h4>
             </div>
             <div class="modal-body">

@@ -3,6 +3,7 @@ app
         var modalDeferred;
 
         scope = $rootScope.$new();
+        window.etss = scope;
         scope.users = [];
         scope.events = [];
         scope.usersFirstNames = '';
@@ -48,6 +49,14 @@ app
             modalDeferred = $q.defer();
             scope.users = users;
             scope.usersFirstNames = _.pluck(users, 'full_name').join(', ');
+				var fnuid=[];
+				_.each(users, function(u){
+					var n = u.first_name;
+					if(u.last_name) n+= ' ' + u.last_name.substr(0,1);
+					n += ' (#' + u.userID + ')';
+					fnuid.push(n);
+				});
+            scope.usersNamesAndUID = fnuid.join(', ');
             scope.events = angular.copy(_.first(users).schedule);
             scope.selectedDate = selectedDate;
 

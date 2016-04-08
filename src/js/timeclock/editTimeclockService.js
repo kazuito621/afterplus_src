@@ -60,7 +60,6 @@ app
             scope.events = angular.copy(_.first(users).schedule);
             scope.selectedDate = selectedDate;
 
-
             if (_.where(scope.events, { "type": "break" }).length == 0) {
                 scope.allowAddBreak = true;
             }
@@ -279,6 +278,17 @@ app
             }
 
             scope.events.splice(changedIndex,i+1);
+        };
+
+        scope.removeOverlap = function (event) {
+
+            var changedIndex = _.indexOf(scope.events, event);
+            var i = changedIndex;
+
+            var prevWork = scope.events[changedIndex - 1];
+            var nextWork = scope.events[changedIndex + 1];
+
+            scope.events.splice(changedIndex,1);
         };
 
         scope.addBreak = function (event) {

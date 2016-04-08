@@ -75,6 +75,7 @@
                                                     hours
                                                 </label>
                                             </div>
+                                            <button type="button" class=" pull-right close" data-dismiss="modal" aria-label="Close" ng-if="event.isOverlap" ng-click="removeOverlap(event)"><span class="text-danger" aria-hidden="true">&times;</span></button>
                                         </div>
 
                                         <div ng-switch-when="break">

@@ -78,9 +78,10 @@
                     </div>
                 </div>
                 <BR>
-                <div class="row">
-                    <div class="col-md-12" ng-repeat="category in summary.categories track by $index">
-                        {{ category.text }} {{ category.treatmentCategory }}
+                <div class="row" ng-if="todo_price>0 || todo_price < price">
+                    <div class="col-md-12" ng-repeat="category in summary.categories track by $index" 
+						  	style="">
+                        {{ category.text }}
                     </div>
                 </div>
                 <div class="row" ng-if="report.charts">

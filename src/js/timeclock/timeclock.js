@@ -501,10 +501,25 @@ function TimeclockService($q, Api) {
                     }
                 }
 
+                var isOverlap = false;
                 if (scheduleEntry.time_out == null) {
-                    events.push(createEvent('work', scheduleEntry.time_in, moment().format('YYYY-MM-DD HH:MM:ss'), scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status, true))
+                    if (
+                        (schedule[i-1] != undefined && schedule[i-1].status != 'break' && schedule[i-1].reportID == scheduleEntry.reportID) ||
+                        (schedule[i+1] != undefined && schedule[i+1].status != 'break' && schedule[i+1].reportID == scheduleEntry.reportID)
+                    ) {
+                        isOverlap = true;
+                    }
+
+                    events.push(createEvent('work', scheduleEntry.time_in, moment().format('YYYY-MM-DD HH:MM:ss'), scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status, true, isOverlap))
                 } else {
-                    events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status))
+                    if (
+                        (schedule[i-1] != undefined && schedule[i-1].status != 'break' && schedule[i-1].reportID == scheduleEntry.reportID) ||
+                        (schedule[i+1] != undefined && schedule[i+1].status != 'break' && schedule[i+1].reportID == scheduleEntry.reportID)
+                    ) {
+                        isOverlap = true;
+                    }
+
+                    events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status, false, isOverlap))
                 }
 
                 if (i == (schedule.length - 1)) {
@@ -521,7 +536,7 @@ function TimeclockService($q, Api) {
         return events;
     };
 
-    function createEvent(type, timeStart, timeEnd, reportID, report, status, inProgress) {
+    function createEvent(type, timeStart, timeEnd, reportID, report, status, inProgress, isOverlap) {
         var timeStartArr = timeStart.split(/[- :]/),
             timeStartDate = new Date(timeStartArr[0], timeStartArr[1]-1, timeStartArr[2], timeStartArr[3], timeStartArr[4], timeStartArr[5]);
 
@@ -553,6 +568,11 @@ function TimeclockService($q, Api) {
         event.time_end_original = event.time_end;
         event.status = status;
         event.inProgress = inProgress;
+        if (isOverlap == undefined) {
+            isOverlap = false;
+        }
+
+        event.isOverlap = isOverlap;
 
         return event;
     }

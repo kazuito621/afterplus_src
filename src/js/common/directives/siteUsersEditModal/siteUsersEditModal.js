@@ -147,11 +147,15 @@ app.directive('siteUsersEditModal',
 	            scope.showAddNewSiteContact = false;
 
 	            var tmp = angular.copy(scope.newContact);
-	            var isvalid = validateEmail(tmp.email);
-	            if (isvalid !== true) {
-            		scope.setAlert('Email address is invalid', { type:'d' });            
-	                return;
-	            }
+
+				if (tmp.email != undefined) {
+					var isvalid = validateEmail(tmp.email);
+					if (isvalid !== true) {
+						scope.setAlert('Email address is invalid', { type:'d' });
+						return;
+					}
+				}
+
 	            var user = { role: tmp.role, email: tmp.email };
 
 	            user.fName = tmp.fName;

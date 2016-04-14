@@ -522,14 +522,16 @@ function TimeclockService($q, Api) {
                     events.push(createEvent('work', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status, false, isOverlap))
                 }
 
-                if (i == (schedule.length - 1)) {
-                    if (scheduleEntry.time_out == null) {
-                        scheduleEntry.time_out = moment().format('YYYY-MM-DD HH:mm:ss');
-                    }
-                    events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
-                }
+
             } else {
                 events.push(createEvent('break', scheduleEntry.time_in, scheduleEntry.time_out, scheduleEntry.reportID, scheduleEntry.reportName, scheduleEntry.status))
+            }
+
+            if (i == (schedule.length - 1)) {
+                if (scheduleEntry.time_out == null) {
+                    scheduleEntry.time_out = moment().format('YYYY-MM-DD HH:mm:ss');
+                }
+                events.push(createEvent('stop', scheduleEntry.time_out, null, scheduleEntry.reportID, scheduleEntry.reportName));
             }
         });
 

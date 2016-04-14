@@ -87,7 +87,10 @@ app
 
             var adjustment = TimeclockService.msToHM(moment(timeStartMoment.diff(timeStartOriginalMoment)));
             var adjustments = adjustment.split(':');
-
+            console.log(changedIndex);
+            console.log(adjustments)
+            console.log(timeStartOriginalMoment);
+            console.log(timeStartMoment);
             event.time_original = moment(event.time).toDate();
 
             switch (event.type) {
@@ -99,10 +102,10 @@ app
                     newDate.setHours(newDate.getHours() + parseInt(adjustments[0]));
                     newDate.setMinutes(newDate.getMinutes() + parseInt(adjustments[1]));
 
-                    scope.events[i].time = newDate;
-                    scope.events[i].time_original = newDate;
-                    scope.events[i].time_end = newDateEnd;
-                    scope.events[i].time_end_original = newDateEnd;
+                    scope.events[i].time = angular.copy(newDate);
+                    scope.events[i].time_original = angular.copy(newDate);
+                    scope.events[i].time_end = angular.copy(newDateEnd);
+                    scope.events[i].time_end_original = angular.copy(newDateEnd);
 
 
                     duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
@@ -136,10 +139,10 @@ app
                     newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
                     newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
 
-                    scope.events[i].time = newDate;
-                    scope.events[i].time_original = newDate;
-                    scope.events[i].time_end = newDateEnd;
-                    scope.events[i].time_end_original = newDateEnd;
+                    scope.events[i].time = angular.copy(newDate);
+                    scope.events[i].time_original = angular.copy(newDate);
+                    scope.events[i].time_end = angular.copy(newDateEnd);
+                    scope.events[i].time_end_original = angular.copy(newDateEnd);
 
                     duration = moment(moment(scope.events[i].time_end).diff(moment(scope.events[i].time)));
 
@@ -154,10 +157,10 @@ app
                     newDateEnd.setHours(newDateEnd.getHours() + parseInt(adjustments[0]));
                     newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
 
-                    scope.events[i].time = newDate;
-                    scope.events[i].time_original = newDate;
-                    scope.events[i].time_end = newDateEnd;
-                    scope.events[i].time_end_original = newDateEnd;
+                    scope.events[i].time = angular.copy(newDate);
+                    scope.events[i].time_original = angular.copy(newDate);
+                    scope.events[i].time_end = angular.copy(newDateEnd);
+                    scope.events[i].time_end_original = angular.copy(newDateEnd);
 
                     duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
 
@@ -165,6 +168,9 @@ app
                     scope.events[i].original_duration = scope.events[i].duration;
                     break;
             }
+
+            console.log('EDIT TIME');
+            console.log(scope.events);
 
 
         };
@@ -199,15 +205,15 @@ app
                         newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
 
 
-                        scope.events[i].time = newDate;
-                        scope.events[i].time_original = newDate;
-                        scope.events[i].time_end = newDateEnd;
-                        scope.events[i].time_end_original = newDateEnd;
+                        scope.events[i].time = angular.copy(newDate);
+                        scope.events[i].time_original = angular.copy(newDate);
+                        scope.events[i].time_end = angular.copy(newDateEnd);
+                        scope.events[i].time_end_original = angular.copy(newDateEnd);
 
                         duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
 
-                        scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();;
-                        scope.events[i].original_duration = scope.events[i].duration;
+                        scope.events[i].duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();
+                        scope.events[i].original_duration = moment(TimeclockService.msToHM(duration), 'H:m').toDate();
                     }
                     break;
                 case 'break' :
@@ -227,10 +233,10 @@ app
                         newDateEnd.setMinutes(newDateEnd.getMinutes() + parseInt(adjustments[1]));
 
 
-                        scope.events[i].time = newDate;
-                        scope.events[i].time_original = newDate;
-                        scope.events[i].time_end = newDateEnd;
-                        scope.events[i].time_end_original = newDateEnd;
+                        scope.events[i].time = angular.copy(newDate);
+                        scope.events[i].time_original = angular.copy(newDate);
+                        scope.events[i].time_end = angular.copy(newDateEnd);
+                        scope.events[i].time_end_original = angular.copy(newDateEnd);
 
                         duration = TimeclockService.calculateDuration(scope.events[i].time_end, scope.events[i].time);
 
@@ -239,7 +245,7 @@ app
                     }
                     break;
             }
-
+            console.log(scope.events);
         };
 
         scope.removeBreak = function (event) {

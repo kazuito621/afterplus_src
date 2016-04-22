@@ -7,7 +7,8 @@ app
 
         defaultOptions = {
             'allowUnschedule' : false,
-            'allowCalendar': false
+            'allowCalendar': false,
+				'callback': false
         };
 
         scope.statuses = [
@@ -48,7 +49,6 @@ app
                 });
 
                 scope.selectedWeekendWork = (data.work_weekend) ? data.work_weekend : 0;
-
                 detailsModal.$promise.then(detailsModal.show);
             });
         };
@@ -277,6 +277,12 @@ app
             }).then(function (response) {
                 scope.report.work_weekend = weekendWorkID;
             });
+            scope.doCallback({reportID:scope.reportID, work_weekend: weekendWorkID});
+        }
+
+        scope.doCallback = function( obj ){
+            if(scope.options.callback)
+                scope.options.callback( obj );
         }
 
         scope.updateStatus = function(s){
@@ -318,7 +324,8 @@ app
 
                 var options = {
                     'allowCalendar': scope.$eval(attr.allowCalendar) || false,
-                    'allowUnschedule': scope.$eval(attr.allowUnschedule) || false
+                    'allowUnschedule': scope.$eval(attr.allowUnschedule) || false,
+						  'callback' : scope.$eval(attr.callback) || false
                 };
 
                 // Trigger

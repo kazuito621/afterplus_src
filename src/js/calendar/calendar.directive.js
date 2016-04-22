@@ -400,10 +400,12 @@ angular.module('calendardirective', [])
                                 },
                                 eventClick: function (data, jsEvent, view) {
                                     convertLocalTime(data.start, data.end)
-                                    //s.openJob(data);
                                     estimateDetailsService.showModal(data, {
                                         'allowCalendar' : true,
-                                        'allowUnschedule' : true
+                                        'allowUnschedule' : true,
+													 'callback' : function( obj ){			
+														updateJobData(obj);
+													 }
                                     });
                                 },
                                 dayClick: function (date, evt, view) {
@@ -693,6 +695,31 @@ angular.module('calendardirective', [])
                         }
                         init();
 
+								/**
+								 * Updates the local data array for a given job
+								 * TODO - should this search across both unschedJobs and schedJobs? 
+								 * Should we unite those somehow, and keep those as just pointers?
+								 * @param obj - ie. {reportID:123, someVar:someVal}
+								 * @param jobArray - which job array to update, 
+								 *							if EMPTY, then try to update both arrays
+								 */
+								var updateJobData = function(obj, jobArray){
+									 if(!jobArray){
+										 updateJobData( obj, s.schedJobs );
+										 updateJobData( obj, s.unschedJobs );
+										 if( cal ){ 
+										 		var events = cal.fullCalendar('clientEvents');
+										 		updateJobData( obj, events );
+										 }
+										 return;
+									 }
+                            var job = _.find(jobArray, 'reportID', obj.reportID);
+                            if (!job) return;
+									 for( prop in obj ){
+							 			if(prop=='reportID') continue;
+								 		if( job[prop] ) job[prop] = obj[prop]
+									 }
+								}
 
                         //@@todo - update the counts in the dropdown! .. by knowing who was assigned before, and subtracting and adding
                         s.savejobtoforeman = function () {

@@ -1,0 +1,152 @@
+<style>
+    .filter-row {
+        padding: 20px 0px;
+    }
+</style>
+<div class="container">
+    <div class="row table-header">
+        <div class="col col-xs-6">
+            <h1>Time Logs</h1>
+        </div>
+        <div class="col col-xs-6">
+            <button class="btn btn-success pull-right" ng-click="vm.openNewClockIn()">New Clock-in</button>
+        </div>
+    </div>
+    <div class="row filter-row">
+        <div class="col col-xs-6">
+            <form class="form-inline" name="datepickerForm">
+                <div class="form-group">
+                    <label class="control-label">
+                        <i class="fa fa-calendar"></i> Dates:
+                    </label>
+                    <i class="glyphicon glyphicon-chevron-left" ng-click="vm.decrementDate()" style="cursor: pointer"></i>
+                    <input type="text" class="form-control" ng-model="vm.dateFrom" ng-change="vm.changeDate()" data-date-format="MMM dd, yyyy" bs-datepicker/>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" ng-model="vm.dateTo" ng-change="vm.changeDate()" data-date-format="MMM dd, yyyy" bs-datepicker/>
+                    <i class="glyphicon glyphicon-chevron-right" ng-click="vm.incrementDate()" style="cursor: pointer"></i>
+                </div>
+            </form>
+        </div>
+        <div class="col col-xs-6">
+            <form class="form-inline" name="jobIdForm">
+                <div class="form-group">
+                    <label class="control-label">
+                        <i class="fa fa-calendar"></i> Job ID:
+                    </label>
+                    <input class="form-control" type="text" ng-model="vm.reportID" data-html="1" report-auto-complete="" address='schedule.job' bs-typeahead="">
+                    <a class="btn btn-primary"ng-if="vm.reportID != undefined" ng-click="vm.changeReportID()">Filter</a>
+                    <a class="btn" ng-click="vm.clearFilterByJobID()" ng-if="vm.reportID != undefined">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-md-12" ng-repeat="date in vm.data.dates track by $index">
+            <table class="table table-bordered rwd-table" ng-if="date.date_object <= vm.dateToday">
+                <thead>
+                    <tr style="background: #000; color: #fff;border: 1px solid #000;">
+                        <th class="clickable-header" style="border: 1px solid #000; font-weight: bold; font-size: 20px;" colspan="2">
+                            {{date.date}}
+                        </th>
+                        <th class="clickable-header" style="border: 1px solid #000" ng-if="date.users.length > 0">
+                            Hours
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat-start="user in date.users">
+                        <td colspan="3" ng-if="$index == 0" class="danger">
+                            Clocked in by
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end ng-class="user.disabled ? 'disabled' : ''">
+                        <td style="width: 50px;">
+                            <input type="checkbox">
+                        </td>
+                        <td>
+
+                            <a ng-click="vm.openUser(user, date.date)" style="cursor: pointer;">
+                                <span style="font-weight: bold">{{ user.full_name }}</span>
+                            </a>
+
+                            <span class="hidden-xs" ng-repeat="log in user.logs">
+                                <span style="color: #000;" ng-if="!$last">
+                                    <a ng-click="vm.openUser(user, date.date)" style="cursor: pointer;">
+                                        {{ vm.formatLogTime(log.time_in) }}-{{ vm.formatLogTime(log.time_out) }}
+                                    </a>
+                                    <span style="color: #ADADAD;;">
+                                        <a ng-click="vm.filterReportID(log.reportID, log.report)" style="cursor: pointer;">
+                                            (#{{ log.reportID }})
+                                        </a>
+                                    </span>
+                                    ,
+                                </span>
+                                <span style="color: #000;"  ng-if="$last && !log.in_progress">
+                                    <a ng-click="vm.openUser(user, date.date)" style="cursor: pointer;">
+                                        {{ vm.formatLogTime(log.time_in) }}-{{ vm.formatLogTime(log.time_out) }}
+                                    </a>
+                                    <span style="color: #ADADAD;;">
+                                        <a ng-click="vm.filterReportID(log.reportID, log.report)" style="cursor: pointer;">
+                                            (#{{ log.reportID }})
+                                        </a>
+                                    </span>
+                                </span>
+                                <span style="color: #000;"  ng-if="$last && log.in_progress">
+                                    <a ng-click="vm.openUser(user, date.date)" style="cursor: pointer;">
+                                        {{ vm.formatLogTime(log.time_in) }}-...
+                                    </a>
+                                    <span style="color: #ADADAD;;">
+                                        <a ng-click="vm.filterReportID(log.reportID, log.report)" style="cursor: pointer;">
+                                            (#{{ log.reportID }})
+                                        </a>
+                                    </span>
+                                </span>
+                            </span>
+                            <span class="visible-xs" ng-repeat="log in user.logs">
+                                <span style="color: #000;" ng-if="$first">
+                                    <a ng-click="vm.openUser(user, date.date)" style="cursor: pointer;">
+                                        {{ vm.formatLogTime(log.time_in) }}
+                                    </a>
+
+                                    <span style="color: #ADADAD;;">
+                                        <a ng-click="vm.filterReportID(log.reportID, log.report)" style="cursor: pointer;">
+                                            (#{{ log.reportID }})
+                                        </a>
+                                    </span>
+                                    -
+                                </span>
+
+                                <span style="color: #000;"  ng-if="$last && !log.in_progress">
+                                    <a ng-click="vm.openUser(user, date.date)" style="cursor: pointer;">
+                                        {{ vm.formatLogTime(log.time_out) }}
+                                    </a>
+                                </span>
+                                <span style="color: #000;"  ng-if="$last && log.in_progress">
+                                    ...
+                                    <span style="color: #ADADAD;;">
+                                        <a ng-click="vm.filterReportID(log.reportID, log.report)" style="cursor: pointer;">
+                                            (#{{ log.reportID }})
+                                        </a>
+                                    </span>
+                                </span>
+                            </span>
+
+                        </td>
+                        <td style="width: 80px;">
+                            <span class="label label-success" ng-if="user.status=='clockin' && entry.date == timeclock.currentDay">Clocked In</span>
+                            <span ng-if="user.status!='clockin' || entry.date != timeclock.currentDay">
+                                {{user.duration}}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="alert alert-info" role="alert" ng-if="date.users.length == 0 && date.date_object <= vm.dateToday">
+                No data.
+            </div>
+        </div>
+    </div>
+</div>

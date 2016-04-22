@@ -1,0 +1,144 @@
+
+<style>
+    .btn-close {
+        margin-top: -2px;
+        float: right;
+    }
+
+    .log-row {
+        padding: 20px 0px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .actions-row {
+        padding: 20px 0px;
+    }
+
+    .newlog-row {
+        padding: 20px 0px;
+        background-color: #f5f5f5;
+        border: 1px solid #e3e3e3;
+    }
+</style>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button ng-click="closeSchedule()" class="btn btn-danger btn-close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                <h4 class="modal-title" id="modalTitle">
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-inline">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div ng-repeat="log in logs">
+
+                                <div class="row log-row" ng-if="$index == 0">
+                                    <div class="col col-md-12">
+                                        <label class="control-label">
+                                            <span class="glyphicon glyphicon-play text-success" aria-hidden="true"></span>
+                                            <span class="text-success">Start Job: #{{ log.reportID }} - {{ log.reportName }}</span>
+                                        </label>
+                                        <button type="button" class=" pull-right close" style="font-size: 30px;" data-dismiss="modal" aria-label="Close" ng-click="removeLog(log, $index)"><span class="text-danger" aria-hidden="true">&times;</span></button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        @<input type="text" class="form-control" size="8" ng-change="editLogTime(log, $index)" ng-model="log.time_in" data-minute-step="5" data-time-type="Date" bs-timepicker>
+                                    </div>
+                                </div>
+                                <div class="row log-row" ng-if="log.status=='work' && !$first && logs[$index-1].reportID != log.reportID">
+                                    <div class="col-md-12">
+                                        <label class="control-label">
+                                            <span class="glyphicon glyphicon-random text-success" aria-hidden="true"></span>
+                                            <span class="text-success">Start Job: #{{ log.reportID }} - {{ log.reportName }}</span>
+                                        </label>
+                                        <button type="button" class=" pull-right close" style="font-size: 30px;" data-dismiss="modal" aria-label="Close" ng-click="removeLog(log, $index)">
+                                            <span class="text-danger" aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        @<input type="text" class="form-control" size="8" ng-change="editLogTime(log, $index)" ng-model="log.time_in" data-minute-step="5" data-time-type="Date" bs-timepicker>
+                                    </div>
+                                </div>
+
+                                <div class="row log-row" ng-if="log.status=='work'">
+                                    <div class="col col-md-12">
+                                        <label class="control-label" style="display: inline-block !important;">
+                                            work for
+                                        </label>
+                                        <input style="width: 62px !important;display: inline-block !important;" type="text" class="form-control" size="8" ng-change="editLogDuration(log, $index)" ng-model="log.duration_time" data-minute-step="5" data-time-format="HH:mm" bs-timepicker>
+                                        <label class="control-label" style="display: inline-block !important;">
+                                            hours
+                                        </label>
+                                        <button type="button" class=" pull-right close" data-dismiss="modal" aria-label="Close" ng-if="logs[$index-1].status == 'work' && logs[$index-1].reportID == log.reportID " ng-click="removeWork(log, $index)">
+                                            <span class="text-danger" aria-hidden="true">&times;</span>
+                                        </button>
+                                        <button type="button" class=" pull-right close" data-dismiss="modal" aria-label="Close" ng-if="logs[$index+1].status == 'work' && logs[$index-1].reportID == log.reportID " ng-click="removeWork(log, $index)">
+                                            <span class="text-danger" aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row log-row" ng-if="log.status=='break'">
+                                    <div class="col col-md-12">
+                                        <label class="control-label" style="display: inline-block !important;">
+                                            <span class="glyphicon glyphicon-pause text-warning" aria-hidden="true"></span>
+                                            <span class="text-warning">Break</span>
+                                        </label>
+                                        <input style="width: 62px !important;display: inline-block !important;" type="text" class="form-control" size="8" ng-change="editLogDuration(log, $index)" ng-model="log.duration_time" data-minute-step="5" data-time-format="HH:mm" bs-timepicker>
+                                        <label class="control-label" style="display: inline-block !important;">
+                                            <span class="text-warning">Min</span>
+                                        </label>
+                                        <button type="button" class=" pull-right close" data-dismiss="modal" aria-label="Close" ng-click="removeBreak(log, $index)">
+                                            <span class="text-danger" aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row log-row" ng-if="log.status=='work' && $last && (status != 'clockin')">
+                                    <div class="col-md-12">
+                                        <label class="control-label">
+                                            <span class="glyphicon glyphicon-stop text-danger" aria-hidden="true"></span>
+                                            <span class="text-danger">Stop</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        @<input type="text" class="form-control" size="8" ng-change="editLogTime(log, $index)" ng-model="log.time_out" data-minute-step="5" bs-timepicker>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row actions-row">
+                        <div class="col col-md-12">
+                            <button type="button" class="btn btn-success" ng-click="showNewLogForm()">Add new job</button>
+                            <button type="button" class="btn btn-warning" ng-if="status=='clockin'" ng-click="clockOut()">Clock Out</button>
+                        </div>
+                    </div>
+
+                    <div class="row newlog-row" ng-if="showNewLog">
+                        <div class="col col-md-12">
+                            <div class="form-group">
+                                <label class="control-label">
+                                    Job ID
+                                </label>
+                                <input type="text" class="form-control" size="8" ng-model="newJobReport" ng-change="changeNewJobReport()">
+                                <select ng-model="newJobType">
+                                    <option ng-repeat="type in jobTypes" value="{{type.type}}">{{type.name}}</option>
+                                </select>
+                            </div>
+                            <a class="btn btn-success" ng-click="saveNewLog()">Save</a>
+                            <a class="btn btn-default" ng-click="closeNewLogForm()">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success"  ng-click="saveLogs()"><i class='glyphicon glyphicon-ok'></i> Save</button>
+                <button type="button" class="btn btn-primary"  ng-click="closeSchedule()"><i class='fa fa-close'></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -132,7 +132,7 @@
                                 >PAID</span></div>
             </div>
             <div style='padding:.5em 0 .5em 0;'>
-                Goal/Day:  $<a href="#" editable-text="pageVars.goalPerDay" onaftersave="onUpdateGoalPerDay()">{{ pageVars.goalPerDay || '0' }}</a>
+                Goal/Day:  $<a href ng-click="editGoalPerDay()" >{{ pageVars.goalPerDay || '0' }}</a>
             </div>
 
 

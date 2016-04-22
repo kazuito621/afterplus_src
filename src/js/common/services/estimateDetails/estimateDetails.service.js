@@ -47,6 +47,8 @@ app
                     show: false
                 });
 
+                scope.selectedWeekendWork = (data.work_weekend) ? data.work_weekend : 0;
+
                 detailsModal.$promise.then(detailsModal.show);
             });
         };

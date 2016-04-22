@@ -581,11 +581,10 @@ angular.module('calendardirective', [])
 
                         } // initCalendar
 
-
-                        s.onUpdateGoalPerDay = function () {
-                            updateTotals();
-                        }
-
+								s.editGoalPerDay = function(){
+									var g = prompt("Enter Goal Per Day", s.pageVars.goalPerDay);
+									s.pageVars.goalPerDay = g;
+								}
 
                         s.onMouseHoverJob = function () {
                             $("#tooltip").removeClass("hide").addClass("show");
@@ -965,6 +964,9 @@ angular.module('calendardirective', [])
                             }
                             s.jobdescription = data.price;
                             s.selectedWeekendWork = (data.work_weekend) ? data.work_weekend : 0;
+									 // set radio buttons
+									 var el='input#weekendWork'+s.selectedWeekendWork;
+									 $(el).prop('checked', true);
 
                             if (!data.start) data.start = moment(moment(data.job_start).format('YYYY-MM-DD 00:00:00'));
                             if (!data.end) {

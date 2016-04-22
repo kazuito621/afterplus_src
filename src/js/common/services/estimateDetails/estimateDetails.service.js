@@ -198,7 +198,7 @@ app
                 scope.report.foreman_fname=newForeman.fName;
                 scope.report.foreman_lname=newForeman.lName;
                 scope.report.foreman_fullname=newForeman.fName + ' ' + newForeman.lName;
-                scope.report.foreman_email_short=newForeman.email.split('@')[0];
+            	 scope.callback_syncData();
             });
         };
 
@@ -212,7 +212,7 @@ app
                 scope.report.sales_fname=newSalesman.fName;
                 scope.report.sales_lname=newSalesman.lName;
                 scope.report.sales_fullname=newSalesman.fName + ' ' + newSalesman.lName;
-                scope.report.sales_email_short=newSalesman.email.split('@')[0];
+            	 scope.callback_syncData();
             });
         };
 
@@ -276,13 +276,15 @@ app
                 work_weekend: weekendWorkID
             }).then(function (response) {
                 scope.report.work_weekend = weekendWorkID;
+            	scope.callback_syncData();
             });
-            scope.doCallback({reportID:scope.reportID, work_weekend: weekendWorkID});
         }
 
-        scope.doCallback = function( obj ){
-            if(scope.options.callback)
-                scope.options.callback( obj );
+        // This is used so that after info is updated, the callback is called so that
+		  // the object which initiated this popup, can know if info changed, and can update
+		  // their local objects accordingly
+        scope.callback_syncData = function( obj ){
+            if(scope.options.callback) scope.options.callback( scope.report );
         }
 
         scope.updateStatus = function(s){

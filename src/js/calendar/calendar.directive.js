@@ -848,6 +848,7 @@ angular.module('calendardirective', [])
                          * @return INT
                          */
                         var getTotalDaysOfWork = function (e, opt) {
+									 var dbg=true;
                             opt = opt || {};
                             var d1 = e.start.format('YYYYMMDD');
                             var d2 = e.end.format('YYYYMMDD');
@@ -859,17 +860,23 @@ angular.module('calendardirective', [])
                             if (opt.excludePast) d1 = moment().format('YYYYMMDD');
 
                             var d, c = 0, day, ds;
+									 if(dbg) console.debug('    : weekend? ' + e.work_weekend);
                             for (var di = d1; di <= d2; di++) {
                                 ds = '' + di;
                                 d = moment(ds.substr(0, 4) + '-' + ds.substr(4, 2) + '-' + ds.substr(6));
                                 day = d.format('d');
                                 if (day >= 1 && day <= 5 || e.work_weekend == 3) {
+												if(dbg) console.debug('    +a ' + d.toString());
                                     c++;
                                 } else if (day == 6 && e.work_weekend == 1) {
+												if(dbg) console.debug('    +b ' + d.toString());
                                     c++;
                                 } else if (day == 0 && e.work_weekend == 2) {
+												if(dbg) console.debug('    +c ' + d.toString());
                                     c++;
-                                }
+                                }else{
+												if(dbg) console.debug('    -X ' + d.toString());
+										  }
                             }
                             return c;
                         }
@@ -1279,7 +1286,7 @@ angular.module('calendardirective', [])
                                 }
 
                                 if (opt.debug && jobTotal > 0)
-                                    console.debug("ReportID: " + e.reportID + " $" + jobTotal + "  (" + totalDays + " days)");
+												console.debug("$" + jobTotal + "    = "+e.todo_price+" / "+totalDays+"d (#"+e.reportID+")");
                                 tot += jobTotal;
                             });
                             return Math.round(tot);

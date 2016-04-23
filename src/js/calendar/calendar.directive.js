@@ -96,7 +96,14 @@ angular.module('calendardirective', [])
                             t += userID2Name(obj.job_userID) + ' - ';
                             t += shortenName(obj.siteName);
 
-                            if (obj.city) t += ' (' + obj.city + ')';
+                            if (obj.city) t += ' (' + obj.city + ') ';
+									 console.debug(obj  );
+									 console.debug('title'  );
+									  switch(parseInt(obj.work_weekend)){
+									     case 1: t+='[SAT]'; break;
+										  case 2: t+='[SUN]'; break;
+										  case 3: t+='[SAT,SUN]'; break;
+									 }
                             return t;
                         }
 

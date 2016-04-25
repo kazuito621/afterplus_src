@@ -27,13 +27,19 @@
             <div class="modal-header">
                 <button ng-click="closeSchedule()" class="btn btn-danger btn-close" type="button"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 <h4 class="modal-title" id="modalTitle">
+                    <ng-pluralize count="users.length"
+                                  when="{
+                     '1': '{{users.length}} user:',
+                     'other': '{{users.length}} users:'}">
+                    </ng-pluralize>
+                    {{ usersNamesAndUID }}
                 </h4>
             </div>
             <div class="modal-body">
                 <div class="form-inline">
                     <div class="row">
                         <div class="col-md-12">
-                            <div ng-repeat="log in logs">
+                            <div ng-repeat="log in logs track by $index">
 
                                 <div class="row log-row" ng-if="$index == 0">
                                     <div class="col col-md-12">
@@ -45,6 +51,26 @@
                                     </div>
                                     <div class="col-md-12">
                                         @<input type="text" class="form-control" size="8" ng-change="editLogTime(log, $index)" ng-model="log.time_in" data-minute-step="5" data-time-type="Date" bs-timepicker>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <a class="btn btn-default pull-right" ng-if="allowAddBreak(log, $index) && addBreakIndex != $index" title="Add break" ng-click="showNewBreak(log, $index)">Add break</a>
+                                        <br>
+                                        <div class="well" ng-if="addBreakIndex == $index">
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    Start
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-change="editDuration(event)" ng-model="newBreak.time_in" name="time" data-minute-step="1" bs-timepicker>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    Duration
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-change="editDuration(event)" ng-model="newBreak.duration_time" name="time" data-minute-step="1" data-time-format="HH:mm" bs-timepicker>
+                                            </div>
+                                            <a class="btn btn-succes" ng-click="saveBreak()">Save</a>
+                                            <a class="btn btn-default" ng-click="closeAddBreak()">Cancel</a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row log-row" ng-if="log.status=='work' && !$first && logs[$index-1].reportID != log.reportID">
@@ -59,6 +85,26 @@
                                     </div>
                                     <div class="col-md-12">
                                         @<input type="text" class="form-control" size="8" ng-change="editLogTime(log, $index)" ng-model="log.time_in" data-minute-step="5" data-time-type="Date" bs-timepicker>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <a class="btn btn-default pull-right" ng-if="allowAddBreak(log, $index) && addBreakIndex != $index" title="Add break" ng-click="showNewBreak(log, $index)">Add break</a>
+                                        <br>
+                                        <div class="well" ng-if="addBreakIndex == $index">
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    Start
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-change="editDuration(event)" ng-model="newBreak.time_in" name="time" data-minute-step="1" bs-timepicker>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">
+                                                    Duration
+                                                </label>
+                                                <input type="text" class="form-control" size="8" ng-change="editDuration(event)" ng-model="newBreak.duration_time" name="time" data-minute-step="1" data-time-format="HH:mm" bs-timepicker>
+                                            </div>
+                                            <a class="btn btn-succes" ng-click="saveBreak()">Save</a>
+                                            <a class="btn btn-default" ng-click="closeAddBreak()">Cancel</a>
+                                        </div>
                                     </div>
                                 </div>
 

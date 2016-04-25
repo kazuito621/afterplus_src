@@ -27,6 +27,10 @@ app
             scope.newJobReport = '';
             scope.newJobType = '';
 
+            scope.newBreak = null;
+
+            scope.addBreakIndex = null;
+
             scope.jobTypes = [
                 {
                     "type": 'work',
@@ -60,8 +64,102 @@ app
 
             scope.date = date;
             scope.users = angular.copy(users);
+
+            scope.usersFirstNames = _.pluck(scope.users, 'full_name').join(', ');
+            var fnuid=[];
+            _.each(scope.users, function(u){
+                var n = u.first_name;
+                if(u.last_name) n+= ' ' + u.last_name.substr(0,1);
+                n += ' (#' + u.userID + ')';
+                fnuid.push(n);
+            });
+            scope.usersNamesAndUID = fnuid.join(', ');
+
             scope.status = angular.copy(_.first(users).status);
             scope.logs = angular.copy(_.first(users).logs);
+        };
+
+        scope.allowAddBreak = function(log, i) {
+            var index = angular.copy(i);
+            var allowAddBreak = true;
+
+            while(index < scope.logs.length && log.reportID == scope.logs[index].reportID) {
+                
+                if (scope.logs[index].status == 'break') {
+                    allowAddBreak = false;
+                }
+                index ++;
+            }
+
+            return allowAddBreak;
+        };
+
+        scope.showNewBreak = function (log, index) {
+            log.time_in   = moment(log.time_in);
+            log.time_out  = moment(log.time_out);
+
+            scope.addBreakIndex = index;
+            var breakMoment = angular.copy(log);
+            breakMoment.time_out = angular.copy(breakMoment.time_in);
+            breakMoment.time_out.add(30, 'minutes');
+
+            breakMoment.duration = moment.duration(breakMoment.time_out.diff(breakMoment.time_in));
+            breakMoment.duration_time = moment(breakMoment.duration.hours()+':'+breakMoment.duration.minutes(), 'hh:mm');
+
+            scope.newBreak = angular.copy(breakMoment);
+        };
+
+        scope.saveBreak = function () {
+            var addBreakIndex = scope.addBreakIndex;
+            var newBreak = angular.copy(scope.newBreak);
+            newBreak.time_in   = moment(newBreak.time_in);
+            newBreak.time_out  = moment(newBreak.time_out);
+            newBreak.duration_time  = moment(newBreak.duration_time);
+
+            var startLog = angular.copy(scope.logs[addBreakIndex]);
+            var breakLog = angular.copy(scope.logs[addBreakIndex]);
+            var workLog = angular.copy(scope.logs[addBreakIndex]);
+
+            // start
+            startLog.time_out = angular.copy(newBreak.time_in);
+            startLog.duration = moment.duration(startLog.time_out.diff(startLog.time_in));
+            startLog.duration_time = moment(startLog.duration.hours()+':'+startLog.duration.minutes(), 'hh:mm');
+
+            // break
+            breakLog.status = 'break';
+            breakLog.time_in = angular.copy(newBreak.time_in);
+            breakLog.duration_time = angular.copy(newBreak.duration_time);
+            breakLog.time_out = angular.copy(breakLog.time_in);
+            breakLog.time_out.add(breakLog.duration_time.format('H'), 'hours');
+            breakLog.time_out.add(breakLog.duration_time.format('m'), 'minutes');
+
+            breakLog.duration = moment.duration(breakLog.time_out.diff(breakLog.time_in));
+            breakLog.duration_time = moment(breakLog.duration.hours()+':'+breakLog.duration.minutes(), 'hh:mm');
+
+            // break
+            workLog.time_in = angular.copy(breakLog.time_out);
+            //workLog.duration = angular.copy(scope.logs[addBreakIndex].duration);
+            //workLog.time_out = angular.copy(workLog.time_in);
+            //workLog.time_out.add(workLog.duration);
+            workLog.time_out = angular.copy(scope.logs[addBreakIndex].time_out);
+
+            workLog.duration = moment.duration(workLog.time_out.diff(workLog.time_in));
+            workLog.duration_time = moment(workLog.duration.hours()+':'+workLog.duration.minutes(), 'hh:mm');
+
+
+            // work
+
+            scope.logs.splice(addBreakIndex, 1);
+
+            scope.logs.splice(0, 0, workLog);
+            scope.logs.splice(0, 0, breakLog);
+            scope.logs.splice(0, 0, startLog);
+
+            scope.addBreakIndex = null;
+        };
+
+        scope.closeAddBreak = function (log, index) {
+            scope.addBreakIndex = null;
         };
 
         scope.editLogTime = function(log, index) {

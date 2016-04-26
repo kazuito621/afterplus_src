@@ -64,14 +64,14 @@
                 <tbody>
                     <tr ng-repeat-start="user in date.users">
                         <td colspan="3" ng-if="$index == 0" class="danger">
-                            Clocked in by
+                            Clocked in by {{ user.logs[0].clockinby_full_name }}
                         </td>
                     </tr>
                     <tr ng-repeat-end ng-class="user.disabled ? 'disabled' : ''">
                         <td style="width: 50px;">
                             <input ng-change="vm.selectUser(user, date)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
                         </td>
-                        <td>
+                        <td ng-class="(vm.currentUserID == user.userID || vm.currentUserID == user.logs[0].clockinby_userID) ? 'warning' : ''">
 
                             <a ng-click="vm.openUser(user, date.date)" style="cursor: pointer;">
                                 <span style="font-weight: bold">{{ user.full_name }}</span>

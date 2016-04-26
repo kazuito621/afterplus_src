@@ -2,7 +2,7 @@ app
     .controller('TimelogController', TimelogController)
     .service('TimelogService', TimelogService);
 
-TimeclockController.$inject = ['Api', 'TimelogService', 'editTimelogService', 'createTimelogService']
+TimelogController.$inject = ['Api', 'TimelogService', 'editTimelogService', 'createTimelogService']
 function TimelogController(Api, TimelogService, editTimelogService, createTimelogService) {
     var vm = this;
 
@@ -19,6 +19,7 @@ function TimelogController(Api, TimelogService, editTimelogService, createTimelo
     vm.foremans = [];
     vm.haveSelectedUsers = false
     vm.haveSimilarLogs   = 0;
+    vm.currentUserID = Auth.data().userID;
 
     init();
 

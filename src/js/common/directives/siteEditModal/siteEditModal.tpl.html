@@ -1,14 +1,6 @@
-<style>
-    .ui-select-container {
-        width: 300px;
-        display: inline-block;
-    }
-    .ui-select-toggle, .ui-select-search {
-        width: 300px !important;
-    }
-</style>
+
 <div class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-site">
         <div class="modal-content">
             <div class="modal-header" ng-show="title">
                 <button type="button" class="close" ng-click="hideSiteEditModal()">&times;</button>
@@ -34,16 +26,38 @@
                                 <button class="btn btn-default" ng-show="selectedClient.selected" ng-click="copyAddressFromClientToNewSite(site.clientID)"
 									onclick="return false;"><i class='fa fa-copy'></i> Copy Address</button>
                             </div>
+
                             <div class='silver'>Name:</div>
-							<div><input type="text" ng-model="site.siteName" size="40" required></div>
+							<div>
+                                <input type="text" ng-model="site.siteName" size="40" required>
+                            </div>
+
                             <div class='silver'>Address:</div>
-                            <div><input type="text" ng-model="site.street" size="50" address-auto-complete="updateAddess" address="site" bs-typeahead></div>
+                            <div>
+                                <input type="text" ng-model="site.street" size="50" address-auto-complete="updateAddess" address="site" bs-typeahead>
+                            </div>
+
                             <div class='silver'>City:</div>
-                            <div><input type="text" ng-model="site.city" size="50"></div>
+                            <div>
+                                <input type="text" ng-model="site.city" size="50">
+                            </div>
+
                             <div class='silver'>State:</div>
-                            <div><input type="text" ng-model="site.state" size="10"></div>
+                            <div>
+                                <input type="text" ng-model="site.state" size="10">
+                            </div>
+
                             <div class='silver'>Zip:</div>
-                            <div><input type="text" ng-model="site.zip" size="20"></div>
+                            <div>
+                                <input type="text" ng-model="site.zip" size="20">
+                            </div>
+
+                            <div class='silver' ng-if="!site.siteID">How did they hear about us?</div>
+                            <div ng-if="!site.siteID">
+                                <select ng-model="site.cust_source">
+                                    <option ng-repeat="source in customerSources" value="{{source.value}}">{{source.text}}</option>
+                                </select>
+                            </div>
 
 							<!-- this is here so user can hit ENTER to submit form -->
 							<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>

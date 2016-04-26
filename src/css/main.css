@@ -805,3 +805,12 @@ td.estimate_multirow_col{
 .report-item-completed a {
 	color: #fff;
 }
+
+
+.modal-site .ui-select-container {
+	width: 300px;
+	display: inline-block;
+}
+.modal-site .ui-select-toggle, .ui-select-search {
+	width: 300px !important;
+}

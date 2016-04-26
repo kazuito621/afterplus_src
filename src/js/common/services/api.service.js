@@ -190,6 +190,9 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       updateEstimateTime: function (reportID, tstamp) {
         return Rest.all('estimate/' + reportID).post(tstamp);
       },
+      getEntityInfo: function () {
+        return Rest.one('entity').get();
+      },
       saveEntityInfo: function (data) {
         return Rest.all('entity').post(data);
       },

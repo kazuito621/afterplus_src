@@ -98,6 +98,8 @@ var SitesCtrl = app.controller('SitesCtrl',
                     s.displayedSites = sitesFiltered.slice(0, 49);
                     s.sites=sitesFiltered;
                 });
+                console.log('init data');
+                console.log(s.initData);
             };
 
             s.refreshSites = function () {

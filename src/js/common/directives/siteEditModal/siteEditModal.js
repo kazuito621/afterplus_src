@@ -56,27 +56,90 @@ app.directive('siteEditModal',
         }
 
         scope.openModal = function (id) {
-            modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
-            scope.site = angular.copy(newSite);
-            scope.selectedClient = {};
-            if (id) {
-                Api.updateSite(id).then(function (data) {
-                    scope.site = data;
-                    scope.selectedClient.selected = _.findWhere(scope.clients, { 'clientID': data.clientID })
+            Api.getEntityInfo().then(function(data){
+                if (data.entityID == 2) {
+                    scope.customerSources = [
+                        {
+                            'value':    'referral',
+                            'text':     'Word of Mouth / Referral'
+                        },
+                        {
+                            'value':    'vehicle',
+                            'text':     'Saw our Vehicles'
+                        },
+                        {
+                            'value':    'online',
+                            'text':     'Website/Online'
+                        },
+                        {
+                            'value':    'repeat',
+                            'text':     'Repeat Customer'
+                        },
+                        {
+                            'value':    'event-caa',
+                            'text':     'Tradeshow: CAA'
+                        },
+                        {
+                            'value':    'event-cacm',
+                            'text':     'Tradeshow: CACM'
+                        },
+                        {
+                            'value':    'event-bava',
+                            'text':     'BAVA'
+                        },
+                        {
+                            'value':    'event-boma',
+                            'text':     'BOMA'
+                        },
+                        {
+                            'value':    'event-battlebay',
+                            'text':     'Battle of the Bay'
+                        }
+                    ];
+                } else {
+                    scope.customerSources = [
+                        {
+                            'value':    'referral',
+                            'text':     'Word of Mouth / Referral'
+                        },
+                        {
+                            'value':    'vehicle',
+                            'text':     'Saw our Vehicles'
+                        },
+                        {
+                            'value':    'online',
+                            'text':     'Website/Online'
+                        },
+                        {
+                            'value':    'repeat',
+                            'text':     'Repeat Customer'
+                        }
+
+                    ];
+                }
+
+                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
+                scope.site = angular.copy(newSite);
+                scope.selectedClient = {};
+                if (id) {
+                    Api.updateSite(id).then(function (data) {
+                        scope.site = data;
+                        scope.selectedClient.selected = _.findWhere(scope.clients, { 'clientID': data.clientID })
+                        modal.$promise.then(function () {
+                            modal.show();
+                            // setup ESCAPE key
+                            $(document).keyup(hideOnEscape);
+                        });
+                    });
+                }
+                else{
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
                         $(document).keyup(hideOnEscape);
                     });
-                });
-            }
-            else{
-                modal.$promise.then(function () {
-                    modal.show();
-                    // setup ESCAPE key
-                    $(document).keyup(hideOnEscape);
-                });
-            }
+                }
+            });
         };
 
         scope.onSelectSite = function (item, model) {
@@ -84,6 +147,7 @@ app.directive('siteEditModal',
         }
 
         scope.saveSite = function (cb, nohide) {
+
             if (!scope.site.clientID) {
                 return scope.$parent.setAlert('Choose a client for the new property', {type: 'd'});
             }

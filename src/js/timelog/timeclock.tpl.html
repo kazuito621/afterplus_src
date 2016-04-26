@@ -2,6 +2,9 @@
     .filter-row {
         padding: 20px 0px;
     }
+    .popover {
+        color: #000;
+    }
 </style>
 <div class="container">
     <div class="row table-header">
@@ -50,6 +53,8 @@
                     <tr style="background: #000; color: #fff;border: 1px solid #000;">
                         <th class="clickable-header" style="border: 1px solid #000; font-weight: bold; font-size: 20px;" colspan="2">
                             {{date.date}}
+                            <i users-not-clockin-pop-over items="date.not_worked_users" title="Hasn't clocked in:" class="glyphicon glyphicon-user">
+                            </i>
                         </th>
                         <th class="clickable-header" style="border: 1px solid #000" ng-if="date.users.length > 0">
                             Hours
@@ -64,7 +69,7 @@
                     </tr>
                     <tr ng-repeat-end ng-class="user.disabled ? 'disabled' : ''">
                         <td style="width: 50px;">
-                            <input type="checkbox">
+                            <input ng-change="vm.selectUser(user, date)" type="checkbox" ng-model="user.selected" ng-disabled="user.disabled">
                         </td>
                         <td>
 
@@ -146,6 +151,80 @@
             </table>
             <div class="alert alert-info" role="alert" ng-if="date.users.length == 0 && date.date_object <= vm.dateToday">
                 No data.
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-md-12">
+            <div class='table-responsive' ng-if="vm.totals != undefined">
+                <table class="table table-bordered rwd-table">
+                    <thead>
+                    <tr style="background: #000; color: #fff;border: 1px solid #000;">
+                        <th style="border: 1px solid #000; font-weight: bold; font-size: 20px;" colspan="4">
+                            Summary
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="info">
+                        <td>
+                            Name
+                        </td>
+                        <td>
+                            Hours
+                        </td>
+                        <td>
+                            Overtime
+                        </td>
+                        <td>
+                            Total
+                        </td>
+                    </tr>
+                    <tr ng-repeat="total in vm.totals">
+                        <td>
+                            {{total.full_name}}
+                        </td>
+                        <td>
+                            {{total.hours}}
+                        </td>
+                        <td>
+                            {{total.overtime}}
+                        </td>
+                        <td>
+                            {{total.total}}
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="info">
+                        <td></td>
+                        <td>{{vm.totalSummary.hours}}</td>
+                        <td>{{vm.totalSummary.overtime}}</td>
+                        <td>{{vm.totalSummary.total}}</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-md-12">
+            <div style="padding-bottom: 100px"></div>
+            <div class="action-float-bar" ng-if="vm.haveSelectedUsers">
+                <div class="container">
+                    <div class="action-float-bar-inner">
+                        <input style="" ng-click="vm.selectAllSimilar()" ng-model="timeclock.selectAllSimilarValue" type="checkbox" ng-if="vm.haveSimilarLogs>0">
+                        <i class="fa fa-mail-forward fa-rotate-270 white"></i> &nbsp;
+                        <button type='button' class="btn btn-default" ng-click="vm.openUsers()">
+                            Edit
+                        </button>
+                        <button type='button' class="btn btn-default" ng-if="vm.isSelectedUsersClockin()" ng-click="vm.clockoutUsers()">
+                            Clock Out
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

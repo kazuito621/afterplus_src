@@ -56,27 +56,44 @@ app.directive('siteEditModal',
         }
 
         scope.openModal = function (id) {
-            modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
-            scope.site = angular.copy(newSite);
-            scope.selectedClient = {};
-            if (id) {
-                Api.updateSite(id).then(function (data) {
-                    scope.site = data;
-                    scope.selectedClient.selected = _.findWhere(scope.clients, { 'clientID': data.clientID })
+            Api.getEntityInfo().then(function(data){
+					  scope.customerSources = {
+								 'referral':'Word of Mouth / Referral',
+								 'vehicle':'Saw our Vehicles',
+								 'online':'Website/Online',
+								 'repeat':'Repeat Customer',
+					  		};
+
+                if (data.entityID == 2) {
+                    scope.customerSources['event-caa'] = 'Tradeshow: CAA';
+                    scope.customerSources['event-cacm'] = 'Tradeshow: CACM';
+                    scope.customerSources['event-bava'] = 'BAVA';
+                    scope.customerSources['event-boma'] = 'BOMA';
+                    scope.customerSources['event-battlebay'] = 'Battle of the Bay';
+                }
+
+                modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});
+                scope.site = angular.copy(newSite);
+                scope.selectedClient = {};
+                if (id) {
+                    Api.updateSite(id).then(function (data) {
+                        scope.site = data;
+                        scope.selectedClient.selected = _.findWhere(scope.clients, { 'clientID': data.clientID })
+                        modal.$promise.then(function () {
+                            modal.show();
+                            // setup ESCAPE key
+                            $(document).keyup(hideOnEscape);
+                        });
+                    });
+                }
+                else{
                     modal.$promise.then(function () {
                         modal.show();
                         // setup ESCAPE key
                         $(document).keyup(hideOnEscape);
                     });
-                });
-            }
-            else{
-                modal.$promise.then(function () {
-                    modal.show();
-                    // setup ESCAPE key
-                    $(document).keyup(hideOnEscape);
-                });
-            }
+                }
+            });
         };
 
         scope.onSelectSite = function (item, model) {
@@ -84,6 +101,7 @@ app.directive('siteEditModal',
         }
 
         scope.saveSite = function (cb, nohide) {
+
             if (!scope.site.clientID) {
                 return scope.$parent.setAlert('Choose a client for the new property', {type: 'd'});
             }

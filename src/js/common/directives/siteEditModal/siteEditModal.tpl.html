@@ -53,8 +53,7 @@
                             </div>
 
                             <div class='silver'>How did they hear about us?</div>
-                            <div ng-if="site.cust_source">{{ customerSources[site.cust_source] }}</div>
-                            <div ng-if="!site.cust_source">
+                            <div>
                                 <select ng-model="site.cust_source">
                                     <option ng-repeat="(code,text) in customerSources" value="{{code}}">{{text}}</option>
                                 </select>

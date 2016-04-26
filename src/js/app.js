@@ -139,17 +139,6 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
             }
         })
         .when("/timeclock", {
-            templateUrl: "js/timeclock/timeclock.tpl.html",
-            auth: true, reloadOnSearch: false,
-            resolve: {
-                deps: ['Api', '$route', function (Api, $route) {
-                    var token = $route.current.params.token;
-                    if (token) {  return Auth.signInCustToken(token, true); }
-                    return Api.getPromise();
-                }]
-            }
-        })
-        .when("/timelog", {
             templateUrl: "js/timelog/timeclock.tpl.html",
             controller: 'TimelogController',
             controllerAs: 'vm',

@@ -57,65 +57,19 @@ app.directive('siteEditModal',
 
         scope.openModal = function (id) {
             Api.getEntityInfo().then(function(data){
-                if (data.entityID == 2) {
-                    scope.customerSources = [
-                        {
-                            'value':    'referral',
-                            'text':     'Word of Mouth / Referral'
-                        },
-                        {
-                            'value':    'vehicle',
-                            'text':     'Saw our Vehicles'
-                        },
-                        {
-                            'value':    'online',
-                            'text':     'Website/Online'
-                        },
-                        {
-                            'value':    'repeat',
-                            'text':     'Repeat Customer'
-                        },
-                        {
-                            'value':    'event-caa',
-                            'text':     'Tradeshow: CAA'
-                        },
-                        {
-                            'value':    'event-cacm',
-                            'text':     'Tradeshow: CACM'
-                        },
-                        {
-                            'value':    'event-bava',
-                            'text':     'BAVA'
-                        },
-                        {
-                            'value':    'event-boma',
-                            'text':     'BOMA'
-                        },
-                        {
-                            'value':    'event-battlebay',
-                            'text':     'Battle of the Bay'
-                        }
-                    ];
-                } else {
-                    scope.customerSources = [
-                        {
-                            'value':    'referral',
-                            'text':     'Word of Mouth / Referral'
-                        },
-                        {
-                            'value':    'vehicle',
-                            'text':     'Saw our Vehicles'
-                        },
-                        {
-                            'value':    'online',
-                            'text':     'Website/Online'
-                        },
-                        {
-                            'value':    'repeat',
-                            'text':     'Repeat Customer'
-                        }
+					  scope.customerSources = {
+								 'referral':'Word of Mouth / Referral',
+								 'vehicle':'Saw our Vehicles',
+								 'online':'Website/Online',
+								 'repeat':'Repeat Customer',
+					  		};
 
-                    ];
+                if (data.entityID == 2) {
+                    scope.customerSources['event-caa'] = 'Tradeshow: CAA';
+                    scope.customerSources['event-cacm'] = 'Tradeshow: CACM';
+                    scope.customerSources['event-bava'] = 'BAVA';
+                    scope.customerSources['event-boma'] = 'BOMA';
+                    scope.customerSources['event-battlebay'] = 'Battle of the Bay';
                 }
 
                 modal = $modal({scope: scope, template: '/js/common/directives/siteEditModal/siteEditModal.tpl.html', show: false});

@@ -52,10 +52,11 @@
                                 <input type="text" ng-model="site.zip" size="20">
                             </div>
 
-                            <div class='silver' ng-if="!site.siteID">How did they hear about us?</div>
-                            <div ng-if="!site.siteID">
+                            <div class='silver'>How did they hear about us?</div>
+                            <div ng-if="site.cust_source">{{ customerSources[site.cust_source] }}</div>
+                            <div ng-if="!site.cust_source">
                                 <select ng-model="site.cust_source">
-                                    <option ng-repeat="source in customerSources" value="{{source.value}}">{{source.text}}</option>
+                                    <option ng-repeat="(code,text) in customerSources" value="{{code}}">{{text}}</option>
                                 </select>
                             </div>
 

@@ -162,12 +162,14 @@
                 <td ng-if="e.completed_perc>0 && e.completed_perc<100" 
 					 	style='min-width:50px; 
 								background: -webkit-gradient(linear, left top, right top, color-stop({{e.completed_perc}}%,#ccc), color-stop({{e.completed_perc}}%,#fff));
-								font-size:.8em;'>   
+								font-size:.75em;line-height:1.2em;'>   
 							{{e.completed_perc}}% DONE<BR>
-							${{e.todo_price|shortenNumber}} TODO
+							${{e.todo_price|shortenNumber}} TODO<BR>
+							<a href='/go/reports/jobaudit?token={{auth.data().token}}&id={{e.reportID}}' target=_new>{{e.perc_goal}}% GOAL</a>
 					</td>
                 <td ng-if="!(e.completed_perc>0 && e.completed_perc<100)">
-					 		${{e.total_price|formatPrice}}
+					 		${{e.total_price|formatPrice}}<BR>
+							<a ng-if="e.perc_goal>1" href='/go/reports/jobaudit?token={{auth.data().token}}&id={{e.reportID}}' target=_new>{{e.perc_goal}}% GOAL</a>
 					 </td>
 
 

@@ -390,6 +390,8 @@ angular.module('calendardirective', [])
                                             event.status = 'scheduled'
                                             elm.fullCalendar('updateEvent', event);
 
+                                            updateTotalBoxes();
+
                                             // todo ? in case job confirmation comes back different?
                                             /*
                                              if( jobStart != res.job_start ){

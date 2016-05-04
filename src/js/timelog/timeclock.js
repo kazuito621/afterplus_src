@@ -20,6 +20,7 @@ function TimelogController(Api, TimelogService, editTimelogService, createTimelo
     vm.haveSelectedUsers = false
     vm.haveSimilarLogs   = 0;
     vm.currentUserID = Auth.data().userID;
+    vm.currentDate = moment().format('YYYY-MM-DD');
 
     init();
 

@@ -142,7 +142,7 @@
                         </td>
                         <td style="width: 80px;">
                             <span class="label label-success" ng-if="user.status=='clockin' && entry.date == vm.currentDate">Clocked In</span>
-                            <span ng-if="user.status!='clockin' || entry.date != timeclock.currentDay">
+                            <span ng-if="user.status!='clockin' || entry.date != vm.currentDate">
                                 {{user.duration}}
                             </span>
                         </td>

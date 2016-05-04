@@ -141,8 +141,8 @@
 
                         </td>
                         <td style="width: 80px;">
-                            <span class="label label-success" ng-if="user.status=='clockin' && entry.date == vm.currentDate">Clocked In</span>
-                            <span ng-if="user.status!='clockin' || entry.date != vm.currentDate">
+                            <span class="label label-success" ng-if="user.status=='clockin' && date.date == vm.currentDate">Clocked In</span>
+                            <span ng-if="user.status!='clockin' || date.date != vm.currentDate">
                                 {{user.duration}}
                             </span>
                         </td>

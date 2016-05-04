@@ -5,6 +5,7 @@ app
 TimelogController.$inject = ['Api', 'TimelogService', 'editTimelogService', 'createTimelogService']
 function TimelogController(Api, TimelogService, editTimelogService, createTimelogService) {
     var vm = this;
+	 window.s_vm = this
 
     // for ios application
     window.ios_app_is_editor_open = function() {

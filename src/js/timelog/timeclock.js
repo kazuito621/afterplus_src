@@ -20,6 +20,7 @@ function TimelogController(Api, TimelogService, editTimelogService, createTimelo
     vm.haveSelectedUsers = false
     vm.haveSimilarLogs   = 0;
     vm.currentUserID = Auth.data().userID;
+    vm.currentDate = moment().format('YYYY-MM-DD');
 
     init();
 
@@ -307,6 +308,7 @@ function TimelogService($q, Api) {
                 date.date_object = moment(date.date, "YYYY-MM-DD");
                 _.each(date.users, function (user) {
                     _.each(user.logs, function (log) {
+                        user.clockinby_userID = log.clockinby_userID;
                         log.time_in = moment(log.time_in, "YYYY-MM-DD HH:mm:ss");
 
                         if (log.time_out != undefined) {
@@ -325,6 +327,7 @@ function TimelogService($q, Api) {
                         fixTime(log);
                     });
                 });
+                date.users = _.sortBy(date.users, 'clockinby_userID');
             });
 
             deferred.resolve(data);

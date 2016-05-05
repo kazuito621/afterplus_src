@@ -55,29 +55,25 @@ app.directive('sideNote',
                     scope.updatedText='';
                     scope.editNoteID=-1;
                 }
-                scope.$watch('reportID',function(n,o){
-                    if(n && n!='')
-                    {
-                        Api.getNotes(scope.noteType, n).then(function(data){
-                            scope.notes = data;
-                            angular.forEach(scope.notes,function(note){
-                                var updateTime = moment(note.tstamp_updated).format('YYYY-MM-DD HH:mm:ss');
-                                var minAgo = moment.duration(moment().diff(updateTime)).asMinutes();
-                                minAgo = Math.floor(minAgo);
-                                var min = minAgo % (60);
-                                var hour = Math.floor((minAgo % (60*24))/60);
-                                var day = Math.floor(minAgo / (60*24));
-                                note.history='';
-                                if(day>0)
-                                    note.history += day+' days ';
-                                if(hour>0)
-                                    note.history += hour+' hours ';
-                                if(min>0)
-                                    note.history += min+' min ';
-                                note.history += ' ago';
-                            })
-                        })
-                    }
+
+                Api.getNotes(scope.noteType, scope.reportID).then(function(data){
+                    scope.notes = data;
+                    angular.forEach(scope.notes,function(note){
+                        var updateTime = moment(note.tstamp_updated).format('YYYY-MM-DD HH:mm:ss');
+                        var minAgo = moment.duration(moment().diff(updateTime)).asMinutes();
+                        minAgo = Math.floor(minAgo);
+                        var min = minAgo % (60);
+                        var hour = Math.floor((minAgo % (60*24))/60);
+                        var day = Math.floor(minAgo / (60*24));
+                        note.history='';
+                        if(day>0)
+                            note.history += day+' days ';
+                        if(hour>0)
+                            note.history += hour+' hours ';
+                        if(min>0)
+                            note.history += min+' min ';
+                        note.history += ' ago';
+                    })
                 });
 
                 scope.activePopover = {elem:{}, itemID: undefined};

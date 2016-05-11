@@ -409,12 +409,16 @@ angular.module('calendardirective', [])
                                 },
                                 eventClick: function (data, jsEvent, view) {
                                     convertLocalTime(data.start, data.end)
+                                    console.log(data);
+                                    console.log(jsEvent);
                                     estimateDetailsService.showModal(data, {
                                         'allowCalendar' : true,
                                         'allowUnschedule' : true,
-													 'callback' : function( obj ){			
+													 'callback' : function( obj ){
 														updateJobData(obj);
 													 }
+                                    }).then(function(data) {
+                                        alert('2222222');
                                     });
                                 },
                                 dayClick: function (date, evt, view) {
@@ -775,12 +779,19 @@ angular.module('calendardirective', [])
 
 
                         $rootScope.$on('estimate.details.unschedule', function (event, report) {
+
                             elm.fullCalendar('removeEvents', report._id);
                         });
 
-                        $rootScope.$on('estimate.details.save_date', function (event, report) {
+                        $rootScope.$on('estimate.details.save_date', function (event, report, originalReport) {
+                            console.log('emit report');
+                            console.log(originalReport);
                             console.log(report);
-                            elm.fullCalendar('updateEvent', report);
+                            originalReport.job_end = report.job_end;
+                            originalReport.job_start = report.job_start;
+                            originalReport.end = report.end;
+                            originalReport.start = report.start;
+                            elm.fullCalendar('updateEvent', originalReport);
                         });
 
                         s.UnscheduledJob = function () {

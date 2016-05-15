@@ -547,8 +547,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var site=_.findObj(s.filteredSites, 'siteID', s.selected.siteID);
                     showSingleSite(site); // Can not use show mapped tree
                 }
-                else
+                else {
                     showMappedTrees(s.trees);
+                }
+
             });
 
             //make tree update after its edited
@@ -879,6 +881,121 @@ var TreesCtrl = app.controller('TreesCtrl',
                     return initMap().then(function () {
                         showMappedSites();
                     });
+                }
+
+                // if staff user, then add events for moving and clicking on a tree
+                if (gMapID == 'treeMap' && Auth.isAtleast('inventory')){
+                    if (!s.isBindRightClick) {
+                        google.maps.event.addListener(gMap, 'click', function (event) {
+                            if (!s.editMode) return;
+                            if (s.MarkerAdded) {
+                                s.cancelMarker(s.treeMarkers.length - 1, false);
+                                s.MarkerAdded = false;
+                            }
+
+                            s.$on('onMapClicked', function () {
+                                if (s.MarkerAdded)
+                                    s.cancelMarker(s.treeMarkers.length - 1, false);
+                            });
+
+
+                            // When NEW TREE is confirmed location
+                            s.confirmLocation = function (markerIndex) {
+                                s.setAlert('Saving tree', { busy: true, time: "false" });
+                                var marker = s.treeMarkers[markerIndex];
+                                var position = marker.position;
+                                var tree = {
+                                    siteID: s.selected.siteID,
+                                    longitude: position.lng(),
+                                    lattitude: position.lat(),
+                                    lat: position.lat(),
+                                    lng: position.lng(),
+                                    building:'no', powerline:'no', caDamage:'no',
+                                    speciesID:1, dbhID:1, ratingID:5
+                                };
+                                Api.saveTree(tree).then(function (response) {
+                                    s.hideAllAlert();
+
+                                    var lastInsertedMarker = s.treeMarkers[s.treeMarkers.length - 1];
+                                    tree.treeID = lastInsertedMarker.treeID = response.treeID;
+                                    lastInsertedMarker.siteID = tree.siteID;
+
+                                    lastInsertedMarker.tree = tree;
+                                    lastInsertedMarker.info = getTreeInfoWindowHtml(response);
+                                    lastInsertedMarker.setIcon(setIconColor(response));
+                                    markers_singleSite.push(lastInsertedMarker);
+                                    s.trees.push(tree);
+                                    if (infowindow)  infowindow.close();
+
+                                    google.maps.event.clearListeners(marker, 'click');
+                                    google.maps.event.addListener(marker, 'click', function (event) {
+                                        if (!infowindow)
+                                            infowindow = new google.maps.InfoWindow();
+                                        infowindow.setContent(this.info);
+                                        infowindow.open(gMap, this);
+
+                                        google.maps.event.clearListeners(infowindow, 'closeclick');
+
+                                        google.maps.event.addListener(infowindow, 'closeclick', function (event) {
+                                            if (infowindow) {
+                                                infowindow.close();
+                                            }
+                                        });
+                                    });
+
+
+                                    //todo... why wont new tree show up here?!!?
+
+                                    var timeOut = setTimeout(function () {
+                                        var treeEl = angular.element(document.getElementById('tree-anchor-' + response.treeID));
+                                        if (treeEl !== undefined && treeEl.length > 0)
+                                            treeEl.click();
+                                        clearTimeout(timeOut);
+                                    }, 1000);
+
+                                    s.MarkerAdded = false;
+                                });
+                            }
+
+                            var marker = new google.maps.Marker({
+                                position: event.latLng,
+                                map: gMap,
+                                title: 'Add Tree',
+                                draggable: true,
+                                icon: 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=1|006256|000000'
+                                //'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|37e1e1|000000'
+                            });
+
+                            s.MarkerAdded = true;
+                            s.treeMarkers.push(marker);
+
+                            var click = "angular.element(this).scope().cancelMarker({0},{1})".format(s.treeMarkers.length - 1, true);
+                            var confirmclick = "angular.element(this).scope().confirmLocation({0})".format(s.treeMarkers.length - 1);
+
+                            var markertemplate = "<div style=\"height:35px;width:210px;\">" +
+                                "<div class=\"\">" +
+                                "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-success\">Confirm Location</button>&nbsp;&nbsp;"
+                                    .format(confirmclick) +
+                                "<button type=\"button\" onclick=\"{0}\" class=\"btn btn-default\">".format(click) +
+                                "Cancel" +
+                                "</button>" +
+                                "</div></div>";
+
+                            google.maps.event.addListener(marker, 'click', function (event) {
+                                if (!infowindow)
+                                    infowindow = new google.maps.InfoWindow();
+                                infowindow.setContent(markertemplate);
+                                infowindow.open(gMap, this);
+                                google.maps.event.addListener(infowindow, 'closeclick', function (event) {
+                                    s.cancelMarker(s.treeMarkers.length - 1);
+                                });
+                            });
+
+                            google.maps.event.trigger(marker, 'click');
+
+                        });
+                        s.isBindRightClick = true;
+                    }
                 }
 
                 s.siteLocs = [];

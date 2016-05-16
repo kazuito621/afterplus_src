@@ -308,6 +308,7 @@ function TimelogService($q, Api) {
             _.each(data.dates, function (date) {
                 date.date_object = moment(date.date, "YYYY-MM-DD");
                 _.each(date.users, function (user) {
+                    user.duration = user.numeric_duration;
                     _.each(user.logs, function (log) {
                         log.time_in = moment(log.time_in, "YYYY-MM-DD HH:mm:ss");
 

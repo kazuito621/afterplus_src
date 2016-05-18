@@ -14,7 +14,12 @@
                 </ul>
             </div>
         </td>
-        <td colspan="3"><h6>{{selected.length}} of {{items.length}} {{name}} selected </h6></td>
+        <td colspan="3">
+            <h6>{{selected.length}} of {{items.length}} {{name}} selected </h6>
+            <h6 ng-show="(items|selectedSummaryTrees: selected) > 0">
+                {{ items|selectedSummaryTrees: selected }} Trees ({{items|selectedSummaryEstimatePrice: selected|shortenNumber}})
+            </h6>
+        </td>
     </tr>
     </thead>
 </table>

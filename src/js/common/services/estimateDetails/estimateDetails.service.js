@@ -23,6 +23,7 @@ app
 		  scope.salesList = [];
 
         var show = function (report, config) {
+            scope.original_report = report;
             // var options
             var options = angular.extend({}, defaultOptions, config);
             scope.options = options;
@@ -132,17 +133,17 @@ app
             scope.todo_price = parseFloat(report.todo_price.replace(",", ""));
             scope.status = (report.status);
             if (!report.start) {
-                report.start = moment(moment(report.job_start).format('YYYY-MM-DD 00:00:00'));
+                report.start = moment(moment(report.job_start).format('YYYY-MM-DD HH:mm:ss'));
             }
             if (!report.end) {
-                report.end = moment(moment(report.job_end).format('YYYY-MM-DD 00:00:00'));
+                report.end = moment(moment(report.job_end).format('YYYY-MM-DD HH:mm:ss'));
             }
         };
 
         var setupModalDatePickers = function (report) {
             if (report.start && report.end) {
                 if (report.start && report.end) {
-                    scope.duration = moment.duration(report.end.diff(report.start)).asDays();
+                    scope.duration = moment.duration(report.end.diff(report.start)).asHours()/24;
                     scope.duration = Math.ceil(scope.duration);
                 }
                 scope.showWeekendWork = isDateSpanWeekend(report.start, report.end);
@@ -169,7 +170,7 @@ app
 
             // make sure date2 hours is late in the day so duration will round up
             if (date2.format('H') < 15) date2 = moment(date2.format('YYYY-MM-DD 23:59:59'))
-            var duration = Math.ceil(Math.abs(moment.duration(date1.diff(date2)).asHours() / 24));
+            var duration = Math.floor(Math.abs(moment.duration(date1.diff(date2)).asHours() / 24));
             if (duration < 4) return false;
             if (duration > 9) return true;
 
@@ -266,6 +267,9 @@ app
                 scope.dateValueChanged = false;
                 scope.showWeekendWork = isDateSpanWeekend(scope.job_start, scope.job_end);
 
+                scope.report.job_start = moment(scope.job_start).format('YYYY-MM-DD HH:mm:ss');
+                scope.report.job_end = moment(scope.job_end).format('YYYY-MM-DD HH:mm:ss');
+
                 emitEvent('save_date')
             });
 
@@ -303,7 +307,7 @@ app
         };
         
         var emitEvent = function (event) {
-            $rootScope.$emit('estimate.details.' + event, scope.report);
+            $rootScope.$emit('estimate.details.' + event, scope.report, scope.original_report);
         };
 
         var showModal = function (report, options) {

@@ -63,7 +63,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat-start="user in date.users">
-                        <td colspan="3" ng-if="$index == 0" class="danger">
+                        <td colspan="3" ng-if="$index == 0 || (date.users[$index-1].clockinby_userID != user.clockinby_userID)" class="danger">
                             Clocked in by {{ user.logs[0].clockinby_full_name }}
                         </td>
                     </tr>

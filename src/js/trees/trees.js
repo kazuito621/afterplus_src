@@ -486,6 +486,22 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }, 2500);
             }, s)
 
+            s.onSelectAllSitesInZip = s.safeApplyFn(function (zip) {
+                if (zip != undefined) {
+                    _.each(s.filteredSites, function(site) {
+                        if (site.zip == zip) {
+                            if (s.bulkEstimates.selectedSites.indexOf(site.siteID) == -1) {
+                                s.bulkEstimates.selectedSites.push(site.siteID);
+
+                                s.onChangeSiteCheck(site, true);
+                            }
+                        }
+                    })
+                } else {
+                    s.setAlert('No ZIP for selected site.', { type: 'd', time: 5 });
+                }
+            }, s)
+
             //When the selected.siteID model changes (not necessarily forced by user) then:
             //		1. if set to null, then show SITES on map
             //   	2. ELSE, if siteID exists, show TREES on the map
@@ -842,6 +858,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var _clientObj = _.findObj(s.initData.clients, 'clientID', _siteObj.clientID);
 
                     var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
+                    var clickSelectAllSitesInZip = "angular.element(this).scope().onSelectAllSitesInZip({0})".format(site.zip);
 
                     site.info = '<div id="content">' +
                         '<h1 id="firstHeading" class="firstHeading">' + site.siteName + '</h1>' +
@@ -849,8 +866,14 @@ var TreesCtrl = app.controller('TreesCtrl',
                         '<p><strong>SiteID:' + site.siteID + '</strong></p>' +
                         '<p><strong>Client:' + _clientObj.clientName + '</strong></p>' +
                         '<p><strong>Trees:' + (site.treeCount ? site.treeCount : 0) + '</strong></p>';
-                    if (site.treeCount > 0)
+                    if (site.treeCount > 0) {
                         site.info += '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
+                    }
+
+                    site.info += '<BR><a href onclick="{0};return false;">Select all sites in ZIP</a></div></div>'.format(clickSelectAllSitesInZip);
+
+                    site.info += '<BR><div class="pull-right"><input type="checkbox"></div>';
+
                     site.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
 
                     // add color to site marker
@@ -1067,7 +1090,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 gMap.fitBounds(bounds);
             }, 1500);
 
-            var setSiteColor = function (site) {
+            var setSiteColor = function (site, selected) {
                 var bg = '565656';
                 var fg = 'aaaaaa';
                 var base = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
@@ -1076,6 +1099,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (site.species && site.species[0]) {
                     bg = 'FE7569';
                     fg = '000000';
+                }
+
+                if (selected != undefined && selected == true) {
+                    bg = '337ab7';
                 }
 
                 site.iconType = base + num + '|' + bg + '|' + fg;
@@ -1834,7 +1861,27 @@ console.debug(" show mapp trees -------- ");
 						});
 				};
 
+            s.onChangeSiteCheck = function (site, checked) {
+                if (checked == true) {
+                    _.each(s.siteLocs, function (siteLoc) {
+                        if (siteLoc.siteID == site.siteID) {
+                            setSiteColor(siteLoc, true);
+                        }
+                    });
+                } else {
+                    _.each(s.siteLocs, function (siteLoc) {
+                        if (siteLoc.siteID == site.siteID) {
+                            setSiteColor(siteLoc, false);
+                        }
+                    });
+                }
 
+                replaceMarkers(s.siteLocs, 'allSites');
+            };
+
+            s.$on('tree.select.site', function (event, site, checked) {
+                s.onChangeSiteCheck(site, checked);
+            });
 
             self.updateSelectedSites = function () {
                 var updated = [];

@@ -26,3 +26,29 @@ app.directive('sitesSelector',
             link: linker
         };
     }]);
+
+app.filter('selectedSummaryTrees', function () {
+    return function (data, selected) {
+        var treeCount = 0;
+        _.each(selected, function(selectedSite) {
+            var site = _.findWhere(data, { 'siteID' : selectedSite });
+
+            treeCount += parseInt(site.matchedTreesCount);
+        });
+
+        return treeCount;
+    }
+});
+
+app.filter('selectedSummaryEstimatePrice', function () {
+    return function (data, selected) {
+        var price = 0;
+        _.each(selected, function(selectedSite) {
+            var site = _.findWhere(data, { 'siteID' : selectedSite });
+
+            price += parseInt(parseFloat(site.estimatePrice));
+        });
+
+        return price;
+    }
+});

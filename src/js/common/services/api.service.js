@@ -203,7 +203,7 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
         return Rest.one('estimate', rptID).post(status);
       },
       sendReport: function (rpt) {
-        return Rest.all('sendEstimate').post(rpt);
+        return Rest.all('sendEstimate?from_sales_rep=1').post(rpt);
       },
       lookupTaxByZip: function (zip) {
         return Rest.one('tax/zip/' + zip).get();

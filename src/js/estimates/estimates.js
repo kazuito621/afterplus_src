@@ -9,12 +9,13 @@ Todo for bulkd estimates
 
 var EstimatesListCtrl = app.controller('EstimatesListCtrl',
   ['$scope', '$route', 'Api', '$location', 'Auth', 'SortHelper', '$timeout', 
-  		'FilterHelper', 'Restangular', 'storage', 'sendBulkEstimatesService',
-    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest, storage, sendBulkEstimatesService) {
+  		'FilterHelper', 'Restangular', 'storage', 'sendBulkEstimatesService','$q',
+    function ($scope, $route, Api, $location, Auth, SortHelper, $timeout, FilterHelper, Rest, storage, sendBulkEstimatesService,$q) {
       'use strict';
       // Local vars initialization
       var s = window.ecs = $scope;
       var totalPrice = 0;
+      var totalTreeCount = 0;
       var myStateID = 'estimates',
         estimates = [], // array of original estimates
         estFiltered = [], // filtered list of estimates sites... which s.displayedSites uses as its source
@@ -395,7 +396,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         }, function err(){
             s.setAlert("Error 887 deleting estimate.",{type:'d',time:5});
         });
-        var obj = _.findObj(estimates, 'reportID', itemID);
+        var obj = _.findObj(estimates, 'reportID', itemID.toString());
         obj.delete = 1;
         s.activePopover.elem.hide();
         delete s.activePopover.itemID;
@@ -538,6 +539,52 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         }
       };
 
+      s.deleteBulk = function(ids){
+          
+       var possibleDeleteEstimates = _.filter(ids, function(id) { 
+            var t =_.find(estFiltered,function(e){
+                return (e.reportID==id && (e.status=='draft' || e.status=='sent') && e.delete!=1 );
+            })
+            
+            if(t!=undefined){
+                return true;
+            } 
+            return false;
+        });
+        var toDelete = [];
+        possibleDeleteEstimates.forEach(function(id){
+            var t = $q.defer();
+            toDelete.push(t);
+            Api.removeEstimateById(id).then(function (res) {
+		  		if(res.reportID){
+              	//s.setAlert('Deleted: #'+res.reportID, {type:'ok',time:5});
+        			var idx = _.findObj(estimates, 'reportID', res.reportID, true);
+					if(idx){ 
+						estimates.splice(idx,1);
+					}
+				}
+                t.resolve(true);
+            }, function err(){
+                s.setAlert("Error 887 deleting estimate.",{type:'d',time:5});
+            });
+            var obj = _.findObj(estimates, 'reportID', id.toString());
+            
+            obj.delete = 1;
+        })
+        
+        
+        $q.all(toDelete).then(function(res){
+            if((possibleDeleteEstimates.length != tIds.length) || possibleDeleteEstimates.length == 0)
+                s.setAlert('Some reports cannot be deleted (only draft and sent).', {type:'d',time:5});
+            else s.setAlert('Estimates deleted successfully', {type:'ok',time:5});
+        })
+        // diselect the selected items
+        var tIds = angular.copy(ids);
+        for(var i = 0;i<tIds.length;i++){
+            s.toggleEstimateSelection(tIds[i]);
+        }
+      }
+
       s.duplicate = function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -595,6 +642,19 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         var path = (status === 'invoiced' || status === 'paid' || status === 'completed' || status === 'payment_due') ? 'invoice' : 'estimate';
         return $location.path('/' + path + '/' + hashLink);
       };
+
+      s.getTotalTreeCount = function(){
+        var list = estFiltered;
+        var count = list.length;
+        if (count === estimates.length && totalTreeCount !== 0) {
+            return totalTreeCount;
+        }
+        totalTreeCount = 0;
+        list.forEach(function(i){
+            totalTreeCount += parseInt(i.treeCount, 10);
+        });
+        return totalTreeCount;
+      }
 
       // Initialization end
       // ============================================================

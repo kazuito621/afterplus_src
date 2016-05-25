@@ -163,7 +163,7 @@ function sendBulkEstimatesService($q, $rootScope, $modal, $popover, Rest, Api, A
 
 
         // init config
-        modalScope.config.senderEmail = Auth.data().email;
+        modalScope.config.senderEmail = "The sales rep for the site" ;//Auth.data().email;
         modalScope.config.subject = cfg.getEntity().name;
         Api.getEmailTemplate('bulkEstimate').then(function(res){
             if(res){

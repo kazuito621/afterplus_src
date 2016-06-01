@@ -16,7 +16,7 @@
             <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">{{auth.getLoginName()}} <span class="caret"></span></button>
             <ul class="dropdown-menu pull-right">
                 <li ng-if="auth.hasPerm('dashboard_view')"><a href="/go/dash?token={{auth.data().token}}" target='_new'>Dashboard</a></li>
-                <li ng-if="auth.hasPerm('dashboard_view')"><a href="/go/dash?token={{auth.data().token}}" target='_new'></a></li>
+                <li ng-if="auth.hasPerm('dashboard_view')"><a href="#/calendar" target='arborplus_calendar'>Job Calendar</a></li>
                 <li ng-if="auth.hasPerm('timeclock_view')"><a href="/go/reports/work?token={{auth.data().token}}" target='_new'>Work Report</a></li>
                 <li ng-if="auth.hasPerm('timeclock_view')"><a href="#/timeclock"'>Time Logs</a></lii>
                 <li ng-if="auth.hasPerm('timeclock_view')"><a href="/go/reports?token={{auth.data().token}}" target='_new'>Other Reports</a></li>

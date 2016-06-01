@@ -1087,6 +1087,9 @@ angular.module('calendardirective', [])
                             _.each(s.schedJobs, function (e) {
                                 var show = 0;
 
+                                // hardcode: dont show any jobs for aplus office
+										  if( e.siteID == 8825 ) return;
+
                                 if (s.pageVars.showStatus[e.status]) show++;
                                 else return;
 

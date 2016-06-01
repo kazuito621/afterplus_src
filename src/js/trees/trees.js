@@ -486,21 +486,31 @@ var TreesCtrl = app.controller('TreesCtrl',
                 }, 2500);
             }, s)
 
-            s.onSelectAllSitesInZip = s.safeApplyFn(function (zip) {
-                if (zip != undefined) {
-                    _.each(s.filteredSites, function(site) {
-                        if (site.zip == zip) {
-                            if (s.bulkEstimates.selectedSites.indexOf(site.siteID) == -1) {
-                                s.bulkEstimates.selectedSites.push(site.siteID);
 
-                                s.onChangeSiteCheck(site, true);
-                            }
-                        }
-                    })
-                } else {
-                    s.setAlert('No ZIP for selected site.', { type: 'd', time: 5 });
-                }
+				// select a bulk site based on siteID or zip 
+            s.onSelectBulkSite = s.safeApplyFn(function (siteID, zip) {
+
+					// make sure they are in some type of filtered/bulk state
+					if(!s.filteredSites.length || s.filteredSites.length == s.initData.sites.length){
+						alert("Must have sites filtered down to be able to use BULK SELECT features");
+						return;
+					}
+
+					console.debug('Selecting site - id:' + siteID + ' zip:' +zip);
+					if (!zip && !siteID) return;
+					  _.each(s.filteredSites, function(site) {
+							if ( (zip && site.zip == zip) || (siteID && site.siteID == siteID ) ) {
+								 if (s.bulkEstimates.selectedSites.indexOf(site.siteID) == -1) {
+									  s.bulkEstimates.selectedSites.push(site.siteID);
+									  s.onChangeSiteCheck(site, true);
+								 }
+								 if(siteID) return false;	// dont need to loop if only one site
+							}
+					  })
             }, s)
+
+
+
 
             //When the selected.siteID model changes (not necessarily forced by user) then:
             //		1. if set to null, then show SITES on map
@@ -858,7 +868,8 @@ var TreesCtrl = app.controller('TreesCtrl',
                     var _clientObj = _.findObj(s.initData.clients, 'clientID', _siteObj.clientID);
 
                     var click = "angular.element(this).scope().onSelectSiteIDFromMap({0})".format(site.siteID)
-                    var clickSelectAllSitesInZip = "angular.element(this).scope().onSelectAllSitesInZip({0})".format(site.zip);
+                    var clickSelectAllSitesInZip = "angular.element(this).scope().onSelectBulkSite(null, {0})".format(site.zip);
+                    var clickThisSite = "angular.element(this).scope().onSelectBulkSite({0})".format(site.siteID);
 
                     site.info = '<div id="content">' +
                         '<h1 id="firstHeading" class="firstHeading">' + site.siteName + '</h1>' +
@@ -870,9 +881,10 @@ var TreesCtrl = app.controller('TreesCtrl',
                         site.info += '<BR><a href onclick="{0};return false;">View Trees On This Site</a></div></div>'.format(click);
                     }
 
-                    site.info += '<BR><a href onclick="{0};return false;">Select all sites in ZIP</a></div></div>'.format(clickSelectAllSitesInZip);
+                    site.info += '<BR>Bulk: <a href onclick="{0};return false;">Select</a> | '.format(clickThisSite)
+                    		+ '<a href onclick="{0};return false;">All in Zip</a></div></div>'.format(clickSelectAllSitesInZip);
 
-                    site.info += '<BR><div class="pull-right"><input type="checkbox"></div>';
+                    //site.info += '<BR><div class="pull-right"><input type="checkbox"> Select in Bulk</div></div>';
 
                     site.iconType = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
 

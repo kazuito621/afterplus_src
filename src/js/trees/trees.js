@@ -546,9 +546,7 @@ var TreesCtrl = app.controller('TreesCtrl',
                 if (s.data.mode() == 'estimate') return;
 
                 if(s.report.reportID ){
-                    if(s.initData.filters.onlyInEstimate != true) {// DO NOTHING
-                        s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
-                    }
+                    s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = true);
                 }else {
                     if(s.initData.filters.onlyInEstimate != false) {// DO NOTHING
                         s.onFilterChange('onlyInEstimate',  -1, s.initData.filters.onlyInEstimate = false);

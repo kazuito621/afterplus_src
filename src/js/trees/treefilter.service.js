@@ -101,6 +101,15 @@ app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', func
 
         //this.exist object structure:
         //this.exist={species:{}, dbh:{}, rating:{}, treatments:{}, caDamage:{}, caDamagePotential:{}, building:{},powerline:{}}
+        
+        var onlyInEstimateSelected = _.find(selectedFilters, function(f) { return f.type == "onlyInEstimate"; });
+        if(onlyInEstimateSelected){
+            var treesOnlyFromReports = _.filter(trees, function(t) { 
+                return self._IsTreeExistsOnReport(t)==true;
+            });
+            trees = treesOnlyFromReports;
+        }
+        
         var newExist = {};
 
         //refresh contradictions flag
@@ -219,8 +228,11 @@ app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', func
 				this.data.treeResultsCount++;
 				continue; 
 			}
-
-			if( this._isTreeInFilter(this.trees[i]) ){
+			if(
+                (   onlyInEstimateFilterAdded && (this._IsTreeExistsOnReport(this.trees[i]) ==  true) &&                           this._isTreeInFilter(this.trees[i]) )
+                || 
+               (!onlyInEstimateFilterAdded && this._isTreeInFilter(this.trees[i]))
+            ){
 				this.trees[i].hide=false;
                 if(onlyInEstimateFilterAdded){
                     // this localTreeID is used to generate the pin number in map.
@@ -334,9 +346,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', func
             // building, hardscape damage, and powerline flags
             buildingFilter=caDamageFilter=powerlineFilter=nonePropFilter=false;
 
-            if(filter.type == 'onlyInEstimate'){
-                doesExistOnReport = (self._IsTreeExistsOnReport(tree) ==  true)?true:false;
-            }
+
             if(filter.type == "caDamage"){
                 caDamageFilter = (tree.caDamage == 'yes')?true:false;
             }
@@ -363,7 +373,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', func
 			// now evaluate the tree against this particular filter
   			var idName=filter.type + "ID"; 		//ie. "species" + "ID" = "speciesID"
 			if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||
-                yearFilterOk || treatmentFilterOk || doesExistOnReport){
+                yearFilterOk || treatmentFilterOk || doesExistOnReport || filter.type == 'onlyInEstimate'){
 				// if we havent recored this as a "satisfied filter", then do so...
 				if( !satisfiedFilterCounts[filter.type] ){
 					totalSatisfiedFilterTypes++;
@@ -489,7 +499,7 @@ app.service('TreeFilterService', ['$timeout', '$rootScope','ReportService', func
 
             // now evaluate the tree against this particular filter
             var idName=filter.type + "ID"; 		//ie. "species" + "ID" = "speciesID"
-            if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||  yearFilterOk || treatmentFilterOk ){
+            if( tree[idName] == filter.id || buildingFilter || caDamageFilter || powerlineFilter || caDamagePotentialFilter ||  yearFilterOk || treatmentFilterOk || filter.type == 'onlyInEstimate'){
                 // if we havent recored this as a "satisfied filter", then do so...
                 if( !satisfiedFilterCounts[filter.type] ){
                     totalSatisfiedFilterTypes++;

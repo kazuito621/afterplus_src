@@ -141,8 +141,11 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
         return Rest.all('user').getList({roles: 'sales'});
       },
       getForemanUsers: function () {
-      return Rest.all('user').getList({roles: 'foreman,staff,sales,admin'});
-    },
+        return Rest.all('user').getList({roles: 'foreman,staff,sales,admin'});
+      },
+      getForemanTimeclockUsers: function () {
+        return Rest.all('user').getList({roles: 'foreman,staff,crew,admin'});
+      },
       getReport: function (reportID, opts) {
         var r = $rootScope.requestedReportID;
         if (r && r > 1) {

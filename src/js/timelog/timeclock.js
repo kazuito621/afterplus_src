@@ -44,7 +44,7 @@ function TimelogController(Api, TimelogService, editTimelogService, createTimelo
     };
 
     function initForemans() {
-        Api.getForemen().then(function(data){
+        Api.getAllStaff().then(function(data){
             _.each(data, function (foremanUser) {
                 var foreman = {};
                 foreman.userID = foremanUser.userID;

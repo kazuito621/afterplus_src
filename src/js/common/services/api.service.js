@@ -422,11 +422,14 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
 
       },
 
-
-		//problem here its returning all!!
-      getForemen: function () {
+      getAllStaff: function () {
         // GET  /users?role=XXX
         return Rest.all('user').getList({roles: 'foreman,crew,admin,staff'});
+      },
+
+      getForemen: function () {
+        // GET  /users?role=XXX
+        return Rest.all('user').getList({roles: 'foreman'});
       },
       changeEstimateProperty: function (id, params) {
         // POST / estimate / 123

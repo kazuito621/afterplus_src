@@ -19,12 +19,12 @@
                         <i class="fa fa-gear"></i>
                     </a>-->
                     Bid &nbsp;
-					<a ng-if="auth.isAtleast('inventory')" bulk-tree-editor
-                       report-id="report.reportID" treatments="initData.filters.treatments" saved-report-check="isChanged()" on-apply-change="reloadReport" href="">
-                        <i class="fa fa-gear"></i>
+					<a class="btn btn-default" ng-if="auth.isAtleast('inventory')" bulk-tree-editor
+                       report-id="report.reportID" treatments="initData.filters.treatments" species="initData.filters.species" saved-report-check="isChanged()" on-apply-change="reloadReport" href="">
+                        <i class="fa fa-gear" style="font-size: 17px"></i>
                     </a>
-                    <a ng-if="auth.isAtleast('inventory')" adjust-price href="">
-                        <i class="fa" style="font-weight: bolder;">&nbsp;%</i>
+                    <a class="btn btn-default" ng-if="auth.isAtleast('inventory')" adjust-price href="">
+                        <i class="fa" style="font-weight: bolder;font-size: 17px;">&nbsp;%</i>
                     </a>
                 </td>
                 <td class="td-action"></td>

@@ -219,14 +219,15 @@ app
 
         /**
          * Note days... should start at 00:00:00 and end at 23:59:59
+			* @param {string} type - if "days", then the number of days coutner changed, else an actual date changed
          */
         scope.onJobDateChange = function (type) {
             scope.dateValueChanged = true;
 
-            //
             scope.report_job_start_unix = this.report_job_start_unix;
             scope.report_job_end_unix = this.report_job_end_unix;
             scope.duration = this.duration;
+				dbg("start unix:"+scope.report_job_start_unix +", end:"+scope.report_job_end_unix);
 
             //use the unix ... convert back
             scope.job_start = moment.unix(scope.report_job_start_unix).format('YYYY-MM-DD HH:mm:ss');
@@ -238,15 +239,43 @@ app
 
             if (type == 'days') {
                 var temp = moment(scope.job_start);
+
                 scope.job_end = temp.add(scope.duration, 'days');
+
                 scope.report_job_end_unix = scope.job_end.format('X');
                 this.report_job_end_unix = scope.job_end.format('X');
+					 	
+					// subtract the timezone now...  WHY ?? cuz 3 things seem to be interpretting date differently
+					// datepicker
+					// calendar... how its displayed (ie. if
+					// OK BUG HERE ANF MAJOR HACK... but no time to fix right now
+					// ... with this hack below, it fixes so that START/END/DAYS will be correct, when days are changed
+					// without it, .. even though i pick 2 days... the date might be 1/1 - 1/3
+					// BUT WITH IT... IT CAUSES ANOTHER MINOR BUG...
+					// in the calendar rendering, the event shows it being 1 day LESS than it should be 
+					// ALTHOUGH the server is correct... (ie. if you refreshed it then it would be ok)
+					// perhaps the convertLocalTime() func below could be a key to it, cuz thats who they soilved it in the
+					// calendar.directive... but it didnt work..
+					var localTz = new Date().getTimezoneOffset() * 60;
+					this.report_job_end_unix -= localTz;
+					this.report_job_end_unix -= 1; //cuz we want it 23:59:59
+
+					 dbg('ebnd unix: ' +this.report_job_end_unix);
             } else if (scope.job_start) {
                 scope.job_end = moment.unix(scope.report_job_end_unix).format('YYYY-MM-DD HH:mm:ss');
                 var d = Math.ceil(moment.duration(moment(scope.job_end).diff(moment(scope.job_start))).asDays());
                 scope.duration = d;
             }
         };
+
+
+				// unused, but example for solving an issue in calendar directive
+				var convertLocalTime = function (startMoment, endMoment) {
+					 startMoment = startMoment.local();
+					 if (endMoment != undefined && endMoment != null) {
+						  endMoment = endMoment.local();
+					 }
+				}
 
         scope.saveJobDates = function () {
             // convert from unix back to iso

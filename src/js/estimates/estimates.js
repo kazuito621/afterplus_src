@@ -625,16 +625,22 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
         });
       }
 
+      var getSelectedEstimates = function(){
+          return _.filter(estFiltered,function(e){
+                return (s.checkedEstimates.ids.indexOf(e.reportID)!=-1);
+            });
+      }
+      
       s.displayedTotalPrice = function () {
-			var list = estFiltered;
-			var count = list.length;
+		var list = getSelectedEstimates();
+		var count = list.length;
       	if (count === estimates.length && totalPrice !== 0) {
           	return totalPrice;
-        	}
-        	totalPrice = 0;
-		  	list.forEach(function(i){
-          	totalPrice += parseInt(i.total_price, 10);
-        	});
+        }
+        totalPrice = 0;
+        list.forEach(function(i){
+            totalPrice += parseInt(i.total_price, 10);
+        });
         return totalPrice;
       };
 
@@ -644,7 +650,7 @@ var EstimatesListCtrl = app.controller('EstimatesListCtrl',
       };
 
       s.getTotalTreeCount = function(){
-        var list = estFiltered;
+        var list = getSelectedEstimates();
         var count = list.length;
         if (count === estimates.length && totalTreeCount !== 0) {
             return totalTreeCount;

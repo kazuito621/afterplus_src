@@ -346,6 +346,7 @@ angular.module('calendardirective', [])
                                 defaultTimedEventDuration: '04:00:00',
                                 startEditable: true,
                                 durationEditable: true,
+                                height: 1000,
 
                                 events: function (st, end, tz, callback) {
                                     callback(fetchJobsFilter());

@@ -46,8 +46,8 @@ function commaDigits(val) {
 
 
 angular.module('calendardirective', [])
-    .directive('calendar', ['$timeout', 'storage', '$filter', 'estimateDetailsService',
-        function ($timeout, storage, $filter, estimateDetailsService) {
+    .directive('calendar', ['$timeout', 'storage', '$filter', 'estimateDetailsService', 'gMapInitializer',
+        function ($timeout, storage, $filter, estimateDetailsService, gMapInitializer) {
             return {
                 restrict: 'EA',
                 replace: false,
@@ -84,6 +84,10 @@ angular.module('calendardirective', [])
                             {value: 'paid', txt: 'Paid'},
                         ]
 
+                        var gMap = true;
+                        var gMapID = '';
+                        var markers = [];
+
 
                         var getEventTitle = function (obj) {
                             var t = obj.reportID + ' $' + $filter('shortenNumber')(obj.todo_price) + ' ';
@@ -97,13 +101,19 @@ angular.module('calendardirective', [])
                             t += shortenName(obj.siteName);
 
                             if (obj.city) t += ' (' + obj.city + ') ';
-									 console.debug(obj  );
-									 console.debug('title'  );
-									  switch(parseInt(obj.work_weekend)){
-									     case 1: t+='[SAT]'; break;
-										  case 2: t+='[SUN]'; break;
-										  case 3: t+='[SAT,SUN]'; break;
-									 }
+                            console.debug(obj);
+                            console.debug('title');
+                            switch (parseInt(obj.work_weekend)) {
+                                case 1:
+                                    t += '[SAT]';
+                                    break;
+                                case 2:
+                                    t += '[SUN]';
+                                    break;
+                                case 3:
+                                    t += '[SAT,SUN]';
+                                    break;
+                            }
                             return t;
                         }
 
@@ -120,7 +130,7 @@ angular.module('calendardirective', [])
                                 }
                                 , sales_userIDs: []
                                 , job_userIDs: []
-										  , goalPerDay: 1000,
+                                , goalPerDay: 1000,
                             }
                             storage.bind(s, 'pageVars',
                                 {
@@ -182,6 +192,8 @@ angular.module('calendardirective', [])
                                 }, 400);
 
                             });
+
+
                         } // end init()
 
 
@@ -349,6 +361,7 @@ angular.module('calendardirective', [])
                                 height: 1000,
 
                                 events: function (st, end, tz, callback) {
+                                    console.log('RENDER ALL');
                                     callback(fetchJobsFilter());
                                 },
 
@@ -413,12 +426,12 @@ angular.module('calendardirective', [])
                                     console.log(data);
                                     console.log(jsEvent);
                                     estimateDetailsService.showModal(data, {
-                                        'allowCalendar' : true,
-                                        'allowUnschedule' : true,
-													 'callback' : function( obj ){
-														updateJobData(obj);
-													 }
-                                    }).then(function(data) {
+                                        'allowCalendar': true,
+                                        'allowUnschedule': true,
+                                        'callback': function (obj) {
+                                            updateJobData(obj);
+                                        }
+                                    }).then(function (data) {
                                         alert('2222222');
                                     });
                                 },
@@ -479,6 +492,7 @@ angular.module('calendardirective', [])
 
                                 // called for every job event box
                                 eventRender: function (event, element, view) {
+                                    console.log('RENDER');
                                     //$('.fc-title br').remove();
 
                                     /*WILL WORK ON IT LATER*/
@@ -597,10 +611,10 @@ angular.module('calendardirective', [])
 
                         } // initCalendar
 
-								s.editGoalPerDay = function(){
-									var g = prompt("Enter Goal Per Day", s.pageVars.goalPerDay);
-									s.pageVars.goalPerDay = g;
-								}
+                        s.editGoalPerDay = function () {
+                            var g = prompt("Enter Goal Per Day", s.pageVars.goalPerDay);
+                            s.pageVars.goalPerDay = g;
+                        }
 
                         s.onMouseHoverJob = function () {
                             $("#tooltip").removeClass("hide").addClass("show");
@@ -709,31 +723,31 @@ angular.module('calendardirective', [])
                         }
                         init();
 
-								/**
-								 * Updates the local data array for a given job
-								 * TODO - should this search across both unschedJobs and schedJobs? 
-								 * Should we unite those somehow, and keep those as just pointers?
-								 * @param obj - ie. {reportID:123, someVar:someVal}
-								 * @param jobArray - which job array to update, 
-								 *							if EMPTY, then try to update both arrays
-								 */
-								var updateJobData = function(obj, jobArray){
-									 if(!jobArray){
-										 updateJobData( obj, s.schedJobs );
-										 updateJobData( obj, s.unschedJobs );
-										 if( cal ){ 
-										 		var events = cal.fullCalendar('clientEvents');
-										 		updateJobData( obj, events );
-										 }
-										 return;
-									 }
+                        /**
+                         * Updates the local data array for a given job
+                         * TODO - should this search across both unschedJobs and schedJobs?
+                         * Should we unite those somehow, and keep those as just pointers?
+                         * @param obj - ie. {reportID:123, someVar:someVal}
+                         * @param jobArray - which job array to update,
+                         *                            if EMPTY, then try to update both arrays
+                         */
+                        var updateJobData = function (obj, jobArray) {
+                            if (!jobArray) {
+                                updateJobData(obj, s.schedJobs);
+                                updateJobData(obj, s.unschedJobs);
+                                if (cal) {
+                                    var events = cal.fullCalendar('clientEvents');
+                                    updateJobData(obj, events);
+                                }
+                                return;
+                            }
                             var job = _.find(jobArray, 'reportID', obj.reportID);
                             if (!job) return;
-									 for( prop in obj ){
-							 			if(prop=='reportID') continue;
-								 		if( job[prop] ) job[prop] = obj[prop]
-									 }
-								}
+                            for (prop in obj) {
+                                if (prop == 'reportID') continue;
+                                if (job[prop]) job[prop] = obj[prop]
+                            }
+                        }
 
                         //@@todo - update the counts in the dropdown! .. by knowing who was assigned before, and subtracting and adding
                         s.savejobtoforeman = function () {
@@ -869,7 +883,7 @@ angular.module('calendardirective', [])
                          * @return INT
                          */
                         var getTotalDaysOfWork = function (e, opt) {
-									 var dbg=true;
+                            var dbg = true;
                             opt = opt || {};
                             var d1 = e.start.format('YYYYMMDD');
                             var d2 = e.end.format('YYYYMMDD');
@@ -881,23 +895,23 @@ angular.module('calendardirective', [])
                             if (opt.excludePast) d1 = moment().format('YYYYMMDD');
 
                             var d, c = 0, day, ds;
-									 if(dbg) console.debug('    : weekend? ' + e.work_weekend);
+                            if (dbg) console.debug('    : weekend? ' + e.work_weekend);
                             for (var di = d1; di <= d2; di++) {
                                 ds = '' + di;
                                 d = moment(ds.substr(0, 4) + '-' + ds.substr(4, 2) + '-' + ds.substr(6));
                                 day = d.format('d');
                                 if (day >= 1 && day <= 5 || e.work_weekend == 3) {
-												if(dbg) console.debug('    +a ' + d.toString());
+                                    if (dbg) console.debug('    +a ' + d.toString());
                                     c++;
                                 } else if (day == 6 && e.work_weekend == 1) {
-												if(dbg) console.debug('    +b ' + d.toString());
+                                    if (dbg) console.debug('    +b ' + d.toString());
                                     c++;
                                 } else if (day == 0 && e.work_weekend == 2) {
-												if(dbg) console.debug('    +c ' + d.toString());
+                                    if (dbg) console.debug('    +c ' + d.toString());
                                     c++;
-                                }else{
-												if(dbg) console.debug('    -X ' + d.toString());
-										  }
+                                } else {
+                                    if (dbg) console.debug('    -X ' + d.toString());
+                                }
                             }
                             return c;
                         }
@@ -1004,8 +1018,6 @@ angular.module('calendardirective', [])
                          */
 
 
-
-
                         //
                         ///**
                         // * Note days... should start at 00:00:00 and end at 23:59:59
@@ -1089,7 +1101,7 @@ angular.module('calendardirective', [])
                                 var show = 0;
 
                                 // hardcode: dont show any jobs for aplus office
-										  if( e.siteID == 8825 ) return;
+                                if (e.siteID == 8825) return;
 
                                 if (s.pageVars.showStatus[e.status]) show++;
                                 else return;
@@ -1106,7 +1118,188 @@ angular.module('calendardirective', [])
 
                                 o.push(e);
                             });
+
+                            console.log(o);
+
+                            var map_id = 'treeMap';
+                            if (gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID = gMap.getDiv().id;
+                            // TODO NEED TO CHECK
+                            // It's not working for TreeMap
+                            initMap().then(function () {
+
+                                clearMarkers();
+
+                                var mapBounds;
+                                mapBounds = new google.maps.LatLngBounds();
+                                var LatLngList = [];
+                                mapBounds = new google.maps.LatLngBounds();
+
+                                _.each(o, function(_report){
+
+                                    var latLng = new google.maps.LatLng(_report.site_lat, _report.site_lng);
+                                    LatLngList.push(latLng);
+                                    var markerLatLng = {lat: parseFloat(_report.site_lat), lng: parseFloat(_report.site_lng)};
+
+                                    setReportColor(_report)
+
+                                    var marker = new google.maps.Marker({
+                                        position: markerLatLng,
+                                        map: gMap,
+                                        id: _report.reportID,
+                                        draggable: false,
+                                        icon: _report.iconType,
+                                        reportID: _report.reportID
+                                        //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
+                                    });
+
+                                    //console.log("info added: "+marker.info);
+                                    mapBounds.extend(latLng);
+
+                                    google.maps.event.addListener(marker, 'click', function (e) {
+                                        console.log(marker.reportID);
+                                    });
+                                    markers.push(marker);
+                                });
+
+                                _.each(s.unschedJobs, function(_report){
+
+                                    var latLng = new google.maps.LatLng(_report.site_lat, _report.site_lng);
+                                    LatLngList.push(latLng);
+                                    var markerLatLng = {lat: parseFloat(_report.site_lat), lng: parseFloat(_report.site_lng)};
+
+                                    setReportColor(_report)
+
+                                    var marker = new google.maps.Marker({
+                                        position: markerLatLng,
+                                        map: gMap,
+                                        id: _report.reportID,
+                                        draggable: false,
+                                        icon: _report.iconType
+                                        //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
+                                    });
+
+                                    //console.log("info added: "+marker.info);
+                                    mapBounds.extend(latLng);
+                                    markers.push(marker);
+                                });
+
+
+                                // Don't zoom in too far on only one marker, when in site mode
+                                var xtra = 0.08;
+                                var extendPoint1 = new google.maps.LatLng(mapBounds.getNorthEast().lat() + xtra, mapBounds.getNorthEast().lng() + xtra);
+                                var extendPoint2 = new google.maps.LatLng(mapBounds.getNorthEast().lat() - xtra, mapBounds.getNorthEast().lng() - xtra);
+                                mapBounds.extend(extendPoint1);
+                                mapBounds.extend(extendPoint2);
+
+                                gMap.fitBounds(mapBounds);
+                                gMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+
+                            });
+
                             return o;
+                        }
+                        var setReportColor = function (report) {
+                            var bg = '565656';
+                            var fg = 'aaaaaa';
+                            var base = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
+                            var num = '';
+
+                            console.log(report.status);
+                            switch (report.status) {
+                                case 'approved':
+                                    bg = '2ecc40';
+                                    break;
+                                case 'scheduled':
+                                    bg = 'e78b1a';
+                                    break;
+                                case 'in_prog':
+                                    bg = 'b26418';
+                                    break;
+                                case 'sent':
+                                    bg = '0074d9';
+                                    break;
+                                case 'invoiced':
+                                    bg = 'ff4136';
+                                    break;
+                                case 'completed':
+                                    bg = '9e3eff';
+                                    break;
+                                case 'paid':
+                                    bg = 'ffffff';
+                                    break;
+                                default:
+                                    bg = '565656';
+                                    break;
+                            }
+
+
+                            report.iconType = base + num + '|' + bg + '|' + fg;
+                        };
+
+                        var clearMarkers = function () {
+                            //remove all markers from view
+                            for (var b = 0; b < markers.length; b++) {
+                                markers[b].setMap(null);
+                            }
+                        }
+
+                        var initMapCalled = false;
+                        var initMapDefer = null;
+                        var initMap = function () {
+                            // dont let initmap get called twice
+                            if (initMapCalled) return initMapDefer.promise;
+                            initMapCalled = true;
+
+                            var deferred = initMapDefer = $q.defer();
+                            gMapInitializer.mapsInitialized.then(function () {
+                                loadMap().then(function () {
+                                    window.mapLoaded = true;
+                                    deferred.resolve();
+                                });
+                            });
+                            return deferred.promise;
+                        }
+                        var loadMap = function () {
+                            var deferred = $q.defer();
+                            try {
+                                google.load(
+                                    "maps",
+                                    "3",
+                                    {
+                                        other_params: 'sensor=false&libraries=places',
+                                        callback: function () {
+                                            var myOptions = {
+                                                zoom: 1, tilt: 0,
+                                                center: new google.maps.LatLng(37, 122), mapTypeId: 'hybrid',
+                                                scrollwheel: false, panControl: false
+                                            };
+                                            var map_id = 'treeMap';
+                                            gMap = new google.maps.Map($('#' + map_id)[0], myOptions);
+                                            google.maps.event.addListener(gMap, 'click', function () {
+                                                dbg(s, 'click');
+                                                if (infowindow && infowindow.setMap) infowindow.setMap(null);
+                                                //In case user is editing a tree and change its location by droping it
+                                                //on anywhere in map and after that he did not click on confirm location or cancel
+                                                //button. He simply click on map then broadcast this event so that we can recieve it
+                                                //anywhere and make changes.
+                                                s.$broadcast('onMapClicked');
+                                            });
+                                            //initClicktoMap();
+                                            //initSearchBox();
+
+                                            // do we really need this? ... this was here before
+                                            $timeout(function () {
+                                                deferred.resolve();
+                                                window.mapLoaded = true;
+                                            }, 1000);
+
+                                        }
+                                    }
+                                );
+                            } catch (err) {
+                                console.log("ERROR LOADING MAP! ");
+                            }
+                            return deferred.promise;
                         }
 
 
@@ -1310,7 +1503,7 @@ angular.module('calendardirective', [])
                                 }
 
                                 if (opt.debug && jobTotal > 0)
-												console.debug("$" + jobTotal + "    = "+e.todo_price+" / "+totalDays+"d (#"+e.reportID+")");
+                                    console.debug("$" + jobTotal + "    = " + e.todo_price + " / " + totalDays + "d (#" + e.reportID + ")");
                                 tot += jobTotal;
                             });
                             return Math.round(tot);

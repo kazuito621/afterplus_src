@@ -1156,7 +1156,17 @@ angular.module('calendardirective', [])
                                     mapBounds.extend(latLng);
 
                                     google.maps.event.addListener(marker, 'click', function (e) {
-                                        console.log(marker.reportID);
+                                        Api.getReport(marker.reportID).then(function (data) {
+                                            estimateDetailsService.showModal(data, {
+                                                'allowCalendar': true,
+                                                'allowUnschedule': true,
+                                                'callback': function (obj) {
+                                                    updateJobData(obj);
+                                                }
+                                            }).then(function (data) {
+                                                alert('2222222');
+                                            });
+                                        });
                                     });
                                     markers.push(marker);
                                 });

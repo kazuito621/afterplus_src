@@ -168,9 +168,10 @@
 							<a href='/go/reports/jobaudit?token={{auth.data().token}}&id={{e.reportID}}' target=_new>{{e.perc_goal}}% GOAL</a>
 					</td>
                 <td ng-if="!(e.completed_perc>0 && e.completed_perc<100)">
-					 		${{e.total_price|formatPrice}}<BR>
-							<a ng-if="e.perc_goal>1" href='/go/reports/jobaudit?token={{auth.data().token}}&id={{e.reportID}}' target=_new>{{e.perc_goal}}% GOAL</a>
-					 </td>
+					 		${{e.total_price|formatPrice}}
+							<a ng-if="e.perc_goal>1" href='/go/reports/jobaudit?token={{auth.data().token}}&id={{e.reportID}}' target=_new><BR>{{e.perc_goal}}% GOAL</a>
+                            </BR>{{e.treeCount}} trees
+                </td>
 
 
 
@@ -235,6 +236,17 @@
                         </span>
 
                         <span ng-show="checkedEstimates.ids.length > 0">
+                            <a href="javascript:;" style="margin-left: 50px;"
+                                on-confirm-callback="deleteBulk(checkedEstimates.ids)"
+                            confirmation-dialog
+                            msg='Are you sure you want to delete the selected reports?'
+
+                            >
+                                Delete
+                            </a>
+                        </span>
+
+                        <span ng-show="checkedEstimates.ids.length > 0">
                             <a href="#" ng:cloak ng-click="setSent($event)" style="margin-left: 50px;">
                                 Mark as Sent/Active
                             </a>
@@ -242,7 +254,7 @@
                     </div>
                     <div class="col-sm-5 pull-right">
                         <span class="pull-left" style="color: white;">
-                            Total : ${{displayedTotalPrice()|formatPrice}}
+                            Total : ${{displayedTotalPrice()|formatPrice:'noCents'}} ({{getTotalTreeCount()}} trees)
                         </span>
                     </div>
                 </div>

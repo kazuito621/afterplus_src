@@ -1184,12 +1184,26 @@ angular.module('calendardirective', [])
                                         map: gMap,
                                         id: _report.reportID,
                                         draggable: false,
-                                        icon: _report.iconType
+                                        icon: _report.iconType,
+                                        reportID: _report.reportID
                                         //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
                                     });
 
                                     //console.log("info added: "+marker.info);
                                     mapBounds.extend(latLng);
+                                    google.maps.event.addListener(marker, 'click', function (e) {
+                                        Api.getReport(marker.reportID).then(function (data) {
+                                            estimateDetailsService.showModal(data, {
+                                                'allowCalendar': true,
+                                                'allowUnschedule': true,
+                                                'callback': function (obj) {
+                                                    updateJobData(obj);
+                                                }
+                                            }).then(function (data) {
+                                                alert('2222222');
+                                            });
+                                        });
+                                    });
                                     markers.push(marker);
                                 });
 

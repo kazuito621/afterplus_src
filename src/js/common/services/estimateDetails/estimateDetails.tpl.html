@@ -98,28 +98,45 @@
                         </div>
                     </div>
                 </div>
-                <div style='background-color:#F7F4E1;padding:1em;' ng-if="options.allowCalendar">
-                    <div class="row">
-                        Start: <input class="" ng-model="report_job_start_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
-                                      data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
-                                      data-placement='top'> &nbsp;
-                        End: <input class="" ng-model="report_job_end_unix" data-date-format="EEE M/dd/yyyy" placeholder="Set Date" ng-change="onJobDateChange()"
-                                    data-date-type="unix"  data-autoclose="1" name="date2" bs-datepicker type="text" style='width:12em;'
-                                    data-placement='top'> &nbsp;
-                        Days: <input class="" ng-model="duration"  placeholder="Total days" ng-change = "onJobDateChange('days')"
-                                     type="number" min="1" style="width: 3.5em;">
-                        <button type="button" class="btn btn-primary" ng-show="dateValueChanged" ng-click="saveJobDates()">Save</button>
-                    </div>
-                    <div class="row" ng-show="showWeekendWork">
-                        <BR>
-                        <label style="font-size:1.1em;">Weekend Work?</label>
-                        <input type=radio id='weekendWork0' ng-value=0 value=0 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> No  &nbsp;
-                        <input type=radio id='weekendWork1' ng=value=1 value=1 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sat &nbsp;
-                        <input type=radio id='weekendWork2' ng=value=2 value=2 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Sun &nbsp;
-                        <input type=radio id='weekendWork3' ng=value=3 value=3 ng-model='selectedWeekendWork' ng-change="weekendWorkChanged(selectedWeekendWork)"> Both
-                    </div>
-                    <div>
+                <div style='background-color:#F7F4E1;padding:1em;'>
+                    <div class="row" ng-repeat="date in report.dates" ng-if="report.dates.length > 0">
+                        <div class="row">
+                            <div class="col col-md-3">
+                                Start: <input type="text" value="{{date.job_start}}">
+                            </div>
+                            <div class="col col-md-3">
+                                End: <input type="text" value="{{date.job_end}}">
+                            </div>
+                            <div class="col col-md-6">
+                                Day Lead:
+                                <button class="btn btn-default" ng-model="date.daylead_userID" bs-options="g.userID as g.text for g in foremenList"
+                                        bs-select placeholder="Day lead" onclick="return false;">
+                                    Client Type <span class="caret"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <button type="button" class="btn btn-default" ng-model="date.crew_userIDs" data-html="1" data-multiple="1"
+                                        data-max-length="0" data-placeholder="Selected Crew"
+                                        data-animation="am-flip-x" bs-options="g.userID as g.text for g in foremenList" bs-select
+                                        title='Crew'></button>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <button type="button" class="btn btn-default" ng-model="date.treatmentCategoryIDs" data-html="1" data-multiple="1"
+                                        data-max-length="0" data-placeholder="Treatments"
+                                        data-animation="am-flip-x" bs-options="g.treatmentCategoryID as g.treatmentCategory for g in treatmentCategories" bs-select
+                                        title='Crew'></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <a class="btn success" ng-click="addNewMultipleDates()">Add new date</a>
+                        <a class="btn btn-primary" ng-click="saveMultipleDates()" ng-if="report.dates.length > 0">Save</a>
                     </div>
                 </div>
                 <side-note report-id="{{report.reportID}}" note-type='report_internal'></side-note>

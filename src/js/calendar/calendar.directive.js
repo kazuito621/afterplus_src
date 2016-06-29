@@ -174,7 +174,7 @@ angular.module('calendardirective', [])
                             }, 1000);
 
 
-                            Api.getRecentReports({schedSince: 4}).then(function (data) {
+                            Api.getRecentReports({schedSince: 4, getDates: 1}).then(function (data) {
                                 deferred1.resolve(data)
                             });
                             s.loadGroups(deferred2);
@@ -217,18 +217,21 @@ angular.module('calendardirective', [])
                                 obj.price = obj.total_price;
                                 obj.todo_price = obj.todo_price;
                                 obj.id = field.reportID;
-                                if (field.job_start) {
+                                if (field.dates.length > 0) {
                                     var eMoment;
                                     obj.type = 'Scheduled';
-                                    obj.start = moment(field.job_start).format('YYYY-MM-DD');
-                                    if (field.job_end)
-                                        eMoment = moment(field.job_end).local();
-                                    else
-                                        eMoment = moment(field.job_start).local();
-                                    obj.end = eMoment.add(1, 'days');
-                                    obj.end = eMoment.format('YYYY-MM-DD');
+                                    //obj.start = moment(field.job_start).format('YYYY-MM-DD');
+                                    //if (field.job_end)
+                                    //    eMoment = moment(field.job_end).local();
+                                    //else
+                                    //    eMoment = moment(field.job_start).local();
+                                    //obj.end = eMoment.add(1, 'days');
+                                    //obj.end = eMoment.format('YYYY-MM-DD');
+
                                     s.schedJobs.push(obj);
+
                                 }
+
 
                                 // setup filtering
                                 if (obj.sales_userID) {
@@ -1098,7 +1101,7 @@ angular.module('calendardirective', [])
                             var juid = s.pageVars.job_userIDs;
                             var suid = s.pageVars.sales_userIDs;
                             var o = [];
-
+                            console.log(s.schedJobs);
                             _.each(s.schedJobs, function (e) {
                                 var show = 0;
 
@@ -1118,7 +1121,16 @@ angular.module('calendardirective', [])
                                 else if (juid.indexOf(e.job_userID) >= 0) show++;
                                 else return;
 
-                                o.push(e);
+                                console.log(e);
+                                _.each(e.dates, function(_date){
+                                    var event = angular.copy(e);
+                                    event.start = moment(_date.job_start);
+                                    event.end = moment(_date.job_end);
+
+                                    o.push(event);
+                                });
+
+
                             });
 
                             //console.log(o);

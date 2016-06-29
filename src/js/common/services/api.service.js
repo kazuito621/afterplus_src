@@ -479,7 +479,17 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
         var params = {'completed' : 0};
 
         return Rest.one('estimate', rptID).one('item', itemID).post(undefined, params);
-      }
+      },
+
+      getTreatmentCategories: function () {
+        return Rest.all('treatmentcategories').getList();
+      },
+      addWorkDate: function (reportID, params) {
+        return Rest.one('estimate', reportID).one('dates').post(undefined, params);
+      },
+      updateWorkDate: function (reportID, workDateID, params) {
+        return Rest.one('estimate', reportID).one('dates', workDateID).post(undefined, params);
+      },
     };
   }]);
 

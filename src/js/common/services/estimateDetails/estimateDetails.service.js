@@ -21,6 +21,7 @@ app
 
         scope.foremenList = [];
 		  scope.salesList = [];
+        scope.treatmentCategories = [];
 
         var show = function (report, config) {
             scope.original_report = report;
@@ -33,6 +34,7 @@ app
             opts = [];
             opts.getTreeDetails = 1;
             opts.getSummary = 1;
+            opts.getDates = 1;
             Api.getReport(report.reportID,opts).then(function(data) {
                 report = data;
                 scope.report = report;
@@ -40,6 +42,7 @@ app
                 loadSite(report.siteID);
                 loadUsers();
                 loadContacts();
+                loadTreatmentCategories();
                 prepareReportData(report);
                 setupModalDatePickers(report);
 
@@ -80,6 +83,11 @@ app
 
         };
 
+        var loadTreatmentCategories = function(siteID) {
+            Api.getTreatmentCategories().then(function (data) {
+                scope.treatmentCategories = data;
+            });
+        };
 
 		 // process incoming user list, and setup text for firstname / last initial
 		  var processUsers = function(users){
@@ -284,7 +292,7 @@ app
 
             Api.ScheduleJob(scope.report.reportID, {
                 job_start: scope.job_start,
-                job_end: scope.job_end
+                job_end: scope.job_end,
             }).then(function (res) {
                 if (res && res.conflict == 1 && res.conflict_msg) {
                     alert(res.conflict_msg);
@@ -332,6 +340,38 @@ app
                 emitEvent('unschedule');
                 detailsModal.$promise.then(detailsModal.hide);
             }).catch(function (res) {
+            });
+        };
+
+        scope.addNewMultipleDates = function() {
+            var newDate = {};
+
+            if (scope.report.dates.length > 0) {
+                newDate.job_start = moment(scope.report.dates[scope.report.dates.length - 1].job_start).add(1, 'day').format('YYYY-MM-DD HH:mm:ss');
+                newDate.job_end = moment(scope.report.dates[scope.report.dates.length - 1].job_end).add(1, 'day').format('YYYY-MM-DD HH:mm:ss');
+            } else {
+                newDate.job_start = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
+                newDate.job_end = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+            }
+            scope.report.dates.push(newDate);
+        };
+
+        scope.saveMultipleDates = function() {
+            console.log(scope.report.dates);
+            _.each(scope.report.dates, function (_date) {
+                var params = {};
+                params.crew_userIDs = _date.crew_userIDs;
+                params.daylead_userID = _date.daylead_userID;
+                params.treatmentCategoryIDs = _date.treatmentCategoryIDs;
+                params.job_start = _date.job_start;
+                params.job_end = _date.job_end;
+
+
+                if (_date.workDateID != undefined) {
+                    Api.updateWorkDate(scope.report.reportID, _date.workDateID, params);
+                } else {
+                    Api.createWorkDate(scope.report.reportID, params);
+                }
             });
         };
         

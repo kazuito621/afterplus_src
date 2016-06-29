@@ -113,9 +113,11 @@
                                         bs-select placeholder="Day lead" onclick="return false;">
                                     Client Type <span class="caret"></span>
                                 </button>
+
+                                <button type="button" class=" pull-right close" style="font-size: 30px;" data-dismiss="modal" aria-label="Close" ng-click="removeWorkDate(date)"><span class="text-danger" aria-hidden="true">&times;</span></button>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" style="margin-bottom: 10px">
                             <div class="col col-md-6">
                                 <button type="button" class="btn btn-default" ng-model="date.crew_userIDs" data-html="1" data-multiple="1"
                                         data-max-length="0" data-placeholder="Selected Crew"
@@ -124,7 +126,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" style="margin-bottom: 10px">
                             <div class="col col-md-6">
                                 <button type="button" class="btn btn-default" ng-model="date.treatmentCategoryIDs" data-html="1" data-multiple="1"
                                         data-max-length="0" data-placeholder="Treatments"

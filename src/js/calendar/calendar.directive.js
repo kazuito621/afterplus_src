@@ -435,7 +435,7 @@ angular.module('calendardirective', [])
                                             updateJobData(obj);
                                         }
                                     }).then(function (data) {
-                                        alert('2222222');
+                                        console.log('2222222');
                                     });
                                 },
                                 dayClick: function (date, evt, view) {
@@ -737,6 +737,7 @@ angular.module('calendardirective', [])
                          *                            if EMPTY, then try to update both arrays
                          */
                         var updateJobData = function (obj, jobArray) {
+                            console.log('CLOSE MODAL');
                             if (!jobArray) {
                                 updateJobData(obj, s.schedJobs);
                                 updateJobData(obj, s.unschedJobs);
@@ -801,6 +802,18 @@ angular.module('calendardirective', [])
                         $rootScope.$on('estimate.details.unschedule', function (event, report) {
 
                             elm.fullCalendar('removeEvents', report._id);
+                        });
+
+                        $rootScope.$on('estimate.details.save_multiple', function (event, report) {
+                            console.log("NEW INIT");
+                            _.each(s.schedJobs, function (_report) {
+                                if (_report.reportID == report.reportID) {
+                                    _report.dates = report.dates;
+                                }
+                            })
+                            console.log(s.schedJobs)
+                            elm.fullCalendar('refetchEvents');
+                            cal.fullCalendar('refetchEvents');
                         });
 
                         $rootScope.$on('estimate.details.save_date', function (event, report, originalReport) {
@@ -1187,7 +1200,7 @@ angular.module('calendardirective', [])
                                                     updateJobData(obj);
                                                 }
                                             }).then(function (data) {
-                                                alert('2222222');
+                                                console.log('2222222');
                                             });
                                         });
                                     });
@@ -1230,7 +1243,7 @@ angular.module('calendardirective', [])
                                                         updateJobData(obj);
                                                     }
                                                 }).then(function (data) {
-                                                    alert('2222222');
+                                                    console.log('2222222');
                                                 });
                                             });
                                         });

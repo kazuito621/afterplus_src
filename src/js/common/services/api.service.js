@@ -490,6 +490,9 @@ app.factory('Api', ['Restangular', '$rootScope', '$q', '$location', 'storage', '
       updateWorkDate: function (reportID, workDateID, params) {
         return Rest.one('estimate', reportID).one('dates', workDateID).post(undefined, params);
       },
+      removeWorkDate: function (reportID, workDateID, params) {
+        return Rest.one('estimate', reportID).one('dates_remove', workDateID).post(undefined, params);
+      },
     };
   }]);
 

@@ -1,5 +1,7 @@
 app
-    .service('estimateDetailsService', [ '$rootScope', '$modal', 'Api', 'Restangular', function ($rootScope, $modal, Api, Rest) {
+    .service('estimateDetailsService', [ '$rootScope', '$modal', 'Api', 'Restangular', '$q', function ($rootScope, $modal, Api, Rest, $q) {
+        var createModalDeferred;
+
         scope = $rootScope.$new();
 		  window.edss=scope;
 
@@ -24,6 +26,8 @@ app
         scope.treatmentCategories = [];
 
         var show = function (report, config) {
+            createModalDeferred = $q.defer();
+
             scope.original_report = report;
             // var options
             var options = angular.extend({}, defaultOptions, config);
@@ -54,6 +58,8 @@ app
 
                 scope.selectedWeekendWork = (data.work_weekend) ? data.work_weekend : 0;
                 detailsModal.$promise.then(detailsModal.show);
+
+                return createModalDeferred.promise;
             });
         };
 
@@ -368,11 +374,37 @@ app
 
 
                 if (_date.workDateID != undefined) {
-                    Api.updateWorkDate(scope.report.reportID, _date.workDateID, params);
+                    Api.updateWorkDate(scope.report.reportID, _date.workDateID, params).then(function(data) {
+
+                    });
                 } else {
-                    Api.createWorkDate(scope.report.reportID, params);
+                    Api.addWorkDate(scope.report.reportID, params).then(function(data){
+
+                    });
                 }
+
             });
+
+            setTimeout(function () {
+                emitEvent('save_multiple');
+            }, 400);
+        };
+
+        scope.removeWorkDate = function(removeDate) {
+            var params = {};
+            Api.removeWorkDate(scope.report.reportID, removeDate.workDateID, params).then(function(data) {
+            });
+
+            for (var i = 0; i < scope.report.dates.length; i++) {
+                var reportI = scope.report.dates[i];
+                if (reportI.workDateID == removeDate.workDateID) {
+                    scope.report.dates.splice(i, 1);
+                }
+
+            }
+            setTimeout(function () {
+                emitEvent('save_multiple');
+            }, 400);
         };
         
         var emitEvent = function (event) {

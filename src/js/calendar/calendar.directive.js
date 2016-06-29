@@ -101,8 +101,8 @@ angular.module('calendardirective', [])
                             t += shortenName(obj.siteName);
 
                             if (obj.city) t += ' (' + obj.city + ') ';
-                            console.debug(obj);
-                            console.debug('title');
+                            //console.debug(obj);
+                            //console.debug('title');
                             switch (parseInt(obj.work_weekend)) {
                                 case 1:
                                     t += '[SAT]';
@@ -361,7 +361,7 @@ angular.module('calendardirective', [])
                                 height: 1000,
 
                                 events: function (st, end, tz, callback) {
-                                    console.log('RENDER ALL');
+                                    console.log('CALL EVENTS');
                                     callback(fetchJobsFilter());
                                 },
 
@@ -392,7 +392,7 @@ angular.module('calendardirective', [])
                                     convertLocalTime(event.start, event.end);
                                     //event.end = angular.copy((event.start));
                                     //event.end = setLastMomentOfTheDay(angular.copy(event.start));
-                                    console.log(event.start.format('YYYY-MM-DD'));
+                                    //console.log(event.start.format('YYYY-MM-DD'));
                                     var jobStart = event.start.format('YYYY-MM-DD') + ' 00:00:00';
                                     Api.ScheduleJob(ev.reportID, {
                                         job_start: event.start.format('YYYY-MM-DD')
@@ -423,8 +423,8 @@ angular.module('calendardirective', [])
                                 },
                                 eventClick: function (data, jsEvent, view) {
                                     convertLocalTime(data.start, data.end)
-                                    console.log(data);
-                                    console.log(jsEvent);
+                                    //console.log(data);
+                                    //console.log(jsEvent);
                                     estimateDetailsService.showModal(data, {
                                         'allowCalendar': true,
                                         'allowUnschedule': true,
@@ -480,14 +480,16 @@ angular.module('calendardirective', [])
 
                                 // Triggered when a new date-range is rendered, or when the view type switches.
                                 viewRender: function (view, cal) {
+                                    renderMap(view.start, view.end);
+                                    console.log('CALL VIEW RENDER');
                                     setTimeout(function () {
                                         updateTotals();
                                     }, 600);
                                     s.pageVars.viewName = view.name;
-                                    if (view.name == 'month')
-                                        s.pageVars.startDate = view.start.add(14, 'days').format('YYYY-MM-DD');
-                                    else
-                                        s.pageVars.startDate = view.start.format('YYYY-MM-DD');
+                                    //if (view.name == 'month')
+                                    //    s.pageVars.startDate = view.start.add(14, 'days').format('YYYY-MM-DD');
+                                    //else
+                                    //    s.pageVars.startDate = view.start.format('YYYY-MM-DD');
                                 },
 
                                 // called for every job event box
@@ -545,7 +547,7 @@ angular.module('calendardirective', [])
                                     }
                                     el.job_start = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
                                     el.job_end = moment(el.end).format('YYYY-MM-DD HH:mm:ss')
-                                    console.log(moment(el.start).format('YYYY-MM-DD HH:mm:ss') + '   ' + moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss'));
+                                    //console.log(moment(el.start).format('YYYY-MM-DD HH:mm:ss') + '   ' + moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss'));
 
                                     var js = moment(el.start).format('YYYY-MM-DD HH:mm:ss');
                                     var je = moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss');
@@ -787,7 +789,7 @@ angular.module('calendardirective', [])
                             Api.changeEstimateProperty(s.clickedEvent.reportID, {
                                 sales_userID: s.sales_user.userID
                             }).then(function (response) {
-                                console.log(response);
+                                //console.log(response);
                                 s.clickedEvent.sales_userID = s.sales_user.userID;
                             });
                         };
@@ -799,9 +801,9 @@ angular.module('calendardirective', [])
                         });
 
                         $rootScope.$on('estimate.details.save_date', function (event, report, originalReport) {
-                            console.log('emit report');
-                            console.log(originalReport);
-                            console.log(report);
+                            //console.log('emit report');
+                            //console.log(originalReport);
+                            //console.log(report);
                             originalReport.job_end = report.job_end;
                             originalReport.job_start = report.job_start;
                             originalReport.end = report.end;
@@ -1119,8 +1121,14 @@ angular.module('calendardirective', [])
                                 o.push(e);
                             });
 
-                            console.log(o);
+                            //console.log(o);
 
+
+
+                            return o;
+                        }
+
+                        var renderMap = function (viewStart, viewEnd) {
                             var map_id = 'treeMap';
                             if (gMap && gMap.getDiv && gMap.getDiv() && gMap.getDiv().id) gMapID = gMap.getDiv().id;
                             // TODO NEED TO CHECK
@@ -1134,42 +1142,8 @@ angular.module('calendardirective', [])
                                 var LatLngList = [];
                                 mapBounds = new google.maps.LatLngBounds();
 
-                                _.each(o, function(_report){
 
-                                    var latLng = new google.maps.LatLng(_report.site_lat, _report.site_lng);
-                                    LatLngList.push(latLng);
-                                    var markerLatLng = {lat: parseFloat(_report.site_lat), lng: parseFloat(_report.site_lng)};
 
-                                    setReportColor(_report)
-
-                                    var marker = new google.maps.Marker({
-                                        position: markerLatLng,
-                                        map: gMap,
-                                        id: _report.reportID,
-                                        draggable: false,
-                                        icon: _report.iconType,
-                                        reportID: _report.reportID
-                                        //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
-                                    });
-
-                                    //console.log("info added: "+marker.info);
-                                    mapBounds.extend(latLng);
-
-                                    google.maps.event.addListener(marker, 'click', function (e) {
-                                        Api.getReport(marker.reportID).then(function (data) {
-                                            estimateDetailsService.showModal(data, {
-                                                'allowCalendar': true,
-                                                'allowUnschedule': true,
-                                                'callback': function (obj) {
-                                                    updateJobData(obj);
-                                                }
-                                            }).then(function (data) {
-                                                alert('2222222');
-                                            });
-                                        });
-                                    });
-                                    markers.push(marker);
-                                });
 
                                 _.each(s.unschedJobs, function(_report){
 
@@ -1191,6 +1165,7 @@ angular.module('calendardirective', [])
 
                                     //console.log("info added: "+marker.info);
                                     mapBounds.extend(latLng);
+
                                     google.maps.event.addListener(marker, 'click', function (e) {
                                         Api.getReport(marker.reportID).then(function (data) {
                                             estimateDetailsService.showModal(data, {
@@ -1207,6 +1182,53 @@ angular.module('calendardirective', [])
                                     markers.push(marker);
                                 });
 
+                                _.each(s.schedJobs, function(_report){
+
+                                    var reportJobStart = moment(_report.job_start);
+                                    var reportJobEnd = moment(_report.job_end);
+                                    if (
+                                        (reportJobStart >= viewStart && reportJobStart <=viewEnd) ||
+                                        (reportJobEnd >= viewStart && reportJobEnd <=viewEnd)
+                                    ) {
+                                        var latLng = new google.maps.LatLng(_report.site_lat, _report.site_lng);
+                                        LatLngList.push(latLng);
+                                        var markerLatLng = {lat: parseFloat(_report.site_lat), lng: parseFloat(_report.site_lng)};
+
+                                        setReportColor(_report)
+
+                                        var marker = new google.maps.Marker({
+                                            position: markerLatLng,
+                                            map: gMap,
+                                            id: _report.reportID,
+                                            draggable: false,
+                                            icon: _report.iconType,
+                                            reportID: _report.reportID
+                                            //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
+                                        });
+
+                                        //console.log("info added: "+marker.info);
+                                        mapBounds.extend(latLng);
+
+                                        google.maps.event.addListener(marker, 'click', function (e) {
+                                            Api.getReport(marker.reportID).then(function (data) {
+                                                estimateDetailsService.showModal(data, {
+                                                    'allowCalendar': true,
+                                                    'allowUnschedule': true,
+                                                    'callback': function (obj) {
+                                                        updateJobData(obj);
+                                                    }
+                                                }).then(function (data) {
+                                                    alert('2222222');
+                                                });
+                                            });
+                                        });
+                                        markers.push(marker);
+                                    }
+
+
+                                });
+
+
 
                                 // Don't zoom in too far on only one marker, when in site mode
                                 var xtra = 0.08;
@@ -1219,16 +1241,15 @@ angular.module('calendardirective', [])
                                 gMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 
                             });
+                        };
 
-                            return o;
-                        }
                         var setReportColor = function (report) {
                             var bg = '565656';
                             var fg = 'aaaaaa';
                             var base = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=';
                             var num = '';
 
-                            console.log(report.status);
+                            //console.log(report.status);
                             switch (report.status) {
                                 case 'approved':
                                     bg = '2ecc40';

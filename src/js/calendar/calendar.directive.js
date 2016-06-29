@@ -83,6 +83,7 @@ angular.module('calendardirective', [])
                             {value: 'invoiced', txt: 'Invoiced'},
                             {value: 'paid', txt: 'Paid'},
                         ]
+                        s.showApprovals = true;
 
                         var gMap = true;
                         var gMapID = '';
@@ -673,6 +674,10 @@ angular.module('calendardirective', [])
                             setTimeout(bindexternalevents, 30);
                         };
 
+                        s.changeShowApprovals = function(){
+                            console.log(s.showApprovals);
+                            cal.fullCalendar('refetchEvents');
+                        };
 
                         s.open = function (siteID) {
                             s.user = {
@@ -1146,42 +1151,45 @@ angular.module('calendardirective', [])
 
 
 
-                                //_.each(s.unschedJobs, function(_report){
-                                //
-                                //    var latLng = new google.maps.LatLng(_report.site_lat, _report.site_lng);
-                                //    LatLngList.push(latLng);
-                                //    var markerLatLng = {lat: parseFloat(_report.site_lat), lng: parseFloat(_report.site_lng)};
-                                //
-                                //    setReportColor(_report)
-                                //
-                                //    var marker = new google.maps.Marker({
-                                //        position: markerLatLng,
-                                //        map: gMap,
-                                //        id: _report.reportID,
-                                //        draggable: false,
-                                //        icon: _report.iconType,
-                                //        reportID: _report.reportID
-                                //        //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
-                                //    });
-                                //
-                                //    //console.log("info added: "+marker.info);
-                                //    mapBounds.extend(latLng);
-                                //
-                                //    google.maps.event.addListener(marker, 'click', function (e) {
-                                //        Api.getReport(marker.reportID).then(function (data) {
-                                //            estimateDetailsService.showModal(data, {
-                                //                'allowCalendar': true,
-                                //                'allowUnschedule': true,
-                                //                'callback': function (obj) {
-                                //                    updateJobData(obj);
-                                //                }
-                                //            }).then(function (data) {
-                                //                alert('2222222');
-                                //            });
-                                //        });
-                                //    });
-                                //    markers.push(marker);
-                                //});
+                                if (s.showApprovals) {
+                                    _.each(s.unschedJobs, function(_report){
+
+                                        var latLng = new google.maps.LatLng(_report.site_lat, _report.site_lng);
+                                        LatLngList.push(latLng);
+                                        var markerLatLng = {lat: parseFloat(_report.site_lat), lng: parseFloat(_report.site_lng)};
+
+                                        setReportColor(_report)
+
+                                        var marker = new google.maps.Marker({
+                                            position: markerLatLng,
+                                            map: gMap,
+                                            id: _report.reportID,
+                                            draggable: false,
+                                            icon: _report.iconType,
+                                            reportID: _report.reportID
+                                            //html: '<a href onclick="showInfo('+ (arr.length) +',event)"></a>'
+                                        });
+
+                                        //console.log("info added: "+marker.info);
+                                        mapBounds.extend(latLng);
+
+                                        google.maps.event.addListener(marker, 'click', function (e) {
+                                            Api.getReport(marker.reportID).then(function (data) {
+                                                estimateDetailsService.showModal(data, {
+                                                    'allowCalendar': true,
+                                                    'allowUnschedule': true,
+                                                    'callback': function (obj) {
+                                                        updateJobData(obj);
+                                                    }
+                                                }).then(function (data) {
+                                                    alert('2222222');
+                                                });
+                                            });
+                                        });
+                                        markers.push(marker);
+                                    });
+                                }
+
 
                                 _.each(s.schedJobs, function(_report){
 

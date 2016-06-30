@@ -1413,7 +1413,6 @@ angular.module('calendardirective', [])
                             if (juid.length > 0) filtersActive++;
                             if (search.length > 1) filtersActive++;
 
-
                             if (filtersActive == 0) {
                                 s.unschedJobs = angular.copy(unschedBackup);
                                 setTimeout(bindexternalevents, 100);

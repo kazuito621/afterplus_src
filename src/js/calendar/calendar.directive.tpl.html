@@ -1,5 +1,9 @@
 ﻿<style type="text/css">
 
+	div#wrap{
+		width:100%;
+		padding:10px;
+	}
 
     .filter_dropdown {
         width:100%;
@@ -87,8 +91,9 @@
      }*/
 </style>
 
-<div class="row">
-    <div class="col-md-2">
+<!-- yea i know... not supposed to use tables, but couldnt get the fucking calendar to auto scale wide using bootstrap container fluid -->
+<table><tr>
+<td style="width:200px; vertical-align:top">
         <div style='margin:0 0 1em; text-align:left;'>
 
             <button id='sales_filter' type="button" class="btn btn-default" ng-model="pageVars.sales_userIDs" data-html="1" data-multiple="1"
@@ -151,18 +156,17 @@
                 <!--  <label for='drop-remove'>remove after drop</label>-->
             </p>
         </div>
-    </div><!-- }} col -->
-    <div class='col-md-7'>
-        <div id='calendar'></div>
-    </div><!-- }} col -->
-    <div class='col-md-3'>
-        <div ng-cloak id="treeMap" class="map"  style="height: 300px;"></div>
+</td><td style='vertical-align:top;' >
+        <div style='margin:5px;' id='calendar'></div>
+</td><td style='width:300px; vertical-align:top;' >
+        <div ng-cloak id="treeMap" class="map"  style="height: 500px;"></div>
 		  <div style='margin-top:.7em;'>
-        	<input style="" ng-click="changeShowApprovals()" ng-model="showApprovals" type="checkbox"> Show Approved
+        	<label><input style="" ng-click="changeShowApprovals()" ng-model="showApprovals" type="checkbox"> Show Approved</label>
 			</div>
-    </div><!-- }} col -->
+</td>
+</tr>
+</table>
 
-</div><!-- }} row -->
 <div style='margin:1em;'> &nbsp; </div>
 
 

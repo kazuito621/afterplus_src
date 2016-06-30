@@ -102,10 +102,10 @@
                     <div class="row" ng-repeat="date in report.dates" ng-if="report.dates.length > 0">
                         <div class="row">
                             <div class="col col-md-3">
-                                Start: <input type="text" value="{{date.job_start}}">
+                                Start: <input type="text" ng-model="date.job_start">
                             </div>
                             <div class="col col-md-3">
-                                End: <input type="text" value="{{date.job_end}}">
+                                End: <input type="text" ng-model="date.job_end">
                             </div>
                             <div class="col col-md-6">
                                 Day Lead:
@@ -119,6 +119,7 @@
                         </div>
                         <div class="row" style="margin-bottom: 10px">
                             <div class="col col-md-6">
+                                Crew:
                                 <button type="button" class="btn btn-default" ng-model="date.crew_userIDs" data-html="1" data-multiple="1"
                                         data-max-length="0" data-placeholder="Selected Crew"
                                         data-animation="am-flip-x" bs-options="g.userID as g.text for g in foremenList" bs-select
@@ -128,10 +129,12 @@
 
                         <div class="row" style="margin-bottom: 10px">
                             <div class="col col-md-6">
+                                Treatments:
                                 <button type="button" class="btn btn-default" ng-model="date.treatmentCategoryIDs" data-html="1" data-multiple="1"
                                         data-max-length="0" data-placeholder="Treatments"
-                                        data-animation="am-flip-x" bs-options="g.treatmentCategoryID as g.treatmentCategory for g in treatmentCategories" bs-select
-                                        title='Crew'></button>
+                                        data-animation="am-flip-x" bs-options="g.treatmentCategoryID as g.label for g in treatmentCategories" bs-select
+                                        title='Treatments' ng-if="treatmentCategories.length > 0"></button>
+                                <button class="btn btn-default" disabled ng-if="treatmentCategories.length == 0">No Treatments</button>
                             </div>
                         </div>
                     </div>

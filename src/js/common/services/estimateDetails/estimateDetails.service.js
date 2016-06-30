@@ -90,9 +90,13 @@ app
         };
 
         var loadTreatmentCategories = function(siteID) {
-            Api.getTreatmentCategories().then(function (data) {
-                scope.treatmentCategories = data;
-            });
+            _.each(scope.report.summary.categories, function(reportCategory){
+                if (reportCategory.todo_price > 0) {
+                    reportCategory.label = reportCategory.treatmentCategory + '($'+ reportCategory.todo_price +' todo)';
+
+                    scope.treatmentCategories.push(reportCategory);
+                }
+            })
         };
 
 		 // process incoming user list, and setup text for firstname / last initial
@@ -355,6 +359,7 @@ app
             if (scope.report.dates.length > 0) {
                 newDate.job_start = moment(scope.report.dates[scope.report.dates.length - 1].job_start).add(1, 'day').format('YYYY-MM-DD HH:mm:ss');
                 newDate.job_end = moment(scope.report.dates[scope.report.dates.length - 1].job_end).add(1, 'day').format('YYYY-MM-DD HH:mm:ss');
+                newDate.daylead_userID = scope.report.dates[scope.report.dates.length - 1].daylead_userID;
             } else {
                 newDate.job_start = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
                 newDate.job_end = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
@@ -363,31 +368,45 @@ app
         };
 
         scope.saveMultipleDates = function() {
+            var valid = true;
             console.log(scope.report.dates);
             _.each(scope.report.dates, function (_date) {
-                var params = {};
-                params.crew_userIDs = _date.crew_userIDs;
-                params.daylead_userID = _date.daylead_userID;
-                params.treatmentCategoryIDs = _date.treatmentCategoryIDs;
-                params.job_start = _date.job_start;
-                params.job_end = _date.job_end;
-
-
-                if (_date.workDateID != undefined) {
-                    Api.updateWorkDate(scope.report.reportID, _date.workDateID, params).then(function(data) {
-
-                    });
-                } else {
-                    Api.addWorkDate(scope.report.reportID, params).then(function(data){
-
-                    });
+                console.log(_date.daylead_userID);
+                if (_date.daylead_userID == undefined) {
+                    var msg = "Day Lead cannot be null";
+                    $rootScope.$broadcast('alert', {msg: msg, time: 9, type: 'd'});
+                    valid = false;
                 }
+                });
 
-            });
+            if (valid) {
+                _.each(scope.report.dates, function (_date) {
 
-            setTimeout(function () {
-                emitEvent('save_multiple');
-            }, 400);
+                    var params = {};
+                    params.crew_userIDs = _date.crew_userIDs;
+                    params.daylead_userID = _date.daylead_userID;
+                    params.treatmentCategoryIDs = _date.treatmentCategoryIDs;
+                    params.job_start = this.job_start;
+                    params.job_end = this.job_end;
+
+
+                    if (_date.workDateID != undefined) {
+                        Api.updateWorkDate(scope.report.reportID, _date.workDateID, params).then(function(data) {
+
+                        });
+                    } else {
+                        Api.addWorkDate(scope.report.reportID, params).then(function(data){
+
+                        });
+                    }
+
+                });
+
+                setTimeout(function () {
+                    emitEvent('save_multiple');
+                }, 400);
+            }
+
         };
 
         scope.removeWorkDate = function(removeDate) {

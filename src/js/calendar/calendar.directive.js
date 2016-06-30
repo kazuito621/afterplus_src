@@ -336,11 +336,11 @@ angular.module('calendardirective', [])
                                 });
 
                                 // make the event draggable using jQuery UI
-                                $(this).draggable({
-                                    zIndex: 999,
-                                    revert: true,               // will cause the event to go back to its
-                                    revertDuration: 0          //  original position after the drag
-                                });
+                                //$(this).draggable({
+                                //    zIndex: 999,
+                                //    revert: true,               // will cause the event to go back to its
+                                //    revertDuration: 0          //  original position after the drag
+                                //});
                             });
                         }
 
@@ -593,7 +593,10 @@ angular.module('calendardirective', [])
                                     else { // When duration is >1
                                         eTime = moment(el.end).subtract(1, 'seconds').format('YYYY-MM-DD HH:mm:ss');
                                     }
-                                    Api.ScheduleJob(el.reportID, {
+                                    console.log("DROP!!!");
+                                    console.log(el);
+                                    console.log("DROP!!!");
+                                    Api.updateWorkDate(el.reportID, el.workDateID, {
                                         job_start: sTime,
                                         job_end: eTime
                                     }).then(function (res) {
@@ -1139,6 +1142,7 @@ angular.module('calendardirective', [])
                                     var event = angular.copy(e);
                                     event.start = moment(_date.job_start);
                                     event.end = moment(_date.job_end);
+                                    event.workDateID = _date.workDateID;
 
                                     o.push(event);
                                 });

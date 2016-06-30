@@ -20,8 +20,8 @@
 			if( this.hostAndPort().match(/app.aplustree.com:9000/) ){
 				this.server='http://app.arborplus.com';
 			}else if( this.hostAndPort().match(/:9000/) || this.host().match(/(localh|127.0.0|0.0.0)/)) {
-                this.server='http://arborplus.dev';
-				//this.server='http://dev.arborplus.com';
+                //this.server='http://arborplus.dev';
+				this.server='http://dev.arborplus.com';
                 //this.server='http://dev2.arborplus.com';
 			}else{
 				this.server=this.hostAndPort();

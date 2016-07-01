@@ -386,10 +386,10 @@ app
                     params.crew_userIDs = _date.crew_userIDs;
                     params.daylead_userID = _date.daylead_userID;
                     params.treatmentCategoryIDs = _date.treatmentCategoryIDs;
-                    params.job_start = this.job_start;
-                    params.job_end = this.job_end;
+                    params.job_start = _date.job_start;
+                    params.job_end = _date.job_end;
 
-
+                    console.log(params);
                     if (_date.workDateID != undefined) {
                         Api.updateWorkDate(scope.report.reportID, _date.workDateID, params).then(function(data) {
 

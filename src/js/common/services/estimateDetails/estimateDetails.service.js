@@ -1,5 +1,6 @@
 app
-    .service('estimateDetailsService', [ '$rootScope', '$modal', 'Api', 'Restangular', '$q', function ($rootScope, $modal, Api, Rest, $q) {
+    .service('estimateDetailsService', [ '$rootScope', '$modal', 'Api', 'Restangular', '$q', '$filter', 
+	 function ($rootScope, $modal, Api, Rest, $q, $filter) {
         var createModalDeferred;
 
         scope = $rootScope.$new();
@@ -92,7 +93,7 @@ app
         var loadTreatmentCategories = function(siteID) {
             _.each(scope.report.summary.categories, function(reportCategory){
                 if (reportCategory.todo_price > 0) {
-                    reportCategory.label = reportCategory.treatmentCategory + '($'+ reportCategory.todo_price +' todo)';
+                    reportCategory.label = reportCategory.treatmentCategory + ' ($'+ $filter('shortenNumber')(reportCategory.todo_price) +' todo)';
 
                     scope.treatmentCategories.push(reportCategory);
                 }

@@ -387,8 +387,8 @@ app
                     params.crew_userIDs = _date.crew_userIDs;
                     params.daylead_userID = _date.daylead_userID;
                     params.treatmentCategoryIDs = _date.treatmentCategoryIDs;
-                    params.job_start = _date.job_start;
-                    params.job_end = _date.job_end;
+                    params.job_start = moment(_date.job_start).format('YYYY-MM-DD HH:mm:ss');
+                    params.job_end = moment(_date.job_end).format('YYYY-MM-DD HH:mm:ss');
 
                     console.log(params);
                     if (_date.workDateID != undefined) {
@@ -426,6 +426,17 @@ app
                 emitEvent('save_multiple');
             }, 400);
         };
+
+         scope.getCrewList = function(date) {
+             var crew = [];
+             _.each(scope.foremenList, function (foremen) {
+                if (foremen.userID != date.daylead_userID) {
+                    crew.push(foremen);
+                }
+             });
+
+             return crew;
+         };
         
         var emitEvent = function (event) {
             $rootScope.$emit('estimate.details.' + event, scope.report, scope.original_report);

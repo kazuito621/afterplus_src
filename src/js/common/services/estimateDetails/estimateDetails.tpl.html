@@ -102,10 +102,10 @@
                     <div class="row" ng-repeat="date in report.dates" ng-if="report.dates.length > 0">
                         <div class="row">
                             <div class="col col-md-3">
-                                Start: <input type="text" ng-model="date.job_start">
+                                Start: <input type="text" ng-model="date.job_start" bs-datepicker style="width: 90px"> <input type="text" ng-model="date.job_start" bs-timepicker style="width: 90px">
                             </div>
                             <div class="col col-md-3">
-                                End: <input type="text" ng-model="date.job_end">
+                                End: <input type="text" ng-model="date.job_end" bs-datepicker style="width: 90px"> <input type="text" ng-model="date.job_end" bs-timepicker style="width: 90px">
                             </div>
                             <div class="col col-md-6">
                                 Day Lead:
@@ -122,7 +122,7 @@
                                 Crew:
                                 <button type="button" class="btn btn-default" ng-model="date.crew_userIDs" data-html="1" data-multiple="1"
                                         data-max-length="0" data-placeholder="Selected Crew"
-                                        data-animation="am-flip-x" bs-options="g.userID as g.text for g in foremenList" bs-select
+                                        data-animation="am-flip-x" bs-options="g.userID as g.text for g in getCrewList(date)" bs-select
                                         title='Crew'></button>
                             </div>
                         </div>

@@ -809,14 +809,62 @@ angular.module('calendardirective', [])
 
                         $rootScope.$on('estimate.details.save_multiple', function (event, report) {
                             console.log("NEW INIT");
-                            _.each(s.schedJobs, function (_report) {
-                                if (_report.reportID == report.reportID) {
-                                    _report.dates = report.dates;
-                                }
-                            })
-                            console.log(s.schedJobs)
-                            elm.fullCalendar('refetchEvents');
-                            cal.fullCalendar('refetchEvents');
+
+                            console.log('RE GET APPROVED');
+                            // get approved
+                            setTimeout(function () {
+                                Rest.all('estimate').getList({status: 'approved'}).then(function (data) {
+                                    var jobs = [];
+                                    _.each(data, function (field) {
+                                        var obj = angular.copy(field);
+                                        obj.estimateUrl = obj.url;
+                                        delete obj.url;		//or else the calendar uses this as a link
+                                        obj.name = (field.name) ? field.name.trim() : ' ';
+                                        obj.title = getEventTitle(field);
+                                        obj.price = obj.total_price;
+                                        obj.todo_price = obj.todo_price;
+                                        obj.id = field.reportID;
+                                        obj.type = 'Unscheduled';
+                                        jobs.push(obj);
+                                    });
+                                    s.unschedJobs = jobs;
+                                    unschedBackup = angular.copy(jobs);
+                                    updateTotals();
+                                    setTimeout(bindexternalevents, 30);
+
+                                    // get sched
+                                    setTimeout(function () {
+                                        Api.getRecentReports({schedSince: 4, getDates: 1}).then(function (data) {
+                                            var jobs = [];
+                                            _.each(data, function (field) {
+                                                var obj = angular.copy(field);
+                                                obj.estimateUrl = obj.url;
+                                                delete obj.url;		//or else the calendar uses this as a link
+                                                obj.name = (field.name) ? field.name.trim() : ' ';
+                                                obj.title = getEventTitle(field);
+                                                obj.price = obj.total_price;
+                                                obj.todo_price = obj.todo_price;
+                                                obj.id = field.reportID;
+                                                obj.type = 'Unscheduled';
+                                                jobs.push(obj);
+                                            });
+                                            s.schedJobs = jobs;
+                                            schedBackup = angular.copy(jobs);
+                                            updateTotals();
+                                            setTimeout(bindexternalevents, 30);
+
+                                            _.each(s.schedJobs, function (_report) {
+                                                if (_report.reportID == report.reportID) {
+                                                    _report.dates = report.dates;
+                                                }
+                                            })
+                                            console.log(s.schedJobs)
+                                            elm.fullCalendar('refetchEvents');
+                                            cal.fullCalendar('refetchEvents');
+                                        });
+                                    }, 1000);
+                                });
+                            }, 1000);
                         });
 
                         $rootScope.$on('estimate.details.save_date', function (event, report, originalReport) {
